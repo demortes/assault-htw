@@ -1,0 +1,35 @@
+From assault@slayn.net  Mon Jan  5 11:47:52 2004
+Return-Path: <assault@slayn.net>
+X-Original-To: assault
+Delivered-To: assault@alpha.slayn.net
+Received: by alpha.slayn.net (Postfix, from userid 504)
+	id E26F727273; Mon,  5 Jan 2004 14:47:51 -0500 (EST)
+From: root@slayn.net (Cron Daemon)
+To: assault@slayn.net
+Subject: Cron <assault@alpha>  cd ahtw;cd src;./run
+X-Cron-Env: <SHELL=/bin/sh>
+X-Cron-Env: <HOME=/home/assault>
+X-Cron-Env: <PATH=/usr/bin:/bin>
+X-Cron-Env: <LOGNAME=assault>
+Message-Id: <20040105194751.E26F727273@alpha.slayn.net>
+Date: Mon,  5 Jan 2004 14:47:51 -0500 (EST)
+Status: RO
+
+1903: old priority 0, new priority 0
+/home/assault/ahtw/src/startup: line 53:  1906 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+/home/assault/ahtw/src/startup: line 53:  2414 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+/home/assault/ahtw/src/startup: line 53:  5059 Killed                  sleep 20
+
+From MAILER-DAEMON Fri Feb 20 17:15:20 2004
+Date: 20 Feb 2004 17:15:20 -0800
+From: Mail System Internal Data <MAILER-DAEMON@alpha.slayn.net>
+Subject: DON'T DELETE THIS MESSAGE -- FOLDER INTERNAL DATA
+Message-ID: <1077326120@alpha.slayn.net>
+X-IMAP: 1075910107 0000000001
+Status: RO
+
+This text is part of the internal format of your mail folder, and is not
+a real message.  It is created automatically by the mail system software.
+If deleted, important folder data will be lost, and it will be re-created
+with the data reset to initial values.
+

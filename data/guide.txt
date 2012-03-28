@@ -1,0 +1,8 @@
+G Welcome~ Welcome, new player. To read the next lesson, type @@eGUIDE@@W at any time!~ 1
+G L1~ Lesson 1~ 1
+G L2~ Lesson 2~ 1
+G L3~ Lesson 3~ 1
+G L4~ Lesson 4~ 1
+G L5~ Lesson 5~ 0
+
+#DONE

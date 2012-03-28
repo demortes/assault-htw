@@ -1,0 +1,3679 @@
+/*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+ ~  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        ~
+ ~  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   ~
+ ~                                                                         ~
+ ~  Merc Diku Mud improvments copyright (C) 1992, 1993 by Michael          ~
+ ~  Chastain, Michael Quan, and Mitchell Tse.                              ~
+ ~                                                                         ~
+ ~  Ack 2.2 improvements copyright (C) 1994 by Stephen Dooley              ~
+ ~  ACK!MUD is modified Merc2.0/2.1/2.2 code (c)Stephen Zepp 1998 Ver: 4.3 ~
+ ~                                                                         ~
+ ~  In order to use any part of this Merc Diku Mud, you must comply with   ~
+ ~  both the original Diku license in 'license.doc' as well the Merc       ~
+ ~  license in 'license.txt', and the Ack!Mud license in 'ack_license.txt'.~
+ ~  In particular, you may not remove any of these copyright notices.      ~
+ ~                                                                         ~
+ ~           _______      _____                                            ~
+ ~          /  __  /\    / ___ \       222222        PA_MUD by Amnon Kruvi ~
+ ~         /______/ /   / /___\ \            2       PA_MUD is modified    ~
+ ~        / _______/   / _______ \           2       Ack!Mud, v4.3         ~
+ ~       /_/          /_/       \_\        2                               ~
+ ~                                      2                                  ~
+ ~                                     2222222                             ~
+ ~                                                                         ~
+ ~                                                                         ~
+ ~   Years of work have been invested to create DIKU, Merc, Ack and PA.    ~
+ ~   Please show your respect by following the licenses, and issuing       ~
+ ~   credits where due.                                                    ~
+ ~                                                                         ~
+ ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+#if defined(macintosh)
+#include <types.h>
+#else
+#include <sys/types.h>
+#endif
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include "ack.h"
+#include <signal.h>
+
+//If it's related to buildings, it's here.
+
+const int order	[MAX_BUILDING]	=
+{ 0, BUILDING_HQ, BUILDING_MINE, BUILDING_UNDERGROUND_MINE, BUILDING_VOLCANIC_MINE, BUILDING_QUARRY, BUILDING_LUMBERYARD, BUILDING_GREENHOUSE, BUILDING_TANNERY, BUILDING_MUD_FILTER,BUILDING_FORGE, BUILDING_WAREHOUSE, BUILDING_GATHERER, BUILDING_ARMORY, BUILDING_ARMORER, BUILDING_STORAGE, BUILDING_S_TURRET, BUILDING_TURRET, BUILDING_ROCK_TOWER, BUILDING_WATCHTOWER, BUILDING_MUD_SLIDE, BUILDING_WAVE_GENERATOR, BUILDING_SURFACE_JOLTER, BUILDING_WATER_PUMP, BUILDING_HYDRO_PUMP, BUILDING_LAVA_THROWER, BUILDING_FIRE_TURRET, BUILDING_FLAMESPITTER, BUILDING_SNOW_DIGGER, BUILDING_WEATHER_MACHINE, BUILDING_TRAP, BUILDING_SNIPER_TOWER, BUILDING_AIRFIELD, BUILDING_PARADROP, BUILDING_TELEPORTER, BUILDING_TUNNEL,BUILDING_PROCESSING_PLANT, BUILDING_WEAPONS_LAB, BUILDING_WAR_CANNON, BUILDING_L_TURRET, BUILDING_GARAGE, BUILDING_EXPLOSIVES_SUPPLIER, BUILDING_BOOM, BUILDING_BIO_LAB, BUILDING_CHEMICAL_FACTORY, BUILDING_MEDICAL_CENTER, BUILDING_IMPLANT_RESEARCH, BUILDING_CLONING_FACILITY, BUILDING_ACID_TURRET, BUILDING_BOT_FACTORY, BUILDING_COOKIE_FACTORY, BUILDING_SCUD_LAUNCHER, BUILDING_DOOMSDAY_DEVICE, BUILDING_TECH_LAB, BUILDING_RADAR, BUILDING_JAMMER, BUILDING_BLACKOUT, BUILDING_WARP, BUILDING_WARP_TOWER, BUILDING_PARTICLE_EMITTER,BUILDING_LASER_WORKSHOP, BUILDING_LASER_TOWER, BUILDING_SOLAR_FACILITY, BUILDING_NUKE_LAUNCHER, BUILDING_ATOM_BOMBER, BUILDING_MINING_LAB, BUILDING_REFINERY, BUILDING_MARKETPLACE, BUILDING_IMPROVED_MINE, BUILDING_SHIELD_GENERATOR, BUILDING_TRAFFIC_JAMMER, BUILDING_MAGNET_TOWER, BUILDING_COMPUTER_LAB, BUILDING_CHIP_FACTORY, BUILDING_WEB_RESEARCH, BUILDING_BATTERY, BUILDING_ONLINE_MARKET, BUILDING_TRANSMISSION_TOWER, BUILDING_HACKERS_HIDEOUT, BUILDING_PROGRAMMER_SHACK, BUILDING_HACKPORT, BUILDING_DEFENSE_LAB, BUILDING_T_TURRET, BUILDING_STUNGUN,BUILDING_EARTHQUAKER, BUILDING_POISON_TURRET, BUILDING_FLASH_TOWER, BUILDING_ARMOR_FACTORY, BUILDING_ENCRYPTION_POD,BUILDING_MISSILE_DEFENSE, BUILDING_COMM_LAB, BUILDING_SPY_TRAINING, BUILDING_SPY_QUARTERS, BUILDING_SPY_SATELLITE, BUILDING_SONIC_BLASTER, BUILDING_EMP_RESEARCH, BUILDING_PROJECTOR, BUILDING_TRANSMITTER, BUILDING_SHOCKWAVE, BUILDING_PSYCHIC_LAB, BUILDING_PSYCHOSTER, BUILDING_MIND_TOWER, BUILDING_PSYCHIC_EYES, BUILDING_PSYCHIC_RADAR, BUILDING_PSYCHIC_SHIELD, BUILDING_COOLER, BUILDING_PSYCHIC_AMPLIFIER,BUILDING_PSYCHIC_TORMENTOR, BUILDING_GOVERNMENT_HALL, BUILDING_BAR, BUILDING_CLUB, BUILDING_BANK, BUILDING_HUNTING_LODGE, BUILDING_ENGINEER_HOME, BUILDING_SPACE_CENTER,BUILDING_DEATHRAY, BUILDING_DUMMY, BUILDING_CITY_HALL, BUILDING_SHOP, BUILDING_GOLD_MINE, BUILDING_CELLULAR_COMPANY, BUILDING_SUBWAY, BUILDING_COMPUTER_STORE, BUILDING_PORTAL, BUILDING_SPELGURITE_NOVASHIELD, BUILDING_CYLIS_BOOMER  };
+
+const struct build_type		build_table[MAX_BUILDING]	=
+{
+//										Iron-	Skin-	Copper-	Gold-	Silver-	Rocks-	Sticks-	Log
+   { 0, 				"NOTHING", 		0, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 0, 	"Description", 		 "[  ]", {0,0,0,0,0}, FALSE, 0},
+   { BUILDING_HQ, 			"Headquarters", 	1000,	 1000, 	{50,	0, 	0, 	10, 	10, 	50, 	0, 	50 	}, 0, 	"The headquarters is the main structure - This place controls the construction of all the other buildings, and without it, you cannot build any.", 	"[HQ]", {1,2,7,8,9}, TRUE, 0},
+   { BUILDING_ARMORY, 			"Armory", 		100, 	50, 	{2,	0, 	0, 	0, 	4, 	0, 	0, 	5 	}, 1, 	 "Racks of guns and explosives line the walls, the hammering noises coming from the back suggest the making of more. Up to 20 weapons can gather in here at any given time, but no ammo. If you want ammo, visit your Storage facility. To use explosives, you should @@eset@@N their timer to the time, in seconds, you'd like, then @@earm@@N them, and either carry them to become a suicide bomber, or drop them somewhere.", 		"{AA}", {1,2,7,8,9}, TRUE, 0},
+   { BUILDING_S_TURRET, 		"Small Turret", 	60, 	10, 	{20,	1, 	0, 	0, 	0, 	1, 	0, 	1 	}, 2, 	"The inside of the turret is hardly enough for a person to feel comfortable in - It's just a small empty block with some monitors attached to the walls. The turrets defend your base from any, unwanted or not, players. The larger the turret, the farther it fires, and the more damage it does.",	":^^:", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_QUARRY, 			"Quarry", 		100, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	2 	}, 1, 	"A giant hole in the ground is being dug constantly by large robotic drones, carrying large rocks into a storage area. A control tower on the far wall contains three engineers who control the process. In here, you will find rocks (up to 20 can gather at any given time) to use for building.", 		"{QQ}", {1,5,14,2,5}, TRUE, 0 },
+   { BUILDING_MINE, 			"Mine", 		100, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	2 	}, 1, 	"A large drill moves through wide tunnels, collapsing the dirt above it while a drone follows it and scans for any useful resources. The resources gathered are gathered in a large pile next to the exit, and more are constantly added. In this structure, you will find gold, copper, silver and iron.", 		"{MM}", {5,5,5,5,5}, TRUE, 0 },
+   { BUILDING_STORAGE, 			"Storage", 		50, 	100, 	{0,	0, 	0, 	0, 	0, 	0, 	10, 	0 	}, 2, 	"Clips and shells fill carton boxes in the corner of the room. Two men sitting in metal chairs carefully insert bullets into the clips, and fill the cartons. This building generates ammunition for your weapons gathered at the armory.", 		"{SS}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_LUMBERYARD, 		"Lumberyard",		200, 	30, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	5 	}, 1, 	"The ear-bursting sound of high pitched machines never ceases as trees gather up onto the large machine which occupies most of the building. Through a hole in the wall, trees roll into the machine, and come out as clean logs, which you can use for construction.", 	"{LL}", {9,9,9,9,9}, TRUE, 0 },
+   { BUILDING_TANNERY, 			"Tannery",		100, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	5 	}, 1, 	"The small room on the other side of the entrance is where the skinning work is done - every few minutes, a sheet of skin is thrown through the window onto a gathering pile of skins and furs. The skins can later be used for constructing buildings.", 		"{TT}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_TURRET, 			"Turret", 		100, 	20, 	{30,	2, 	0, 	0, 	0, 	3, 	0, 	1 	}, 2, 	"The inside of the turret is hardly enough for a person to feel comfortable in - It's just a small empty block with some monitors attached to the walls. The turrets defend your base from any, unwanted or not, players. The larger the turret, the farther it fires, and the more damage it does.", 		":VV:", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_L_TURRET, 		"Large Turret", 	200, 	40, 	{50,	4, 	0, 	0, 	0, 	5, 	0, 	5 	}, 13, 	"The inside of the turret is hardly enough for a person to feel comfortable in - It's just a small empty block with some monitors attached to the walls. The turrets defend your base from any, unwanted or not, players. The larger the turret, the farther it fires, and the more damage it does.",	":!!:", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_WATCHTOWER, 		"Watchtower", 		50, 	10, 	{0,	0, 	0, 	0, 	0, 	10, 	5, 	15 	}, 2, 	"This wooden structure contains rather primitive forms of defense - Mostly crossbows and bolts. Four torches surround the structure on all four corners, making the tower look impressive from afar and giving it a bright glow.",	"^||^", {9,5,4,9,9}, TRUE, 0 },
+   { BUILDING_WAR_CANNON, 		"War Cannon", 		60, 	10, 	{450,	0, 	25, 	5, 	50, 	150, 	0, 	50 	}, 13, 	"A large control panel, equipped with the most high-tech, specially designed, and most sophisticated chair, sits on the far wall. A digital mapping of the area spreads through the entire building. From inside the War Cannon, you can choose to @@eblast@@N any location at a 10X10 radius!",	"v||v", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_WEAPONS_LAB, 		"Weapons Lab", 		300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"The occasional BOOM suggests the development of new, improved weaponry. Papers are scattered all around this large tower; blueprints and designs, mostly... Maybe they're flying around because all the trash cans are already full.",	"[WL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_BIO_LAB, 			"Bio Lab", 		300, 	100, 	{0, 	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"This large tower is devided into two floors; one forresearch, which is done in basic laboratories spread throughout the ground floor, and the second is for testing, which is doneinside some of the sterile rooms which make the upper part of the building.", "[BL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_CHEMICAL_FACTORY, 	"Chemical Factory", 	100, 	50, 	{10,	0, 	10, 	5, 	0, 	0, 	0, 	0 	}, 14,	"The walls are burned through with various acids, creating strange shapes and colors on them. Tubes of strange substances roll around the floor, emitting strange smells and smoke.",	"{CC}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_TECH_LAB, 		"Tech Lab", 		300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"The sights are incredible - In each of the research chambers, new technology makes its first appearance, and at its best! From people warping from one room to another, to flash grenades.",	"[TL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_WARP, 			"Warp", 		50, 	400, 	{10,	0, 	5, 	5, 	0, 	0, 	0, 	5 	}, 16,	"A large vortex of colored lights floats in the center of the building, controlled by dozens of computers attached to the walls. From this place, you can type @@ewarp@@N to instantly teleport - the radius depends on the structure's level.",	"{WW}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_EXPLOSIVES_SUPPLIER, 	"Explosives Supplier",	100, 	50, 	{5,	0, 	2, 	4, 	3, 	0, 	0, 	0 	}, 13, 	"A back room, quite nicely camouflaged since it has no real visible door, is where the explosive work is done. Every few minutes, a small trapdoor opens, and a hand adds an explosive to the pile. To use grenades, you first @@earm@@N them, then @@ethrow@@N them to the direction you'd like. But be careful, because you only have three seconds to get rid of them!", 		"{XX}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_MEDICAL_CENTER, 		"Medical Center", 	200, 	0, 	{5,	10, 	0, 	5, 	5, 	0, 	0, 	0 	}, 14,	"Robotic arms controlled by a few people on the control tower above perform experiments on, mostly, animals. Verious liquids and pills have found their way onto the floor, while the ones that don't kill you have been placed on shelves near the entrance. You can use these med. packs by typing @@eheal@@N.", "{MC}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_GARAGE, 			"Garage", 		300, 	0, 	{15,	0, 	0, 	0, 	0, 	5, 	0, 	5 	}, 13, 	"Large robots perform most of the work here - Some gather materials and sort them by type, the others melt, process, and construct vehicles using them. You can use the parts generated here to @@econstruct@@N vehicles - the better the parts, the better the tank. After you have your vehicle, you can @@eenter@@N it, then @@eexit@@N. You can also come here to @@arepair and restock@@N your vehicle if you need to by placing it inside and... going out for lunch...", 		"{GG}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_RADAR, 			"Radar", 		10, 	200, 	{10,	0, 	0, 	5, 	5, 	0, 	0, 	0 	}, 16,	"A large computer monitor hands on the wall, showing endless information about everything around you. From this building, you can @@escan@@N for other players or buildings - the higher the Radar's level, the more you will find in a larger radius.",	 "{RR}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_JAMMER, 			"Jammer", 		10, 	200, 	{0,	0, 	150, 	15, 	50, 	0, 	0,	0	}, 16,	"Electrinocs cover entire desks and walls, filling the building with constant beeping. A large satellite monitor hangs on the ceiling, showing a grid of the nearby structures, while a team of men work hard to keep them camoflauged.",	 "{JJ}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_WAREHOUSE, 		"Warehouse", 		250, 	0, 	{30,	0, 	0, 	0, 	0, 	20, 	0,	20	}, 2,	"The place is beyond messy - There is so much dust and junk all over, that it's almost impossible to see anything else! The building is very large, so searching for useful stuff here might be a little hard.",	 "[WW]", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_BOT_FACTORY, 		"Bot Factory", 		200, 	50, 	{30,	0, 	0, 	20, 	0, 	0, 	0,	20	}, 14,	"Groups of scientists lock themselves up in some of the large room this compound offers, testing robotic devices of all sorts. Small drones float through the buildings, scanning and repairing damage, as well as intruders.",	 "{BF}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_FORGE, 			"Forge", 		100, 	0, 	{30,	10, 	0, 	0, 	0, 	0, 	0,	20	}, 5,	"A blazing display of fire makes the far wall, and piles of resources of all types gather next to it. This is where you can @@echunk@@N items together to make large pieces.",	 "[FR]", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_SCUD_LAUNCHER, 		"SCUD Launcher", 	1000, 	500, 	{2000,	0, 	0, 	100, 	100, 	0, 	0,	200	}, 14,	"A huge missile stands in the middle of this round room, constantly worked on by a dozen people at any given time. When the missile is ready, you can @@eblast@@N at any coordinates you'd like!",	 "!SS!", {5,5,5,5,5}, TRUE, 0 },
+   { BUILDING_ARMORER, 			"Armorer", 		100, 	50, 	{5,	0, 	0, 	5, 	0, 	0, 	0, 	5 	}, 1, 	"Vests and helmets hang around the rather large room, while more are added every few minutes by one of the workers, who spend their time in the back room creating the armor. In the corner, a man sits and reads a newspaper, smoking his cigar, while shouting orders to anyone who even tries to rest. Here, you will find armor to use, as well as be able to repair your damaged armor.", 		 "{AR}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_NUKE_LAUNCHER, 		"Nuke Launcher", 	1000, 	500, 	{2000,	0, 	0, 	100, 	100, 	0, 	0,	200	}, 16,	"Four large missiles corner the large building, each being developped by its own team of technicians. A computer in the center of the room provides quick access to information about the nukes, as well as some games the staff downloaded to keep themselves from getting bored to death building missile after missile. From the nuke launcher, you can @@eblast@@N any coordinates you'd like." ,	 "!NN!", {5,5,5,5,5}, TRUE, 0 },
+   { BUILDING_AIRFIELD, 		"Airfield", 		200, 	0, 	{15,	0, 	0, 	0, 	0, 	5, 	0, 	5 	}, 27, 	"The airfield is nothing special - just a long paved runway with a small control tower on the side. You can @@econstruct@@N an aircraft using the parts gathered in here. Flying an aircraft is difficult - They are always on the move, and if you run into a building or a wall, it will crash, and you will likely die. You can change the flight direction at any time by going in that direction, and the plane will continue on that path. You can @@eexit@@N the aircraft at any time, or get it back to the airfield to land it.", 		 "{AF}", {1,8,2,7,7}, TRUE, 0 },
+   { BUILDING_WARP_TOWER, 		"Warp Tower", 		20, 	300, 	{10,	0, 	0, 	20, 	20, 	0, 	0, 	10 	}, 17, 	"The building is a very tall and narrow tower, consisting of a small control panel on one of the walls, and a strange glowing sphere on the top. A bunch of electrical wires are spread throughout the entire tower.",	 ":WW:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_ROCK_TOWER, 		"Rock Tower", 		90, 	0, 	{0,	0, 	0, 	0, 	0, 	40, 	20, 	0 	}, 4, 	"The tower is nothing more than a tree-house with a small hatch for rocks to be gathered from. It is made of strong logs, and carries a large pile of heavy rocks near the ladder leading outside.",	 ":%%:", {1,4,5,1,1}, TRUE, 0 },
+   { BUILDING_FIRE_TURRET, 		"Fire Turret", 		100, 	20, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 0, 	"Tanks and tanks of napalm are spread around the small structure. A cannon, attached to all the tanks, spins around in circles through a line in the walls, scanning for enemies.",	 ":ff:", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_COOKIE_FACTORY, 		"Cookie Factory",	100, 	50, 	{500,	0, 	0, 	0, 	0, 	100, 	0, 	300 	}, 14, 	"Ahhh, the small of fresh-baked cookies... What could be more wonderful? How about freshly baked EXPLOSIVE Cookies! You got it, by popular demand, the cookie factory is now here, generating cookie launchers and explosive cookies to load them with. Enjoy, it's one nice weapon.", 		 "{OO}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_ACID_TURRET, 		"Acid Turret", 		150, 	200, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 14, 	"Barrels leaking acid are spread throughout the turret, dripping slowly into the well burned-out floor. Four cannons, one on each side of the building, scan for enemies.",	 ":`':", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_GOVERNMENT_HALL, 		"Government Building",	1000, 	500, 	{1000,	100, 	50, 	50, 	50, 	200, 	300, 	300 	}, 1, 	"The government building contains the paperwork and designs for civilian buildings. People constantly run around the many offices, yelling and shouting, throwing forms... But most of the people who work here don't do anything. Kinda reminds you of the real world when you think about it...", 		 "[GV]", {1,2,7,8,9}, FALSE, 0 },
+   { BUILDING_BAR, 			"Bar",			50, 	0, 	{5,	0, 	0, 	0, 	0, 	10, 	0, 	300 	}, 35, 	"The lights are always dimmed, and the people are always bikers and whores. And just like on TV, the barkeep here knows everything... He might even be willing to part some information if you @@eleave enough gold here@@N, though the costs might change according to the info he has to give.", 		 "|BR|", {1,2,7,8,9}, FALSE, 0 },
+   { BUILDING_BANK, 			"Bank",			50, 	0, 	{5,	0, 	0, 	0, 	0, 	10, 	0, 	10 	}, 35, 	"Reports, reports, and more reports, written on what could easily be an entire rain-forest of paper, are spread around the entire building - On the floor, on the walls, and in the air. In here, you can see your financial @@estats@@N, and brag about them to your friends.", 		 "|BK|", {1,2,7,8,9}, FALSE, 0 },
+   { BUILDING_CLUB, 			"Club",			50, 	0, 	{500,	0, 	0, 	0, 	0, 	200, 	0, 	10 	}, 35, 	"Dim lights, loud music, and tons of alcohol! The underground club is packed with people, enough to render you completely hidden from others' sight, even the bars will not give information of someone who is hiding in a club. ", 		 "|CL|", {1,2,7,8,9}, FALSE, 0 },
+   { BUILDING_FLAMESPITTER,	 	"Flamespitter", 	1, 	300, 	{1500,	0, 	300, 	300, 	300, 	0, 	0, 	400 	}, 32, 	"Large canisters of napalm are spread throughout the small bunker-like structure, with two giant devices on each side attached to them, automatically focusing on any movement in the area. A small electronic map is attached to all the napalm cannons, marking its fire range. The flamespitter is a powerfull defense, it'll blast in a 7x7 radius, does a lot of damage to people, tanks.",	 ":FF:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_LASER_TOWER, 		"Laser Tower", 		50, 	100, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 16, 	"The tower stands tall above the ground, allowing for good visibility. Two types of windows surround the structure - the round ones all have some sort of laser cannons behind them, and the square ones are clear, to allow scouting. For some reason, the tower seems to not be too stable, and it always feels like it's going to collapse.",	 "|''|", {9,5,4,9,9}, TRUE, 0 },
+   { BUILDING_LASER_WORKSHOP, 		"Laser Workshop", 	100, 	500, 	{300,	0, 	0, 	500, 	0, 	0, 	0,	200	}, 16,	"The building is split into several labs, each holding several scientists meddling with strange devices. The corners of the room are all covered by large cabinets, containing records and other pieces of research. The center of the roof appears to be scorched... Someone's been playing around!",	 "{LS}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_SOLAR_FACILITY, 		"Solar Facility", 	50, 	700, 	{90,	50, 	70, 	0, 	40, 	0, 	0,	100	}, 41,	"The roof is completely torn out, allowing for as much sunlight as possible to go through to the solar-panel tiles on the floor. A large canister on the far wall contains broken pieces of weaponry, while an even larger one right next to the entrance is full of operational equipment.",	 "{SF}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_IMPLANT_RESEARCH, 	"Implant Research", 	500, 	100, 	{100,	0, 	50, 	50, 	40, 	0, 	30,	0	}, 24,	"Robotic arms attached to a rail on the ceiling pass through the different labs, carrying parts and equipment. A small surgery room is on the eastern side of the room, where operations for implants are performed... though from the looks of it, it seems a better idea to do it yourself.",	 "{IR}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_ATOM_BOMBER, 		"Atom Bomber", 		2000, 	500, 	{0,	0, 	0, 	0, 	0, 	0, 	0,	0	}, 0,	"This underground bunker is hot like hell, and it appears that there aren't any cooling mechanisms installed here either. Researchers dressed in white experiment with napalm, acids, and even radioactive material, trying to create the ultimate missile, which stands partially built on the outside." ,	 "!AA!", {5,5,5,5,5}, TRUE, 0 },
+   { BUILDING_HUNTING_LODGE, 		"Hunting Lodge",	50, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	100 	}, 35, 	"The lodge is a warm and comfortable place, made mostly out of logs and sticks. The walls are covered with what appears to be slots for trophie heads, as well as pictures and stories about some of the largest animals ever hunted. There is also a dart board on the table you can play with.", 		 "|HL|", {9,8,8,8,8}, FALSE, 0 }, 
+   { BUILDING_DOOMSDAY_DEVICE, 		"Doomsday Device", 	2000, 	500, 	{5000,	1000, 	2000, 	2000, 	2000, 	1500, 	2500,	2500	}, 26,	"Hundreds of scientists crawl throughout this huge structure, working in dozens of laboratories, all completely sealed, and all marked hazardous. A control panel on the wall marks the estimated time before the completion of another dose of the deadly SARS virus, you can use the @@eDoom@@N command to set it loose once it is finished." ,	 "!DV!", {5,5,5,5,5}, TRUE, 0 },   
+   { BUILDING_MINING_LAB, 		"Mining Lab", 		300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"The labs seems like a rather deserted place, with only a few people, not even dressed like real scientists, talking in small rooms. Very old blueprints flutter about in the wind, which, due to the lack of walls in certain areas, doesn't have a problem entering.",	 "[ML]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_IMPROVED_MINE, 		"Improved Mine", 	150, 	100, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	5 	}, 47, 	"A large drill moves through wide tunnels, collapsing the dirt above it while a drone follows it and scans for any useful resources. The resources gathered are gathered in a large pile next to the exit, and more are constantly added. In this structure, you will find gold, copper, silver and iron.",	 "{IM}", {5,7,1,2,8}, TRUE, 0 },
+   { BUILDING_REFINERY, 		"Refinery", 		250, 	50, 	{200,	0, 	30, 	30, 	30, 	0, 	0, 	5 	}, 47, 	"A large pot, containing what appears to be some sort of really hot acid, rests in the corner of the structure. A special drop zone has been set away from it, where a robotic arm keeps passing by, scanning for items to lift. You can use the building with the @@eRefine@@N command.",	 "{RF}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_MARKETPLACE, 		"Marketplace", 		50, 	0, 	{200,	0, 	70, 	0, 	0, 	100, 	0, 	0 	}, 47, 	"This place is desguised as an old shack on the outside, but inside, in the basement, hundreds of people are filling the building with noise and items. An electronic screen listing the weapon and armor requests hangs on the wall, updating every number of seconds. Maybe you can @@eSell@@N something.",	 "{MP}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_MAGNET_TOWER, 		"Magnet Tower", 	200, 	200, 	{400,	50, 	65, 	200, 	20, 	0, 	0, 	0 	}, 47, 	"A group of extremely high-powered magnets spin in alignment with each other at the very top of this tower.  Fortunately for you, everything you own has been demagnetized to these particular magnets.  Unfortunately for everyone else, everything they own hasn't.  Anyone coming too close to your tower will soon find themselves at a loss for some of the things they brought with them.",	 ":MT:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SHIELD_GENERATOR, 	"Shield Generator", 	50, 	600, 	{100,	0, 	100, 	100, 	100, 	0, 	0, 	0 	}, 47, 	"Catwalks line the walls of this immense building, providing the only safe passage through the room. Large metallic disks spin around in opposite directions on the ceiling and floor, creating constant lightning strikes between the two circles. A control room against one of the walls houses the 4 scientists running the machine, as well as tons of wires leading off to other places.",	 "{SG}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_TRAFFIC_JAMMER, 		"Traffic Jammer", 	80, 	60, 	{1000,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 47, 	"",	 ":TJ:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_CLONING_FACILITY, 	"Cloning Facility", 	100, 	0, 	{100,	150, 	200, 	250, 	300, 	350, 	400, 	450 	}, 14, 	"Tubes are everywhere, large and small. A table against the wall holds a rack of small test tubes, each of which holds a liquid of a different color. Large floor to ceiling tubes hold partially developed creatures, most of which appear to be humanoid. Several scientists run about the room checking on the various tanks, and their inhabitants.",	 "{CF}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PROCESSING_PLANT, 	"Processing Plant", 	250, 	50, 	{200,	0, 	30, 	30, 	30, 	0, 	0, 	5 	}, 5, 	"The plant floor teems with life as many different people in lab coats rush about, in and out of various rooms marked with scientific-sounding names.  Some rooms have smoke wafting out, others emit a soft bubbling sound.  A central area in the plant, built specifically for the refining of chemicals and elements, holds test tubes, beakers, vials, and other items that remind you of your first chemistry set as a kid.  Through chemistry, one can make all sorts of interesting compounds.",	 "{PP}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_WATER_PUMP, 		"Water Pump", 		100, 	0, 	{10,	0, 	0, 	0, 	0, 	15, 	0, 	0 	}, 2, 	"The roar of water rushing and echoing through this building is almost deafening.  A series of small pipes capture water straight from the source and channel it up to a larger pipe, connected to an extremely powerful pneumatic pump.  This aquatic cannon is capable of swivelling in a complete circle, making anyone that wanders too close very unhappy.",	 ":__:", {6,6,6,6,6}, TRUE, 0 },
+   { BUILDING_HYDRO_PUMP, 		"Hydro Pump", 		150, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 0, 	"The tangled mess of pipes and storage containers vibrate as water is sucked into them from the conveniently-located water source below.  Water is fed into a short, stubby cannon with an enormously wide barrel.  This specially-made pump cannon is fairly inaccurate compared to others, but the sheer amount of the payload can knock a person out for a brief amount of time.",	 ":--:", {6,6,6,6,6}, TRUE, 0 },
+   { BUILDING_TUNNEL, 			"Tunnel", 		200, 	0, 	{0,	0, 	0, 	0, 	0, 	20, 	30, 	20 	}, 5, 	"Large tunneling drones are excavating a hole here. The tunnel leads rather steeply down underground, supported only by a few wooden beams. Despite the powerful lights lining the tunnel walls, it is impossible to see where the tunnel ends.",	 "{->}", {1,2,4,5,8}, TRUE, 0 },
+   { BUILDING_SURFACE_JOLTER, 		"Surface Jolter", 	100, 	500, 	{100,	0, 	0, 	0, 	0, 	0, 	0, 	70 	}, 58, 	"Sonar pings as workers dilligently scan the underground for intruders.  Underneath of this structure, a series of high-pressure pneumatic rams are perched, waiting for the signal to start a cave in down below, within their range.",	 "{>J}", {1,2,4,5,8}, TRUE, 0 },
+   { BUILDING_COMPUTER_LAB, 		"Computer Lab", 	300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"A symphony of humming and beeping welcomes passers-by to the computer lab.  All around you, robots go about their set tasks, being monitored by their programmers.  Computing systems are constantly being designed and tested here, in the hopes that they will one day be set into mass production.  This building truly serves host to the pinnacle of technological accomplishments.",	 "[CL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_BATTERY, 			"Battery", 		50, 	600, 	{20,	0, 	0, 	30, 	0, 	0, 	0, 	0 	}, 60, 	"Conveyor belts drone on as batteries are produced in this streamlined factory.  These batteries are designed specifically to be used in computer systems, allowing one to keep all of his or her systems operational.",	 "{BT}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_CHIP_FACTORY, 		"Chip Factory",		200, 	150, 	{100,	0, 	20, 	0, 	10, 	0, 	0, 	0 	}, 60, 	"Drones flock all about in the factory, each with a set task at hand.  Some are assigned to manufacture cases, others to program the chips directly, and others still to assemble all the hardware that goes into making a computer.  Regardless, every drone's job is essential to having the most top-of-the-line computing systems.",	 "{CH}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_WEB_RESEARCH, 		"Web Research", 	80, 	160, 	{200,	0, 	5, 	2, 	2, 	0, 	0, 	0 	}, 60, 	"The walls are lines with the latest high tech computers, and the room is filled with the sound of typing. Every computer has someone working at it, searching the internet for firewall and antivirus upgrades, though they dont seem to care about the legality of how they obtain them.",	 "{WR}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_TRANSMISSION_TOWER, 	"Transmission Tower", 	10, 	20, 	{400,	0, 	30, 	10, 	10, 	0, 	0, 	0 	}, 60, 	"Metal poles and beams reach high up into the sky, ending in a long, delicate antenna. A small beige building sits under the tower, housing three of the worlds most powerful computers and four of the worlds best technicians. The central pole of the tower rises out of the center of the control room, leading up to the tower top.",	 ":TT:", {1,2,7,8,8}, TRUE, 0 },
+   { BUILDING_ONLINE_MARKET, 		"Online Market", 	50, 	200, 	{350,	0, 	50, 	25, 	50, 	0, 	0, 	0 	}, 60, 	"The tall floor to ceiling walls of many cramped cubicles fill the room, giving everyone secrecy as they go about their own private online activities. Most of the users are participating in the trade of resources, getting rid of what they dont need for something more useful.",	 "{OM}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_BOOM, 			"Boom", 		10, 	0, 	{500,	0, 	0, 	0, 	0, 	0, 	0, 	0 	}, 13, 	"Thin and poorly-fired clay bricks form a set of four simple walls here, in the dirt.  Cardboard has been placed atop ricketty wooden trusses as roofing, and atop them, junk plastics and cellophane have been painted black and tacked down, as to resemble roofing.  This 'building' is stacked to the ceiling with crates and drums of explosives, all of which are electronically fused to a single plunger detonator in the center of the room.  One would simply type 'BOOM' to drop the plunger.",	 ":XX:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_HACKERS_HIDEOUT, 		"Hackers Hideout",	150, 	150, 	{200,	0, 	30, 	10, 	20, 	0, 	0, 	0 	}, 60, 	"Beneath asphalt shingles and ricketty barn-siding, one may come to find the hideout of a hacker.  Here, the inhabitant may seek refuge whilst tracing the effects of their acts of sabotage against their neighbors and enemies.  Little more than a round pinewood tables, two bentwood chairs, and a musty foam rubber bedroll matress furnish this dim and damp establishment.",	 "{HF}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SNIPER_TOWER, 		"Sniper Nest",		50, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	40, 	20 	}, 2, 	"A sturdy platform constructed of 2x6 planks rests atop a well-braced series of steel legs, here.  This tower extends up a relatively short distance, and is further concealed by well-placed natural camoflauge, such as shrubs, briar thickets and trees.  This vantage affords the sniper greater control over the surrounding land by offering a better range of fire.",	 ":->:", {1,2,7,8,8}, TRUE, 0 },
+   { BUILDING_TRAP, 			"Trap",			30, 	200, 	{100,	0, 	10, 	0, 	0, 	0, 	40, 	0 	}, 1, 	"",	 ":():", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_HACKPORT, 		"Hackport",		1500, 	3000, 	{2000,	0, 	1000, 	1000, 	1000, 	0, 	40, 	0 	}, 60, 	"",	 "!HP!", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_GREENHOUSE, 		"Greenhouse",		200, 	30, 	{5,	0, 	0, 	0, 	0, 	0, 	 0, 	0 	}, 1,	"This structure features rows and rows of trees. Robot drones constantly chop them down and plant new ones to replace the old. The resources are then bundled and put in a storage area to the side. Here you will be able to find trees and sticks. At higher levels, you can type generate followed by a specific resource to get more of that resource.", 	 "{GH}", {7,2,4,1,7}, TRUE, 0 },
+   { BUILDING_VOLCANIC_MINE, 		"Volcanic Mine", 	100, 	0, 	{0,	0, 	0, 	0, 	0, 	2, 	 0, 	0 	}, 1, 	"In this hotbed of volcanic activity, laborers work day and night to obtain the valuable raw minerals spewed forth from beneath the planet's crust.  Thick and wide catwalk platforms constructed of iron and plated in reinforced carbon-carbon span the expanses of lava, allowing the arms of large cranes to reach out over the molten terrain, as to plunge both retrieval filters and analysis units deep into the molten rock, and extract the materials.  The hot slag is loaded into container cars, and transported along the catwalks by light-rail to the smelter.", 		 "{VM}", {10,10,10,10,10}, TRUE, 0 },
+   { BUILDING_UNDERGROUND_MINE, 	"Underground Mine", 	100, 	0, 	{0,	0, 	0, 	0, 	0, 	0, 	0, 	 2 	}, 1, 	"", 		"{UM}", {7,9,15,7,7}, TRUE, 0 },
+   { BUILDING_T_TURRET, 		"Tracer Turret", 	60, 	10, 	{40,	1, 	0, 	0, 	0, 	1, 	0, 	1 	}, 76, 	"The tracer turret, whilst firing a much weaker barrage than it's larger cousins, is constructed atop a ground-breakingly tall tower, affording it a range more than three times greater than many other defense turrets, giving it a greater ability to volley down fire upon an invading army before they reach the primary base defense systems.",	 ":$$:", {1,2,7,8,1}, TRUE, 0 },
+   { BUILDING_SNOW_DIGGER, 		"Snow Digger", 		120, 	0, 	{0,	0, 	0, 	0, 	0, 	40, 	0, 	10 	}, 1, 	"",	 ":\\\\:", {7,13,7,7,7}, TRUE, 0 },
+   { BUILDING_DEFENSE_LAB, 		"Defense Lab", 		300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	0 	}, 2, 	"The defense lab is organized with the advancement of defensive turrets to suit anyones' needs.  The blueprints and schematics of these devices are posted on the wall pending development.  Scale models have been embedded into a small layout of terrain showing the defensive turrets versatiliaty on any type ground.",	 "[DL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_STUNGUN, 			"Stungun", 		200, 	1500, 	{20,	0, 	0, 	0, 	5, 	0, 	0, 	 0 	 }, 76, 	"This short, cramped defense turret bears a large, fork-shaped implement atop it's cylindrical stack, from which an overwhelming amount of static electricity can be emitted towards an enemy at a range slightly greater than that of a small turret, as to stun and incapacitate them.",	 ":SG:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_POISON_TURRET, 		"Poison Turret", 	500, 	500, 	{35,	10, 	0, 	0, 	0, 	5,	0, 	 0 	 }, 76, 	"",	 ":P^:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_GOLD_MINE, 		"Gold Mine", 		1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	-1 	}, 0, 	"",	"=GO=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_COMPUTER_STORE, 		"Computer Store", 	1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	-1 	}, 0, 	"",	"=CS=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_LAVA_THROWER,	 	"Lava Thrower", 	80, 	80, 	{70,	0, 	0, 	20, 	20, 	30, 	0, 	0 	}, 2, 	"",	 ":)(:", {10,14,10,10,10}, TRUE, 0 },
+   { BUILDING_CELLULAR_COMPANY, 	"Cellular Company", 	1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	 -1 	}, 0, 	"Once a bustling and succesful enterprise, this telecommunications firm has since been annexed by an invading army, and has been vacated by it's original occupants.  Office furniture, financial data and electronic equipment all remain relatively undisturbed by the exodus of employees.  Perhaps this facility would afford one the ability to transmit a broadcast...",	 "=CC=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_ENCRYPTION_POD, 		"Encryption Pod", 	100, 	700, 	{30,	0, 	10, 	15, 	20, 	0, 	0, 	 0 	}, 76, 	"",	"{EP}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_ARMOR_FACTORY, 		"Armor Factory", 	450, 	50, 	{100,	0, 	0, 	10, 	0, 	0, 	10, 	 0 	}, 76, 	"Specialized computers scan all the equipment left on the ground, searching for imperfections and areas which the computer can enhance.  The computers run through millions of calculations on the structural integrity of the armor, estimating where overall defense can be increased without weakening other spots of the armor.  Leave your armor on the ground here and it will slowly improve in quality.",	 "{A+}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SUBWAY, 			"Subway", 		1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	 -1 	 }, 0, 	"The long, dark tunnels of an ancient mass-transit system seem to stem in all directions beneath the surface of the ground here.  The engines and railcars once used to transport the residents and laborers of a major city now rest unattended, and though the rails and equipment have been neglected for quite some time, it is clear that one might still use these facilities as a means to transport themselves about the world.",	 "=SW=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_SHOP, 			"Shop", 		1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	 -1 	 }, 0, 	"",	"=SP=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_CITY_HALL, 		"City Hall", 		1000, 	1000, 	{-1,	-1, 	-1, 	-1, 	-1, 	-1, 	-1, 	 -1 	 }, 0, 	"",	"=()=", {0,0,0,0,0}, FALSE, 0 },
+   { BUILDING_COMM_LAB, 		"Communications Lab",	300, 	100, 	{0,	0, 	0, 	25, 	25, 	0, 	0, 	 0 	}, 2, 	"",	 "[UL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SPY_TRAINING, 		"Spy Training Center",	300, 	50, 	{100,	0, 	0, 	30, 	0, 	0, 	30, 	 0 	}, 88, 	"",	 "{ST}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_TRANSMITTER, 		"Transmitter",		1000, 	3000, 	{2000,	0, 	1000, 	1000, 	1000, 	0, 	40, 	 0 	}, 88, 	"",	 "!TM!", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SPY_QUARTERS, 		"Spy Quarters",		100, 	100, 	{30,	0, 	0, 	0, 	10, 	0, 	10, 	 0 	}, 89, 	"",	 "{SQ}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SPY_SATELLITE, 		"Spy Satellite",	75, 	125, 	{10,	0, 	30, 	0, 	0, 	20, 	 0, 	 0 	}, 89, 	"",	 "{SS}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PROJECTOR, 		"Projector",		40, 	200, 	{20,	0, 	0, 	10, 	0, 	0, 	 0, 	 0 	}, 88, 	"",	 ":=<:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_WAVE_GENERATOR, 		"Wave Generator",	50, 	225, 	{25,	0, 	10, 	0, 	0, 	0, 	 0, 	 0 	 }, 88, 	"",	 ":=~:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_LAB, 		"Psychic Lab",		100, 	400, 	{0,	0, 	0, 	25, 	25, 	0, 	 0, 	 0 	}, 2, 	"",	 "[PL]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHOSTER, 		"Psychoster",		30, 	200, 	{40,	50, 	10, 	0, 	0, 	0, 	 0, 	 0 	}, 95, 	"",	 ":o0:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_MIND_TOWER, 		"Mind Tower",		50, 	150, 	{10,	100, 	0, 	0, 	0, 	0, 	 0, 	 0 	}, 95, 	"",	 ":<{:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_TORMENTOR,	"Psychic Tormentor",	500, 	800, 	{1500,	900, 	0, 	500, 	0, 	0, 	 0, 	 0 	}, 95, 	"",	 "[0o]", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_SHIELD,		"Psychic Shield",	100, 	200, 	{350,	100, 	0, 	0, 	0, 	0, 	 0, 	 0 	}, 95, 	"",	 "{0o}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_COOLER,			"Cooler",		50, 	200, 	{120,	75, 	5, 	10, 	0, 	0, 	 10, 	 0 	}, 95, 	"",	 "{--}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PARADROP,			"Paradrop",		300, 	100, 	{100,	0, 	0, 	5, 	0, 	0, 	 20, 	 0 	}, 29, 	"This strip of airfield is where paradrop planes take off, allowing the owner to parachute to a location of choice. The whirring of plane engines can be heard in the background. Use the paradrop command to take off.",	 "{(=}", {1,2,7,8,8}, TRUE, 0 },
+   { BUILDING_PROGRAMMER_SHACK,		"Programmer Shack",	100, 	250, 	{100,	10, 	0, 	10, 	0, 	0, 	 0, 	 0 	}, 60, 	"Sleep-deprived hackers sit in front of computer monitors, typing away, writing various hacking programs. The programs they write are then copied to a disk for use by other hackers. Here you will find virus disks, password cracking disks, spoofing disks, scanning disks, as well as format disks.",	 "{PS}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_GATHERER,			"Gatherer",		50, 	300, 	{50,	0, 	0, 	0, 	0, 	0, 	 30, 	 50 	}, 23, 	"A monolithic and sturdy crane arches high into the air here, reaching out to gather and expedite resources from the land and structures in the shadow of it's mighty arm.  A narrow door leads into the 'pit', from where the arm is controlled by a single operator from a series of four panels.  Several laborers wait upon the floor to unload cargo as the arm retrieves it.",	 "{GR}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_RADAR,		"Psychic Radar",	50, 	500, 	{30,	10, 	10, 	10, 	10, 	0, 	 0, 	 0 	}, 95, 	"",	 "{PR}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_DUMMY,			"Dummy",		10, 	10, 	{50,	50, 	10, 	10, 	10, 	10, 	 10, 	 10 	}, 2, 	"A shallow framework of 2x2 planks rises up to hold the thin composite siding against the walls of this false structure.  Beneath the paper-thin cellophane shingles, only a sheet of blue plastic covers where the roof sheeting should go.  The entire structure sways slightly in the breeze, though thankfully, not much, as the thin walls are fitted with impact-detonation sensors, which are wired to about five tons of plastic and powder explosives, sitting in crates and kegs, upon the center of the slab floor.",	 ":VV:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PARTICLE_EMITTER,		"Particle Emitter",	60, 	50, 	{50,	0, 	0, 	10, 	0, 	0, 	 0, 	 0 	}, 16, 	"",	 ":PE:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SONIC_BLASTER,		"Sonic Blaster",	100, 	100, 	{150,	0, 	10, 	10, 	10, 	0, 	 0, 	 0 	}, 88, 	"This manually-operated weapon creates a sonic pulse so powerful that all enemies within a 7 room radius are damaged. The interior of the building is reinforced with special sound-proofing materials to protect the user. Type blast to activate.",	 ":SB:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_EMP_RESEARCH,		"EMP Research",		200, 	50, 	{100,	0, 	20, 	20, 	20, 	10, 	 0, 	 0 	}, 88, 	"This building houses numerous engineers who constantly design and construct weapons designed for the specific purpose of destroying shields. Electro-Magnetic Pulse technology is used in all of the weapons produced here.",	 "{EM}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_EARTHQUAKER, 		"Earthquaker", 		80, 	0, 	{50,	0, 	0, 	0, 	0, 	40, 	 0, 	10 	}, 76, 	"",	":><:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_EYES, 		"Psychic Eyes",		100, 	50, 	{150,	25, 	0, 	0, 	30, 	0, 	 0, 	 0 	}, 95, 	"",	 "{00}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PSYCHIC_AMPLIFIER, 	"Psychic Amplifier",	30, 	70, 	{300,	100, 	0, 	20, 	0, 	0, 	 0, 	 0 	}, 95, 	"",	 "{,'}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SPACE_CENTER, 		"Space Center",		500, 	200, 	{200,	0, 	100, 	100, 	100, 	0, 	 0, 	100 	}, 35, 	"The building is shaped as a huge dome - There are workers carting stuff around the laboratories, researchers thinking up new equipment for ships and technichans building them. A large storage area is located on the west section of the structure. Many windows surround the dome, allowing light to shine at the middle, where the main construction area is. Here you can @@eresearch@@N technologies for your spaceship after depositing gold, then @@econstruct@@N some and @@elift@@N into space.", 		 "{SP}", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_TELEPORTER, 		"Teleporter",		20, 	300, 	{350,	0, 	150, 	0, 	0, 	0, 	 0, 	100 	}, 112, 	"", 		 "<-->", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_DEATHRAY, 		"Death Ray", 		1000, 	500, 	{4000,	0, 	2000, 	1000, 	1000, 	0, 	0,	200	}, 112,	"",	 "!DR!", {5,16,5,5,5}, TRUE, 0 },
+   { BUILDING_MISSILE_DEFENSE, 		"Missile Defense", 	1000, 	500, 	{2000,	0, 	1000, 	500, 	700, 	0, 	0,	 0	}, 76,	"",	 "!MD!", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_FLASH_TOWER, 		"Flash Tower", 		50, 	200, 	{100,	0, 	0, 	30, 	0, 	0, 	0,	 0	}, 76,	"",	 ":FT:", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_MUD_FILTER, 		"Mud Filter", 		50, 	0, 	{100,	0, 	0, 	0, 	0, 	20, 	0, 	0 	}, 5, 	"", 		"{MF}", {3,3,3,3,3}, TRUE, 0 },
+   { BUILDING_MUD_SLIDE, 		"Mud Slide", 		90, 	10, 	{40,	0, 	0, 	0, 	0, 	40, 	35, 	0 	}, 4, 	"",	 ":~\\:", {3,3,3,3,3}, TRUE, 0 },
+   { BUILDING_ENGINEER_HOME, 		"Engineer Home",	500, 	0, 	{1000,	0, 	200, 	0, 	200, 	0, 	0, 	0 	}, 35, 	"", 		 "|EH|", {1,2,7,8,9}, TRUE, 0 }, 
+   { BUILDING_WEATHER_MACHINE, 		"Weather Machine", 	300, 	100, 	{350,	0, 	0, 	200, 	300, 	0, 	0, 	0 	}, 2, 	"",	 ":\\/:", {13,13,13,13,13}, TRUE, 0 },
+   { BUILDING_BLACKOUT, 		"Blackout", 		50, 	300, 	{1050,	0, 	200, 	200, 	200, 	0, 	0, 	 0 	}, 16, 	"",	 "{BO}", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_PORTAL, 			"Portal", 		75, 	1000, 	{0,	0, 	0, 	0, 	0, 	0, 	0,	0	}, 0,	"" ,	 "~XY~", {0,0,0,0,0}, TRUE, 0 },
+   { BUILDING_SHOCKWAVE, 		"Shockwave",		100, 	100, 	{500,	0, 	0, 	100, 	0, 	0, 	0, 	 300 	}, 90, 	"",	 "!SW!", {1,2,7,8,9}, TRUE, 0 },
+   { BUILDING_SPELGURITE_NOVASHIELD, 	"Spelgurite NovaShield",1000, 	1000, 	{30000,	0, 	10000, 	10000, 	10000, 	0, 	 0, 	 30000 	}, 1, 	"",	 "!SN!", {1,2,7,8,9}, TRUE, 9999 },
+   { BUILDING_CYLIS_BOOMER,		"Cylis Boomer", 	10, 	0, 	{30000,	30000, 	30000, 	30000, 	0, 	0, 	30000, 	 30000 	}, 1, 	"",	 "!CB!", {1,2,7,8,9}, TRUE, 400 },
+}; 
+
+const struct build_help_type		build_help_table[MAX_BUILDING]	=
+{
+   { "" },
+   { "Main building - allows the construction of all other buildings. If you do not have a headquarters, you cannot build anything else." },
+   { "Armory generates weapons. It is also needed for many of the other buildings." },
+   { "Small turrets protect your base, firing at anyone who comes near in a 3X3 room radius (In all directions)." },
+   { "Quarries generate rocks which can be used for building." },
+   { "Mines produce the resources Iron, Copper, Silver and Gold.\n\r\n\rA L3 Mine can be set to produce what you want it to using the @@eMine@@N command (@@eMine iron@@N, @@eMine gold@@N, etc)." },
+   { "Storage facilities generate ammunition for your weapons." },
+   { "Lumberyards generate trees and sticks, which can be used for building." },
+   { "Tanneries generate skins, which can be used for building." },
+   { "Turrets protect your base, firing at anyone who comes near in a 5X5 radius (In all directions)." },
+   { "Large turrets defend your base, firing at anyone in an 4 room radius." },
+   { "Watchtowers are basic defense towers with a 5-room range, but can be upgraded into laser towers with a Tech Lab." },
+   { "The War Cannon is an offensive siege weapon that can fire at any given coordinates within a 10-room range by using the @@eblast@@N command." },
+   { "Advances your technology tree towards offensive and powerful weaponry." },
+   { "Advances your technology tree towards biological and chemical weapons and utilities." },
+   { "Chemical Factories generate acid sprayers - Fast-firing anti-infantry weapons, and at higher levels, a corrosive vehicle addon." },
+   { "Advances your technology tree towards technologically-advanced defenses." },
+   { "Researches teleportation technology - You can @@ewarp@@N from inside the building to a nearby random location, or wait for a @@cwarpsuit@@N to pop." },
+   { "Generates explosives - Grenades and Flash Grenades." },
+   { "Generates med. packs which you can use to @@eheal@@N yourself." },
+   { "The Garage generates land vehicles - Just get the right parts, and the vehicle will be @@econstruct@@Ned on your command." },
+   { "The Radar @@escan@@Ns for nearby players. The range depends on the building's level." },
+   { "Jammers block nearby building's signals, rendering them invisible on the map most of the time. Low level jammers have a very low range." },
+   { "Warehouses are used to store resources - Resources save ONLY when in a warehouse!" },
+   { "The Bot Factory generates repair drones which can be used to repair your damaged buildings by placing them inside." },
+   { "You can @@echunk@@N resources together inside the forge." },
+   { "@@yBio Lab Superweapon - @@NFires a missile at a given set of coordinates by using the @@eblast@@N command. The SCUD has a good chance of missing the target by 1-2 rooms." },
+   { "Armorers generate armor pieces which can protect you against various damage types." },
+   { "@@yTech Lab Superweapon - @@NFires a nuclear missile at the coordinates with the @@eblast@@N command. The missile itself doesn't do any damage, but leaves a trail of nuclear fallout in all the buildings in a 5-room radius from the blast zone, so anyone inside will be hurt until they get out." },
+   { "The Airfield generates air vehicles - Just get the right parts, and the aircraft will be @@econstruct@@Ned on your command." },
+   { "Warp Towers are defense structures that teleport nearby enemies around. High level towers can teleport intruders very far away." },
+   { "Rock Towers bombard intruders with rocks, and cause lesser damage. When a player catches a rock, it remains in his/her inventory, until the player isn't able to move anymore from the weight. It has a 6-room range." },
+   { "Fire Turrets are advanced upgrades of the Small Turret - They are the most basic guard tower that can penetrate a vehicle's armor and damage the driver, and also unlock the Flamespitters. Unfortunately, they still have the 3x3 range." },
+   { "Generates Cookie Launchers (explosive weapon) and Cookie Boxes (ammo)." },
+   { "Acid Turrets are chemical upgrades of the Small Turret - They do more damage to infantry, but still retain the 3-room range." },
+   { "Government Buildings allow the construction of the civilian buildings. Civilian buildings can't be upgraded." },
+   { "The bar is the 'player locator' - Put enough gold inside, and the barkeep will try and spot a target for you and give you the location. There is a good chance you'll lose your money and get nothing, though." },
+   { "The Bank allows you to view your, or other players' economic statistics." },
+   { "The Club is the hiding spot - As long as you're inside the club, you are completely invisible." },
+   { "Flamespitters are considered the strongest defense structures available. They do massive flame damage (vehicle armor-piercing) and have a good 7-room range. Note that you can NOT build a flamespitter if you have a mining lab." },
+   { "Laser Towers are a Watchtower upgrade - The Laser Tower fires lasers, which have increased accuracy against aircrafts, and cancels their 50% evasion chance." },
+   { "The Laser Workshop allows the constuction of laser-based buildings (The Solar Facility) and generates the Laser Tower upgrade and the Laser Scanners vehicle addon at higher levels." },
+   { "Solar Facilities generates laser weapons - Laser guns at L1 and machineguns at L3." },
+   { "Implant Research facilities generate implants, which players can install into their bodies to gain bonuses such as higher maximum health, or better carrying capacity." },
+   { "@@ySUPERWEAPON Upgrade - @@NThe Atom Bomber is the expensive upgrade of either the Nuke or SCUD launcher - It combines the effects of both in one strong missile." },
+   { "The Hunting Lodge is your 'play room', you can store PK flags in there, or play @@edarts@@N." },
+   { "@@yBio Lab Superweapon - @@NAttempts to infect the entire world with the deadly SARS virus! Infected people lose all their health over time, and have a 16% chance of dying after a few minutes.\n\rUsage Command: Doom" },
+   { "Advances your technology tree towards easy gain of resources and quest points. Note that mining labs cannot build flamespitters!" },
+   { "Mines produce the resources Iron, Copper, Silver and Gold.\n\r\n\rA L3 Mine can be set to produce what you want it to using the @@eMine@@N command (@@eMine iron@@N, @@eMine gold@@N, etc).\n\rImproved mines generate chunks of items instead of small ones." },
+   { "Place an item (weapon or armor) in a refinery, and you will be rewarded with resources for it." },
+   { "You can @@esell@@N items in the marketplace for quest points." },
+   { "Magnet Towers are defensive structures that steal items from an intruder's inventory and place them inside for anyone to take." },
+   { "Shield generators use their own shield power to restore nearby buildings' shields. Their range equals their level X 2.\n\rShield generators are not able to power up buildings currently infected with nuclear fallout!" },
+   { "Traffic Jammers are defense towers that can suck the fuel out of enemy vehicles in a 5-room range." },
+   { "When you die, if you have a cloning facility you will be transported to it. Also, some of your equipment and inventory will return there, according to its level." },
+   { "Processing plants are required to @@emix@@N chemical forumlas. They also generate containers.\n\rSee: help chemistry." },
+   { "Water Pumps are water-based defense buildings with a 5-room range." },
+   { "Hydro pumps are the water pump upgrade. They have a lower hit chance, but can stun an opponent." },
+   { "You can @@etunnel@@N to the underground (or out) if you are inside a tunnel. Tunnels are only useful on EARTH." },
+   { "Surface Jolters are surface-to-underground defense towers with a 5-room range." },
+   { "Advances your technology tree towards computers - Generating computers, hacking facilities, etc." },
+   { "The Battery recharges a computer's battery when it is places inside." },
+   { "Chip Factories generate laptop computers." },
+   { "Web Research facilities generate antivirus and firewall software, used to protect against hackers." },
+   { "The Transmission Tower is an anti-building defense structure that infects any enemy nearby buildings with a virus." },
+   { "The Online Market is used to @@etrade@@N resources for other ones. You only get a third of the original amount, though." },
+   { "The Boom is a suicide building for the weapons lab - Go inside, type @@eboom@@N, and watch it take out anyone and anything (including enemy buildings) in a (level + 2)-room radius." },
+   { "Hackers Hideouts are where hackers can come and @@etrace@@N victims infected with trojan horses." },
+   { "While in a sniper nest, all your firing skills have increased range (by 5)." },
+   { "A Trap is a defensive structure that strikes at any enemy who uses @@eqpspend@@N to teleport into your base in a 3-room radius." },
+   { "@@yComputer Lab Superweapon - @@NAttempts to infect all computers with a trojan horse.\n\rUsage Command: Doom" },
+   { "Greenhouses work like Lumberyards to generate logs and sticks in places where you usually couldn't." },
+   { "Mines produce the resources Iron, Copper, Silver and Gold.\n\r\n\rA L3 Mine can be set to produce what you want it to using the @@eMine@@N command (@@eMine iron@@N, @@eMine gold@@N, etc)." },
+   { "Mines produce the resources Iron, Copper, Silver and Gold.\n\r\n\rA L3 Mine can be set to produce what you want it to using the @@eMine@@N command (@@eMine iron@@N, @@eMine gold@@N, etc)." },
+   { "Tracer Turrets fire for almost no damage, but have a 10-room range. They're good to set the combat lag on someone while they are still far away from your base." },
+   { "Snow Diggers are snow defense structures that can drop any nearby (in a 5-room radius) player (inside a vehicle as well) to the underground." },
+   { "Advances your technology tree towards special and almost unbeatable defenses, but really lacking in offensive." },
+   { "A defense structure that stuns nearby enemies (With a range of 6 rooms)." },
+   { "A defense structure that damages and poisons nearby enemies. It has a 6-room radius." },
+   { "@@aNeutral Building - @@NProduces gold and delivers it to your HQ." },
+   { "@@aNeutral Building - @@NRemoves trojan horses from laptops and attaches an antenna." },
+   { "Lava Throwers are volcanic guard structures, firing for flame damage (tank piercing) at a 6-room radius." },
+   { "@@aNeutral Building - @@NAllows you to send a message to the entire MUD once every half hour using the Message command." },
+   { "Attaches the Encryption effect to you - you will be protected from personal computer attacks (backdoors)." },
+   { "Raises any armor item's level and efficiency!" },
+   { "@@aNeutral Building - @@NTransports you to another subway somewhere in the world." },
+   { "@@aNeutral Building - @@NCreates gold and delivers it to your HQ." },
+   { "@@aNeutral Building - @@NAs long as you have a city hall under your control, your main HQ is fully protected!" },
+   { "Advances your technology tree towards information gathering and spying." },
+   { "Allows the construction of spy buildings (Spy satellite and spy quarters)." },
+   { "@@yCommunications Lab Superweapon - @@NTurns all non-allied laptops in the world to bombs and blows them up!\n\rUsage Command: Doom" },
+   { "Allows you to send a @@espy@@N to gather info about the player.\n\rLevel 1: Shows defense rating.\n\rLevel 2: Gives player location.\n\rLevel 4: Plants small nuclear bombs, set to explode in 2 minutes, in all the HQs.\n\rLevel 5: Detailed information of the player's buildings." },
+   { "Allows you to get a @@espy@@N picture of a given set of coordinates." },
+   { "Creates multiple visions of 'you' to confuse any intruders." },
+   { "A rather weak defense tower, but hits for sound damage, which always hits to the head (1.5X damage)." },
+   { "Advances your technology tree towards the mysterious psychic abilities." },
+   { "A Psychic defense structure, firing for rather low damage, but psychic damage ignores all vehicle or regular armor, completely penetrating it!" },
+   { "Pushes any intruders around in random directions. High level ones can push an enemy up to 3 rooms at once!" },
+   { "@@yPsychic Lab Superweapon - @@NForces any given enemy, at any given range, to do one of the following: fire, arm bomb, or demolish!" },
+   { "For as long as you're inside, the psychic shield will protect you from Psychic Tormentor attacks, and even reflect the effect back to the sender!" },
+   { "Neutralizes the heat effects of any armor piece." },
+   { "Allows you to @@eparadrop@@N to any given coordinates. You will have to wait 40 seconds - 20 for getting there, and 20 for dropping to the ground (in which you are vulnerable to all attacks)." },
+   { "Produces software disks - Viruses, password cracking software, etc." },
+   { "The gatherer gathers resources from nearby buildings (4+level rooms). The higher the level, the more it can take.\n\r@@eThe gatherer also takes stuff from bars, warehouses, and enemy buildings. Be careful where you put it!@@N" },
+   { "The psychic radar will inform you of any possible enemies at a 30-room radius." },
+   { "The dummy looks like a regular building, but when it is blown, the attacker takes damage!\n\r\n\rSee: Help Mimic" },
+   { "The Particle Emitter attempts to disable nearby bombs in a 4-room radius." },
+   { "The Sonic Blaster is a manual defense tower that damages enemies in a 7-room radius, but uses shield power to activate." },
+   { "The EMP Research produces EMP weapons used to disable building shields." },
+   { "The Earthquaker scans for enemies in a 5-room radius and generates an earthquake, hurting all underground intruders, as well as moving them around." },
+   { "While inside the psychic eyes, you will be able to see hidden players (People who are still invis are probably imms). On the who list, those players will be marked with a * next to their name." },
+   { "This is like the smaller version of the psychic tormentor, allowing you to control people's action in a (level + 3) radius with no time limit. The commands you are able to @@emessage@@N are: demolish, east, west, south, north, fire, shoot, set, arm, drop, throw, target, swap, security and exit." },
+   { "The Space Center allows the research and construction of spaceships. Type @@eresearch@@N while inside to begin researching." },
+   { "Teleporters allow you to teleport from one structure to another (Both must be teleporters owned by you)." },
+   { "The Death Ray is an inter-planetary superweapon that can only fire when both planets are aligned.\n\r\n\rSee: Help Deathray" },
+   { "The Missile Defense System is a defensive superweapon, blocking SCUDs and warcannon shells from entering in a 5-room radius." },
+   { "Flash Towers blind enemies in a 5-room range." },
+   { "Filters the mud it's build on to find gold, and lots of it!" },
+   { "This defense structure damages and slows incoming enemies in a 3-room radius." },
+   { "The Engineer Home generates toolkits for engineers. However, it can only be upgraded by creating it with a high building proficiency!" },
+   { "The weather machine creates a snow-storm that damages, but doesn't kill, any enemy in a 7-room radius." },
+   { "This building automatically adds the Bar Invis affect to any friendly players in a 4-room radius." },
+   { "The Portal damages, then warps around (in a level X 2 radius) anyone who enters it... But that's not all, it also warps people who destroy it!\n\rHowever, one hit by an EMP weapon (gun, lance or stick, not emp bomb) will disable its dummy-properties." },
+   { "@@yComm. Lab Superweapon - @@NExposes and disables a targetted enemy's dummies! Use with the @@ySpy@@N command." },
+   { "@@ySpecial Superweapon - @@NProtects all your non-offensive buildings for X (based on level) minutes.\n\rTo create this building, you must find the 3 purified ores; the Crystal Drop, the Compressed Minerals (From granite), and the 3rd, still unknown to most people, one.\n\rUse the @@eProtect@@N command to use it.\n\r\n\rThis building was created for Spelguru, the first player to reach rank 1000." },
+   { "@@ySpecial Superweapon - @@NAfter a 30-minutes chargeing time, you can self-destruct this building using the @@eBOOM@@N command, causing damage equal to twice that of a normal boom with double the range of one for that level.\n\rThis building was made for Cylis, the second person to hit rank 1000 in... ever." }, };
+
+void building_update( void )
+{
+	int i,range,x,y,hpinc,z;
+	OBJ_DATA *obj = NULL;
+	OBJ_DATA *obj_next;
+	BUILDING_DATA *bld;
+	BUILDING_DATA *bld_next;
+	CHAR_DATA *bch = NULL;
+	CHAR_DATA *ch = NULL;
+	bool qb = FALSE;
+//	extern int building_count;
+	extern int active_building_count;
+	extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
+
+	if ( first_building == NULL )
+		return;
+
+//	building_count = 0;
+	active_building_count = 0;
+//	for ( bld = first_building;bld;bld = bld_next )
+	for ( bld = first_active_building;bld;bld = bld_next )
+	{
+		bld_next = bld->next_active;
+//		bld_next = bld->next;
+		qb = FALSE;
+//		building_count++;
+		active_building_count++;
+		if ( bld->z == Z_PAINTBALL )
+			continue;
+		if ( number_percent() < 25 )
+			bld->visible = TRUE;
+		if ( bld->protection > 0 )
+			bld->protection--;
+		if ( bld->timer > 0 )
+		{
+			bld->timer--;
+			if ( bld->timer == 0 )
+			{
+				if ( is_evil(bld) )
+				{
+					extract_building(bld,TRUE);
+					continue;
+				}
+				activate_building(bld,FALSE);
+			}
+			continue;
+		}
+		if ( !bld->active )
+			continue;
+		if ( bld->x < 0 && bld->y < 0 )
+			map_table2[bld->x* -1].resource[bld->y * -1][bld->z] = -1;
+		else
+			map_table2[bld->x].resource[bld->y][bld->z] = -1;
+		if ( bld->value[4] > 0 )
+			bld->value[4]--;
+		if ( bld->value[9] > 0 )
+			bld->value[9]--;
+		if ( is_evil(bld) || bld->type == BUILDING_SUBWAY )
+			qb = TRUE;
+		z = bld->z;
+		if ( !qb )
+		{
+			if ( bld->owner )
+			{
+				bch = bld->owner;
+			}
+			else
+			{
+				bch = get_ch(bld->owned);
+				bld->owner = bch;
+			}
+			ch = bch;
+			if ( bch == NULL )
+			{
+				if ( !is_neutral(bld->type) )
+					activate_building(bld,FALSE);
+				continue;
+			}
+			if ( bch->in_building == bld && bch->c_sn == gsn_research )
+				continue;
+
+			if ( complete(bld) )
+			{
+				if ( bld->shield < bld->maxshield )
+					bld->shield+=bld->level;
+				if ( bld->hp < bld->maxhp / 2 && IS_SET(bld->value[1],INST_ORGANIC_CORE))
+				{
+					if ( number_percent() < 20 )
+						bld->hp++;
+				}
+			}
+	
+			if ( bld->x < 0 && !practicing(bch) )
+				bld->x *= -1;
+			else if ( bld->x < 0 && practicing(bch) )
+				continue;
+	
+			if ( bld->y < 0 && !practicing(bch) )
+				bld->y *= -1;
+			else if ( bld->y < 0 && practicing(bch) )
+				continue;
+
+			if ( bld->value[9] > 0 )
+			{
+				if ( has_ability(ch,2) ) //Nuclear containment
+				{
+					bld->value[9] -= number_range(1,3);
+					if ( bld->value[9] < 0 )
+					bld->value[9] = 0;
+				}
+			}
+			if ( bld->value[3] > 0 && ( !IS_SET(bld->value[1],INST_FIREWALL) || number_percent() < 55 ) )
+			{
+				bld->value[3]--;
+				if ( bld->value[3] == 0 )
+				{
+					bld->value[3] = -1;
+					send_to_char( "@@yOne of your buildings has been taken over by a virus!@@N\n\rDon't know what to do? See: Help Virus\n\r", bch );
+				}
+				if ( is_neutral(bld->type) )
+					bld->value[3] = 0;
+			}
+			if ( bld->value[3] < 0 )
+			{
+				if ( IS_SET(bld->value[1],INST_ANTIVIRUS) && number_percent() < 30 )
+				{
+					bld->value[3] = 0;
+					bld->value[4] = 12;
+					if ( number_percent() < 33 )
+						REMOVE_BIT(bld->value[1],INST_ANTIVIRUS);
+				}
+				else if ( number_percent() < 30 )
+				{
+					BUILDING_DATA *bld2;
+					bool got = FALSE;
+					range = bld->level * 2;
+	
+					y = bld->y;
+					for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+					{
+						if ( INVALID_COORDS(x,y) )
+							continue;
+						bld2 = map_bld[x][y][z];
+						if ( bld2 == NULL )
+							continue;
+						if ( number_percent() < 10 - bld->value[3] && bld2->value[4] == 0 )
+						{
+							if ( bld2 && bld2->value[3] == 0 && !str_cmp(bld->owned,bld2->owned) )
+							{
+								bld2->value[3] = bld->value[3];
+								if ( bld->attacker )
+								{
+									if ( bld2->attacker != NULL && bld->attacker )
+										free_string(bld2->attacker);
+									bld2->attacker = str_dup(bld->attacker);
+								}
+								send_to_char( "@@eReports indicate the virus is spreading through your network!@@N\n\r", bch );
+								got = TRUE;
+								break;
+							}
+						}
+					}
+					x = bld->x;
+					if ( !got )
+					{
+						for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+						{
+							if ( INVALID_COORDS(x,y) )
+								continue;
+							bld2 = map_bld[x][y][z];
+							if ( bld2 == NULL )
+								continue;
+							if ( number_percent() < 10 - bld->value[3] && bld2->value[4] == 0 )
+							{
+								if ( bld2 && bld2->value[3] == 0 && !str_cmp(bld->owned,bld2->owned) )
+								{
+									bld2->value[3] = bld->value[3];
+									if ( bld->attacker )
+									{
+										if ( bld2->attacker != NULL )
+											free_string(bld2->attacker);
+										bld2->attacker = str_dup(bld->attacker);
+									}
+									send_to_char( "@@eReports indicate the virus is spreading through your network!@@N\n\r", bch );
+									got = TRUE;
+									break;
+								}
+							}
+						}
+					}
+					if ( bld->value[3] < -1 && str_cmp(bld->attacker,"none") )
+					{
+						ch = get_ch(bld->attacker);
+						if ( ch )
+							damage_building(ch,bld,bld->value[3]*-1);
+					}
+					continue;
+				}
+				else
+					continue;
+			}
+			if ( !complete(bld) )
+				continue;
+	
+	    		if ( IS_SET( bch->pcdata->pflags, PFLAG_AFK ) && number_percent() < 75 )
+				continue;
+	
+			if ( ( bch->security == FALSE || bld->protection > 0 ) && defense_building(bld) )
+				continue;
+		}
+		i = 0;
+		for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+		{
+			obj_next = obj->next_in_room;
+			if ( obj->z == bld->z && COUNTS_TOWARDS_OBJECT_LIMIT(obj) )
+				i++;
+			if ( obj->item_type == ITEM_MATERIAL && upgradable(bld) ) 
+			{
+				hpinc = 0;
+				if ( obj->value[0] == ITEM_IRON )
+					hpinc += obj->value[1] / 3;
+				else if ( obj->value[0] == ITEM_SKIN )
+					hpinc += obj->value[1] / 3;
+				else if ( obj->value[0] == ITEM_COPPER )
+					hpinc += obj->value[1] / 2;
+				else if ( obj->value[0] == ITEM_SILVER )
+					hpinc += obj->value[1] / 1.5;
+				else if ( obj->value[0] == ITEM_GOLD )
+					hpinc += obj->value[1];
+				else if ( obj->value[0] == ITEM_ROCK )
+					hpinc += obj->value[1] / 3;
+				else if ( obj->value[0] == ITEM_LOG )
+					hpinc += obj->value[1] / 2;
+				else if ( obj->value[0] == ITEM_STICK )
+					hpinc += obj->value[1] / 5;
+				else
+					hpinc += obj->value[1] * 1.5;
+				if ( bld->maxhp + hpinc <= build_table[bld->type].hp * 1.5 )
+				{
+					bld->maxhp += hpinc;
+					bld->hp += hpinc;
+					extract_obj(obj);
+				}
+			}
+		}
+		
+		obj = NULL;
+
+		if ( !complete(bld) )
+			continue;
+
+		switch( UPPER(bld->name[0]) )
+		{
+/**/		case 'A':
+		if ( bld->type == BUILDING_ARMOR_FACTORY )
+		{
+			for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+			{
+				if ( obj->z == bld->z && obj->item_type == ITEM_ARMOR && obj->level < 90 )
+				{
+					obj->level++;
+					break;
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_ARMORER )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 20 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+
+		}
+		else if ( bld->type == BUILDING_AIRFIELD )
+		{
+			int j;
+			if ( map_vhc[bld->x][bld->y][bld->z] )
+				map_vhc[bld->x][bld->y][bld->z]->timer = 0;
+			if ( i >= 20 )
+				continue;
+			i = number_range(0,9);
+			j = number_range(0,3)*10;
+			x = 900 + j + i;
+			if ( get_obj_index(x) == NULL )
+				continue;
+			if ( ( obj = create_object(get_obj_index(x),0) ) == NULL )
+				continue;
+			if ( obj->value[9] == 1 )
+				continue;
+			if ( number_percent() < obj->level - ( bld->level * 5 ) )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_ATOM_BOMBER )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Atom Bomber has produced a bomb!@@N\n\r", ch);
+				continue;
+			}
+			if ( bld->value[0] == 0 && number_percent() <= 5 )
+				send_to_char( "@@eA reminder-> One of your launchers has an atom bomb ready for use.@@N\n\r", ch );
+		}
+		else if ( bld->type == BUILDING_ACID_TURRET )
+		{
+			range = 3;
+			if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
+				range++;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A burst of acid fires from a turret!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the burst of acid!\n\r", ch );
+					damage( bch, ch, number_fuzzy(15*(bld->level*2)), DAMAGE_ACID );
+				}
+				else
+					send_to_char( "You manage to dodge the acid... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_ARMORY )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 20 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}
+
+		break;
+/**/		case 'B':
+		if ( bld->type == BUILDING_BOT_FACTORY )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= bld->level )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_BLACKOUT )
+		{
+			range = 4;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch != ch && ( bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance || practicing(ch) ) )
+					continue;
+				if ( !IS_SET(ch->effect,EFFECT_BARIN))
+				{
+					SET_BIT(ch->effect,EFFECT_BARIN);
+				}
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_BIO_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 4 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( number_percent() != 1 )
+					continue;
+				if ( number_percent() < 70 )
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_ACID_TURRET_U), 0 ) ) == NULL )
+						continue;
+				}
+				else
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_RESOURCE_PURE), 0 ) ) == NULL )
+						continue;
+				}
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_BAR )
+		{
+			CHAR_DATA *wch;
+			CHAR_DATA *tar = NULL;
+			int gold = 0;
+			char buf[MSL];
+
+			ch = bch;
+			if ( ch->in_building != bld || first_char->next == NULL )
+				continue;
+			for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+			{
+				obj_next = obj->next_in_room;
+				if ( obj->item_type != ITEM_MATERIAL || obj->x != bld->x || obj->y != bld->y || obj->z != bld->z || obj->carried_by != NULL || obj->value[0] != 3 )
+					continue;
+
+				gold += obj->value[1];
+				extract_obj(obj);
+			}
+			if ( gold == 0 )
+				continue;
+			for ( wch = first_char;wch;wch = wch->next )
+			{
+				if ( wch == ch || IS_IMMORTAL(wch) || !can_see(ch,wch) || IS_NEWBIE(wch) )
+					continue;
+				if ( wch->pcdata->alliance != -1 && wch->pcdata->alliance == ch->pcdata->alliance )
+					continue;
+				if ( wch->z == Z_PAINTBALL || wch->z == Z_UNDERGROUND || wch->z == Z_NEWBIE )
+					continue;
+				if ( wch->in_building && IS_SET(wch->in_building->value[1], INST_SAFEHOUSE) )
+					continue;
+				if ( tar == NULL || number_percent() < 30 )
+					tar = wch;
+			}
+			wch = tar;
+			if ( wch == NULL || wch == ch )
+			{
+				send_to_char( "The barkeep whispers to you, 'You -do- know it's illegal for me to give you the locations of other people, right? I could get arrested... And as for your gold, lets just call it a payment for not calling the cops.'\n\r", ch );
+				continue;
+			}
+			if ( ch->z == Z_NEWBIE )
+			{
+				send_to_char( "This is where you should get your coords from the barkeep... buuuut... Since you're on the newbie planet, it's just not fair, right?\n\r", ch );
+				continue;
+			}
+			if ( IS_SET(wch->effect,EFFECT_BARIN) || wch->fake )
+			{
+				REMOVE_BIT(wch->effect,EFFECT_BARIN);
+				send_to_char( "Your contact on the street tells you, 'I can't protect you from those bars anymore.', and runs away.\n\r", wch );
+				sprintf( buf, "The barkeep whispers to you, 'I just know I've had something in here about %s, but I think someone stole those papers!\n\r", wch->name );
+				send_to_char( buf, ch );
+				continue;
+			}
+			if ( gold < get_char_cost(wch) )
+			{
+				sprintf( buf, "The barkeep whispers to you, 'You know, I had some very interesting stuff about %s, but you seem to be cheap today... Oh, you want your gold back? What gold?'\n\r", wch->name );
+				send_to_char( buf, ch );
+				continue;
+			}
+			if ( wch->z == Z_SPACE )
+			{
+				sprintf( buf, "The barkeep whispers to you, 'Pssst, I got some info for ya. Word on the street is that %s is up there in space, over at the %s system.", wch->name, spsys[wch->space] );
+			}
+			else
+			{
+				sprintf( buf, "The barkeep whispers to you, 'Pssst, I got some info for ya. Word on the street is that %s is hanging %s on %s, near %d, %d. But you didn't hear it from me.'\n\r", wch->name, (wch->z == ch->z) ? "down here" : "over there", planet_table[wch->z].name, (wch->fake)?number_range(100,400):wch->x, (wch->fake)?number_range(100,400):wch->y );
+			}
+			send_to_char( buf, ch );
+			if ( gold / 10 > number_percent() && number_percent() < 25 )
+			{
+				send_to_char( "He adds, 'You know, I'd hate to see the same thing happen to you out there. Here, take this.', and slips you an item when nobody is watching.\n\r", ch );
+				obj = create_object(get_obj_index(OBJ_VNUM_SAFEHOUSE_INST),0);
+				obj_to_char(obj,ch);
+			}
+		}
+		break;
+/**/		case 'C':
+		if ( bld->type == BUILDING_COOLER )
+		{
+			for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+			{
+				if ( obj->z == bld->z && obj->heat > 0)
+				{
+					obj->heat = 0;
+					break;
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_CYLIS_BOOMER )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Cylis Boomer is charged!@@N\n\r", ch);
+			}
+		}
+		else if ( bld->type == BUILDING_CITY_HALL )
+		{
+			BUILDING_DATA *bld2;
+
+			bch = bld->owner;
+			if ( !bld->owner || str_cmp(bld->owner->name,bld->owned))
+				bch = get_ch(bld->owned);
+			if ( !bch )
+				continue;
+			if ( bld->value[0] < 1 || bld->value[0] >= MAX_MAPS || bld->value[1] < 1 || bld->value[1] >= MAX_MAPS || ( bld2 = get_building(bld->value[0],bld->value[1],bld->z) ) == NULL || bld2->type != BUILDING_HQ )
+			{
+				send_to_char( "You have lost control of one of your city halls!\n\r", bch );
+				free_string(bld->owned);
+				bld->owned = str_dup("Nobody");
+				bld->owner = NULL;
+				continue;
+			}
+			if ( bld2 )
+			{
+				if ( ( bld2->owner && bld2->owner != bch ) || str_cmp(bld2->owned,bch->name) )
+				{
+					send_to_char( "You have lost control of one of your city halls!\n\r", bch );
+					free_string(bld->owned);
+					bld->owned = str_dup("Nobody");
+					bld->owner = NULL;
+					continue;
+				}
+			}
+			if ( bld2 && bld2->protection <= 1 )
+				bld2->protection = 2;
+		}
+		else if ( bld->type == BUILDING_COMPUTER_STORE )
+		{
+			for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+			{
+				if ( obj->z == bld->z && obj->item_type == ITEM_COMPUTER )
+				{
+					if ( obj->value[3] != 0 )
+						obj->value[3] = 0;
+					if ( obj->value[2] != 1 )
+						obj->value[2] = 1;
+					break;
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_CELLULAR_COMPANY )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eOne of the cellular companies owned by you is ready to transmit.@@N\n\r", ch);
+			}
+		}		else if ( bld->type == BUILDING_COOKIE_FACTORY )
+		{
+			if ( i >= 20 )
+				continue;
+
+			if ( number_percent() < ( 10 - bld->level * 2) )
+				continue;
+			if ( number_percent() < 25 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_COOKIE_LAUNCH), 0 ) ) == NULL )
+					continue;
+				obj->value[0] = number_range(1,bld->level * 7);
+			}
+			else
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_COOKIE_AMMO), 0 ) ) == NULL )
+					continue;
+				obj->value[1] = number_range(1,bld->level * 7);
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_COMPUTER_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 5 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+			}
+		}
+		else if ( bld->type == BUILDING_COMM_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 3 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+			}
+			else if ( bld->level == 5 && number_percent() < 5 )
+			{
+				if ( ( obj = create_object( get_obj_index(32666), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+			}
+			else if ( number_percent() < 20 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_PROCESSOR_UP), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+			}
+		}
+		else if ( bld->type == BUILDING_CHIP_FACTORY )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( number_percent() < 75 )
+				continue;
+			if ( ( obj = create_object( get_obj_index(OBJ_VNUM_COMPUTER), 0 ) ) == NULL )
+				continue;
+
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			obj->value[0] = number_range(bld->level/2,bld->level*2);
+			if ( bld->level == 5 )
+				obj->value[2] = 1;
+			if ( IS_SET(bld->value[1],INST_PROCESSOR_UPGRADE) )
+				obj->value[4] = number_range((bld->level*5)/2,(bld->level*10)/2-10);
+		}
+		else if ( bld->type == BUILDING_CHEMICAL_FACTORY )
+		{
+			if ( i >= 20 )
+				continue;
+
+			if ( number_percent() < ( 10 - bld->level * 2) )
+				continue;
+			if ( bld->level >= 4 && number_percent() < 40 )
+			{
+				if ( ( obj = create_object( get_obj_index(32675), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				i = (number_percent()<50)?OBJ_VNUM_ACID_SPRAY:1121;
+				if ( ( obj = create_object( get_obj_index(i), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			if ( obj->item_type == ITEM_WEAPON )
+				obj->value[0] = obj->value[1];
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		break;
+/**/		case 'D':
+		if ( bld->type == BUILDING_DOOMSDAY_DEVICE )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour doomsday device is ready!@@N\n\r", ch);
+			}
+		}
+		else if ( bld->type == BUILDING_DEFENSE_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 4 )
+				continue;
+			if ( bld->level == 4 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(32671), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+			}
+			if ( !obj )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		break;
+/**/		case 'E':
+		if ( bld->type == BUILDING_EXPLOSIVES_SUPPLIER )
+		{
+
+			if ( i >= 20 )
+				continue;
+
+			if ( number_percent() < ( 10 - bld->level * 2) )
+				continue;
+			if ( number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_GRANADE), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FLASH_GRENADE), 0 ) ) == NULL )
+					continue;
+			}	
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			obj->value[2] += bld->level;
+		}
+		else if ( bld->type == BUILDING_ENGINEER_HOME )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( number_percent() < 75 )
+				continue;
+			if ( ( obj = create_object( get_obj_index(OBJ_VNUM_TOOLKIT), 0 ) ) == NULL )
+				continue;
+
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			obj->level = number_range(bld->level*4,bld->level*6);
+		}
+		else if ( bld->type == BUILDING_ENCRYPTION_POD )
+		{
+			if ( bch->in_building == bld && bch->x == bld->x && bch->y == bld->y && bch->z == bld->z )
+			{
+				if ( !IS_SET(ch->effect,EFFECT_ENCRYPTION) )
+				{
+					SET_BIT(ch->effect,EFFECT_ENCRYPTION);
+					send_to_char( "You are protected by an encryption barrier.\n\r", ch );
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_EARTHQUAKER )
+		{
+			int q;
+			range = 5;
+			if ( bld->z != Z_GROUND )
+				continue;
+
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				send_to_char( "Dirt and rocks fall over your head as the ground shakes!\n\r", ch );
+				q = number_range(0,3);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				damage(bch,ch,bld->level * 10,-1);
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_EMP_RESEARCH )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 20 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}
+		break;
+/**/		case 'F':
+		if ( bld->type == BUILDING_FIRE_TURRET )
+		{
+			range = 3;
+			if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
+				range++;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A burst of flames fires from a turret!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the burst of flame!\n\r", ch );
+					damage( bch, ch, number_fuzzy(20*(bld->level*2)), DAMAGE_FLAME );
+				}
+				else
+					send_to_char( "You manage to dodge the fire... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_FLASH_TOWER )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A Flash Tower begins flashing some bright red light at you!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level * 5) ) )
+				{
+					if ( !IS_SET(ch->effect,EFFECT_BLIND) )
+					{
+						send_to_char( "You suddenly can't see!\n\r", ch );
+						SET_BIT(ch->effect,EFFECT_BLIND);
+					}
+				}
+				else
+					send_to_char( "It didn't bother you much...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_FLAMESPITTER )
+		{
+			range = 7;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;				
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A burst of flames fires from the flamespitter!\n\r", ch );
+				if ( number_percent() < ( 65 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the burst of flame!\n\r", ch );
+					damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
+				}
+				else
+					send_to_char( "You manage to dodge the fire... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		break;
+/**/		case 'G':
+		if ( bld->type == BUILDING_GOVERNMENT_HALL && bch->pcdata->alliance != -1 )
+		{
+			i = 0;
+                        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                                if ( obj->x == bld->x && obj->y == bld->y && obj->z == bld->z && obj->item_type == ITEM_BOARD 
+)
+				{
+					i++;
+					break;
+				}
+			if ( i <= 0 )
+			{
+        	                obj = create_object( get_obj_index(OBJ_VNUM_ALLI_BOARD), 0 );
+				if ( obj )
+				{
+                        		obj->x = bld->x;
+	                        	obj->y = bld->y;
+					obj->z = bld->z;
+					obj->value[4] = bch->pcdata->alliance;
+					obj->value[3] = OBJ_VNUM_ALLI_BOARD + bch->pcdata->alliance;
+                	        	obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_GATHERER )
+		{
+			BUILDING_DATA *jam;
+			range = 4+bld->level;
+			int sx,ex,sy,ey;
+
+			if ( i >= bld->level * 20 )
+				continue;
+			sx = bld->x - range;
+			ex = bld->x + range + 1;
+			sy = bld->y - range;
+			ey = bld->y + range + 1;
+			if ( sx < BORDER_SIZE )
+				sx = BORDER_SIZE;
+			if ( sy < BORDER_SIZE )
+				sy = BORDER_SIZE;
+			if ( ex > MAX_MAPS - BORDER_SIZE )
+				ex = MAX_MAPS - BORDER_SIZE;
+			if ( ey > MAX_MAPS - BORDER_SIZE )
+				ey = MAX_MAPS - BORDER_SIZE;
+
+			for ( x = sx;x < ex;x++ )
+			for ( y = sy;y < ey;y++ )
+			{
+				if ( x <= 0 || y <= 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+					continue;
+				jam = map_bld[x][y][bld->z];
+				if ( jam == NULL || jam == bld || !jam->active )
+					continue;
+				for ( obj = map_obj[x][y];obj;obj = obj_next )
+				{
+					obj_next = obj->next_in_room;
+					if ( obj->item_type == ITEM_MATERIAL && obj->z == bld->z )
+						move_obj(obj,bld->x,bld->y,bld->z);
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_GREENHOUSE )
+		{
+			int type;
+			if ( i >= 20 || number_percent() < (60 - (bld->level*25) ) )
+				continue;
+
+			type = (number_percent() < 20 ) ? ITEM_STICK : ITEM_LOG;
+			if ( (bld->value[0] == ITEM_STICK || bld->value[0] == ITEM_LOG) && number_percent() < 50 )
+				type = bld->value[0];
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_GARAGE )
+		{
+			int j;
+			if ( map_vhc[bld->x][bld->y][bld->z] )
+				map_vhc[bld->x][bld->y][bld->z]->timer = 0;
+			if ( i >= 20 )
+				continue;
+			i = number_range(0,9);
+			j = number_range(0,3)*10;
+			x = 900 + j + i;
+			if ( get_obj_index(x) == NULL )
+				continue;
+			if ( ( obj = create_object(get_obj_index(x),0) ) == NULL )
+				continue;
+			if ( obj->value[9] == 2 )
+				continue;
+			if ( number_percent() < obj->level - (bld->level * 5) )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		break;
+/**/		case 'H':
+		if ( bld->type == BUILDING_HQ )
+		{
+			i = 0;
+                        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                                if ( obj->x == bld->x && obj->y == bld->y && obj->z == bld->z && obj->item_type == ITEM_BOARD )
+				{
+					i++;
+					break;
+				}
+			if ( i <= 0 )
+			{
+        	                obj = create_object( get_obj_index(OBJ_VNUM_MAIN_BOARD), 0 );
+                        	obj->x = bld->x;
+	                        obj->y = bld->y;
+				obj->z = bld->z;
+                	        obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			}
+		}
+		else if ( bld->type == BUILDING_HYDRO_PUMP )
+		{
+			range = 4;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A burst of water flies towards you!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the burst of water!\n\r", ch );
+//					WAIT_STATE(ch,bld->level * 8);
+					set_stun(ch,bld->level * 8);
+					send_to_char( "The stream drops you to the ground!\n\r", ch );
+					damage( bch, ch, number_fuzzy(30+(bld->level*2)), -1 );
+				}
+				else
+					send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_HACKPORT )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour hackport is ready!@@N\n\r", ch);
+			}
+		}
+
+		break;
+/**/		case 'I':
+		if ( bld->type == BUILDING_IMPROVED_MINE )
+		{
+			int type;
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+			type = (number_percent() < 15) ? 2 : (number_percent() < 15) ? 3 : (number_percent() < 15) ? 4 : 0;
+			if ( bld->value[0] != -1 && number_percent() < 50 )
+				type = bld->value[0];
+
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj->value[1] = 2;
+			obj->value[1] += number_range(0,bld->level*2);
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_IMPLANT_RESEARCH )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 1 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}
+		break;
+/**/		case 'J':
+		if ( bld->type == BUILDING_JAMMER )
+		{
+			BUILDING_DATA *jam;
+			range = bld->level * 2;
+			int sx,ex,sy,ey;
+
+			if ( number_percent() < 75 )
+				bld->visible = FALSE;
+
+			sx = bld->x - range;
+			ex = bld->x + range + 1;
+			sy = bld->y - range;
+			ey = bld->y + range + 1;
+			if ( sx < BORDER_SIZE )
+				sx = BORDER_SIZE;
+			if ( sy < BORDER_SIZE )
+				sy = BORDER_SIZE;
+			if ( ex > MAX_MAPS - BORDER_SIZE )
+				ex = MAX_MAPS - BORDER_SIZE;
+			if ( ey > MAX_MAPS - BORDER_SIZE )
+				ey = MAX_MAPS - BORDER_SIZE;
+
+			for ( x = sx;x < ex;x++ )
+			for ( y = sy;y < ey;y++ )
+			{
+				if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+					continue;
+				jam = map_bld[x][y][z];
+				if ( jam == NULL )
+					continue;
+				if ( str_cmp(jam->owned,bld->owned) || jam->x + (bld->level * 2) < bld->x || jam->y + (bld->level * 2) < bld->y || jam->x - (bld->level * 2) > bld->x || jam->y - (bld->level * 2) > bld->y )
+					continue;
+				if ( number_percent() < bld->level * 15 )
+					continue;
+				jam->visible = FALSE;
+			}
+		}
+		break;
+/**/		case 'K':
+		break;
+/**/		case 'L':
+		if ( bld->type == BUILDING_LAVA_THROWER )
+		{
+			range = 6;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,6) )
+					continue;
+				send_to_char( "A burst of burning lava fires from the lava thrower!\n\r", ch );
+				if ( number_percent() < ( 65 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the lava!\n\r", ch );
+					damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
+				}
+				else
+					send_to_char( "You manage to dodge the lava... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_LUMBERYARD )
+		{
+			int type;
+			if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+				continue;
+
+			type = (number_percent() < 30 ) ? ITEM_STICK : ITEM_LOG;
+			if ( (bld->value[0] == 7 || bld->value[0] == 6) && number_percent() < 50 )
+				type = bld->value[0];
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_LASER_WORKSHOP )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 3 )
+				continue;
+			else
+			{
+				if ( number_percent() > 2 )
+					continue;
+				if ( number_percent() < 50 && bld->level > 3 )
+				{
+					if ( ( obj = create_object( get_obj_index(32674), 0 ) ) == NULL )
+						continue;
+				}
+				else
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_LASER_TOWER_U), 0 ) ) == NULL )
+						continue;
+				}
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_LASER_TOWER )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				send_to_char( "A barrage of lasers starts flashing towards you!\n\r", ch );
+				if ( number_percent() < ( 50 + (bld->level * 2) ) )
+				{
+					int dam = number_fuzzy(60+bld->level*2);
+					send_to_char( "You are hit by the lasers!\n\r", ch );
+					if ( number_percent() < ( 50 + (bld->level * 2) ) )
+					{
+						dam += number_fuzzy(30+bld->level*2);
+						send_to_char( "You are hit by the lasers!\n\r", ch );
+					}
+					damage( bch, ch, dam, DAMAGE_LASER );
+			}
+				else
+					send_to_char( "You manage to dodge the lasers... for now...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_L_TURRET )
+		{
+			range = 4;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				if ( map_table2[ch->x].type[ch->y][1] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+					continue;
+				send_to_char( "A turret fires at you!\n\r", ch );
+				if ( number_percent() < ( 65 + (bld->level * 5) ) )
+				{
+					int dam = number_fuzzy(80);
+					send_to_char( "You are hit by the turret!\n\r", ch );
+					if ( number_percent() < ( 55 - (bld->level * 5) ) )
+					{
+						dam += number_fuzzy(60);
+						send_to_char( "You are hit by the turret!\n\r", ch );
+					}
+					damage( bch, ch, dam, DAMAGE_BLAST );
+				}
+				else
+					send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		break;
+/**/		case 'M':
+		if ( bld->type == BUILDING_MINING_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 4 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(32672), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( number_percent() != 1 )
+					continue;
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_MUD_SLIDE )
+		{
+			range = 3;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A heavy pile of muds hurls at you!\n\r", ch );
+				send_to_char( "You are hit by some strange poisoned bullet!\n\r", ch );
+				if ( !IS_SET(ch->effect,EFFECT_SLOW) )
+				{
+					SET_BIT(ch->effect,EFFECT_SLOW);
+					send_to_char("All the mud makes your movement heavier and slower!\n\r", ch );
+				}
+				damage(bch,ch,50,-1);
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_MUD_FILTER )
+		{
+			int type;
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+			type = 3;
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj->value[1] = bld->level;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_MIND_TOWER )
+		{
+			int q;
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				q = number_range(0,3);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				if ( number_percent() < bld->level * 15 )
+					move_char(ch,q);
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_MINE )
+		{
+			int type;
+
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+			if ( bld->value[0] < 0 || bld->value[0] > 10 )
+				bld->value[0] = 0;
+
+			type = (number_percent() < 15) ? 2 : (number_percent() < 15) ? 3 : (number_percent() < 25) ? 4 : 0;
+			if ( bld->value[0] != -1 && number_percent() < 50 )
+				type = bld->value[0];
+
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_MEDICAL_CENTER )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 5 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}		else if ( bld->type == BUILDING_MAGNET_TOWER )
+		{
+			range = 7;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,9) )
+					continue;
+				send_to_char( "A strange magnetic wave enfoulges you!\n\r", ch );
+				if ( number_percent() < ( 20 * (bld->level) ) )
+				{
+					OBJ_DATA *obj;
+
+					if ( ( obj = ch->first_carry ) == NULL )
+					{
+						send_to_char( "Your inventory is already empty.\n\r", ch );
+						break;
+					}
+					if ( !obj )
+						break;
+					set_fighting(bch,ch);
+					act( "You discover $p floating towards the magnet tower!", ch, obj, NULL, TO_CHAR );
+					act( "$n discovers $p floating towards the magnet tower!", ch, obj, NULL, TO_ROOM );
+					obj_from_char(obj);
+					obj->x = bld->x;
+					obj->y = bld->y;
+					obj->z = bld->z;
+					free_string(obj->owner);
+					obj->owner = str_dup(bld->owned);
+					obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
+				}
+				else
+					send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}			
+		}
+		break;
+/**/		case 'N':
+		if ( bld->type == BUILDING_NUKE_LAUNCHER )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Nuke Launcher has produced a Nuke!@@N\n\r", ch);
+				continue;
+			}
+			if ( bld->value[0] == 0 && number_percent() <= 5 )
+				send_to_char( "@@eA reminder-> One of your launchers has a Nuke ready for use.@@N\n\r", ch );
+		}
+		break;
+/**/		case 'O':
+		break;
+/**/		case 'P':
+		if ( bld->type == BUILDING_PROCESSING_PLANT )
+		{
+
+			if ( i >= 5 )
+				continue;
+
+			if ( number_percent() < ( 10 - bld->level * 2) )
+				continue;
+			if ( ( obj = create_object( get_obj_index(OBJ_VNUM_CONTAINER), 0 ) ) == NULL )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_PSYCHIC_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 5 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+			}
+			else
+			{
+				if ( bld->level >= 3 && number_percent() < 10 )
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_SUIT_JUMP), 0 ) ) == NULL )
+						continue;
+					obj->x = bld->x;
+					obj->y = bld->y;
+					obj->z = bld->z;
+					obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				}
+			}
+			
+		}
+		else if ( bld->type == BUILDING_PSYCHIC_SHIELD )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 4 || number_percent() != 1 )
+				continue;
+			if ( ( obj = create_object( get_obj_index(32670), 0 ) ) == NULL )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			
+		}
+		else if ( bld->type == BUILDING_PSYCHIC_TORMENTOR )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Psychic Tormentor is ready!@@N\n\r", ch);
+				continue;
+			}
+		}
+		else if ( bld->type == BUILDING_PROGRAMMER_SHACK )
+		{
+			char buf[MSL];
+			if ( i >= 5 )
+				continue;
+
+			if ( number_percent() < 50 )
+				continue;
+			if ( number_percent() < 20 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DISK_V), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( number_percent() < 25 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DISK_C), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( number_percent() < 33 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DISK_S), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DISK_P), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DISK_F), 0 ) ) == NULL )
+					continue;
+			}
+
+			obj->value[1] = number_range((bld->level-1)*10,bld->level * 10);
+			if ( obj->value[1] == 0 )
+				obj->value[1] = 1;
+			sprintf( buf, obj->short_descr, obj->value[1]/10,obj->value[1]%10 );
+			free_string(obj->short_descr);
+			obj->short_descr = str_dup(buf);
+			sprintf( buf, obj->description, obj->value[1]/10,obj->value[1]%10 );
+			free_string(obj->description);
+			obj->description = str_dup(buf);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_PSYCHOSTER )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "Waves of horrible images flow through your head!\n\r", ch );
+				damage( bch, ch, number_fuzzy(30+(bld->level*2)), DAMAGE_PSYCHIC );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_PSYCHIC_RADAR )
+		{
+			range = 30;
+			char buf[MSL];
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				sprintf( buf, "%s has been detected nearby at %d/%d!\n\r", ch->name, ch->x, ch->y );
+				send_to_char(buf,bch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_PARTICLE_EMITTER )
+		{
+			range = 4;
+			OBJ_DATA *obj2;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( x <= 1 || x >=498 || y <= 1 || y >= 498 )
+					continue;
+				if ( ( obj2 = map_obj[x][y] ) == NULL || !INVALID_COORDS(x,y) )
+					continue;
+				for ( ;obj2;obj2 = obj2->next_in_room )
+				{
+					if ( !obj2 )
+						continue;
+					if ( obj2->item_type != ITEM_BOMB || obj2->value[1] <= 0 )
+						continue;
+					obj2->value[1] = 0;
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_POISON_TURRET )
+		{
+			range = 6;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,6) )
+					continue;
+				send_to_char( "A turret fires at you!\n\r", ch );
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by some strange poisoned bullet!\n\r", ch );
+					damage( bch, ch, number_fuzzy(8*(bld->level*2)), DAMAGE_ACID );
+					if ( !IS_SET(ch->effect,EFFECT_SLOW) )
+					{
+						SET_BIT(ch->effect,EFFECT_SLOW);
+						send_to_char("You feel sluggish!\n\r", ch );
+					}
+				}
+				else
+					send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_PROJECTOR )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+					if ( !IS_SET(ch->effect,EFFECT_VISION) )
+						SET_BIT(ch->effect,EFFECT_VISION);
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_PSYCHIC_AMPLIFIER )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 5 )
+				continue;
+			if  ( lev < 4 )
+				continue;
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 4 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+		}
+
+		break;
+/**/		case 'Q':
+		if ( bld->type == BUILDING_QUARRY )
+		{
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+
+			obj = create_object( get_obj_index( OBJ_VNUM_MATERIAL ), 0 );
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj->value[0] = 5;
+			free_string( obj->name );
+			obj->name = str_dup("Resource Rock");
+			free_string( obj->short_descr );
+			free_string( obj->description );
+			obj->short_descr = str_dup("@@gA large @@drock@@N");
+			obj->description = str_dup("@@gA large @@drock@@N");
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		break;
+/**/		case 'R':
+		if ( bld->type == BUILDING_ROCK_TOWER )
+		{
+			range = 6;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,6) )
+					continue;
+				if ( number_percent() < ( 40 + (bld->level * 2) ) )
+				{
+					obj = create_object( get_obj_index( OBJ_VNUM_MATERIAL ), 0 );
+					obj->x = bld->x;
+					obj->y = bld->y;
+					obj->value[0] = 5;
+					obj->weight = 20 * bld->level;
+					free_string( obj->name );
+					obj->name = str_dup("Resource Rock");
+					free_string( obj->short_descr );
+					free_string( obj->description );
+					obj->short_descr = str_dup("@@gA giant, heavy @@drock@@N");
+					obj->description = str_dup("@@gA giant, heavy @@drock@@N");
+					obj_to_char(obj,ch);
+					act( "$p is thrown at you! You catch it!", ch, obj, NULL, TO_CHAR );
+					act( "$p is thrown at $n! $e catches it!", ch, obj, NULL, TO_ROOM );
+					damage(bch,ch,number_range(obj->weight/2,obj->weight),-1);
+				}
+				else
+					send_to_char( "Giant rocks roll around the room!", ch );
+			}
+			continue;
+		}
+		break;
+/**/		case 'S':
+		if ( bld->type == BUILDING_SPY_TRAINING )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 4 || number_percent() > 2 )
+				continue;
+			if ( ( obj = create_object( get_obj_index(32673), 0 ) ) == NULL )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			
+		}
+		else if ( bld->type == BUILDING_SPELGURITE_NOVASHIELD )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Spelgurite NovaShield is charged!@@N\n\r", ch);
+			}
+		}
+		else if ( bld->type == BUILDING_SUBWAY )
+		{
+			BUILDING_DATA *bld2;
+			BUILDING_DATA *bld2_next;
+			CHAR_DATA *ch_next;
+			extern CHAR_DATA *map_ch[MAX_MAPS][MAX_MAPS];
+
+			if ( bld->value[2] == 1 )
+			{
+				bld->value[2] = 0;
+				continue;
+			}
+			if ( map_ch[bld->x][bld->y] )
+			{
+				if ( ( bld2 = map_bld[bld->value[0]][bld->value[1]][z] ) == NULL || bld2->type != BUILDING_SUBWAY )
+				{
+					for ( bld2 = bld->prev;bld2;bld2 = bld2_next )
+					{
+						bld2_next = bld2->prev;
+						if ( bld2 == bld )
+						{
+							bld2 = NULL;
+							break;
+						}
+						if ( bld2_next == NULL )
+							bld2_next = last_building;
+						if ( bld2->type == BUILDING_SUBWAY )
+							break;
+					}
+				}
+				if ( bld2 && bld2->type == BUILDING_SUBWAY )
+				{
+					bld->value[0] = bld2->x;
+					bld->value[1] = bld2->y;
+					for ( ch = map_ch[bld->x][bld->y];ch;ch = ch_next )
+					{
+						ch_next = ch->next_in_room;
+						if ( ch->z != 1 )
+							continue;
+						send_to_char( "You take the subway!\n\r", ch );
+						move(ch,bld2->x,bld2->y,1);
+						act( "$n arrives at the station.", ch, NULL, NULL, TO_ROOM );
+					}
+					bld->value[2] = 1;
+				}
+			}
+		}
+		else if ( bld->type == BUILDING_SOLAR_FACILITY )
+		{
+			if ( i >= 20 )
+				continue;
+			if ( number_percent() < 50 )
+				continue;
+			if ( bld->level < 3 )
+			{
+				if ( ( obj = create_object( get_obj_index(1042), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( ( obj = create_object( get_obj_index(1043), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_SPACE_CENTER )
+		{
+			int gold = 0;
+			if ( map_vhc[bld->x][bld->y][bld->z] )
+				map_vhc[bld->x][bld->y][bld->z]->timer = 0;
+
+			for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+			{
+				obj_next = obj->next_in_room;
+				if ( obj->item_type != ITEM_MATERIAL || obj->x != bld->x || obj->y != bld->y || obj->z != bld->z || obj->carried_by != NULL || obj->value[0] != 3 )
+					continue;
+
+				gold += obj->value[1];
+				extract_obj(obj);
+			}
+			if ( gold > 0 )
+				bld->value[10] += gold;
+		}
+		else if ( bld->type == BUILDING_SHIELD_GENERATOR )
+		{
+			BUILDING_DATA *jam;
+			int s,sx,sy,ex,ey;
+
+			if ( bld->shield <= 0 )
+				continue;
+
+			range = bld->level * 2;
+			sx = bld->x - range;
+			ex = bld->x + range;
+			sy = bld->y - range;
+			ey = bld->y + range;
+			if ( sx < BORDER_SIZE )
+				sx = BORDER_SIZE;
+			if ( sy < BORDER_SIZE )
+				sy = BORDER_SIZE;
+			if ( ex > MAX_MAPS - BORDER_SIZE )
+				ex = MAX_MAPS - BORDER_SIZE;
+			if ( ey > MAX_MAPS - BORDER_SIZE )
+				ey = MAX_MAPS - BORDER_SIZE;
+
+			for ( x = sx;x <= ex;x++ )
+			for ( y = sy;y <= ey;y++ )
+			{
+				if ( x <= 2 || y <= 2 || y >= MAX_MAPS-2 || y >= MAX_MAPS-2 )
+					continue;
+				jam = map_bld[x][y][z];
+
+				if ( jam == NULL || !map_bld[x][y][z] )
+					continue;
+				if ( jam == bld )
+					continue;
+				if ( bch )
+				{
+					if ( jam->owner )
+					{
+						if ( jam->owner != bch )
+							continue;
+					}
+				}
+				else
+				{
+					if ( str_cmp(jam->owned,bld->owned) )
+						continue;
+				}
+				if ( jam->shield >= jam->maxshield )
+					continue;
+				if ( jam->value[9] > 0 )
+					continue;
+				s = bld->shield;
+				if ( jam->maxshield - jam->shield < s )
+					s = jam->maxshield - jam->shield;
+				bld->shield -= s;
+				jam->shield += s;
+			}
+		}
+		else if ( bld->type == BUILDING_SPY_SATELLITE || bld->type == BUILDING_SPY_QUARTERS || bld->type == BUILDING_SHOCKWAVE )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+				bld->value[0]--;
+		}
+		else if ( bld->type == BUILDING_SCUD_LAUNCHER )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour SCUD Launcher has produced a SCUD!@@N\n\r", ch);
+				continue;
+			}
+			if ( bld->value[0] == 0 && number_percent() <= 5 )
+				send_to_char( "@@eA reminder-> One of your launchers has a SCUD ready for use.@@N\n\r", ch );
+		}
+		else if ( bld->type == BUILDING_STUNGUN )
+		{
+			range = 6;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "A Stungun fires at you!\n\r", ch );
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are SHOCKED by the stungun!\n\r", ch );
+					set_stun(ch,8);
+//					WAIT_STATE(ch,8);
+				}
+				else
+					send_to_char( "You ignore the shock.\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_S_TURRET )
+		{
+			range = 3;
+			if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
+				range++;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				if ( map_table2[ch->x].type[ch->y][1] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+					continue;
+				send_to_char( "A turret fires at you!\n\r", ch );
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the turret!\n\r", ch );
+					damage( bch, ch, number_fuzzy(20+(bld->level*2)), DAMAGE_BULLETS );
+				}
+				else
+					send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_SURFACE_JOLTER )
+		{
+			range = 5;
+			if ( bld->z != Z_GROUND )
+				continue;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				send_to_char( "A wave of electricity flows through the tunnels!\n\r", ch );
+				send_to_char( "You are zapped!\n\r", ch );
+				damage( bch, ch, number_fuzzy(20+(bld->level*2)), DAMAGE_LASER );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_SNOW_DIGGER )
+		{
+			range = 5;
+			if ( bld->z != Z_GROUND )
+				continue;
+
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,1) ) == NULL )
+					if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+						continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				if ( ch->z == 1 )
+					send_to_char( "The ground begins to crack!\n\r", ch );
+				else if ( ch->z == 0 )
+					send_to_char( "The gound above you begins to crack!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || !AIR_VEHICLE(ch->in_vehicle->type)) && ch->z == 1 )
+				{
+					int x,y;
+					set_fighting(bch,ch);
+					act( "The ground breaks, and you fall downwards!", ch, NULL, NULL, TO_CHAR );
+					act( "The ground breaks, and $n falls downwards!", ch, NULL, NULL, TO_ROOM );
+					x = URANGE(5,number_range(ch->x-(bld->level*10),ch->x+(bld->level*10)),MAX_MAPS-5);
+					y = URANGE(5,number_range(ch->y-(bld->level*10),ch->y+(bld->level*10)),MAX_MAPS-5);
+					if ( x <= 4 )
+						x = 4;
+					if ( y <= 4 )
+						y = 4;
+					ch->z = 0;
+					move(ch,x,y,ch->z);
+					act( "$n falls from above!", ch, NULL, NULL, TO_ROOM );
+					do_look(ch,"");
+				}
+				else if ( ch->z == 0 && number_percent() < 55 + (bld->level*7) )
+				{
+					send_to_char( "The ground from above collapses over your head!\n\r", ch );
+					damage(bch,ch,bld->level * 20,-1);
+				}
+				else
+					send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}			
+		}
+		else if ( bld->type == BUILDING_STORAGE )
+		{
+			int vnum;
+			int lev = bld->level;
+			OBJ_INDEX_DATA *pObj;
+
+			if ( i >= 20 )
+				continue;
+			if ( bld->value[0] != 0 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(bld->value[0]), 0 ) ) == NULL )
+					continue;
+				
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				continue;
+			}
+
+			for ( i=1;;i++ )
+			{
+				vnum = load_list[lev][i].vnum;
+				if ( vnum == -1 || vnum == 0 )
+				{
+					if ( lev > 1 )
+					{
+						i=1;
+						lev--;
+					}
+					else
+						break;
+				}
+
+				if ( load_list[lev][i].building != bld->type || number_percent() < 40 )
+					continue;
+				if ( number_percent() < load_list[lev][i].rarity )
+					continue;
+				if ( ( pObj = get_obj_index(vnum) ) == NULL )
+					continue;
+				if ( pObj->value[7] != 0 && pObj->value[7] != map_table2[bld->x].type[bld->y][1] )
+					continue;
+				if ( ( obj = create_object( get_obj_index(vnum), 0 ) ) == NULL )
+					continue;
+				obj->x = bld->x;
+				obj->y = bld->y;
+				obj->z = bld->z;
+				obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+				free_string(obj->owner);
+				obj->owner = str_dup(bld->owned);
+				break;
+			}
+
+
+		}
+
+		break;
+/**/		case 'T':
+		if ( bld->type == BUILDING_TANNERY )
+		{
+			if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+				continue;
+
+			obj = create_material(ITEM_SKIN);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj->value[0] = 1;
+			obj->weight = 1;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		else if ( bld->type == BUILDING_TRANSMITTER )
+		{
+			if ( bch->timer > 5 )
+				continue;
+			if ( bld->value[0] > 0 )
+			{
+				bld->value[0]--;
+				if ( bld->value[0] == 0 )
+					send_to_char( "@@eYour Transmitter is ready!@@N\n\r", ch);
+				continue;
+			}
+		}
+		else if ( bld->type == BUILDING_TECH_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 3 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( bld->level > 3 && number_percent() < 60 )
+			{
+				if ( number_percent() != 1 )
+					continue;
+				if ( number_percent() < 70 )
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_REFLECTOR), 0 ) ) == NULL )
+						continue;
+				}
+				else
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_PULSE_NEUTRAL), 0 ) ) == NULL )
+						continue;
+				}
+			}
+			else
+			{
+				if ( number_percent() < 90 )
+					continue;
+				
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_STUN_GUN), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_TRANSMISSION_TOWER )
+		{
+			BUILDING_DATA *jam;
+			range = bld->level * 2;
+			int sx,ex,sy,ey;
+
+			sx = bld->x - range;
+			ex = bld->x + range + 1;
+			sy = bld->y - range;
+			ey = bld->y + range + 1;
+			if ( sx < BORDER_SIZE )
+				sx = BORDER_SIZE;
+			if ( sy < BORDER_SIZE )
+				sy = BORDER_SIZE;
+			if ( ex > MAX_MAPS - BORDER_SIZE )
+				ex = MAX_MAPS - BORDER_SIZE;
+			if ( ey > MAX_MAPS - BORDER_SIZE )
+				ey = MAX_MAPS - BORDER_SIZE;
+
+			for ( x = sx;x < ex;x++ )
+			for ( y = sy;y < ey;y++ )
+			{
+				if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+					continue;
+				jam = map_bld[x][y][z];
+				if ( jam == NULL )
+					continue;
+				if ( jam->value[3] != 0 || is_neutral(jam->type) )
+					continue;
+				if ( !str_cmp(jam->owned,bld->owned) || jam->x + (bld->level * 2) < bld->x || jam->y + (bld->level * 2) < bld->y || jam->x - (bld->level * 2) > bld->x || jam->y - (bld->level * 2) > bld->y )
+					continue;
+				if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == bch->pcdata->alliance )
+					continue;
+				if ( number_percent() < bld->level * 15 )
+					continue;
+				jam->value[3] = 300;
+				send_to_char( "@@yThere has been a security breach in one of your systems!@@N\n\r", ch );
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_TRAFFIC_JAMMER )
+		{
+			range = 7;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( !ch->in_vehicle || ch->in_vehicle == NULL || ch->in_vehicle->fuel <= 0 )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,7) )
+					continue;
+				send_to_char( "Your vehicle starts shaking!\n\r", ch );
+				if ( number_percent() < ( 20 * (bld->level) ) )
+				{
+					ch->in_vehicle->fuel -= number_range(1,bld->level * 40);
+					if ( ch->in_vehicle->fuel < 0 )
+						ch->in_vehicle->fuel = 0;
+					set_fighting(bch,ch);
+				}
+
+				send_warning(bch,bld,ch);
+				break;
+			}			
+		}
+		else if ( bld->type == BUILDING_TURRET )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				if ( map_table2[ch->x].type[ch->y][1] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+					continue;
+				send_to_char( "A turret fires at you!\n\r", ch );
+				if ( number_percent() < ( 65 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the turret!\n\r", ch );
+					damage( bch, ch, number_fuzzy(40+(bld->level*2)), DAMAGE_BULLETS );
+				}
+				else
+					send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_T_TURRET )
+		{
+			range = 8;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,8) )
+					continue;
+				send_to_char( "A turret fires at you!\n\r", ch );
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the turret!\n\r", ch );
+					damage( bch, ch, number_fuzzy(1+(bld->level*2)), DAMAGE_BULLETS );
+				}
+				else
+					send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+
+		break;
+/**/		case 'U':
+		if ( bld->type == BUILDING_UNDERGROUND_MINE )
+		{
+			int type;
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+
+			type = (number_percent() < 25) ? 2 : (number_percent() < 25) ? 0 : (number_percent() < 25) ? 4 : (number_percent() < 25) ? ITEM_ROCK : 3;
+			if (bld->value[0] != -1 && number_percent() < 50 )
+				type = bld->value[0];
+
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		break;
+/**/		case 'V':
+		if ( bld->type == BUILDING_VOLCANIC_MINE )
+		{
+			int type;
+			if ( !bch || bch->class != CLASS_MINER )
+			{
+				if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
+					continue;
+			}
+			else
+			{
+				if ( i >= 20 || number_percent() < (75 - (bld->level*25) ) )
+					continue;
+			}
+
+			type = (number_percent() < 25) ? 4 : (number_percent() < 25) ? 3 : (number_percent() < 35) ? 2 : 0;
+			if  ( bld->value[0] != -1 && number_percent() < 50 )
+				type = bld->value[0];
+
+			obj = create_material(type);
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			if ( bch->class == CLASS_MINER )
+				obj->value[1]+=number_range(0,1);
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+		}
+		break;
+/**/		case 'W':
+		if ( bld->type == BUILDING_WARP )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( number_percent() < ( 10 - bld->level * 2) )
+				continue;
+			if ( ( obj = create_object( get_obj_index(OBJ_VNUM_SUIT_WARP), 0 ) ) == NULL )
+				continue;
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+			obj->value[1] = number_range(1,bld->level * 7);
+		}
+		else if ( bld->type == BUILDING_WEATHER_MACHINE )
+		{
+			range = 7;
+
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				if ( ch->hit == 1 )
+					continue;
+				send_to_char( "A gust of wind blows at you, followed by a giant ice storm!\n\r", ch );
+				if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || AIR_VEHICLE(ch->in_vehicle->type)) )
+				{
+					int dam = 50 + (bld->level * 20);
+					if ( dam >= ch->hit )
+						dam = ch->hit - 1;
+					set_fighting(bch,ch);
+					send_to_char( "The blizzard strikes you!\n\r", ch );
+					damage(bch,ch,dam,DAMAGE_ENVIRO);
+				}
+				else
+					send_to_char( "You stormed through the blizzard unharmed...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}			
+		}
+		else if ( bld->type == BUILDING_WEB_RESEARCH )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( number_percent() < 50 )
+				continue;
+			if ( bld->level > 3 && number_percent() < 50 )
+			{
+				if ( ( obj = create_object( get_obj_index(990), 0 ) ) == NULL )
+					continue;
+			}
+			else
+			{
+				if ( ( obj = create_object( get_obj_index(991), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_WEAPONS_LAB )
+		{
+			if ( i >= 1 )
+				continue;
+
+			if ( bld->level < 3 )
+				continue;
+			if ( bld->level == 5 && number_percent() < 2 )
+			{
+				if ( ( obj = create_object( get_obj_index(OBJ_VNUM_FIRE_TURRET_U), 0 ) ) == NULL )
+					continue;
+			}
+			else if ( bld->level >= 4 && number_percent() < 50)
+			{
+				if ( number_percent() != 1 )
+					continue;
+				if ( number_percent() < 70 )
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_IDUP), 0 ) ) == NULL )
+						continue;
+				}
+				else
+				{
+					if ( ( obj = create_object( get_obj_index(OBJ_VNUM_DEPLEATED_URA), 0 ) ) == NULL )
+						continue;
+				}
+			}
+			else
+			{
+				if ( number_percent() <= 70 )
+					continue;
+				if ( ( obj = create_object( get_obj_index(988), 0 ) ) == NULL )
+					continue;
+			}
+			obj->x = bld->x;
+			obj->y = bld->y;
+			obj->z = bld->z;
+			obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
+			free_string(obj->owner);
+			obj->owner = str_dup(bld->owned);
+		}
+		else if ( bld->type == BUILDING_WATCHTOWER )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( is_evil(bld) )
+					bch = ch;
+				else
+				{
+					if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+						continue;
+				}
+				if ( !building_can_shoot(bld,ch,range) )
+					continue;
+				send_to_char( "Arrows start flying at you from the watchtower!\n\r", ch );
+				if ( number_percent() < ( 50 + (bld->level * 2) ) )
+				{
+					int dam = number_fuzzy(60+bld->level*2);
+					send_to_char( "You are hit by the arrows!\n\r", ch );
+					if ( number_percent() < ( 50 + (bld->level * 2) ) )
+					{
+						dam += number_fuzzy(30+bld->level*2);
+						send_to_char( "You are hit by the arrows!\n\r", ch );
+					}
+					damage( bch, ch, dam, -1 );
+				}
+				else
+					send_to_char( "You manage to dodge the arrows... for now...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_WAVE_GENERATOR )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				send_to_char( "A burst of supersonic waves hurt your ears!\n\r", ch );
+				damage( bch, ch, number_fuzzy(10*(bld->level*2)), DAMAGE_SOUND );
+
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		else if ( bld->type == BUILDING_WARP_TOWER )
+		{
+			range = 5;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,5) )
+					continue;
+				send_to_char( "A bright ray of light surrounds you!\n\r", ch );
+				if ( number_percent() < ( 20 * (bld->level) ) )
+				{
+					int x,y;
+					set_fighting(bch,ch);
+					act( "You feel yourself transported elsewhere!", ch, NULL, NULL, TO_CHAR );
+					act( "$n dissolves from the world!", ch, NULL, NULL, TO_ROOM );
+					x = URANGE(5,number_range(ch->x-(bld->level*10),ch->x+(bld->level*10)),MAX_MAPS-5);
+					y = URANGE(5,number_range(ch->y-(bld->level*10),ch->y+(bld->level*10)),MAX_MAPS-5);
+					if ( x <= 4 )
+						x = 4;
+					if ( y <= 4 )
+						y = 4;
+					if ( y >= 495 )
+						y = 495;
+					if ( x >= 495 )
+						x = 495;
+					move(ch,x,y,ch->z);
+					if ( ch->in_vehicle )
+					{
+						if ( number_percent() < 20 )
+						{
+							ch->in_vehicle->driving = NULL;
+							move_vehicle(ch->in_vehicle,number_fuzzy(ch->x),number_fuzzy(ch->y),ch->z);
+							ch->in_vehicle = NULL;
+							act( "You have been seperated from your vehicle!", ch, NULL, NULL, TO_CHAR );
+						}
+					}
+					act( "$n dissolves into the world!", ch, NULL, NULL, TO_ROOM );
+					do_look(ch,"");
+				}
+				else
+					send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
+
+				send_warning(bch,bld,ch);
+				break;
+			}			
+		}
+		else if ( bld->type == BUILDING_WATER_PUMP )
+		{
+			range = 4;
+			for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+			for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+			{
+				if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+					continue;
+				if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+					continue;
+				if ( !building_can_shoot(bld,ch,4) )
+					continue;
+				send_to_char( "A burst of water flies towards you!\n\r", ch );
+				if ( number_percent() < ( 75 + (bld->level * 5) ) )
+				{
+					send_to_char( "You are hit by the burst of water!\n\r", ch );
+					damage( bch, ch, number_fuzzy(40+(bld->level*2)), -1 );
+				}
+				else
+					send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
+				send_warning(bch,bld,ch);
+				break;
+			}
+		}
+		break;
+/**/		case 'X':
+		break;
+/**/		case 'Y':
+		break;
+/**/		case 'Z':
+		break;
+		}
+
+		if ( bld->type == BUILDING_GOLD_MINE || bld->type == BUILDING_SHOP )
+		{
+			BUILDING_DATA *bld2;
+			int s = 0;
+			
+			if ( number_percent() < 40 )
+				continue;
+
+			bch = bld->owner;
+			if ( !bld->owner || str_cmp(bld->owner->name,bld->owned))
+				bch = get_ch(bld->owned);
+			if ( !bch )
+				continue;
+			if ( bld->value[0] < 1 || bld->value[0] >= MAX_MAPS || bld->value[1] < 1 || bld->value[1] >= MAX_MAPS || ( bld2 = get_building(bld->value[0],bld->value[1],bld->z) ) == NULL || bld2->type != BUILDING_HQ )
+			{
+				if ( bld->type == BUILDING_GOLD_MINE )
+					send_to_char( "You have lost control of one of your gold mines!\n\r", bch );
+				else if ( bld->type == BUILDING_SHOP )
+					send_to_char( "You have lost control of one of your shops!\n\r", bch );
+				free_string(bld->owned);
+				bld->owned = str_dup("Nobody");
+				bld->owner = NULL;
+				continue;
+			}
+			if ( str_cmp(bld2->owned,bch->name) )
+			{
+				if ( bld->type == BUILDING_GOLD_MINE )
+					send_to_char( "You have lost control of one of your gold mines!\n\r", bch );
+				else if ( bld->type == BUILDING_SHOP )
+					send_to_char( "You have lost control of one of your shops!\n\r", bch );
+				free_string(bld->owned);
+				bld->owned = str_dup("Nobody");
+				bld->owner = NULL;
+				continue;
+			}
+			if ( ( bld->type == BUILDING_SHOP && number_percent() < 50 ) || number_percent() < 25 )
+				continue;
+			obj = NULL;
+			for ( obj = map_obj[bld2->x][bld2->y];obj;obj = obj->next_in_room )
+				if ( COUNTS_TOWARDS_OBJECT_LIMIT(obj) && obj->z == bld->z )
+				{
+					s++;
+					if ( obj->item_type == ITEM_MATERIAL && obj->value[0] == ITEM_GOLD )
+					{
+						obj->value[1] += 1;
+						break;
+					}
+				}
+			if ( s == 0 )
+			{
+				obj = create_material(ITEM_GOLD);
+				obj->x = bld2->x;
+				obj->y = bld2->y;
+				obj->z = bld2->z;
+				obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
+			}
+		}
+	}
+	return;
+}
+
+
+void do_construct( CHAR_DATA *ch, char *argument )
+{
+	BUILDING_DATA *bld;
+	VEHICLE_DATA *vhc;
+	OBJ_DATA *obj;
+	OBJ_DATA *obj_next;
+	int fuel,ammo,hit,speed,type,i,flags;
+	bool parts[4];
+	bool mech = FALSE;
+	i = 0;
+
+	bld = ch->in_building;
+	if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD ) || !complete(bld) )
+	{
+		if ( bld && bld->type == BUILDING_SPACE_CENTER )
+		{
+			construct_space_vessal(ch,argument);
+			return;
+		}
+		send_to_char( "You must be inside a garage or airfield to do that.\n\r", ch );
+		return;
+	}
+
+	for ( i =0;i<4;i++ )
+		parts[i] = FALSE;
+
+	hit = 0;
+	fuel = 0;
+	ammo = 0;
+	speed = 0;
+	flags = 0;
+	type = -1;
+	for ( obj = ch->first_carry;obj;obj = obj_next )
+	{
+		obj_next = obj->next_in_carry_list;
+		if ( obj->item_type != ITEM_PART )
+			continue;
+		if ( bld->type == BUILDING_AIRFIELD && (obj->value[0] == 0 || obj->value[9] == 1) )
+			continue;
+		if ( bld->type == BUILDING_GARAGE && obj->value[9] == 2 )
+			continue;
+		if ( parts[obj->value[0]] == FALSE || (obj->value[0] == 3 && ch->class == CLASS_MECHANIC) )
+		{
+			if ( obj->value[0] == 1 && obj->value[5] == 20 )
+			{
+				if ( parts[0] == TRUE )
+				continue;
+				mech = TRUE;
+				hit += obj->value[1];
+				speed += obj->value[2];
+				fuel += obj->value[3];
+				ammo += obj->value[4];
+				if ( type == -1 )
+					type = obj->value[5];
+				parts[1] = TRUE;
+				if ( obj->value[6] != 0 && !IS_SET(flags,get_bit_value(obj->value[6])))
+					SET_BIT(flags,get_bit_value(obj->value[6]));
+				extract_obj(obj);
+				continue;
+			}
+			if ( mech && obj->value[0] == 0 )
+				continue;
+			hit += obj->value[1];
+			speed += obj->value[2];
+			fuel += obj->value[3];
+			ammo += obj->value[4];
+			if (obj->value[0] == 2)
+				type = obj->value[5];
+			if ( obj->value[6] != 0 && !IS_SET(flags,get_bit_value(obj->value[6])))
+				SET_BIT(flags,get_bit_value(obj->value[6]));
+			parts[obj->value[0]] = TRUE;
+			extract_obj(obj);
+		}
+		
+	}
+	if ( hit <= 0 || fuel <= 0 || ammo <= 0 || speed <= 0 || type < -1 )
+	{
+		send_to_char("Production Failed.\n\r", ch );
+		return;
+	}
+	vhc = create_vehicle(VEHICLE_JEEP);
+	move_vehicle(vhc,bld->x,bld->y,bld->z);
+	if ( IS_SET(bld->value[1],INST_RESOURCE_PURIFIER) )
+	{
+		hit *= 1.1;
+		ammo *= 1.1;
+		fuel *= 1.1;
+	}
+	vhc->max_fuel = fuel;
+	vhc->fuel = fuel;
+	vhc->max_hit = hit;
+	vhc->hit = hit;
+	vhc->max_ammo = ammo;
+	vhc->ammo = ammo;
+	vhc->ammo_type = type;
+	vhc->speed = speed;
+	vhc->flags = flags;
+	vhc->in_building = bld;
+	if ( vhc->max_fuel >= 5000 )
+	{
+		vhc->fuel = 5000;
+		vhc->max_fuel = 5000;
+	}
+	if ( vhc->max_ammo >= 5000 )
+	{
+		vhc->ammo = 5000;
+		vhc->max_ammo = 5000;
+	}
+	if ( vhc->speed >= 10 )
+		vhc->speed = 10;
+
+	if ( bld->type == BUILDING_GARAGE )
+	{
+		if ( type == 0 )
+			vhc->type = VEHICLE_TRUCK;
+		else if ( type == 5 )
+			vhc->type = VEHICLE_TANK;
+		else if ( type == 7 )
+			vhc->type = VEHICLE_BBQ;
+		else if ( type == 17 )
+			vhc->type = VEHICLE_LASER;
+		if ( mech )
+			vhc->type = VEHICLE_MECH;
+
+		if ( vhc->type == VEHICLE_JEEP )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("Jeep Vehicle");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a mud-covered Jeep");
+		}
+		else if ( vhc->type == VEHICLE_TANK )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("Tank Vehicle");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a giant iron Tank");
+		}
+		else if ( vhc->type == VEHICLE_BBQ )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("BBQ Tank Vehicle");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a flamin' BBQ tank");
+		}
+		else if ( vhc->type == VEHICLE_TRUCK )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("Truck Vehicle");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a large, noisy truck");
+		}
+		else if ( vhc->type == VEHICLE_LASER )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("Laser Buggy Vehicle");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a laser buggy");
+		}
+		else if ( vhc->type == VEHICLE_MECH )
+		{
+			free_string( vhc->name );
+			vhc->name = str_dup("Giant Humanoid Mech");
+			free_string( vhc->desc );
+			vhc->desc = str_dup( "a giant humanoid Mech");
+		}
+	}
+	else
+	{
+
+			if ( type == -1 )
+				vhc->type = VEHICLE_CHINOOK;
+			else if ( type == 10 )
+				vhc->type = VEHICLE_B52;
+			else
+				vhc->type = VEHICLE_AIRCRAFT;
+
+			free_string( vhc->name );
+			free_string( vhc->desc );
+			if ( vhc->type == VEHICLE_AIRCRAFT )
+			{
+				vhc->name = str_dup("Raptor Vehicle");
+				vhc->desc = str_dup( "A Raptor");
+			}
+			else if ( vhc->type == VEHICLE_B52 )
+			{
+				vhc->name = str_dup("B52 Bomber Vehicle");
+				vhc->desc = str_dup( "A B52 Bomber");
+				vhc->type = VEHICLE_AIRCRAFT;
+				vhc->max_ammo = 2;
+				vhc->ammo = 2;
+			}
+			else if ( vhc->type == VEHICLE_CHINOOK )
+			{
+				vhc->name = str_dup("Chinook Helicopter Chopper Vehicle");
+				vhc->desc = str_dup( "A Chinook" );
+				vhc->max_ammo = 0;
+				vhc->ammo = 0;
+			}
+
+	}
+	send_to_char( "You produce the vehicle.\n\r", ch );
+	return;
+}
+
+bool upgradable ( BUILDING_DATA *bld )
+{
+	if ( is_neutral(bld->type) )
+		return FALSE;
+	if ( bld->type != BUILDING_BAR && bld->type != BUILDING_GATHERER && bld->type != BUILDING_WAREHOUSE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MINE && bld->type != BUILDING_IMPROVED_MINE && bld->type != BUILDING_VOLCANIC_MINE && bld->type != BUILDING_UNDERGROUND_MINE && bld->type != BUILDING_LUMBERYARD && bld->type != BUILDING_GREENHOUSE && bld->type != BUILDING_QUARRY && bld->type != BUILDING_TANNERY )
+		return TRUE;
+	return FALSE;
+}
+
+void do_mimic( CHAR_DATA *ch, char *argument )
+{
+	int i;
+	BUILDING_DATA *bld;
+	if ( ( bld = get_char_building(ch) ) == NULL )
+	{
+		send_to_char( "You must be inside a dummy building.\n\r", ch );
+		return;
+	}
+	if ( bld->type != BUILDING_DUMMY || str_cmp(bld->owned,ch->name) || !complete(bld) )
+	{
+		send_to_char( "You can't do that here.\n\r", ch );
+		return;
+	}
+	if ( argument[0] == '\0' )
+	{
+		send_to_char( "Please provide a building to mimic.\n\r", ch );
+		return;
+	}
+	for ( i = 1;i<MAX_BUILDING;i++ )
+	{
+		if ( !str_cmp(build_table[i].name,argument) )
+		{
+			bld->value[0] = i;
+			send_to_char( "Ok.", ch );
+			return;
+		}
+	}
+	send_to_char( "No such building.\n\r", ch );
+	return;
+}
+
+bool check_missile_defense(OBJ_DATA *obj)
+{
+	bool ex = FALSE;
+	int x,y;
+	BUILDING_DATA *bld;
+	CHAR_DATA *bch;
+
+	x = obj->x - 5;
+	y = obj->y - 5;
+	if ( x < 0 )
+		x = 0;
+	if ( y < 0 )
+		y = 0;
+	for ( x = x;x <= obj->x + 5;x++ )
+	{
+		for ( y = y;y <= obj->y + 5;y++ )
+		{
+			if ( INVALID_COORDS(x,y) )
+				continue;
+			if ( ( bld = map_bld[x][y][obj->z] ) == NULL || bld->type != BUILDING_MISSILE_DEFENSE || !complete(bld) )
+				continue;
+			bch = bld->owner;
+			if ( !bch )
+				if ( ( bch = get_ch(bld->owned) ) == NULL )
+					continue;
+			ex = TRUE;
+			send_to_char( "@@eYour missile defense system has intercepted a bomb!@@N\n\r", bch );
+			break;
+		}
+		if ( ex )
+			break;
+	}
+	return ex;
+}

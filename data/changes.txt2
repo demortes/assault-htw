@@ -1,0 +1,141 @@
+30
+'Changes' and 'logs' have been added.~
+Grave~
+Dec 26, 2007~
+1198702099
+
+Buildings no longer reep rewards when the owner is dead.~
+Bob~
+Dec 26, 2007~
+1198702200
+
+For all those unsighted individuals, bscan is fixed.~
+Bob~
+Dec 26, 2007~
+1198703515
+
+Airstrikes are gone until we come up with a more balanced replacement or modification.~
+Bob~
+Dec 26, 2007~
+1198703605
+
+Suicide bombers can no longer drop their explosives, however they will receive 100 damage regardless of the bomb's actual damage.~
+Bob~
+Dec 26, 2007~
+1198729110
+
+You can "steal" from your allies if they are below rank 2.~
+Bob~
+Dec 26, 2007~
+1198729503
+
+Type qpspend norton and see what happens; although it might be worth 500 qp.~
+Bob~
+Dec 26, 2007~
+1198731537
+
+Recreation hall added; more to come about it later.~
+Bob~
+Dec 26, 2007~
+1198737799
+
+The headquarters is now free to build, for several reasons.~
+Bob~
+Dec 26, 2007~
+1198738463
+
+Rules command added; it's Grave's responsibility for the content.~
+Bob~
+Dec 27, 2007~
+1198813779
+
+Infantry armaments added in preparation of melee weapons.~
+Bob~
+Dec 27, 2007~
+1198815291
+
+Stickies can no longer be installed on modified weapons.~
+Bob~
+Dec 27, 2007~
+1198817417
+
+Character rankings added; type 'ranks' for more information.~
+Grave~
+Dec 28, 2007~
+1198861223
+
+Most lab buildings (say for the alien lab ones) can now be built underground; sparing superweapons and defensive-type buildings.~
+Bob~
+Dec 28, 2007~
+1198874804
+
+Changed pre-req of underground turret; government building is buildable underground now.~
+Bob~
+Dec 28, 2007~
+1198875248
+
+Added some beer consumption effects.~
+Bob~
+Dec 29, 2007~
+1198992528
+
+Stunguns now do minimal damage to prevent permastunning.~
+Grave~
+Jan 01, 2008~
+1199222847
+
+test~
+Cheesly~
+Jan 17, 2008~
+1200614012
+
+'Quotes' command added. No more logging off just to see that little piece of wit.~
+Trelane~
+Jan 17, 2008~
+1200614157
+
+Fixed bug: No more targetting people in buildings.~
+Trelane~
+Jan 21, 2008~
+1200953743
+
+Now you can target your enemy while in the same building, and even maintain that target IF and ONLY IF you're in an open building.~
+Demortes~
+Jan 21, 2008~
+1200963718
+
+Receiving damage now forces you to cease what you're doing. If you have the (BUSY) flag, you will have to start over. This should affect arming bombs, hacking, sneaking, and targetting, among other things.~
+Trelane~
+Jan 22, 2008~
+1201046465
+
+Maximum number of clubs changed to 1.~
+Trelane~
+Jan 22, 2008~
+1201056063
+
+By popular demand, the 'distraction' from receiving damage now only comes into play 25% of the time, and will not affect movement in combat. Only arming and things like that.~
+Trelane~
+Jan 22, 2008~
+1201058470
+
+Tunnel symbol changed from {->} to {TN}. Because it was EXACTLY THE SAME as the Snipers Nest symbol, and TN for tunnel sounded better than SN for Snipers Nest.~
+Trelane~
+Jan 23, 2008~
+1201123296
+
+Border added to help files. Any bugs, let us know.~
+Trelane~
+Jan 23, 2008~
+1201128169
+
+Cloning facility's effectiveness is now 19% times the building's level. (At level 5, that would be 95%)~
+Grave~
+Jan 23, 2008~
+1201129163
+
+Couple of changes to who. First, there is now a slot for the number of immortal players (Staff) online. Next, immortal players will no longer be counted toward the 'max online' records. And last but not least, invisible immortals will no longer be seen AT ALL on who. If an immortal is invisible, it's likely for good reason. So they no longer show up as ? Hidden player, nor do they show up in the number of Hidden players online.~
+Trelane~
+Jan 24, 2008~
+1201204063
+

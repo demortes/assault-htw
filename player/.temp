@@ -1,0 +1,88 @@
+#PLAYER
+Revision     52
+Name         ~
+Prompt       @@W(@@c%C-%s@@W) @@W[@@gExits:%E@@W] @@e%h/%H@@Rhp @@N> ~
+Dead	       0
+Deleted      0
+Sex          1
+LoginSex     -1
+Class        0
+Level        0
+Invis        0
+Incog		 0
+Trust        0
+Wizbit       0
+Played       0
+PlayedTot    0
+Note         0
+Room         3
+Location         4 4 1
+Hp   		500 500
+Act          0
+Config       262243
+Position     7
+Questpoints  0
+Pkills	   0
+Bkills	   0
+TPkills	   0
+TBkills	   0
+Deaths	   0
+PBHits	   0
+PBDeaths	   0
+NukemWins	   0
+Medals	   0
+Implants     0
+Password     ~
+Bamfin       ~
+Bamfout      ~
+Roomenter    ~
+Roomexit     ~
+Title        ~
+Whoname      Woff~
+Monitor	   0
+Host         Unknown!~
+Failures     0
+LastLogin    Thu Jul 22 22:58:58 2004
+~
+Loadmsg	   ~
+HiCol	   y~
+DimCol	   b~
+TermRows    25
+TermColumns    80
+Email   not set~
+EmailValid    0
+colors
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+GainHp        -1
+Pagelen      50
+Pflags       0
+Map	   16
+Disease	   0
+Effect	   0
+Alliance     -1
+SPAttack	   XXX~
+Suicided	   0
+MedalTimer   0
+Reimb        0
+ProfPt       0 0
+Spec         2
+Setexit      0
+Refund   0   0   0   0   0   0   0   0
+Skill   0   0   0   0   0   0   0   0   0   0   0   0   -1
+Alias    ~  ~
+Alias    ~  ~
+Alias    ~  ~
+Alias    ~  ~
+Alias    ~  ~
+End
+
+#END

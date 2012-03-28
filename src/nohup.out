@@ -1,0 +1,23 @@
+1319: old priority 0, new priority 0
+2902: old priority 0, new priority 0
+26950: old priority 0, new priority 0
+./startup: line 48: 26952 Aborted                 (core dumped) ../src/ack $port >$logfile 2>&1
+18029: old priority 0, new priority 0
+31081: old priority 0, new priority 0
+17920: old priority 0, new priority 0
+./startup: line 48: 17922 Aborted                 (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48:  3083 Aborted                 (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 22986 Aborted                 (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48:  8484 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 18118 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 18433 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 23394 Killed                  ../src/ack $port >$logfile 2>&1
+./startup: line 48: 10952 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 21910 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 10999 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 12962 Aborted                 (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 16041 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 17005 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 17068 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48: 19802 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+./startup: line 48:  6894 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1

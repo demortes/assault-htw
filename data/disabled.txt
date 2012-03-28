@@ -1,0 +1,3 @@
+objclear 90 90 Amnon
+prename 89 89 Trelane
+END

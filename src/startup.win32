@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# /bin/sh replacement for startup, by Spectrum
+#
+
+# grab the port number
+port=4002
+if [ "$1" != "" ]; then port=$1; fi
+
+# set up
+cd ../reports
+if [ -f shutdown.txt ]; then rm -f shutdown.txt; fi
+
+# rotate log files
+cd ../log
+mv 1008.txt 1009.txt >/dev/null 2>&1
+mv 1007.txt 1008.txt >/dev/null 2>&1
+mv 1006.txt 1007.txt >/dev/null 2>&1
+mv 1005.txt 1006.txt >/dev/null 2>&1
+mv 1004.txt 1005.txt >/dev/null 2>&1 
+mv 1003.txt 1004.txt >/dev/null 2>&1
+mv 1002.txt 1003.txt >/dev/null 2>&1
+mv 1001.txt 1002.txt >/dev/null 2>&1
+mv 1000.txt 1001.txt >/dev/null 2>&1
+
+
+logfile=../log/1000.txt
+
+cd ../area
+
+# run the mud
+  ../src/ack $port >$logfile 2>&1
+
+  # shutdown?
+
+cd ../reports
+
+  if [ -e shutdown.txt ]; then
+    echo "startup: shutting down" >>$logfile
+    exit 1
+  fi
+
+cd ../area
+  
+  # sleep, so if we fail on boot we don't get massive looping
+  sleep 10
+done
