@@ -38,9 +38,9 @@
 #include "utils.h"
 #endif
 
-#ifndef DEC_GLOBALS_H
-#include "globals.h"
-#endif
+//#ifndef DEC_GLOBALS_H
+//#include "globals.h"
+//#endif
 
 //#include "imc.h"
 
@@ -1264,3 +1264,7 @@ void load_web_data  args( ( void ) );
 #undef  RID
 #undef  SF
 #undef  OF
+
+#ifndef DEC_GLOBALS_H
+#include "globals.h"
+#endif

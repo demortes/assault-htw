@@ -1994,7 +1994,11 @@ void do_config( CHAR_DATA *ch, char *argument )
         }
         if ( fSet )
         {
-            SET_BIT    (config_var?ch->config:ch->act, bit);
+//            SET_BIT    (config_var?ch->config:ch->act, bit);
+	    if(config_var)
+		SET_BIT(ch->config, bit);
+	    else
+		SET_BIT(ch->act, bit);
             send_to_char( "@@dEnabled.@@N\n\r", ch );
             if ( bit == CONFIG_FULL_ANSI )
             {
@@ -2013,7 +2017,10 @@ void do_config( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            REMOVE_BIT (config_var?ch->config:ch->act, bit);
+	    if(config_var)
+		REMOVE_BIT(ch->config, bit);
+	    else
+		REMOVE_BIT(ch->act, bit);
             send_to_char( "@@dDisabled.@@N\n\r", ch );
             if ( bit == CONFIG_FULL_ANSI )
             {
