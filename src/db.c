@@ -2825,6 +2825,8 @@ void load_web_data ()
             free_string(web_data.highest_ranking_player);
         if ( web_data.newest_player != NULL )
             free_string(web_data.newest_player);
+        if ( !feof(fp))
+            return;
         web_data.last_killed_in_pit     = fread_string(fp);
         web_data.last_kills_in_pit      = fread_string(fp);
         web_data.highest_ranking_player = fread_string(fp);

@@ -3245,8 +3245,8 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         sprintf( buf, "%s logged on from IP %s", ch->name, ch->pcdata->host );
         log_f(buf);
 
-        sprintf( buf, "%d", web_data.num_players+1);
-        update_web_data(WEB_DATA_NUM_PLAYERS,buf);
+  //      sprintf( buf, "%d", web_data.num_players+1);
+//        update_web_data(WEB_DATA_NUM_PLAYERS,buf);
         if ( ch->pcdata->deleted )
         {
             sprintf(buf, "%s has recreated back into the game.", ch->name );
@@ -3257,8 +3257,8 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
             sprintf( buf, "%s has entered the game%s.", ch->name, (ch->played_tot==0)?" for the first time":"" );
             if ( ch->played_tot==0 )
             {
-                web_data.tot_players++;
-                update_web_data(WEB_DATA_NEWEST_PLAYER,ch->name);
+//                web_data.tot_players++;
+  //              update_web_data(WEB_DATA_NEWEST_PLAYER,ch->name);
             }
         }
         if ( ch->class == CLASS_SCANNER )

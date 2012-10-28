@@ -11559,3 +11559,15 @@
 [*****] BUG: create_object: vnum 1500 bad type 34.
 [*****] BUG: create_object: vnum 1500 bad type 34.
 [*****] BUG: create_object: vnum 1500 bad type 34.
+[*****] BUG: Fread_string: EOF
+[*****] BUG: Fread_string: EOF
+[*****] BUG: Fread_string: EOF
+[*****] BUG: Fread_string: EOF
+[*****] BUG: SSM: The shared string heap is full!
+[*****] BUG: SSM: The shared string heap is full!
+[*****] BUG: Alarm_handler: Not checkpointed recently, aborting!
+
+
+[*****] BUG: SSM: The shared string heap is full!
+[*****] BUG: SSM: The shared string heap is full!
+[*****] BUG: SSM: The shared string heap is full!

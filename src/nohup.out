@@ -21,3 +21,17 @@
 ./startup: line 48: 17068 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
 ./startup: line 48: 19802 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
 ./startup: line 48:  6894 Segmentation fault      (core dumped) ../src/ack $port >$logfile 2>&1
+5599 (process ID) old priority 0, new priority 0
+./startup: line 32: ../log/1000.log: No such file or directory
+6274 (process ID) old priority 0, new priority 0
+./startup: line 32: ../log/1000.log: No such file or directory
+./startup: line 48:  6277 Terminated              sleep 20
+./startup: line 32: ../log/1000.log: No such file or directory
+6775 (process ID) old priority 0, new priority 0
+./startup: line 32: ../log/1000.log: No such file or directory
+./startup: line 48:  6778 Terminated              sleep 20
+./startup: line 32: ../log/1000.log: No such file or directory
+6820 (process ID) old priority 0, new priority 0
+./startup: line 48:  6822 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+2873 (process ID) old priority 0, new priority 0
+2209 (process ID) old priority 0, new priority 0

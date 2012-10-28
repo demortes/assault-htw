@@ -71,7 +71,7 @@ void add_affiliates( FILE *fp )
 
 void generate_webpage( void )
 {
-    FILE * fp;
+/*    FILE * fp;
     char file_name[MAX_STRING_LENGTH];
     char buf[MSL];
     fclose( fpReserve );
@@ -95,7 +95,7 @@ void generate_webpage( void )
     fflush( fp );
     fclose( fp );
 
-    fpReserve = fopen( NULL_FILE, "r" );
+    fpReserve = fopen( NULL_FILE, "r" ); */
     return;
 }
 

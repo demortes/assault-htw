@@ -51597,3 +51597,5 @@
          Praxis: xpmode
          Praxis: mode
          Praxis: resume
+       Demortes: wizard
+       Demortes: advance

@@ -1,1 +1,2 @@
+cd ~/assault_htw/area
 nohup ./startup &

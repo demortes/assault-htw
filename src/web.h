@@ -1,5 +1,5 @@
 #define WEB_DATA_FILE "../data/web.txt"
-#define STAT_WEB_FILE "../../public_html/stat.php"
+#define STAT_WEB_FILE "../data/stat.php"
 
 #define WEB_DATA_KILLED_PIT 1
 #define WEB_DATA_KILLS_PIT  2
