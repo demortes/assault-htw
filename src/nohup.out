@@ -35,3 +35,14 @@
 ./startup: line 48:  6822 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
 2873 (process ID) old priority 0, new priority 0
 2209 (process ID) old priority 0, new priority 0
+./startup: line 48:  2211 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+./startup: line 48: 15120 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+9799 (process ID) old priority 0, new priority 0
+16926 (process ID) old priority 0, new priority 0
+./startup: line 48: 16928 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+./startup: line 48: 17062 Terminated              sleep 20
+./startup: line 48: 17071 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+./startup: line 48: 17102 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+./startup: line 48: 30993 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
+./startup: line 48: 31261 Terminated              sleep 20
+./startup: line 48: 31264 Aborted                 (core dumped) ../src/ack $port > $logfile 2>&1
