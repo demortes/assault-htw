@@ -116,7 +116,7 @@ int                     top_room;
 
 #if 0
 
-#define                 MAX_STRING      2097152
+#define                 MAX_STRING      350000
 /*#define                 MAX_PERM_BLOCK  131072
 #define                 MAX_MEM_LIST    12
 
