@@ -527,14 +527,12 @@ void do_look( CHAR_DATA *ch, char *argument )
     char buf  [MAX_STRING_LENGTH];
     char arg1 [MAX_INPUT_LENGTH];
     char arg2 [MAX_INPUT_LENGTH];
-    char out  [MAX_STRING_LENGTH];
     CHAR_DATA *victim;
     OBJ_DATA *obj;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
     VEHICLE_DATA *vhc;
     bool base = FALSE;
     buf[0] = '\0';
-    out[0] = '\0';
 
     if ( ch->desc == NULL )
         return;
