@@ -1,7 +1,8 @@
 area/COPYOVER.TXT
 player/*
 log/*
-data/
 area/limbo.are.*
 reports/*
+src/nohup.out
+data/*
 src/nohup.out
