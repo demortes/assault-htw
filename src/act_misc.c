@@ -3187,7 +3187,8 @@ void do_refine( CHAR_DATA *ch, char *argument )
     extract_obj(obj);
     for ( ; i > 0;i-- )
     {
-        x = (number_percent() < 5) ? 2 : (number_percent() < 5) ? 3 : (number_percent() < 15) ? 4 : 0;
+	 x = (number_percent() < 7) ? ITEM_COPPER : (number_percent() < 7) ? ITEM_GOLD : (number_percent() < 18) ? ITEM_SILVER : ITEM_IRON;
+//        x = (number_percent() < 5) ? ITEM_COPPER : (number_percent() < 5) ? ITEM_GOLD : (number_percent() < 15) ? ITEM_SILVER : ITEM_IRON;
         if ( x == ITEM_IRON )
             iron++;
         if ( x == ITEM_COPPER )
