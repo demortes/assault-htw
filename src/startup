@@ -1,3 +1,7 @@
+pushd $(dirname $(readlink -f "$BASH_SOURCE")) > /dev/null
+SCRIPT_DIR="$PWD"
+popd > /dev/null
+cd $SCRIPT_DIR
 # grab the port number
 port=6660
 if [ "$1" != "" ]; then port=$1; fi
