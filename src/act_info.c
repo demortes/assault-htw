@@ -1042,6 +1042,7 @@ void do_who( CHAR_DATA *ch, char *argument )
         { "Major",          250,    499     },
         { "Colonel",        500,    999     },
         { "General",        1000,   9998    },
+		{ "Immortal",       9999,   9999    },
         {NULL , 0, 0}
     };
    
@@ -1099,15 +1100,14 @@ void do_who( CHAR_DATA *ch, char *argument )
 
         for ( wch = first_char;wch;wch = wch->next )
         {
-    for (i = 0; ranking[i].name !=NULL; i++) {
-        if (get_rank(wch) >= ranking[i].rankfrom && get_rank(wch) <= ranking[i].rankto)
-            sprintf(rankingbuf, "%s", ranking[i].name);
-    }
-
-            if ( (type == 1 && !IS_IMMORTAL(wch) )
+			if ( (type == 1 && !IS_IMMORTAL(wch) )
                 || (type == 2 && IS_IMMORTAL(wch) ) )
                 continue;
 
+		for (i = 0; ranking[i].name !=NULL; i++) {
+			if (get_rank(wch) >= ranking[i].rankfrom && get_rank(wch) <= ranking[i].rankto)
+				sprintf(rankingbuf, "%s", ranking[i].name);
+		}
             true_cnt++;
             if ( !can_see(ch,wch) || (IS_LINKDEAD(wch) && ch->trust < 84) )
             {
