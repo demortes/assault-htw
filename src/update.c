@@ -502,8 +502,6 @@ void char_update( void )
                     send_to_char( buf, ch );
                 }
             }*/
-        else if ( number_percent() == 1 && number_percent() < 50 )
-            send_to_char( "Please help us by using Assault's new voting link:\r\nhttp://www.mudconnect.com/mud-bin/vote_rank.cgi?mud=Assault:+High+Tech+War\n\r\n\rThanks.\n\r", ch );
 
         if ( ch->disease > 0 && ch->disease <= 20 )         //SARS
         {
