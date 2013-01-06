@@ -4115,8 +4115,6 @@ void do_hotreboot (CHAR_DATA *ch, char * argument)
         return;
     }
 
-    //	imc_shutdown();  /* IMC */
-
     if ( crash )
         sprintf (buf, "\n\r**** ATTEMPTING CRASH RECOVERY - HOLD ON TO YOUR HORSES ****%s\n\n\r", "");
     else if ( cust == 1 )
@@ -4205,9 +4203,6 @@ void do_hotreboot (CHAR_DATA *ch, char * argument)
         exit(0);
     signal(SIGPROF, SIG_IGN);
     #endif
-
-    //if (IMC)
-    //   imc_shutdown( FALSE );
 
     execl (EXE_FILE, "PA", buf, "HOTreboot", buf2, (char *) NULL);
 
