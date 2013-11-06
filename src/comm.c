@@ -41,7 +41,10 @@
  * The OS-dependent functions are Read_from_descriptor and Write_to_descriptor.
  * -- Furey  26 Jan 1993
  */
-
+#ifndef unix
+#define unix
+#define linux
+#endif
 #if defined(macintosh)
 #include <types.h>
 #else

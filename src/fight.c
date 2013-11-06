@@ -2242,7 +2242,7 @@ void do_boom( CHAR_DATA *ch, char *argument )
     if ( y2 < 3 )
         y2 = 3;
 
-    for ( x=x;x<xx;x = x_n )
+    for ( ;x<xx;x = x_n )
     {
         x_n = x + 1;
         for ( y=y2;y<yy;y++ )

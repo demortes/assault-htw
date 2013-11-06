@@ -769,6 +769,7 @@ void fread_char( CHAR_DATA *ch, FILE *fp )
                 KEY( "Effect", ch->effect,            fread_number( fp ) );
                 KEY( "Experience", ch->pcdata->experience,        fread_number( fp ) );
                 SKEY( "Email", ch->pcdata->email_address, fread_string( fp ) );
+                break;
 
             case 'F':
                 KEY( "Failures",   ch->pcdata->failures,   fread_number( fp ) );
@@ -912,7 +913,7 @@ void fread_char( CHAR_DATA *ch, FILE *fp )
 
             case 'Q':
                 KEY( "Questpoints",  ch->quest_points,           fread_number( fp ) );
-
+                break;
             case 'R':
                 KEY( "Reimb",      ch->pcdata->reimb,     fread_number( fp ) );
                 KEY( "Revision",  cur_revision,           fread_number( fp ) );

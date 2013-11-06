@@ -2329,8 +2329,8 @@ void do_implant( CHAR_DATA *ch, char *argument )
     extract_obj(obj);
     act( "You implant $p in your body!", ch, obj, NULL, TO_CHAR );
     act( "$n implants $p in $s body!", ch, obj, NULL, TO_ROOM );
-    if ( !IS_SET(ch->implants,bit_value));
-    SET_BIT(ch->implants,bit_value);
+    if ( !IS_SET(ch->implants,bit_value))
+    	SET_BIT(ch->implants,bit_value);
     return;
 }
 
