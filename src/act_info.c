@@ -900,10 +900,11 @@ void do_help( CHAR_DATA *ch, char *argument )
                     if ((*pch) && (*pch != '~') && (*pch != '\0'))
                         {
                             sprintf(buf, "@@r| @@G|@@N %s\r\n", pch);
-                            pch = strtok (NULL, "\n");
+                            pch = strtok (NULL, "\r\n");
                             send_to_char( buf, ch);
                         }
                     }
+
                     free(helpbuf);
                     send_to_char( "@@r| @@G|@@N                                                                       @@r___@@N\r\n"
                         "@@r|  @@G`---------------------------------------------------------------------' @@Wo@@r |@@N\r\n"
