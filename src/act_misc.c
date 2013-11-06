@@ -512,7 +512,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
     }
     else if ( !str_cmp(argument, "list") )
     {
-/*        char u_buf[MSL];
+        char u_buf[MSL];
         char s_buf[MSL];
 
         u_buf[0] = '\0';
@@ -568,7 +568,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         send_to_char( buf, ch );
         sprintf( buf, "\n\r@@cThe current building limit is @@a%d@@a.@@N\n\r", BUILDING_LIMIT );
         send_to_char( buf, ch );
-        return;*/
+        found = TRUE;
     }
     else if ( !str_cmp(argument, "report") )
     {

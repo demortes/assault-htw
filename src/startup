@@ -1,6 +1,5 @@
-pushd $(dirname $(readlink -f "$BASH_SOURCE")) > /dev/null
+#!/bin/bash
 SCRIPT_DIR="$PWD"
-popd > /dev/null
 cd $SCRIPT_DIR
 # grab the port number
 port=6660
