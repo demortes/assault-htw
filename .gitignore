@@ -10,3 +10,6 @@ src/vgcore.*
 area/players.num
 area/boards/board.1039
 nohup.out
+.cproject
+.project
+.settings
