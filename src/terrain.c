@@ -524,9 +524,9 @@ void init_fields()
             }
         }
     }
-    for ( x=PIT_BORDER_X;x<=MAX_MAPS;x++ )
+    for ( x=PIT_BORDER_X;x < MAX_MAPS;x++ )
     {
-        for ( y=PIT_BORDER_Y;y<=MAX_MAPS;y++ )
+        for ( y=PIT_BORDER_Y;y < MAX_MAPS;y++ )
         {
             if ( x == PIT_BORDER_X || y == PIT_BORDER_Y )
                 map_table.type[x][y][Z_PAINTBALL] = SECT_NULL;
