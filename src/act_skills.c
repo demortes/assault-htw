@@ -2196,9 +2196,12 @@ void act_sresearch( CHAR_DATA *ch, int level )
         ch->c_sn = -1;
         return;
     }
-    sprintf( buf, "You continue researching %s  (%d%%)\n\r", s_res_table[bld->value[0]].name, bld->value[1] );
-    send_to_char(buf,ch);
-    act( "$n continues researching.\n\r", ch, NULL, NULL, TO_ROOM );
+    if(bld->value[1] % 25 == 0)
+    {
+   	 sprintf( buf, "You continue researching %s  (%d%%)\n\r", s_res_table[bld->value[0]].name, bld->value[1] );
+    	send_to_char(buf,ch);
+    	act( "$n continues researching.\n\r", ch, NULL, NULL, TO_ROOM );
+    }
     bld->value[10] -= s_res_table[bld->value[0]].cost;
     bld->value[1]++;
     ch->c_time = 20-(bld->level*3);
