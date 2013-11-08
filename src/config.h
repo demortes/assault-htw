@@ -302,7 +302,6 @@
  * Extended bitvector stuff.
  */
 #ifndef INT_BITS
-// #define INT_BITS                   32
 #define INT_BITS                   64
 #endif
 #define XBM                        31

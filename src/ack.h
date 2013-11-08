@@ -38,12 +38,6 @@
 #include "utils.h"
 #endif
 
-//#ifndef DEC_GLOBALS_H
-//#include "globals.h"
-//#endif
-
-//#include "imc.h"
-
 /* Various linked lists head/tail pointer declarations. -- Altrag */
 #ifndef DEC_LISTS_H
 #include "lists.h"

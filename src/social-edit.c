@@ -78,7 +78,8 @@ void load_social_table ()
         exit(1);
     }
 
-    fscanf (fp, "%d\n", &maxSocial);
+    if(fscanf (fp, "%d\n", &maxSocial) != 1)
+    	bug("Read something other than one in social-edit.c",0);
 
     /* IMPORTANT to use malloc so we can realloc later on */
 

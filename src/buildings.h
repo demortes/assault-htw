@@ -1,4 +1,3 @@
-//#define MAX_BUILDING			123
 #define BUILDING_REVISION       0
 #define MAX_POSSIBLE_BUILDING       155
 #define BUILDING_LIMIT          (sysdata.killfest ? 30 : ((MAX_BUILDING / 4) * 3))

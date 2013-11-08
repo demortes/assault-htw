@@ -354,7 +354,7 @@ void do_createalliance(CHAR_DATA *ch, char *argument)
             {
                 if ( alliance_table[i].members == 0)
                 {
-                    char file[MSL];                         //Erase board data
+                    char file[MSL];                         /*Erase board data*/
                     BOARD_DATA *board;
                     sprintf( file, "boards/board.%d", OBJ_VNUM_ALLI_BOARD + i );
                     for ( board = first_board;board;board = board->next )

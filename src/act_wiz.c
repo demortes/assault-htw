@@ -5055,7 +5055,7 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
             if ( bld2->level > 1 )
             {
                 int i = bld->level -1;
-                for ( i=i;i>0;i-- )
+                for (;i>0;i-- )
                 {
                     char buf[MSL];
 

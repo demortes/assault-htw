@@ -1048,9 +1048,9 @@ void act_mark( CHAR_DATA *ch, int level )
                         x = 0;
                 if ( y < 0 )
                         y = 0;
-                for ( x = x;x <= ch->bvictim->x + 5;x++ )
+                for (;x <= ch->bvictim->x + 5;x++ )
                 {
-                        for ( y = y;y <= ch->bvictim->y + 5;y++ )
+                        for (;y <= ch->bvictim->y + 5;y++ )
                         {
                                 if ( INVALID_COORDS(x,y) )
                                         continue;

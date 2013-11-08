@@ -1062,7 +1062,7 @@ void obj_update( void )
 
 void update_last_obj()
 {
-    for (last_obj=last_obj;last_obj->next;last_obj = last_obj->next)
+    for (;last_obj->next;last_obj = last_obj->next)
         if ( !last_obj->next )
             break;
     return;
@@ -1740,7 +1740,6 @@ void explode( OBJ_DATA *obj )
     OBJ_DATA *obj2;
     int dam = 0;
     int x,y,z = obj->z;
-    bool ex = TRUE;
     OBJ_DATA *obj_next;
     char buf[MSL];
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
@@ -2018,9 +2017,6 @@ void explode( OBJ_DATA *obj )
                                 dam = obj->carried_by->hit * 3;
                             if ( obj->carried_by != NULL )
                                 dam *= 1.5;
-                            else
-                            if ( !str_cmp(obj->owner,ch->name) && dam >= ch->hit )
-                                ex = FALSE;
 
                             damage( ch, vch, dam,DAMAGE_BLAST );
                         }
@@ -2057,8 +2053,6 @@ void explode( OBJ_DATA *obj )
                         }
                         if ( obj->carried_by != NULL )
                             dam *= 1.5;
-                        if ( dam >= bld->hp + bld->shield )
-                            ex = FALSE;
                         damage_building(ch,bld,dam);
                     }
         }
@@ -2096,7 +2090,6 @@ void explode( OBJ_DATA *obj )
             }
         }
     }
-    //	if (ex)
     extract_obj(obj);
     return;
 }

@@ -2724,7 +2724,7 @@ void create_load_list( )
         load_list[lev][j[lev]].building = pObj->building;
         j[lev]++;
     }
-    for ( i=i;i<MAX_BUILDING_LEVEL+1;i++ )
+    for (;i<MAX_BUILDING_LEVEL+1;i++ )
     {
         load_list[i][j[i]].vnum = -1;
         load_list[i][j[i]].rarity = -1;
