@@ -42,7 +42,7 @@
  * String and memory management parameters.
  */
 #define MAX_KEY_HASH                2048
-#define MAX_STRING_LENGTH           8192
+#define MAX_STRING_LENGTH           16384
 #define MSL                         MAX_STRING_LENGTH
 #define MAX_INPUT_LENGTH            1280
 #define MAX_AREAS                   2000
