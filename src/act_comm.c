@@ -272,14 +272,14 @@ void do_creator( CHAR_DATA *ch, char *argument )
 
 void do_gossip( CHAR_DATA *ch, char *argument )
 {
-    smash_swear(argument);
+   // smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_GOSSIP, "@@G[@@rGO@@WSS@@rIP@@G]@@N" );
     return;
 }
 
 void do_music( CHAR_DATA *ch, char *argument )
 {
-    smash_swear(argument);
+   // smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_MUSIC, "@@m[@@pMU@@mS@@pIC@@m]@@N" );
     return;
 }
@@ -287,7 +287,7 @@ void do_music( CHAR_DATA *ch, char *argument )
 void do_game( CHAR_DATA *ch, char *argument )
 {
     extern int guess_game;
-	smash_swear(argument);
+//	smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_GAME, "@@r[@@eG@@RAM@@eE@@r]@@N" );
     if ( guess_game && is_number(argument) )
     {
@@ -307,7 +307,7 @@ void do_game( CHAR_DATA *ch, char *argument )
 
 void do_code( CHAR_DATA *ch, char *argument )
 {
-	smash_swear(argument);
+	//smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_CODE, "@@R[@@WC@@gO@@dD@@gE@@R]@@N" );
     return;
 }
@@ -324,7 +324,7 @@ void do_newbie( CHAR_DATA *ch, char *argument )
         set_stun(ch,40);
         return;
     }
-	smash_swear(argument);
+	//smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_NEWBIE, "@@2@@W[@@1@@yNEWBIE@@2@@W]@@N" );
     return;
 }
@@ -405,14 +405,14 @@ void do_ooc( CHAR_DATA *ch, char *argument )
         do_channels(ch,"ooc");
         return;
     }
-	smash_swear(argument);
+//	smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_OOC, "@@d[@@lO@@BO@@lC@@d]@@N" );
     return;
 }
 
 void do_politics( CHAR_DATA *ch, char *argument )
 {
-	smash_swear(argument);
+	//smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_POLITICS, "@@d[@@eP@@RO@@eL@@d]@@N" );
     return;
 }
