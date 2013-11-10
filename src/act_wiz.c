@@ -52,253 +52,253 @@
 void  purge_room   args( ( CHAR_DATA *, ROOM_INDEX_DATA * ) );
 RELEVEL_DATA * HasRelevel( char * strName )
 {
-   RELEVEL_DATA * pRelevel = NULL;
+    RELEVEL_DATA * pRelevel = NULL;
 
-   /* Scan through the linked list */
-   for( pRelevel = rlvldata.pRelevelList; pRelevel != NULL; pRelevel = pRelevel->pNext ) {
-      if( str_cmp( pRelevel->strName, strName ) ) continue;
+    /* Scan through the linked list */
+    for( pRelevel = rlvldata.pRelevelList; pRelevel != NULL; pRelevel = pRelevel->pNext ) {
+        if( str_cmp( pRelevel->strName, strName ) ) continue;
 
-      /* Return the data */
-      return pRelevel;
-   }
+        /* Return the data */
+        return pRelevel;
+    }
 
-   /* We didn't find what we was looking for, so return NULL (nothing) */
-   return NULL;
+    /* We didn't find what we was looking for, so return NULL (nothing) */
+    return NULL;
 }
 
 void do_saverelevel( void )
 {
-   RELEVEL_DATA * pRelevel = NULL;
-   FILE * fp = NULL;
+    RELEVEL_DATA * pRelevel = NULL;
+    FILE * fp = NULL;
 
-   /* Open the file for writing */
-   if( ( fp = fopen( RELEVEL_FILE, "w" ) ) == NULL ) {
-      //logf( "do_saverelevel: Failed to open file for writing!" );
-      return;
-   }
-   else {
-      /* Write the linked list to the file */
-      for( pRelevel = rlvldata.pRelevelList; pRelevel != NULL; pRelevel = pRelevel->pNext ) {
-         fprintf( fp, "%s", "#RELEVEL\n" );
-         fprintf( fp, "Name         %s~\n", pRelevel->strName  );
-         fprintf( fp, "Level        %d\n",  pRelevel->iLevel   );
-         fprintf( fp, "%s", "End\n\n" );
-      }
-      fprintf( fp, "%s", "#END\n" );
+    /* Open the file for writing */
+    if( ( fp = fopen( RELEVEL_FILE, "w" ) ) == NULL ) {
+        //logf( "do_saverelevel: Failed to open file for writing!" );
+        return;
+    }
+    else {
+        /* Write the linked list to the file */
+        for( pRelevel = rlvldata.pRelevelList; pRelevel != NULL; pRelevel = pRelevel->pNext ) {
+            fprintf( fp, "%s", "#RELEVEL\n" );
+            fprintf( fp, "Name         %s~\n", pRelevel->strName  );
+            fprintf( fp, "Level        %d\n",  pRelevel->iLevel   );
+            fprintf( fp, "%s", "End\n\n" );
+        }
+        fprintf( fp, "%s", "#END\n" );
 
-      /* Close the file */
-      fclose( fp );
-   }
-   return;
+        /* Close the file */
+        fclose( fp );
+    }
+    return;
 }
 
 void do_readrelevel( FILE * fp, RELEVEL_DATA * pRelevel )
 {
-   const char * word = NULL;
-   bool fMatch;
+    const char * word = NULL;
+    bool fMatch;
 
-   for( ; ; ) {
-      word = feof( fp ) ? "End" : fread_word( fp );
-      fMatch = FALSE;
+    for( ; ; ) {
+        word = feof( fp ) ? "End" : fread_word( fp );
+        fMatch = FALSE;
 
-      switch( UPPER( word[0] ) ) {
-         case 'E':
+        switch( UPPER( word[0] ) ) {
+        case 'E':
             if( !str_cmp( word, "End" ) ) {
-               return;
+                return;
             }
             break;
-         case 'L':
+        case 'L':
             KEY( "Level",     pRelevel->iLevel,       fread_number( fp ) );
             break;
-         case 'N':
+        case 'N':
             KEY( "Name",      pRelevel->strName,      fread_string( fp ) );
             break;
-      }
-      if( !fMatch ) {
-         //logf( "do_readrelevel: no match: %s", word );
-      }
-   }
+        }
+        if( !fMatch ) {
+            //logf( "do_readrelevel: no match: %s", word );
+        }
+    }
 }
 
 void do_loadrelevel( void )
 {
-   RELEVEL_DATA * pRelevel = NULL;
-   FILE * fp = NULL;
+    RELEVEL_DATA * pRelevel = NULL;
+    FILE * fp = NULL;
 
-   /* Open the file for reading */
-   if( ( fp = fopen( RELEVEL_FILE, "r" ) ) == NULL ) {
-      return;
-   }
+    /* Open the file for reading */
+    if( ( fp = fopen( RELEVEL_FILE, "r" ) ) == NULL ) {
+        return;
+    }
 
-   /* Enter a loop to read all its contents */
-   for( ; ; ) {
-      char * strWord = NULL;
+    /* Enter a loop to read all its contents */
+    for( ; ; ) {
+        char * strWord = NULL;
 
-      strWord = fread_word( fp );
-      if( !str_cmp( strWord, "#RELEVEL" ) ) {
+        strWord = fread_word( fp );
+        if( !str_cmp( strWord, "#RELEVEL" ) ) {
 
-         /* Allocate memory, I use calloc as it clears the memory allocated */
-         if( ( pRelevel = (RELEVEL_DATA *)calloc( 1, sizeof( RELEVEL_DATA ) ) ) == NULL ) {
-            //logf( "do_loadrelevel: unable to allocate memory, aborting program!" );
-            abort();
-         }
+            /* Allocate memory, I use calloc as it clears the memory allocated */
+            if( ( pRelevel = (RELEVEL_DATA *)calloc( 1, sizeof( RELEVEL_DATA ) ) ) == NULL ) {
+                //logf( "do_loadrelevel: unable to allocate memory, aborting program!" );
+                abort();
+            }
 
-         /* Read in the data */
-         do_readrelevel( fp, pRelevel );
+            /* Read in the data */
+            do_readrelevel( fp, pRelevel );
 
-         /* Add the relevel data into the list */
-         pRelevel->pNext = rlvldata.pRelevelList;
-         rlvldata.pRelevelList = pRelevel;
-         continue;
-      }
-      else if( !str_cmp( strWord, "#END" ) ) {
-         break;
-      }
-      else {
-         //logf( "do_loadrelevel: bad section: '%s'.", strWord );
-         continue;
-      }
-   }
-   fclose( fp );
-   return;
+            /* Add the relevel data into the list */
+            pRelevel->pNext = rlvldata.pRelevelList;
+            rlvldata.pRelevelList = pRelevel;
+            continue;
+        }
+        else if( !str_cmp( strWord, "#END" ) ) {
+            break;
+        }
+        else {
+            //logf( "do_loadrelevel: bad section: '%s'.", strWord );
+            continue;
+        }
+    }
+    fclose( fp );
+    return;
 }
 
 void do_setrelevel( CHAR_DATA * dch, char * arg )
 {
-   char strBuffer[MAX_STRING_LENGTH] = { '\0' };
-   char strArg1[MAX_INPUT_LENGTH] = { '\0' };
-   char strArg2[MAX_INPUT_LENGTH] = { '\0' };
-   char strArg3[MAX_INPUT_LENGTH] = { '\0' };
-   RELEVEL_DATA * pRelevel = NULL;
-   CHAR_DATA * xch = NULL;
+    char strBuffer[MAX_STRING_LENGTH] = { '\0' };
+    char strArg1[MAX_INPUT_LENGTH] = { '\0' };
+    char strArg2[MAX_INPUT_LENGTH] = { '\0' };
+    char strArg3[MAX_INPUT_LENGTH] = { '\0' };
+    RELEVEL_DATA * pRelevel = NULL;
+    CHAR_DATA * xch = NULL;
 
-   /* Store the Arguments */
-   arg = one_argument( arg, strArg1 );
-   arg = one_argument( arg, strArg2 );
-   arg = one_argument( arg, strArg3 );
+    /* Store the Arguments */
+    arg = one_argument( arg, strArg1 );
+    arg = one_argument( arg, strArg2 );
+    arg = one_argument( arg, strArg3 );
 
-   if( strArg1[0] == '\0' || strArg2[0] == '\0' ) {
-      send_to_char( "Syntax: SetRelevel <Grant/Revoke> <Character> (Level)\n\n\r", dch );
-      send_to_char( "Level is only required when granting access!\n\r", dch );
-      return;
-   }
+    if( strArg1[0] == '\0' || strArg2[0] == '\0' ) {
+        send_to_char( "Syntax: SetRelevel <Grant/Revoke> <Character> (Level)\n\n\r", dch );
+        send_to_char( "Level is only required when granting access!\n\r", dch );
+        return;
+    }
 
-   if( !str_cmp( strArg1, "grant" ) || !str_cmp( strArg1, "give" ) ) {
-      /* Make sure they have the level parameter */
-      if( strArg3[0] == '\0' ) {
-         sprintf( strBuffer, "You must supply a level! (1-%d)\n\r", MAX_LEVEL );
-         send_to_char( strBuffer, dch );
-         return;
-      }
-      /* Level Check */
-      if( atoi( strArg3 ) < 1 || atoi( strArg3 ) > MAX_LEVEL ) {
-         sprintf( strBuffer, "The level must be between 1 and %d!\n\r", MAX_LEVEL );
-         send_to_char( strBuffer, dch );
-         return;
-      }
-
-      /* Find the Character to grant relevel access to */
-      if( ( xch = get_char_world( dch, strArg2 ) ) == NULL ) {
-         send_to_char( "They are not online.\n\r", dch );
-         return;
-      }
-
-      /* Don't allow NPC's */
-      if( IS_NPC( xch ) ) {
-         send_to_char( "You can not add NPCs to relevel.\n\r", dch );
-         return;
-      }
-
-      /* Does xch already have access to relevel? */
-      if( ( pRelevel = HasRelevel( xch->name ) ) != NULL ) {
-         send_to_char( "They already have access to relevel!\n\r", dch );
-         return;
-      }
-
-      /* Allocate memory */
-      if( ( pRelevel = (RELEVEL_DATA *)calloc( 1, sizeof( RELEVEL_DATA ) ) ) == NULL ) {
-         send_to_char( "Unable to allocate memory, aborting!\n\r", dch );
-         //logf( "do_loadrelevel: unable to allocate memory!" );
-         return;
-      }
-
-      /* Add the relevel data into the list */
-      pRelevel->pNext = rlvldata.pRelevelList;
-      rlvldata.pRelevelList = pRelevel;
-
-      /* Set the data */
-      pRelevel->strName = strdup( xch->name );
-      pRelevel->iLevel = atoi( strArg3 );
-
-      /* Inform the other character that they now have access to relevel */
-      send_to_char( "You now have access to relevel.\n\r", xch );
-
-      /* Inform the admin that it was succesful */
-      sprintf( strBuffer, "%s was successfully added to relevel.\n\r", xch->name );
-      send_to_char( strBuffer, dch );
-
-      /* Save the modified relevel list */
-      do_saverelevel();
-   }
-   else if( !str_cmp( strArg1, "revoke" ) || !str_cmp( strArg1, "take" ) ) {
-      if( ( pRelevel = HasRelevel( strArg2 ) ) == NULL ) {
-         send_to_char( "They do not have access to relevel!\n\r", dch );
-         return;
-      }
-
-      /* Remove the data from the linked list */
-      if( pRelevel == rlvldata.pRelevelList ) {
-         rlvldata.pRelevelList = pRelevel->pNext;
-      }
-      else {
-         RELEVEL_DATA * pPrev = NULL;
-
-         for( pPrev = rlvldata.pRelevelList; pPrev != NULL; pPrev = pPrev->pNext ) {
-            if( pPrev->pNext == pRelevel ) {
-               pPrev->pNext = pRelevel->pNext;
-               break;
-            }
-         }
-         if( pPrev == NULL ) {
-            //logf( "do_setrelevel: data not found." );
+    if( !str_cmp( strArg1, "grant" ) || !str_cmp( strArg1, "give" ) ) {
+        /* Make sure they have the level parameter */
+        if( strArg3[0] == '\0' ) {
+            sprintf( strBuffer, "You must supply a level! (1-%d)\n\r", MAX_LEVEL );
+            send_to_char( strBuffer, dch );
             return;
-         }
-      }
-      /* Clear the pointer */
-      pRelevel->pNext = NULL;
+        }
+        /* Level Check */
+        if( atoi( strArg3 ) < 1 || atoi( strArg3 ) > MAX_LEVEL ) {
+            sprintf( strBuffer, "The level must be between 1 and %d!\n\r", MAX_LEVEL );
+            send_to_char( strBuffer, dch );
+            return;
+        }
 
-      /* Inform the admin of the Success */
-      sprintf( strBuffer, "You have revoked relevel access from %s!\n\r", pRelevel->strName );
-      send_to_char( strBuffer, dch );
+        /* Find the Character to grant relevel access to */
+        if( ( xch = get_char_world( dch, strArg2 ) ) == NULL ) {
+            send_to_char( "They are not online.\n\r", dch );
+            return;
+        }
 
-      /* Free the used memory */
-      free( pRelevel->strName );
-      pRelevel->iLevel = 0;
+        /* Don't allow NPC's */
+        if( IS_NPC( xch ) ) {
+            send_to_char( "You can not add NPCs to relevel.\n\r", dch );
+            return;
+        }
 
-      /* Save the modified relevel list */
-      do_saverelevel();
-   }
-   else {
-      do_setrelevel( dch, "" );
-   }
-   return;
+        /* Does xch already have access to relevel? */
+        if( ( pRelevel = HasRelevel( xch->name ) ) != NULL ) {
+            send_to_char( "They already have access to relevel!\n\r", dch );
+            return;
+        }
+
+        /* Allocate memory */
+        if( ( pRelevel = (RELEVEL_DATA *)calloc( 1, sizeof( RELEVEL_DATA ) ) ) == NULL ) {
+            send_to_char( "Unable to allocate memory, aborting!\n\r", dch );
+            //logf( "do_loadrelevel: unable to allocate memory!" );
+            return;
+        }
+
+        /* Add the relevel data into the list */
+        pRelevel->pNext = rlvldata.pRelevelList;
+        rlvldata.pRelevelList = pRelevel;
+
+        /* Set the data */
+        pRelevel->strName = strdup( xch->name );
+        pRelevel->iLevel = atoi( strArg3 );
+
+        /* Inform the other character that they now have access to relevel */
+        send_to_char( "You now have access to relevel.\n\r", xch );
+
+        /* Inform the admin that it was succesful */
+        sprintf( strBuffer, "%s was successfully added to relevel.\n\r", xch->name );
+        send_to_char( strBuffer, dch );
+
+        /* Save the modified relevel list */
+        do_saverelevel();
+    }
+    else if( !str_cmp( strArg1, "revoke" ) || !str_cmp( strArg1, "take" ) ) {
+        if( ( pRelevel = HasRelevel( strArg2 ) ) == NULL ) {
+            send_to_char( "They do not have access to relevel!\n\r", dch );
+            return;
+        }
+
+        /* Remove the data from the linked list */
+        if( pRelevel == rlvldata.pRelevelList ) {
+            rlvldata.pRelevelList = pRelevel->pNext;
+        }
+        else {
+            RELEVEL_DATA * pPrev = NULL;
+
+            for( pPrev = rlvldata.pRelevelList; pPrev != NULL; pPrev = pPrev->pNext ) {
+                if( pPrev->pNext == pRelevel ) {
+                    pPrev->pNext = pRelevel->pNext;
+                    break;
+                }
+            }
+            if( pPrev == NULL ) {
+                //logf( "do_setrelevel: data not found." );
+                return;
+            }
+        }
+        /* Clear the pointer */
+        pRelevel->pNext = NULL;
+
+        /* Inform the admin of the Success */
+        sprintf( strBuffer, "You have revoked relevel access from %s!\n\r", pRelevel->strName );
+        send_to_char( strBuffer, dch );
+
+        /* Free the used memory */
+        free( pRelevel->strName );
+        pRelevel->iLevel = 0;
+
+        /* Save the modified relevel list */
+        do_saverelevel();
+    }
+    else {
+        do_setrelevel( dch, "" );
+    }
+    return;
 }
 
 void do_relevel( CHAR_DATA * dch, char * arg )
 {
-   RELEVEL_DATA * pRelevel = NULL;
+    RELEVEL_DATA * pRelevel = NULL;
 
-   /* Make sure they have relevel access */
-   if( ( pRelevel = HasRelevel( dch->name ) ) == NULL ) {
-      send_to_char( "Access Denied!\n\r", dch );
-      return;
-   }
+    /* Make sure they have relevel access */
+    if( ( pRelevel = HasRelevel( dch->name ) ) == NULL ) {
+        send_to_char( "Access Denied!\n\r", dch );
+        return;
+    }
 
-   /* Send them a Message and set their level */
-   send_to_char( "Relevel Complete!\n\r", dch );
-   dch->level = pRelevel->iLevel;
-   dch->trust = pRelevel->iLevel;
-   return;
+    /* Send them a Message and set their level */
+    send_to_char( "Relevel Complete!\n\r", dch );
+    dch->level = pRelevel->iLevel;
+    dch->trust = pRelevel->iLevel;
+    return;
 }
 
 void do_wizhelp( CHAR_DATA *ch, char *argument )
@@ -454,7 +454,7 @@ void do_disconnect( CHAR_DATA *ch, char *argument )
     }
 
     if ( ( victim = get_char_world( ch, arg ) ) == NULL
-        || (get_trust(victim) > get_trust(ch) && get_trust(victim) == MAX_LEVEL))
+            || (get_trust(victim) > get_trust(ch) && get_trust(victim) == MAX_LEVEL))
     {
         send_to_char( "They aren't here.\n\r", ch );
         return;
@@ -516,7 +516,7 @@ void do_recho( CHAR_DATA *ch, char *argument )
     for ( d = first_desc; d; d = d->next )
     {
         if ( d->connected == CON_PLAYING
-            &&   d->character->in_room == ch->in_room && !NOT_IN_ROOM(ch,d->character) )
+                &&   d->character->in_room == ch->in_room && !NOT_IN_ROOM(ch,d->character) )
         {
             send_to_char( argument, d->character );
             send_to_char( "@@g\n\r",   d->character );
@@ -569,10 +569,10 @@ void do_transfer( CHAR_DATA *ch, char *argument )
         for ( d = first_desc; d != NULL; d = d->next )
         {
             if ( d->connected == CON_PLAYING
-                && !IS_IMMORTAL( d->character )
-                &&   d->character != ch
-                &&   d->character->in_room != NULL
-                &&   can_see( ch, d->character ) )
+                    && !IS_IMMORTAL( d->character )
+                    &&   d->character != ch
+                    &&   d->character->in_room != NULL
+                    &&   can_see( ch, d->character ) )
             {
                 char buf[MAX_STRING_LENGTH];
                 sprintf( buf, "%s %s", d->character->name, arg2 );
@@ -746,8 +746,8 @@ void do_goto( CHAR_DATA *ch, char *argument )
                 return;
             }
             act( "$L$n $T.", ch, NULL,
-                (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-                ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+                 (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+                 ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
             move ( ch, rch->x, rch->y, rch->z );
             SET_BIT(ch->pcdata->pflags,PFLAG_HELPING);
         }
@@ -766,14 +766,14 @@ void do_goto( CHAR_DATA *ch, char *argument )
             }
             {
                 act( "$L$n $T.", ch, NULL,
-                    (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-                    ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+                     (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+                     ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
             }
             move(ch,x,y,ch->z);
             {
                 act( "$L$n $T.", ch, NULL,
-                    (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
-                    ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
+                     (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
+                     ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
             }
 
             do_look( ch, "auto" );
@@ -785,31 +785,31 @@ void do_goto( CHAR_DATA *ch, char *argument )
     else if ( ( rch = get_char_world( ch, arg ) ) != NULL )
     {
         act( "$L$n $T.", ch, NULL,
-            (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-            ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+             (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+             ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
         move ( ch, rch->x, rch->y, rch->z );
     }
     else if ( ( vhc = get_vehicle_world(arg) ) != NULL )
     {
         act( "$L$n $T.", ch, NULL,
-            (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-            ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+             (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+             ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
         move ( ch, vhc->x, vhc->y, vhc->z );
     }
     else
     {
         int i;
-        for ( i=0;planet_table[i].name != NULL;i++ )
+        for ( i=0; planet_table[i].name != NULL; i++ )
         {
             if ( !str_cmp(planet_table[i].name,arg) )
             {
                 act( "$L$n $T.", ch, NULL,
-                    (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-                    ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+                     (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+                     ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
                 move ( ch, ch->x, ch->y, planet_table[i].z );
                 act( "$L$n $T.", ch, NULL,
-                    (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
-                    ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
+                     (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
+                     ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
 
                 do_look( ch, "auto" );
                 return;
@@ -818,12 +818,12 @@ void do_goto( CHAR_DATA *ch, char *argument )
         if ( ( obj = get_obj_world(ch,arg) ) != NULL )
         {
             act( "$L$n $T.", ch, NULL,
-                (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
-                ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
+                 (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0')
+                 ? ch->pcdata->bamfout : "leaves in a swirling mist",  TO_ROOM );
             move ( ch, obj->x, obj->y, obj->z );
             act( "$L$n $T.", ch, NULL,
-                (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
-                ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
+                 (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
+                 ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
             do_look(ch,"auto");
             return;
         }
@@ -832,8 +832,8 @@ void do_goto( CHAR_DATA *ch, char *argument )
     }
 
     act( "$L$n $T.", ch, NULL,
-        (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
-        ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
+         (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
+         ? ch->pcdata->bamfin : "appears in a swirling mist", TO_ROOM );
 
     do_look( ch, "auto" );
     return;
@@ -858,31 +858,31 @@ void do_ostat( CHAR_DATA *ch, char *argument )
 
     if ( ( obj = get_obj_carry( ch, arg ) ) == NULL )
         if ( ( obj = get_obj_world( ch, arg ) ) == NULL )
-    {
-        send_to_char( "Nothing like that in hell, earth, or heaven.\n\r", ch );
-        return;
-    }
+        {
+            send_to_char( "Nothing like that in hell, earth, or heaven.\n\r", ch );
+            return;
+        }
 
     sprintf( buf, "Name: %s.\n\r",
-        obj->name );
+             obj->name );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Vnum: %d.  Type: %s.\n\r",
-        obj->pIndexData->vnum, item_type_name( obj ) );
+             obj->pIndexData->vnum, item_type_name( obj ) );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Short description: %s.\n\rLong description: %s\n\r",
-        obj->short_descr, obj->description );
+             obj->short_descr, obj->description );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Wear bits: %s.\n\rExtra bits: %s.\n\r",
-        bit_table_lookup( tab_wear_flags, obj->wear_flags ),
-        extra_bit_name( obj->extra_flags ) );
+             bit_table_lookup( tab_wear_flags, obj->wear_flags ),
+             extra_bit_name( obj->extra_flags ) );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Number: %d/%d.  Weight: %d/%d.\n\r",
-        1,           get_obj_number( obj ),
-        obj->weight, get_obj_weight( obj ) );
+             1,           get_obj_number( obj ),
+             obj->weight, get_obj_weight( obj ) );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Heat: %d.\n\r", obj->heat );
@@ -890,22 +890,22 @@ void do_ostat( CHAR_DATA *ch, char *argument )
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "Level: %d.\n\r",
-        obj->level );
+             obj->level );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf,
-        "In room: %d.  Carried by: %s.  Wear_loc: %d  Owner: %s.\n\r",
-        obj->in_room    == NULL    ?        0 : obj->in_room->vnum,
-        obj->carried_by == NULL    ? "(none)" : obj->carried_by->name,
-        obj->wear_loc, obj->owner );
+             "In room: %d.  Carried by: %s.  Wear_loc: %d  Owner: %s.\n\r",
+             obj->in_room    == NULL    ?        0 : obj->in_room->vnum,
+             obj->carried_by == NULL    ? "(none)" : obj->carried_by->name,
+             obj->wear_loc, obj->owner );
     safe_strcat( MSL, buf1, buf );
 
     safe_strcat( MSL, buf1, "Item Values:\n\r" );
     for ( cnt = 0; cnt < MAX_OBJECT_VALUES; cnt++ )
     {
         sprintf( buf, "@@W[Value%d : @@y%6d@@W] %s",
-            cnt, obj->value[cnt],
-            rev_table_lookup( tab_value_meanings,  (obj->item_type *MAX_OBJECT_VALUES ) + cnt  ) );
+                 cnt, obj->value[cnt],
+                 rev_table_lookup( tab_value_meanings,  (obj->item_type *MAX_OBJECT_VALUES ) + cnt  ) );
         safe_strcat( MSL, buf1, buf );
         sprintf( buf, "@@g\n\r" );
         safe_strcat( MSL, buf1, buf );
@@ -1001,7 +1001,7 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
 
     argument = one_argument( argument, arg2 );
     if (  ( arg2[0] == '\0' )
-        || ( !is_number( arg2 ) )  )
+            || ( !is_number( arg2 ) )  )
     {
         level_top = level;
     }
@@ -1026,8 +1026,8 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
         {
             nMatch++;
             if (  ( fAll )
-                || (  ( pObjIndex->level >= level  )
-                && ( pObjIndex->level <= level_top )  )  )
+                    || (  ( pObjIndex->level >= level  )
+                          && ( pObjIndex->level <= level_top )  )  )
 
             {
                 found = TRUE;
@@ -1035,7 +1035,7 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
 
                 {
                     sprintf( buf, "\n\r(@@aMORTAL@@N) [%3d] [%5d] %s", pObjIndex->level,
-                        pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+                             pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
                     if ( mailme )
                         safe_strcat(MAX_STRING_LENGTH, buf1, buf);
                     else
@@ -1097,8 +1097,8 @@ void do_ofind( CHAR_DATA *ch, char *argument )
             {
                 found = TRUE;
                 sprintf( buf, "[%5d] [%3d] %s\n\r",
-                    pObjIndex->vnum, pObjIndex->level,
-                    capitalize( pObjIndex->short_descr ) );
+                         pObjIndex->vnum, pObjIndex->level,
+                         capitalize( pObjIndex->short_descr ) );
                 safe_strcat(MAX_STRING_LENGTH, buf1, buf);
             }
         }
@@ -1396,7 +1396,7 @@ void do_apurge( CHAR_DATA *ch, char *argument )
     max_vnum = ch->in_room->area->max_vnum;
 
     // Let us start at the first room, then continue throughout the area
-    for(;roomnum < max_vnum;roomnum++)
+    for(; roomnum < max_vnum; roomnum++)
     {
         room = get_room_index(roomnum);
         if (room != NULL)
@@ -1419,7 +1419,7 @@ void do_wpurge( CHAR_DATA *ch, char *argument )
     max_vnum = last_area->max_vnum;
 
     // Let us start at the first room, then continue throughout the area
-    for(;roomnum < max_vnum;roomnum++)
+    for(; roomnum < max_vnum; roomnum++)
     {
         room = get_room_index(roomnum);
         if (room != NULL)
@@ -1470,7 +1470,7 @@ void do_purge( CHAR_DATA *ch, char *argument )
                 continue;
             extract_obj( obj );
         }
-        for ( vhc = map_vhc[ch->x][ch->y][ch->z];vhc;vhc = vhc_next )
+        for ( vhc = map_vhc[ch->x][ch->y][ch->z]; vhc; vhc = vhc_next )
         {
             vhc_next = vhc->next_in_room;
             if ( vhc->driving )
@@ -1650,7 +1650,7 @@ void do_freeze( CHAR_DATA *ch, char *argument )
         send_to_char( "Freeze set.\n\r", ch );
 
         sprintf( buf, "%s has been FROZEN by %s.\n\r",
-            victim->name, ch->name );
+                 victim->name, ch->name );
         info( buf, get_trust(ch) + 1 );
     }
 
@@ -2074,13 +2074,13 @@ void do_mset( CHAR_DATA *ch, char *argument )
 
     if ( !str_cmp(arg2, "medaltimer") )
     {
-	if ( value < 0 || value > 1440 )
-	{
-	    send_to_char( "Medal timer must be between 0 and 1440 minutes.\n\r", ch );
-	    return;
-	}
-    victim->medaltimer = value;
-    return;
+        if ( value < 0 || value > 1440 )
+        {
+            send_to_char( "Medal timer must be between 0 and 1440 minutes.\n\r", ch );
+            return;
+        }
+        victim->medaltimer = value;
+        return;
     }
 
     if ( !str_cmp(arg2, "flags" ) )
@@ -2096,7 +2096,8 @@ void do_mset( CHAR_DATA *ch, char *argument )
 
         if (lookupstr[0]=='-')
         {
-            neg=1; lookupstr++;
+            neg=1;
+            lookupstr++;
         }
         if (lookupstr[0]=='+')
             lookupstr++;
@@ -2201,10 +2202,10 @@ void do_oset( CHAR_DATA *ch, char *argument )
 
     if ( ( obj = get_obj_carry( ch, arg1 ) ) == NULL )
         if ( ( obj = get_obj_world( ch, arg1 ) ) == NULL )
-    {
-        send_to_char( "Nothing like that in hell, earth, or heaven.\n\r", ch );
-        return;
-    }
+        {
+            send_to_char( "Nothing like that in hell, earth, or heaven.\n\r", ch );
+            return;
+        }
 
     /*
      * Snarf the value (which need not be numeric).
@@ -2372,59 +2373,81 @@ void do_users( CHAR_DATA *ch, char *argument )
             count++;
             switch ( d->connected )
             {
-                case CON_PLAYING:
-                    sprintf( buf3, "%s", "Playing         "); break;
-                case CON_GET_NAME:
-                    sprintf( buf3, "%s", "Get Name        "); break;
-                case CON_GET_OLD_PASSWORD:
-                    sprintf( buf3, "%s", "Get Old Passwd  "); break;
-                case CON_CONFIRM_NEW_NAME:
-                    sprintf( buf3, "%s", "Cnrm New Name   "); break;
-                case CON_GET_NEW_PASSWORD:
-                    sprintf( buf3, "%s", "Get New Passwd  "); break;
-                case CON_CONFIRM_NEW_PASSWORD:
-                    sprintf( buf3, "%s", "Cnfm New Passwd "); break;
-                case CON_READ_MOTD:
-                    sprintf( buf3, "%s", "Reading MOTD    "); break;
-                case CON_READ_RULES:
-                    sprintf( buf3, "%s", "Reading Rules   "); break;
-                case CON_FINISHED:
-                    sprintf( buf3, "%s", "Finished        "); break;
-                case CON_MENU:
-                    sprintf( buf3, "%s", "Menu            "); break;
-                case CON_COPYOVER_RECOVER:
-                    sprintf( buf3, "%s", "Copyover Recover"); break;
-                case CON_QUITTING:
-                    sprintf( buf3, "%s", "Quitting        "); break;
-                case CON_RECONNECTING:
-                    sprintf( buf3, "%s", "Reconnecting    "); break;
-                case CON_SETTING_STATS:
-                    sprintf( buf3, "%s", "Setting Stats   "); break;
-                case CON_GET_NEW_CLASS:
-                    sprintf( buf3," %s", "Setting Class   "); break;
-                case CON_GET_ANSI:
-                    sprintf( buf3," %s", "Setting Color   "); break;
-                case CON_GET_SEX:
-                    sprintf( buf3," %s", "Setting Sex     "); break;
-                case CON_GET_RECREATION:
-                    sprintf( buf3," %s", "Recreating      "); break;
-                case CON_GET_BONUS:
-                    sprintf( buf3," %s", "Selecting Bonus "); break;
-                case CON_GET_NEW_PLANET:
-                    sprintf( buf3," %s", "Selecting Grid  "); break;
-                case CON_GET_NEW_MODE:
-                    sprintf( buf3," %s", "Selecting Mode  "); break;
-                default:
-                    sprintf( buf3, "%s", "Unknown...      "); break;
+            case CON_PLAYING:
+                sprintf( buf3, "%s", "Playing         ");
+                break;
+            case CON_GET_NAME:
+                sprintf( buf3, "%s", "Get Name        ");
+                break;
+            case CON_GET_OLD_PASSWORD:
+                sprintf( buf3, "%s", "Get Old Passwd  ");
+                break;
+            case CON_CONFIRM_NEW_NAME:
+                sprintf( buf3, "%s", "Cnrm New Name   ");
+                break;
+            case CON_GET_NEW_PASSWORD:
+                sprintf( buf3, "%s", "Get New Passwd  ");
+                break;
+            case CON_CONFIRM_NEW_PASSWORD:
+                sprintf( buf3, "%s", "Cnfm New Passwd ");
+                break;
+            case CON_READ_MOTD:
+                sprintf( buf3, "%s", "Reading MOTD    ");
+                break;
+            case CON_READ_RULES:
+                sprintf( buf3, "%s", "Reading Rules   ");
+                break;
+            case CON_FINISHED:
+                sprintf( buf3, "%s", "Finished        ");
+                break;
+            case CON_MENU:
+                sprintf( buf3, "%s", "Menu            ");
+                break;
+            case CON_COPYOVER_RECOVER:
+                sprintf( buf3, "%s", "Copyover Recover");
+                break;
+            case CON_QUITTING:
+                sprintf( buf3, "%s", "Quitting        ");
+                break;
+            case CON_RECONNECTING:
+                sprintf( buf3, "%s", "Reconnecting    ");
+                break;
+            case CON_SETTING_STATS:
+                sprintf( buf3, "%s", "Setting Stats   ");
+                break;
+            case CON_GET_NEW_CLASS:
+                sprintf( buf3," %s", "Setting Class   ");
+                break;
+            case CON_GET_ANSI:
+                sprintf( buf3," %s", "Setting Color   ");
+                break;
+            case CON_GET_SEX:
+                sprintf( buf3," %s", "Setting Sex     ");
+                break;
+            case CON_GET_RECREATION:
+                sprintf( buf3," %s", "Recreating      ");
+                break;
+            case CON_GET_BONUS:
+                sprintf( buf3," %s", "Selecting Bonus ");
+                break;
+            case CON_GET_NEW_PLANET:
+                sprintf( buf3," %s", "Selecting Grid  ");
+                break;
+            case CON_GET_NEW_MODE:
+                sprintf( buf3," %s", "Selecting Mode  ");
+                break;
+            default:
+                sprintf( buf3, "%s", "Unknown...      ");
+                break;
             }
 
             sprintf( buf + strlen(buf), "@@G[@@r%3d %-21s@@G] @@y%-12s @@r%-30s@@N",
-                d->descriptor,
-                buf3,
-                d->original  ? d->original->name  :
-            d->character ? d->character->name : "(none)",
-                d->host
-                );
+                     d->descriptor,
+                     buf3,
+                     d->original  ? d->original->name  :
+                     d->character ? d->character->name : "(none)",
+                     d->host
+                   );
 
             if ( get_trust( ch ) >= 85 )
                 sprintf( buf + strlen(buf), "  %5d\n\r", d->remote_port );
@@ -2434,7 +2457,7 @@ void do_users( CHAR_DATA *ch, char *argument )
         else
         {
             sprintf( buf + strlen(buf), "@@G[@@r%3d Connecting           @@G] @@y(none)       @@r%-30s@@N",
-                d->descriptor, d->host );
+                     d->descriptor, d->host );
 
             if ( get_trust( ch ) >= 85 )
                 sprintf( buf + strlen(buf), "  %5d\n\r", d->remote_port );
@@ -2446,7 +2469,7 @@ void do_users( CHAR_DATA *ch, char *argument )
     sprintf( buf2, "%d user%s\n\r", count, count == 1 ? "" : "s" );
     safe_strcat( MSL, buf, buf2 );
     sprintf( buf2, "%s%s%s", color_string( ch, "stats" ), buf,
-        color_string( ch, "normal" ) );
+             color_string( ch, "normal" ) );
     send_to_char( buf2, ch );
     return;
 }
@@ -2475,9 +2498,9 @@ void do_force( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( argument[0] == cmd_table[cmd].name[0]
-            &&   !str_prefix( argument, cmd_table[cmd].name )
-            &&   ( cmd_table[cmd].level > trust
-            && cmd_table[cmd].level != 41 ) )
+                &&   !str_prefix( argument, cmd_table[cmd].name )
+                &&   ( cmd_table[cmd].level > trust
+                       && cmd_table[cmd].level != 41 ) )
         {
             send_to_char( "You can't even do that yourself!\n\r", ch );
             return;
@@ -2531,7 +2554,7 @@ void do_force( CHAR_DATA *ch, char *argument )
             vim_next = vim->next;
 
             if ( IS_NPC( vim )
-                && ( vim->in_room->area == ch->in_room->area ) )
+                    && ( vim->in_room->area == ch->in_room->area ) )
             {
                 interpret( vim, argument );
             }
@@ -2808,18 +2831,18 @@ void do_owhere( CHAR_DATA *ch, char *argument )
             if ( obj->carried_by != NULL )
             {
                 sprintf( catbuf, "[%2d] %s carried by %s [At:%d/%d].\n\r",
-                    obj_counter,
-                    obj->short_descr,
-                    PERS( obj->carried_by, ch ),
-                    obj->carried_by->x, obj->carried_by->y );
+                         obj_counter,
+                         obj->short_descr,
+                         PERS( obj->carried_by, ch ),
+                         obj->carried_by->x, obj->carried_by->y );
             }
             else
             {
                 sprintf( catbuf, "[%2d] %s%s at %d/%d.\n\r",
-                    obj_counter,
-                    obj->quest_timer > 0 ? "@@R(@@eQ@@R)@@N " : "",
-                    obj->short_descr,
-                    obj->x, obj->y );
+                         obj_counter,
+                         obj->quest_timer > 0 ? "@@R(@@eQ@@R)@@N " : "",
+                         obj->short_descr,
+                         obj->x, obj->y );
             }
 
             obj_counter++;
@@ -2877,18 +2900,18 @@ void do_owhereflag( CHAR_DATA *ch, char *argument )
             if ( obj->carried_by != NULL )
             {
                 sprintf( catbuf, "[%2d] %s carried by %s [At:%d/%d].\n\r",
-                    obj_counter,
-                    obj->short_descr,
-                    PERS( obj->carried_by, ch ),
-                    obj->carried_by->x, obj->carried_by->y );
+                         obj_counter,
+                         obj->short_descr,
+                         PERS( obj->carried_by, ch ),
+                         obj->carried_by->x, obj->carried_by->y );
             }
             else
             {
                 sprintf( catbuf, "[%2d] %s%s at %d/%d.\n\r",
-                    obj_counter,
-                    obj->quest_timer > 0 ? "@@R(@@eQ@@R)@@N " : "",
-                    obj->short_descr,
-                    obj->x, obj->y );
+                         obj_counter,
+                         obj->quest_timer > 0 ? "@@R(@@eQ@@R)@@N " : "",
+                         obj->short_descr,
+                         obj->x, obj->y );
             }
 
             obj_counter++;
@@ -2940,7 +2963,7 @@ void do_resetpassword( CHAR_DATA *ch, char *argument )
     }
 
     if (  ( ch->pcdata->pwd != '\0' )
-        && ( arg1[0] == '\0' || arg2[0] == '\0')  )
+            && ( arg1[0] == '\0' || arg2[0] == '\0')  )
     {
         send_to_char( "Syntax: password <char> <new>.\n\r", ch );
         return;
@@ -2968,9 +2991,9 @@ void do_iscore( CHAR_DATA *ch, char *argument )
     extern bool wizlock;
 
     sprintf( buf, "(wiz) Invis: %s   Holylight: %s   Incog: %s\n\r",
-        IS_SET( ch->act, PLR_WIZINVIS  ) ? "YES" : "NO ",
-        IS_SET( ch->act, PLR_HOLYLIGHT ) ? "YES" : "NO ",
-        IS_SET( ch->act, PLR_INCOG     ) ? "YES" : "NO" );
+             IS_SET( ch->act, PLR_WIZINVIS  ) ? "YES" : "NO ",
+             IS_SET( ch->act, PLR_HOLYLIGHT ) ? "YES" : "NO ",
+             IS_SET( ch->act, PLR_INCOG     ) ? "YES" : "NO" );
     send_to_char( buf, ch );
 
     if ( IS_SET( ch->act, PLR_WIZINVIS ) )
@@ -2985,17 +3008,17 @@ void do_iscore( CHAR_DATA *ch, char *argument )
     }
 
     sprintf( buf, "Bamfin:  %s\n\r",
-        (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
-        ? ch->pcdata->bamfin : "Not changed/Switched." );
+             (ch->pcdata != NULL && ch->pcdata->bamfin[0] != '\0')
+             ? ch->pcdata->bamfin : "Not changed/Switched." );
     send_to_char( buf, ch );
 
     sprintf( buf, "Bamfout: %s\n\r",
-        (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0' )
-        ? ch->pcdata->bamfout : "Not changed/Switched." );
+             (ch->pcdata != NULL && ch->pcdata->bamfout[0] != '\0' )
+             ? ch->pcdata->bamfout : "Not changed/Switched." );
     send_to_char( buf, ch );
 
     sprintf( buf, "Mud Info:\n\rWizlock: %s\n\r",
-        wizlock ? "YES" : "NO " );
+             wizlock ? "YES" : "NO " );
     send_to_char( buf, ch );
 
     return;
@@ -3023,7 +3046,7 @@ void do_iwhere( CHAR_DATA *ch, char *argument )
 
             count++;
             sprintf( buf, "%-12s %3d/%-3d\n\r",
-                vch->name, vch->x, vch->y );
+                     vch->name, vch->x, vch->y );
             safe_strcat( MSL, buf2, buf );
         }
     }
@@ -3033,7 +3056,7 @@ void do_iwhere( CHAR_DATA *ch, char *argument )
     else
     {
         sprintf( buf, "%d Player%s found.\n\r", count,
-            ( count > 1 ) ? "s" : "" );
+                 ( count > 1 ) ? "s" : "" );
         safe_strcat( MSL, buf2, buf );
     }
 
@@ -3059,7 +3082,7 @@ void do_isnoop( CHAR_DATA *ch, char *argument )
         {
             count++;
             sprintf( buf, "%s by %s.\n\r", d->character->name,
-                d->snoop_by->character->name );
+                     d->snoop_by->character->name );
             send_to_char( buf, ch );
         }
     }
@@ -3173,7 +3196,7 @@ void do_whoname( CHAR_DATA *ch, char *argument )
     {
         int i,l;
         l = 9-nocol_strlen(argument);
-        for (i=0;i<l;i++)
+        for (i=0; i<l; i++)
             sprintf(argument,"%s ",argument);
     }
 
@@ -3404,13 +3427,13 @@ void monitor_chan( CHAR_DATA *ch, const char *message, int channel )
 
     for ( a = 0; monitor_table[a].min_level != 0; a++ )
         if ( monitor_table[a].channel == channel )
-    {
-        level = monitor_table[a].min_level;
-        break;
-    }
+        {
+            level = monitor_table[a].min_level;
+            break;
+        }
 
     sprintf( buf, "%s[%7s]@@N %s@@N\n\r",
-        monitor_table[a].col, monitor_table[a].id, strip_out( message, "\n\r" ) );
+             monitor_table[a].col, monitor_table[a].id, strip_out( message, "\n\r" ) );
 
     for ( d = first_desc; d; d = d->next )
     {
@@ -3434,7 +3457,7 @@ void do_immlog( CHAR_DATA *ch, char *argument )
     CHAR_DATA *victim;
 
     argument = one_argument( argument, arg1 );
-    
+
     if ( get_trust(ch) > 80 )
     {
         if ( arg1[0] == '\0' )
@@ -3443,7 +3466,7 @@ void do_immlog( CHAR_DATA *ch, char *argument )
             return;
         }
 
-            if ( !str_cmp( arg1, "all" ) )
+        if ( !str_cmp( arg1, "all" ) )
         {
             if ( fLogAll )
             {
@@ -3523,7 +3546,7 @@ void do_reward( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(arg1,"all") )
     {
 
-        for ( victim = first_char;victim;victim = victim->next )
+        for ( victim = first_char; victim; victim = victim->next )
         {
             if ( IS_IMMORTAL(victim) || !victim->desc || victim->desc->connected != CON_PLAYING )
                 continue;
@@ -3583,7 +3606,7 @@ void do_xpreward( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(arg1,"all") )
     {
 
-        for ( victim = first_char;victim;victim = victim->next )
+        for ( victim = first_char; victim; victim = victim->next )
         {
             if ( IS_IMMORTAL(victim) || !victim->desc || victim->desc->connected != CON_PLAYING )
                 continue;
@@ -3674,7 +3697,7 @@ const char * name_expand (CHAR_DATA *ch)
         return outbuf;
     }
 
-    for (rch = first_char; rch && (rch != ch);rch = rch->next)
+    for (rch = first_char; rch && (rch != ch); rch = rch->next)
         if (is_name (name, rch->name))
             count++;
 
@@ -3798,46 +3821,46 @@ void do_for (CHAR_DATA *ch, char *argument)
     {
         for (i = 0; i < MAX_KEY_HASH; i++)                  /* run through all the buckets */
             for (room = room_index_hash[i] ; room ; room = room->next)
-        {
-            found = FALSE;
-
-            /* Anyone in here at all? */
-            if (fEverywhere)                                /* Everywhere executes always */
-                found = TRUE;
-            else if (!first_char)                           /* Skip it if room is empty */
-                continue;
-
-            /* Check if there is anyone here of the requried type */
-            /* Stop as soon as a match is found or there are no more ppl in room */
-            for (p = first_char; p && !found; p = p->next)
             {
+                found = FALSE;
 
-                if (p == ch)                                /* do not execute on oneself */
+                /* Anyone in here at all? */
+                if (fEverywhere)                                /* Everywhere executes always */
+                    found = TRUE;
+                else if (!first_char)                           /* Skip it if room is empty */
                     continue;
 
-                if (IS_NPC(p) && fMobs)
-                    found = TRUE;
-                else if (!IS_NPC(p) && (p->level >= LEVEL_IMMORTAL) && fGods)
-                    found = TRUE;
-                else if (!IS_NPC(p) && (p->level <= LEVEL_IMMORTAL) && fMortals)
-                    found = TRUE;
-            }                                               /* for everyone inside the room */
+                /* Check if there is anyone here of the requried type */
+                /* Stop as soon as a match is found or there are no more ppl in room */
+                for (p = first_char; p && !found; p = p->next)
+                {
 
-            if (found)
-            {
-                /* This may be ineffective. Consider moving character out of old_room
-                   once at beginning of command then moving back at the end.
-                   This however, is more safe?
-                */
+                    if (p == ch)                                /* do not execute on oneself */
+                        continue;
 
-                old_room = ch->in_room;
-                char_from_room (ch);
-                char_to_room (ch, room);
-                interpret (ch, argument);
-                char_from_room (ch);
-                char_to_room (ch, old_room);
-            }                                               /* if found */
-        }                                                   /* for every room in a bucket */
+                    if (IS_NPC(p) && fMobs)
+                        found = TRUE;
+                    else if (!IS_NPC(p) && (p->level >= LEVEL_IMMORTAL) && fGods)
+                        found = TRUE;
+                    else if (!IS_NPC(p) && (p->level <= LEVEL_IMMORTAL) && fMortals)
+                        found = TRUE;
+                }                                               /* for everyone inside the room */
+
+                if (found)
+                {
+                    /* This may be ineffective. Consider moving character out of old_room
+                       once at beginning of command then moving back at the end.
+                       This however, is more safe?
+                    */
+
+                    old_room = ch->in_room;
+                    char_from_room (ch);
+                    char_to_room (ch, room);
+                    interpret (ch, argument);
+                    char_from_room (ch);
+                    char_to_room (ch, old_room);
+                }                                               /* if found */
+            }                                                   /* for every room in a bucket */
     }                                                       /* if strchr */
     disable_timer_abort = FALSE;
 }                                                           /* do_for */
@@ -3859,12 +3882,12 @@ void do_otype( CHAR_DATA *ch, char *argument )
     one_argument( argument, arg );
     if ( arg[0] == '\0' )
         if ( arg[0] == '\0' )
-    {
-        sprintf(buf,"Values for object types:\n\r");
-        wide_table_printout(tab_item_types,buf+strlen(buf));
-        send_to_char(buf,ch);
-        return;
-    }
+        {
+            sprintf(buf,"Values for object types:\n\r");
+            wide_table_printout(tab_item_types,buf+strlen(buf));
+            send_to_char(buf,ch);
+            return;
+        }
 
     buf1[0] = '\0';
     fAll        = !str_cmp( arg, "all" );
@@ -3886,7 +3909,7 @@ void do_otype( CHAR_DATA *ch, char *argument )
             {
                 found = TRUE;
                 sprintf( buf, "<%2d> [%5d] %s\n\r", pObjIndex->level,
-                    pObjIndex->vnum, pObjIndex->short_descr );
+                         pObjIndex->vnum, pObjIndex->short_descr );
                 if ( mailme )
                     safe_strcat(MAX_STRING_LENGTH, buf1, buf);
                 else
@@ -3945,14 +3968,14 @@ void do_owear( CHAR_DATA *ch, char *argument )
         {
             nMatch++;
             if ( fAll || !str_infix ( arg,
-                bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags) ) )
+                                      bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags) ) )
             {
                 found = TRUE;
                 sprintf( buf, "<%s> [%5d] [%3d] %s\n\r",
-                    bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags),
-                    pObjIndex->vnum,
-                    pObjIndex->level,
-                    pObjIndex->short_descr );
+                         bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags),
+                         pObjIndex->vnum,
+                         pObjIndex->level,
+                         pObjIndex->short_descr );
                 if ( mailme )
                     safe_strcat(MAX_STRING_LENGTH, buf1, buf);
                 else
@@ -3964,7 +3987,7 @@ void do_owear( CHAR_DATA *ch, char *argument )
     if ( !found )
     {
         send_to_char( "Nothing like that in hell, earth, or heaven.\n\r",
-            ch );
+                      ch );
         return;
     }
 
@@ -4015,14 +4038,14 @@ void do_osearch( CHAR_DATA *ch, char *argument )
         {
             nMatch++;
             if ( pObjIndex->level == level &&
-                !str_infix( arg1, bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags) ) )
+                    !str_infix( arg1, bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags) ) )
             {
                 found = TRUE;
                 sprintf( buf, "<%s> [%5d] [%3d] %s\n\r",
-                    bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags),
-                    pObjIndex->vnum,
-                    pObjIndex->level,
-                    pObjIndex->short_descr );
+                         bit_table_lookup(tab_wear_flags, pObjIndex->wear_flags),
+                         pObjIndex->vnum,
+                         pObjIndex->level,
+                         pObjIndex->short_descr );
                 safe_strcat(MAX_STRING_LENGTH, buf1, buf);
             }
         }
@@ -4112,9 +4135,9 @@ void do_smite (CHAR_DATA * ch, char *argument)
     }
     if ( arg3[0] != '\0' )
     {
-        sprintf( buf, "@@a%s@@W has been smitten by @@e%s@@N", 
-victim->name, 
-ch->name );
+        sprintf( buf, "@@a%s@@W has been smitten by @@e%s@@N",
+                 victim->name,
+                 ch->name );
         info( buf, 0);
     }
     return;
@@ -4268,9 +4291,9 @@ void do_oflags( CHAR_DATA *ch, char *argument )
             {
                 found = TRUE;
                 sprintf( buf, "[%5d] [%3d] %s\n\r",
-                    pObjIndex->vnum,
-                    pObjIndex->level,
-                    pObjIndex->short_descr );
+                         pObjIndex->vnum,
+                         pObjIndex->level,
+                         pObjIndex->short_descr );
                 safe_strcat(MAX_STRING_LENGTH, buf1, buf);
             }
         }
@@ -4293,7 +4316,7 @@ void do_olist( CHAR_DATA *ch, char *argument )
     OBJ_DATA *obj;
     char buf[MSL];
 
-    for ( vnum = ch->in_room->area->min_vnum;vnum < ch->in_room->area->max_vnum;vnum++ )
+    for ( vnum = ch->in_room->area->min_vnum; vnum < ch->in_room->area->max_vnum; vnum++ )
     {
         if ( get_obj_index(vnum) == NULL )
             continue;
@@ -4331,18 +4354,18 @@ void do_setwcode( CHAR_DATA *ch, char *argument )
         int j,m,n,k,x,y,i;
         j = number_range(MAX_MAPS / 40,MAX_MAPS / 24);      /* Generate Forests */
 
-        for ( i = 0;i<j;i++ )
+        for ( i = 0; i<j; i++ )
         {
             m = number_range(1,MAX_MAPS/15);
             n = number_range(3,MAX_MAPS-3);
             k = number_range(3,MAX_MAPS-3);
-            for ( x = n-m;x<n;x++ )
+            for ( x = n-m; x<n; x++ )
             {
                 if ( x == number_fuzzy(n) )
                     continue;
                 if ( x == number_fuzzy(n-m) )
                     continue;
-                for ( y = k-m;y < k;y++ )
+                for ( y = k-m; y < k; y++ )
                 {
                     if ( x < 0 || x > MAX_MAPS || y < 0 || y > MAX_MAPS )
                         continue;
@@ -4362,18 +4385,18 @@ void do_setwcode( CHAR_DATA *ch, char *argument )
         int j,m,n,k,x,y,i;
         j = number_range(MAX_MAPS / 40,MAX_MAPS / 24);      /* Generate Snow */
 
-        for ( i = 0;i<j;i++ )
+        for ( i = 0; i<j; i++ )
         {
             m = number_range(1,MAX_MAPS/15);
             n = number_range(3,MAX_MAPS-3);
             k = number_range(3,MAX_MAPS-3);
-            for ( x = n-m;x<n;x++ )
+            for ( x = n-m; x<n; x++ )
             {
                 if ( x == number_fuzzy(n) )
                     continue;
                 if ( x == number_fuzzy(n-m) )
                     continue;
-                for ( y = k-m;y < k;y++ )
+                for ( y = k-m; y < k; y++ )
                 {
                     if ( x < 0 || x > MAX_MAPS || y < 0 || y > MAX_MAPS )
                         continue;
@@ -4412,11 +4435,11 @@ void do_listbuildings( CHAR_DATA *ch, char *argument )
     bool imm = IS_IMMORTAL(ch);
     int i = 0,x=0;
 
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         i++;
         if ( ( imm && ( ( argument[0] == '\0' && str_cmp(bld->owned,"nobody") ) || !str_cmp(bld->owned,argument) || !str_cmp(bld->name,argument) )  )
-            || ( !imm && !str_cmp(bld->owned,argument) ) )
+                || ( !imm && !str_cmp(bld->owned,argument) ) )
         {
             x++;
             if ( imm )
@@ -4451,7 +4474,7 @@ void do_killbuilding( CHAR_DATA *ch, char *argument )
     }
     if ( !is_number(argument) )
     {
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             if ( !str_cmp(bld->owned,argument) )
@@ -4476,7 +4499,7 @@ void do_killbuilding( CHAR_DATA *ch, char *argument )
         num = atoi(argument);
         if ( num < 1 )
             return;
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             num--;
             if ( num == 0 )
@@ -4531,7 +4554,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
     if ( is_number(arg) )
     {
         i = atoi(arg);
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             i--;
@@ -4541,7 +4564,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
                     return;
                 if ( !str_cmp(arg2, "complete") )
                 {
-                    for ( i=0;i<8;i++ )
+                    for ( i=0; i<8; i++ )
                         bld->resources[i] = 0;
                     send_to_char( "Building completed!\n\r", ch );
                     bld->hp = bld->maxhp;
@@ -4595,7 +4618,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
     {
         bool all = !str_cmp(arg,"all");
         bool here = !str_cmp(arg,"here");
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             if ( is_neutral(bld->type) )
@@ -4604,7 +4627,7 @@ void do_bset( CHAR_DATA *ch, char *argument )
             {
                 if ( !str_cmp(arg2, "complete") )
                 {
-                    for ( i=0;i<8;i++ )
+                    for ( i=0; i<8; i++ )
                         bld->resources[i] = 0;
                     send_to_char( "Building completed!\n\r", ch );
                     bld->hp = bld->maxhp;
@@ -4672,7 +4695,7 @@ void do_vload( CHAR_DATA *ch, char *argument )
     if ( argument[0] == '\0' || !is_number(argument) )
     {
         char buf[MSL];
-        for ( i=0;i<MAX_VEHICLE;i++ )
+        for ( i=0; i<MAX_VEHICLE; i++ )
         {
             sprintf( buf, "%d. %s\n\r", i, vehicle_desc[i] );
             send_to_char(buf,ch);
@@ -4777,7 +4800,7 @@ void do_backup ( CHAR_DATA *ch, char *argument )
     {
         BUILDING_DATA *bld;
         BUILDING_DATA *bld_next;
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             extract_building(bld,TRUE);
@@ -4825,18 +4848,18 @@ void do_objclear( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    for ( x = 0;x < MAX_MAPS;x++ )
-        for ( y = 0;y < MAX_MAPS; y++ )
+    for ( x = 0; x < MAX_MAPS; x++ )
+        for ( y = 0; y < MAX_MAPS; y++ )
             ok[x][y] = FALSE;
 
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         if ( bld->x < 0 || bld->y < 0 )
             continue;
         if ( ( wch = get_ch(bld->owned) ) != NULL || bld->type == BUILDING_WAREHOUSE )
             ok[bld->x][bld->y] = TRUE;
     }
-    for ( obj = first_obj;obj;obj = obj_next )
+    for ( obj = first_obj; obj; obj = obj_next )
     {
         obj_next = obj->next;
         if ( !ok[obj->x][obj->y] )
@@ -4861,8 +4884,8 @@ void do_test( CHAR_DATA *ch, char *argument )
         guess_game = number_range(1,1000);
         info("The game has picked a number between 1 and 1000. Guess which on the GAME channel!", 0);
     */
-    BUILDING_DATA *bld;                                     
-    for ( bld = first_building;bld;bld = bld->next )
+    BUILDING_DATA *bld;
+    for ( bld = first_building; bld; bld = bld->next )
     {
         /*		if ( bld->type != BUILDING_WAREHOUSE && bld->type != BUILDING_SECURE_WAREHOUSE )
                     continue;
@@ -4885,16 +4908,16 @@ void do_spacepop( CHAR_DATA *ch, char *argument )
     OBJ_DATA *obj;
     OBJ_DATA *obj_next;
     int warp=5;
-    for ( obj = first_obj;obj;obj = obj_next )
+    for ( obj = first_obj; obj; obj = obj_next )
     {
         obj_next = obj->next;
         if ( obj->z == Z_SPACE )
             extract_obj(obj);
     }
-    for ( s=1;s<4;s++ )
+    for ( s=1; s<4; s++ )
     {
         warp = 5;
-        for ( i=0;i<SPACE_SIZE/2;i++ )
+        for ( i=0; i<SPACE_SIZE/2; i++ )
         {
             obj = create_object(get_obj_index(800),0);
             obj->x = number_range(1,SPACE_SIZE-1);
@@ -4907,7 +4930,7 @@ void do_spacepop( CHAR_DATA *ch, char *argument )
             }
             obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
         }
-        for ( i=0;i<SPACE_SIZE;i++ )
+        for ( i=0; i<SPACE_SIZE; i++ )
         {
             obj = create_object(get_obj_index(801),0);
             obj->x = number_range(1,SPACE_SIZE-1);
@@ -4923,7 +4946,7 @@ void do_deletefromscores( CHAR_DATA *ch, char *argument )
 {
     int i;
     bool found = FALSE;
-    for ( i = 0;i<100;i++ )
+    for ( i = 0; i<100; i++ )
     {
         if (!str_cmp(score_table[i].name,argument))
         {
@@ -4956,7 +4979,7 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
     if ( ch->max_hit != 1001 )                              //Just added protection... Gotta have exactly 1001 HP to use
         return;
 
-    for ( bld = first_building;bld;bld = bld_next )
+    for ( bld = first_building; bld; bld = bld_next )
     {
         bld_next = bld->next;
         sprintf( name, "%s", bld->owned );
@@ -4974,7 +4997,7 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
         d.character = NULL;
         victim->desc = NULL;
 
-        for ( bld2 = bld;bld2;bld2 = bld2_next )
+        for ( bld2 = bld; bld2; bld2 = bld2_next )
         {
             bld2_next = bld2->next;
             if ( str_cmp(bld2->owned,victim->name) )
@@ -5055,7 +5078,7 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
             if ( bld2->level > 1 )
             {
                 int i = bld->level -1;
-                for (;i>0;i-- )
+                for (; i>0; i-- )
                 {
                     char buf[MSL];
 
@@ -5100,7 +5123,7 @@ void do_oarmortype( CHAR_DATA *ch, char *argument )
     buf_fire[0] = '\0';
     buf_laser[0] = '\0';
 
-    for ( i = MIN_LOAD_OBJ;i < MAX_LOAD_OBJ;i++ )
+    for ( i = MIN_LOAD_OBJ; i < MAX_LOAD_OBJ; i++ )
     {
         //		if ( get_obj_index(i) == NULL )
         //			break;
@@ -5159,7 +5182,7 @@ void do_setalliance( CHAR_DATA *ch, char *argument )
             send_to_char( "Name too long. Try again.\n\r", ch );
             return;
         }
-        for ( i = 0;i< MAX_ALLIANCE;i++ )
+        for ( i = 0; i< MAX_ALLIANCE; i++ )
         {
             if ( alliance_table[i].name == NULL )
             {
@@ -5257,7 +5280,7 @@ void do_bload( CHAR_DATA *ch, char *argument )
     {
         if ( !is_number(arg) )
         {
-            for ( i=1;i<MAX_BUILDING;i++ )
+            for ( i=1; i<MAX_BUILDING; i++ )
                 if ( !str_cmp(build_table[i].name,arg) )
                     sprintf( arg, "%d", i );
         }
@@ -5320,7 +5343,7 @@ void do_bload( CHAR_DATA *ch, char *argument )
     bld->exit[DIR_WEST] = TRUE;
     bld->exit[DIR_EAST] = TRUE;
     bld->exit[DIR_NORTH] = TRUE;
-    for ( i = 0;i < 8;i++ )
+    for ( i = 0; i < 8; i++ )
         bld->resources[i] = 0;
     ch->in_building = bld;
     send_to_char( "You have loaded the building.\n\r", ch );
@@ -5341,7 +5364,7 @@ void do_findalts( CHAR_DATA *ch, char *argument )
     if ( ( victim = get_char_world(ch,argument) ) != NULL )
     {
         CHAR_DATA *wch;
-        for ( wch = first_char;wch;wch = wch->next )
+        for ( wch = first_char; wch; wch = wch->next )
         {
             if ( wch->trust < ch->trust )
                 continue;
@@ -5423,12 +5446,12 @@ void do_home( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
         if ( bld->type == BUILDING_HQ && !str_cmp(bld->owned,victim->name) )
-    {
-        found = TRUE;
-        break;
-    }
+        {
+            found = TRUE;
+            break;
+        }
     if ( !found )
     {
         send_to_char( "The player has no HQ!\n\r", ch );
@@ -5546,7 +5569,7 @@ void do_loadlist( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    for ( i=1;;i++ )
+    for ( i=1;; i++ )
     {
         c++;
         if ( load_list[lev][i].vnum == -1 || load_list[lev][i].vnum == 0 )
@@ -5606,7 +5629,7 @@ void do_loadfake( CHAR_DATA *ch, char *argument )
     web_data.num_players++;
     {
         BUILDING_DATA *bld;
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             if ( !str_cmp(bld->owned,victim->name) )
             {
@@ -5626,7 +5649,7 @@ void do_queue(CHAR_DATA *ch, char *argument)
 {
     char buf[MSL];
     QUEUE_DATA *q;
-    for ( q = ch->pcdata->queue;q;q = q->next )
+    for ( q = ch->pcdata->queue; q; q = q->next )
     {
         sprintf( buf, "%s\n\r", q->command );
         send_to_char(buf,ch);
@@ -5701,7 +5724,7 @@ void do_multiplayers(CHAR_DATA *ch, char *argument)
 
     if ( argument[0] == '\0' )
     {
-        for ( i=0;i<30;i++ )
+        for ( i=0; i<30; i++ )
         {
             if ( multiplay_table[i].name == NULL && multiplay_table[i].host == NULL )
                 continue;
@@ -5735,7 +5758,7 @@ void do_multiplayers(CHAR_DATA *ch, char *argument)
         return;
     }
 
-    for ( i=0;i<30;i++ )
+    for ( i=0; i<30; i++ )
         if ( multiplay_table[i].name == NULL && multiplay_table[i].host == NULL )
             break;
 
@@ -5762,7 +5785,7 @@ void do_peek( CHAR_DATA *ch, char *argument )
     x = ch->x;
     y = ch->y;
     z = ch->z;
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         if ( is_neutral(bld->type) )
             continue;
@@ -5841,221 +5864,222 @@ void do_xpmode( CHAR_DATA *ch, char *argument )
 
 void do_phase( CHAR_DATA *ch, char *argument )
 {
-int z;
-char arg1[MAX_INPUT_LENGTH];
-argument = one_argument( argument, arg1 );
-char buf[MSL];
+    int z;
+    char arg1[MAX_INPUT_LENGTH];
+    argument = one_argument( argument, arg1 );
+    char buf[MSL];
 
-if( arg1[0] == '\0' )
-{
-send_to_char( "You must enter a Z coordinate to phase to.\n\r", ch);
-return;
-}
+    if( arg1[0] == '\0' )
+    {
+        send_to_char( "You must enter a Z coordinate to phase to.\n\r", ch);
+        return;
+    }
 
-if( !is_number(arg1) )
-{
-send_to_char( "Invalid Z coord!\n\r", ch);
-return;
-}
+    if( !is_number(arg1) )
+    {
+        send_to_char( "Invalid Z coord!\n\r", ch);
+        return;
+    }
 
-z = atoi( arg1 );
+    z = atoi( arg1 );
 
-if( z >= Z_MAX)
-{
-sprintf( buf, "@@eERROR:@@N Cannot equal, or be greater than: @@W %d!@@N", Z_MAX );
-act(buf, ch, NULL, NULL, TO_CHAR );
-return;
-}
+    if( z >= Z_MAX)
+    {
+        sprintf( buf, "@@eERROR:@@N Cannot equal, or be greater than: @@W %d!@@N", Z_MAX );
+        act(buf, ch, NULL, NULL, TO_CHAR );
+        return;
+    }
 
 
-send_to_char( "You phase out into another plane.\n\r", ch);
-act( "$n phases out of this plane!\n\r", ch, NULL, NULL, TO_ROOM );
-move(ch, ch->x, ch->y, z);
-do_look(ch, "");
-return;
+    send_to_char( "You phase out into another plane.\n\r", ch);
+    act( "$n phases out of this plane!\n\r", ch, NULL, NULL, TO_ROOM );
+    move(ch, ch->x, ch->y, z);
+    do_look(ch, "");
+    return;
 }
 
 void do_survey(CHAR_DATA *ch,char *argument)
 {
-                            char arg[MSL];
-one_argument(argument,arg);
-                            int x,y,z;
-                            int tvals[SECT_MAX];
-                            //clear the address shit
-                            for (z=0;z<SECT_MAX;z++)
-                            tvals[z]=0;
-if (!is_number(arg))
-z=ch->z;
-else
-{
- z=atoi(arg);
- if (z>=Z_MAX||z<0)
- mreturn("Dumbass. Invalid z coordinate.\n\r",ch);
- }
-for (x=0;x<MAX_MAPS;x++)
-{
-for (y=0;y<MAX_MAPS;y++)
-{
-tvals[map_table.type[x][y][z]]++;
-}
-}
-char buf[MSL];
-for (z=0;z<SECT_MAX;z++)
-{
-if (tvals[z]==0) continue;
-sprintf(buf+strlen(buf),"%d %s.\n\r",tvals[z],wildmap_table[z].name);
-}
-mreturn(buf,ch);
+    char arg[MSL];
+    one_argument(argument,arg);
+    int x,y,z;
+    int tvals[SECT_MAX];
+    //clear the address shit
+    for (z=0; z<SECT_MAX; z++)
+        tvals[z]=0;
+    if (!is_number(arg))
+        z=ch->z;
+    else
+    {
+        z=atoi(arg);
+        if (z>=Z_MAX||z<0)
+            mreturn("Dumbass. Invalid z coordinate.\n\r",ch);
+    }
+    for (x=0; x<MAX_MAPS; x++)
+    {
+        for (y=0; y<MAX_MAPS; y++)
+        {
+            tvals[map_table.type[x][y][z]]++;
+        }
+    }
+    char buf[MSL];
+    for (z=0; z<SECT_MAX; z++)
+    {
+        if (tvals[z]==0) continue;
+        sprintf(buf+strlen(buf),"%d %s.\n\r",tvals[z],wildmap_table[z].name);
+    }
+    mreturn(buf,ch);
 }
 
 
 void do_vset (CHAR_DATA *ch,char *argument)
 {
-if (!ch->in_vehicle)
-mreturn("Vset in a vehicle dumbass.\n\r",ch);
-char arg1[MSL],arg2[MSL];
-argument=one_argument(argument,arg1);
-one_argument(argument,arg2);
-int value=0;
-if (is_number(arg2))
-value=atoi(arg2);
-                                             if (arg1[0]=='\0')
-                                             mreturn("Vset <value> <value>. Name, description and hp come to mind.\n\r",ch);
-                                             if (!str_cmp(arg1,"name"))
-                                             {
-                                             free_string(ch->in_vehicle->name);
-                                             ch->in_vehicle->name=str_dup(arg2);
-                                             }
-                                             else if (!str_cmp(arg1,"description"))
-{
-free_string(ch->in_vehicle->desc);
-ch->in_vehicle->desc=str_dup(arg2);
-}
-else if (!str_cmp(arg1,"hp"))
-{
-ch->in_vehicle->hit=value;
-                          ch->in_vehicle->max_hit=value;
-}
-else if (!str_cmp(arg1,"fuel"))
-{
-ch->in_vehicle->fuel=value;
-ch->in_vehicle->max_fuel=value;
-}
-else if (!str_cmp(arg1,"ammotype"))
-{
-if (value>=MAX_AMMO||value<0)
-mreturn("Nuht-uh.\n\r",ch);
-ch->in_vehicle->ammo_type=value;
-}
-if (!str_cmp(arg1,"ammo"))
-{
-ch->in_vehicle->ammo=value;
-ch->in_vehicle->max_ammo=value;
-}
-else if (!str_cmp(arg1,"restore"))
-{
-ch->in_vehicle->hit=ch->in_vehicle->max_hit;
-                   ch->in_vehicle->ammo=ch->in_vehicle->max_ammo;
-                   ch->in_vehicle->fuel=ch->in_vehicle->max_fuel;
-                   send_to_char("Vehicle restored!\n\r",ch);
-                   }
-mreturn("Done.\n\r",ch);
+    if (!ch->in_vehicle)
+        mreturn("Vset in a vehicle dumbass.\n\r",ch);
+    char arg1[MSL],arg2[MSL];
+    argument=one_argument(argument,arg1);
+    one_argument(argument,arg2);
+    int value=0;
+    if (is_number(arg2))
+        value=atoi(arg2);
+    if (arg1[0]=='\0')
+        mreturn("Vset <value> <value>. Name, description and hp come to mind.\n\r",ch);
+    if (!str_cmp(arg1,"name"))
+    {
+        free_string(ch->in_vehicle->name);
+        ch->in_vehicle->name=str_dup(arg2);
+    }
+    else if (!str_cmp(arg1,"description"))
+    {
+        free_string(ch->in_vehicle->desc);
+        ch->in_vehicle->desc=str_dup(arg2);
+    }
+    else if (!str_cmp(arg1,"hp"))
+    {
+        ch->in_vehicle->hit=value;
+        ch->in_vehicle->max_hit=value;
+    }
+    else if (!str_cmp(arg1,"fuel"))
+    {
+        ch->in_vehicle->fuel=value;
+        ch->in_vehicle->max_fuel=value;
+    }
+    else if (!str_cmp(arg1,"ammotype"))
+    {
+        if (value>=MAX_AMMO||value<0)
+            mreturn("Nuht-uh.\n\r",ch);
+        ch->in_vehicle->ammo_type=value;
+    }
+    if (!str_cmp(arg1,"ammo"))
+    {
+        ch->in_vehicle->ammo=value;
+        ch->in_vehicle->max_ammo=value;
+    }
+    else if (!str_cmp(arg1,"restore"))
+    {
+        ch->in_vehicle->hit=ch->in_vehicle->max_hit;
+        ch->in_vehicle->ammo=ch->in_vehicle->max_ammo;
+        ch->in_vehicle->fuel=ch->in_vehicle->max_fuel;
+        send_to_char("Vehicle restored!\n\r",ch);
+    }
+    mreturn("Done.\n\r",ch);
 }
 
 void do_ammolist(CHAR_DATA *ch,char *argument)
 {
-int i;
-char buf[MSL];
+    int i;
+    char buf[MSL];
 //loopy time
-for (i=0;i<MAX_AMMO;i++)
-sprintf(buf+strlen(buf),"%d:%s:%d delay, %d accuracy, %d damage and %d building damage. Explodes: %d\n",i,clip_table[i].name,clip_table[i].speed,clip_table[i].miss,clip_table[i].dam,clip_table[i].builddam,clip_table[i].explode);
-mreturn(buf,ch);
+    for (i=0; i<MAX_AMMO; i++)
+        sprintf(buf+strlen(buf),"%d:%s:%d delay, %d accuracy, %d damage and %d building damage. Explodes: %d\n",i,clip_table[i].name,clip_table[i].speed,clip_table[i].miss,clip_table[i].dam,clip_table[i].builddam,clip_table[i].explode);
+    mreturn(buf,ch);
 }
 
 void do_bomb(CHAR_DATA *ch,char *argument)
 {
-char buf[MSL];
-CHAR_DATA *victim;
-BUILDING_DATA *vbld;
-int range,x,y,xx,yy;
-int players=0,buildings=0;
+    char buf[MSL];
+    CHAR_DATA *victim;
+    BUILDING_DATA *vbld;
+    int range,x,y,xx,yy;
+    int players=0,buildings=0;
 //on Grave's request:P
-char arg1[MSL];
-one_argument(argument,arg1);
-if (!is_number(arg1))
-mreturn("No do!\n\r",ch);
-                  range=atoi(arg1);
-if (range>50||range<=0)
-mreturn("Dumbass.\n\r",ch);
-x=ch->x,y=ch->y;
-if (x+range>MAX_MAPS||y+range>MAX_MAPS)
-mreturn("Woe baby! Don't go over me maxmaps, now.\n\r",ch);
-if (x-range<0||y-range<0)
-mreturn("I believe you have gone insane.\n\r",ch);
+    char arg1[MSL];
+    one_argument(argument,arg1);
+    if (!is_number(arg1))
+        mreturn("No do!\n\r",ch);
+    range=atoi(arg1);
+    if (range>50||range<=0)
+        mreturn("Dumbass.\n\r",ch);
+    x=ch->x,y=ch->y;
+    if (x+range>MAX_MAPS||y+range>MAX_MAPS)
+        mreturn("Woe baby! Don't go over me maxmaps, now.\n\r",ch);
+    if (x-range<0||y-range<0)
+        mreturn("I believe you have gone insane.\n\r",ch);
 //kill, kill, kill, kill, killkillkillwee
-sprintf(buf,"%s is about to devistate their current coords at %d/%d! Look the fuck out!\n\r",ch->name,x,y);
-info(buf,0);
-for (x=ch->x-range;x<ch->x+range;x++)
-for (y=ch->y-range;y<ch->y+range;y++)
-{
-xx=x;yy=y;
-	for ( victim = map_ch[xx][yy][ch->z];victim;victim = victim->next_in_room )
-{
-if (victim==ch)
-                       continue;
-                       send_to_char("Your body is ripped to shreds by a devistating explosion!\n\r",victim);
-act("$n is torn to shreds!\n\r",victim,NULL,NULL,TO_ROOM);
-damage(ch,victim,victim->max_hit+1,DAMAGE_PSYCHIC);
-players++;
-}
-vbld=map_bld[xx][yy][ch->z];
-if (vbld==NULL||vbld->owner==ch)
-continue;
-buildings++;
-send_to_loc("The building bursts into a roaring fireball of flames!\n\r",vbld->x,vbld->y,vbld->z);
-					extract_building(vbld,TRUE);
-     }
-     sprintf(buf,"Totals:\n%d murdered.\n%d buildings uprooted!\n",players,buildings);
-mreturn(buf,ch);
+    sprintf(buf,"%s is about to devistate their current coords at %d/%d! Look the fuck out!\n\r",ch->name,x,y);
+    info(buf,0);
+    for (x=ch->x-range; x<ch->x+range; x++)
+        for (y=ch->y-range; y<ch->y+range; y++)
+        {
+            xx=x;
+            yy=y;
+            for ( victim = map_ch[xx][yy][ch->z]; victim; victim = victim->next_in_room )
+            {
+                if (victim==ch)
+                    continue;
+                send_to_char("Your body is ripped to shreds by a devistating explosion!\n\r",victim);
+                act("$n is torn to shreds!\n\r",victim,NULL,NULL,TO_ROOM);
+                damage(ch,victim,victim->max_hit+1,DAMAGE_PSYCHIC);
+                players++;
+            }
+            vbld=map_bld[xx][yy][ch->z];
+            if (vbld==NULL||vbld->owner==ch)
+                continue;
+            buildings++;
+            send_to_loc("The building bursts into a roaring fireball of flames!\n\r",vbld->x,vbld->y,vbld->z);
+            extract_building(vbld,TRUE);
+        }
+    sprintf(buf,"Totals:\n%d murdered.\n%d buildings uprooted!\n",players,buildings);
+    mreturn(buf,ch);
 }
 
 void do_devastate(CHAR_DATA *ch,char *argument)
 {
-char buf[MSL];
-char arg1[MSL];
-int devz;
-one_argument(argument,arg1);
-if (!is_number(arg1))
-mreturn("Devistate [Z Coord] ( or -1 for all)\n\r",ch);
-                                             devz=atoi(arg1);
-                                             if (devz>=Z_MAX||devz<-1)
-                                             mreturn("Don't crash it fucking dammit!\n\r",ch);
-CHAR_DATA *vch;
-if (devz==-1)
-sprintf(buf,"The universe decides to rid itself of all mortal and lower immortal beings!\n");
-else
-sprintf(buf,"%s decides that %s shouldn't exist anymore... Let it be, let it be!\n",ch->name,planet_table[devz].name);
-info(buf,0);
+    char buf[MSL];
+    char arg1[MSL];
+    int devz;
+    one_argument(argument,arg1);
+    if (!is_number(arg1))
+        mreturn("Devistate [Z Coord] ( or -1 for all)\n\r",ch);
+    devz=atoi(arg1);
+    if (devz>=Z_MAX||devz<-1)
+        mreturn("Don't crash it fucking dammit!\n\r",ch);
+    CHAR_DATA *vch;
+    if (devz==-1)
+        sprintf(buf,"The universe decides to rid itself of all mortal and lower immortal beings!\n");
+    else
+        sprintf(buf,"%s decides that %s shouldn't exist anymore... Let it be, let it be!\n",ch->name,planet_table[devz].name);
+    info(buf,0);
 
-for (vch=first_char;vch;vch=vch->next)
-{
-if (vch->trust>=ch->trust)
-continue;
-if (devz==-1)
-{
-send_to_char("The universe has deemed you unworthy!\n\r",vch);
-act("$n suddenly collapses in a pool of their own blood!\n",vch,NULL,NULL,TO_ROOM);
-damage(NULL,vch,vch->max_hit+1,DAMAGE_PSYCHIC);
-}
-else if (devz==vch->z)
-{
-sprintf(buf,"%s seems to deny you existence. Byebye!\n",ch->name);
-send_to_char(buf,vch);
-act("$n's body crumples like a piece of paper!\n",vch,NULL,NULL,TO_ROOM);
-damage(ch,vch,vch->max_hit+1,DAMAGE_PSYCHIC);
-}
-}
-mreturn("Done devastating.\n",ch);
+    for (vch=first_char; vch; vch=vch->next)
+    {
+        if (vch->trust>=ch->trust)
+            continue;
+        if (devz==-1)
+        {
+            send_to_char("The universe has deemed you unworthy!\n\r",vch);
+            act("$n suddenly collapses in a pool of their own blood!\n",vch,NULL,NULL,TO_ROOM);
+            damage(NULL,vch,vch->max_hit+1,DAMAGE_PSYCHIC);
+        }
+        else if (devz==vch->z)
+        {
+            sprintf(buf,"%s seems to deny you existence. Byebye!\n",ch->name);
+            send_to_char(buf,vch);
+            act("$n's body crumples like a piece of paper!\n",vch,NULL,NULL,TO_ROOM);
+            damage(ch,vch,vch->max_hit+1,DAMAGE_PSYCHIC);
+        }
+    }
+    mreturn("Done devastating.\n",ch);
 }
 
 

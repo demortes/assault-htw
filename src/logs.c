@@ -267,50 +267,55 @@ char *change_justify( char *pszText, int iAlignment )
     {
         switch ( *pszText )
         {
-            default:
-                szStore[iLoop++] = *pszText++;
-                break;
-            case ' ':
-                if ( *(pszText+1) != ' ' )
-                {
-                    /* Store the character */
-                    szStore[iLoop++] = *pszText;
-                }
-                pszText++;
-                break;
-            case '.': case '?': case '!':
-                szStore[iLoop++] = *pszText++;
-                switch ( *pszText )
-                {
-                    default:
-                        szStore[iLoop++] = ' ';
-                        szStore[iLoop++] = ' ';
-                        /* Discard all leading spaces */
-                        while ( *pszText == ' ' ) pszText++;
-                        /* Store the character */
-                        szStore[iLoop++] = *pszText++;
-                        if ( szStore[iLoop-1] >= 'a' && szStore[iLoop-1] <= 'z' )
-                            szStore[iLoop-1] &= ~32;
-                        break;
-                    case '.': case '?': case '!':
-                        break;
-                }
-                break;
-            case ',':
+        default:
+            szStore[iLoop++] = *pszText++;
+            break;
+        case ' ':
+            if ( *(pszText+1) != ' ' )
+            {
                 /* Store the character */
-                szStore[iLoop++] = *pszText++;
+                szStore[iLoop++] = *pszText;
+            }
+            pszText++;
+            break;
+        case '.':
+        case '?':
+        case '!':
+            szStore[iLoop++] = *pszText++;
+            switch ( *pszText )
+            {
+            default:
+                szStore[iLoop++] = ' ';
+                szStore[iLoop++] = ' ';
                 /* Discard all leading spaces */
                 while ( *pszText == ' ' ) pszText++;
-                /* Commas shall be followed by one space */
-                szStore[iLoop++] = ' ';
-                break;
-            case '$':
+                /* Store the character */
                 szStore[iLoop++] = *pszText++;
-                while ( *pszText == ' ' ) pszText++;
+                if ( szStore[iLoop-1] >= 'a' && szStore[iLoop-1] <= 'z' )
+                    szStore[iLoop-1] &= ~32;
                 break;
-            case '\n': case '\r':
-                pszText++;
+            case '.':
+            case '?':
+            case '!':
                 break;
+            }
+            break;
+        case ',':
+            /* Store the character */
+            szStore[iLoop++] = *pszText++;
+            /* Discard all leading spaces */
+            while ( *pszText == ' ' ) pszText++;
+            /* Commas shall be followed by one space */
+            szStore[iLoop++] = ' ';
+            break;
+        case '$':
+            szStore[iLoop++] = *pszText++;
+            while ( *pszText == ' ' ) pszText++;
+            break;
+        case '\n':
+        case '\r':
+            pszText++;
+            break;
         }
     }
 
@@ -351,14 +356,14 @@ char *change_justify( char *pszText, int iAlignment )
         *pszResult++ = szStore[iLoop];
         switch ( szStore[iLoop] )
         {
-            default:
-                break;
-            case '\n':
-                *pszResult++ = '\r';
-                while ( szStore[iLoop+1] == ' ' ) iLoop++;
-                /* Add spaces to the front of the line as appropriate */
-                AddSpaces( &pszResult, 25 );
-                break;
+        default:
+            break;
+        case '\n':
+            *pszResult++ = '\r';
+            while ( szStore[iLoop+1] == ' ' ) iLoop++;
+            /* Add spaces to the front of the line as appropriate */
+            AddSpaces( &pszResult, 25 );
+            break;
         }
         iLoop++;
     }
@@ -395,10 +400,10 @@ void do_changes(CHAR_DATA *ch, char *argument)
     int totalpages = 0;
 
     one_argument( argument, arg );
-    
+
     if (IS_NPC(ch))
         return;
-	
+
     test = current_date();
     today = 0;
 
@@ -416,7 +421,7 @@ void do_changes(CHAR_DATA *ch, char *argument)
     if ( !is_number( arg ) && strcmp(arg, "") )
     {
         sprintf(buf,"@@wType changes @@d[@@y1@@d]@@w through @@d[@@y%d@@d]@@w to view the changes.@@w\n\r"
-            "@@e------------------------------------------------------------------------------@@w\n\r", totalpages);
+                "@@e------------------------------------------------------------------------------@@w\n\r", totalpages);
         send_to_char(buf, ch);
         return;
     }
@@ -434,15 +439,15 @@ void do_changes(CHAR_DATA *ch, char *argument)
 
         else
             page = atoi(arg);
-            number = page * 10;
-            
-            if ( page < 0 || page > totalpages )
-            {
-                sprintf( buf, "@@ePage must be between 1 and %d!@@N\n\r", totalpages );
-                send_to_char(buf, ch);
-                return;
-            }
-            
+        number = page * 10;
+
+        if ( page < 0 || page > totalpages )
+        {
+            sprintf( buf, "@@ePage must be between 1 and %d!@@N\n\r", totalpages );
+            send_to_char(buf, ch);
+            return;
+        }
+
         for (i = 0; i < totChanges; i++)
         {
             if ( ( i > (number - 11) ) && ( i < number ) && ( i < totChanges ) )
@@ -460,7 +465,7 @@ void do_changes(CHAR_DATA *ch, char *argument)
     send_to_char( buf, ch );
     send_to_char("@@e------------------------------------------------------------------------------@@w\n\r", ch );
     sprintf(buf, "@@wThere are a total of @@d[@@y %3d @@d]@@w pages of changes to view with '@@Gchanges #@@N'.@@w\n\r",
-        totalpages);
+            totalpages);
     send_to_char( buf, ch );
     send_to_char("@@e------------------------------------------------------------------------------@@w\n\r", ch );
     return;
@@ -526,49 +531,49 @@ void do_log( CHAR_DATA *ch, char *argument )
     char arg1[MAX_INPUT_LENGTH];
 
     argument = one_argument( argument, arg1 );
-        LOG_DATA * new_table;
+    LOG_DATA * new_table;
 
-        if ( IS_NPC( ch ) )
-            return;
+    if ( IS_NPC( ch ) )
+        return;
 
-        if ( arg1[0] == '\0' || argument[0] == '\0' )
+    if ( arg1[0] == '\0' || argument[0] == '\0' )
+    {
+        send_to_char( "Syntax: log [bug/typo/idea] [string]\n\r", ch );
+        send_to_char( "Type 'logs' to view the list.\n\r", ch );
+        return;
+    }
+
+    if ( !str_cmp( arg1, "bug" ) || !str_cmp( arg1, "typo" ) || !str_cmp( arg1, "idea" ) )
+    {
+        maxLogs++;
+        new_table = realloc( log_table, sizeof( LOG_DATA ) *(maxLogs+1) );
+
+        if (!new_table)                                         /* realloc failed */
         {
-            send_to_char( "Syntax: log [bug/typo/idea] [string]\n\r", ch );
-            send_to_char( "Type 'logs' to view the list.\n\r", ch );
-            return;
-        }
-        
-        if ( !str_cmp( arg1, "bug" ) || !str_cmp( arg1, "typo" ) || !str_cmp( arg1, "idea" ) )
-        {
-            maxLogs++;
-            new_table = realloc( log_table, sizeof( LOG_DATA ) *(maxLogs+1) );
-
-            if (!new_table)                                         /* realloc failed */
-            {
-                send_to_char ("Memory allocation failed. Brace for impact.\n\r",ch);
-                return;
-            }
-
-            log_table = new_table;
-        
-            log_table[maxLogs-1].reporter  = str_dup( ch->name );
-            log_table[maxLogs-1].type      = str_dup( arg1 );
-            log_table[maxLogs-1].date      = str_dup( current_date());
-            log_table[maxLogs-1].log       = str_dup( argument );
-
-            save_logs();
-            load_logs();
-        
-            send_to_char("Thank you for posting this log, we'll look into it as soon as possible.\r\n", ch );
+            send_to_char ("Memory allocation failed. Brace for impact.\n\r",ch);
             return;
         }
 
-        else
-        {
-            send_to_char( "Syntax: log [bug/typo/idea] [string]\n\r", ch );
-            send_to_char( "Type 'logs' to view the list.\n\r", ch );
-            return;
-        }
+        log_table = new_table;
+
+        log_table[maxLogs-1].reporter  = str_dup( ch->name );
+        log_table[maxLogs-1].type      = str_dup( arg1 );
+        log_table[maxLogs-1].date      = str_dup( current_date());
+        log_table[maxLogs-1].log       = str_dup( argument );
+
+        save_logs();
+        load_logs();
+
+        send_to_char("Thank you for posting this log, we'll look into it as soon as possible.\r\n", ch );
+        return;
+    }
+
+    else
+    {
+        send_to_char( "Syntax: log [bug/typo/idea] [string]\n\r", ch );
+        send_to_char( "Type 'logs' to view the list.\n\r", ch );
+        return;
+    }
 }
 
 void do_logs( CHAR_DATA *ch, char *argument )
@@ -585,11 +590,11 @@ void do_logs( CHAR_DATA *ch, char *argument )
     /* Populate the 3 lists */
     for (i = 0; i < totLogs; i++)
     {
-        if ( !str_cmp(log_table[i].type, "bug") )  
+        if ( !str_cmp(log_table[i].type, "bug") )
             this_list = bug_buf;
-        else if ( !str_cmp(log_table[i].type, "idea") ) 
+        else if ( !str_cmp(log_table[i].type, "idea") )
             this_list = idea_buf;
-        else if ( !str_cmp(log_table[i].type, "typo") ) 
+        else if ( !str_cmp(log_table[i].type, "typo") )
             this_list = typo_buf;
         else
         {
@@ -604,24 +609,24 @@ void do_logs( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            sprintf(this_list, "%s@@d[@@y%2d@@d]@@w @@e%c%-4s @@a*%-6s  @@W%-55s@@N\r\n", this_list, ( i + 1 ), UPPER(*log_table[i].type), log_table[i].type + 1, log_table[i].date, log_table[i].log );    
+            sprintf(this_list, "%s@@d[@@y%2d@@d]@@w @@e%c%-4s @@a*%-6s  @@W%-55s@@N\r\n", this_list, ( i + 1 ), UPPER(*log_table[i].type), log_table[i].type + 1, log_table[i].date, log_table[i].log );
         }
     }
 
     if ( !str_cmp(argument, "bug") || !str_cmp(argument, "all") )
     {
         validcmd = TRUE;
-        
+
         if (*bug_buf)
         {
             send_to_char("\r\n@@e------------------------@@d[@@WBug List@@d]@@N\r\n", ch);
             send_to_char(bug_buf, ch);
         }
-        
+
         else
-        send_to_char("\r\nNo bugs logged.\r\n", ch);
+            send_to_char("\r\nNo bugs logged.\r\n", ch);
     }
-    
+
     if ( !str_cmp(argument, "idea") || !str_cmp(argument, "all") )
     {
         validcmd = TRUE;
@@ -631,25 +636,25 @@ void do_logs( CHAR_DATA *ch, char *argument )
             send_to_char("\r\n@@e-----------------------@@d[@@WIdea List@@d]@@N\r\n", ch);
             send_to_char(idea_buf, ch);
         }
-        
+
         else
             send_to_char("\r\nNo ideas logged.\r\n", ch);
     }
-    
+
     if ( !str_cmp(argument, "typo") || !str_cmp(argument, "all") )
     {
         validcmd = TRUE;
-        
+
         if (*typo_buf)
         {
             send_to_char("\r\n@@e-----------------------@@d[@@WTypo List@@d]@@N\r\n", ch);
             send_to_char(typo_buf, ch);
         }
-        
+
         else
             send_to_char("\r\nNo typos logged.\r\n", ch);
     }
-    
+
     if (!validcmd)
     {
         send_to_char( "Syntax: logs [bug/typo/idea/all]\r\nType 'log' if you want to log a bug, typo or idea.\r\n", ch);

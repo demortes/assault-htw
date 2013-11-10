@@ -63,9 +63,9 @@ void obj_unreference(OBJ_DATA **var)
     struct obj_ref_type *p, *last;
 
     for (p=obj_ref_list, last=NULL;
-        p && p->var!=var;
-        last=p,p=p->next)
-    ;
+            p && p->var!=var;
+            last=p,p=p->next)
+        ;
 
     if (!p)
     {
@@ -101,9 +101,9 @@ void char_unreference(CHAR_DATA **var)
     struct char_ref_type *p, *last;
 
     for (p=char_ref_list, last=NULL;
-        p && p->var!=var;
-        last = p, p=p->next)
-    ;
+            p && p->var!=var;
+            last = p, p=p->next)
+        ;
 
     if (!p)
     {
@@ -127,7 +127,7 @@ int get_trust( CHAR_DATA *ch )
     return ch->trust;
 }
 
-/* 
+/*
  * Replacement for retrieving a character's age
  * Each tick = 1 mud hr.  (spaced at 1 minute rl)
  * 24 mud hrs = 1 mud day
@@ -152,7 +152,7 @@ void my_get_age( CHAR_DATA *ch, char *buf )
     years  = 17 + ( ticks /  (HOURS_PER_DAY * DAYS_PER_MONTH * MONTHS_PER_YEAR ));
 
     sprintf( buf+strlen(buf), "%d years, %d months and %d days",
-        years, months, days );
+             years, months, days );
     return;
 }
 
@@ -315,7 +315,7 @@ void obj_from_char( OBJ_DATA *obj )
     {
         char buf[MAX_STRING_LENGTH];
         sprintf( buf, "obj_from_char: NULL ch to remove %s from.",
-            obj->short_descr );
+                 obj->short_descr );
         monitor_chan( NULL, buf, MONITOR_OBJ );
 
         bug( "Obj_from_char: null ch.", 0 );
@@ -326,7 +326,7 @@ void obj_from_char( OBJ_DATA *obj )
         unequip_char( ch, obj );
 
     UNLINK(obj, ch->first_carry, ch->last_carry,
-        next_in_carry_list, prev_in_carry_list);
+           next_in_carry_list, prev_in_carry_list);
 
     free_string(obj->owner);
     obj->owner = str_dup(obj->carried_by->name);
@@ -354,22 +354,38 @@ int apply_ac( OBJ_DATA *obj, int iWear )
 
     switch ( iWear )
     {
-        case WEAR_BODY:     return 3 * obj->value[0];
-        case WEAR_HEAD:     return 2 * obj->value[0];
-        case WEAR_LEGS:     return 2 * obj->value[0];
-        case WEAR_FEET:     return     obj->value[0];
-        case WEAR_HANDS:    return     obj->value[0];
-        case WEAR_ARMS:     return     obj->value[0];
-        case WEAR_HOLD_HAND_R:   return     obj->value[0];
-        case WEAR_FINGER_L: return     obj->value[0];
-        case WEAR_FINGER_R: return     obj->value[0];
-        case WEAR_NECK_1:   return     obj->value[0];
-        case WEAR_NECK_2:   return     obj->value[0];
-        case WEAR_ABOUT:    return 2 * obj->value[0];
-        case WEAR_WAIST:    return     obj->value[0];
-        case WEAR_WRIST_L:  return     obj->value[0];
-        case WEAR_WRIST_R:  return     obj->value[0];
-        case WEAR_HOLD_HAND_L:     return     obj->value[0];
+    case WEAR_BODY:
+        return 3 * obj->value[0];
+    case WEAR_HEAD:
+        return 2 * obj->value[0];
+    case WEAR_LEGS:
+        return 2 * obj->value[0];
+    case WEAR_FEET:
+        return     obj->value[0];
+    case WEAR_HANDS:
+        return     obj->value[0];
+    case WEAR_ARMS:
+        return     obj->value[0];
+    case WEAR_HOLD_HAND_R:
+        return     obj->value[0];
+    case WEAR_FINGER_L:
+        return     obj->value[0];
+    case WEAR_FINGER_R:
+        return     obj->value[0];
+    case WEAR_NECK_1:
+        return     obj->value[0];
+    case WEAR_NECK_2:
+        return     obj->value[0];
+    case WEAR_ABOUT:
+        return 2 * obj->value[0];
+    case WEAR_WAIST:
+        return     obj->value[0];
+    case WEAR_WRIST_L:
+        return     obj->value[0];
+    case WEAR_WRIST_R:
+        return     obj->value[0];
+    case WEAR_HOLD_HAND_L:
+        return     obj->value[0];
     }
 
     return 0;
@@ -404,10 +420,10 @@ void equip_char( CHAR_DATA *ch, OBJ_DATA *obj, int iWear )
         return;
     }
     if (  ( ch->desc && ch->desc->connected != CON_SETTING_STATS )
-        && ( get_eq_char( ch, iWear ) != NULL )  )
+            && ( get_eq_char( ch, iWear ) != NULL )  )
     {
         sprintf( log, "equip_char: %s (room %d) cannot be equiped with %s, as wear slot (%d) not empty.",
-            NAME(ch), ch->in_room->vnum, obj->short_descr, iWear );
+                 NAME(ch), ch->in_room->vnum, obj->short_descr, iWear );
         monitor_chan( ch, log, MONITOR_OBJ );
 
         bug( log, 0 );
@@ -433,7 +449,7 @@ void unequip_char( CHAR_DATA *ch, OBJ_DATA *obj )
     {
         char buf[MAX_STRING_LENGTH];
         sprintf( buf, "unequip_char: %s is not wearing %s.",
-            NAME(ch), obj->short_descr );
+                 NAME(ch), obj->short_descr );
         monitor_chan( ch, buf, MONITOR_OBJ );
 
         bug( "Unequip_char: already unequipped.", 0 );
@@ -514,7 +530,7 @@ void obj_from_room( OBJ_DATA *obj )
         if ( obj == map_obj[obj->x][obj->y] )
             map_obj[obj->x][obj->y] = obj->next_in_room;
         else
-            for ( obj2 = map_obj[obj->x][obj->y];obj2;obj2 = obj2->next_in_room )
+            for ( obj2 = map_obj[obj->x][obj->y]; obj2; obj2 = obj2->next_in_room )
                 if ( obj2->next_in_room && obj2->next_in_room == obj )
                     obj2->next_in_room = obj->next_in_room;
     }
@@ -554,7 +570,7 @@ void extract_obj( OBJ_DATA *obj )
     if ( obj->quest_timer > 0 )
     {
         int i;
-        for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+        for ( i=0; i<MAX_QUEST_ITEMS; i++ )
             if ( quest_obj[i] == obj )
                 quest_obj[i] = NULL;
     }
@@ -580,24 +596,24 @@ void extract_obj( OBJ_DATA *obj )
         if (*ref->var==obj)
             switch (ref->type)
             {
-                case OBJ_NEXT:
-                    *ref->var=obj->next;
-                    break;
-                case OBJ_NEXTCONTENT:
-                    *ref->var=obj->next_in_carry_list;
-                    break;
-                case OBJ_NULL:
-                    *ref->var=NULL;
-                    break;
-                default:
-                    bugf("Bad obj_ref_list type %d", ref->type);
-                    break;
+            case OBJ_NEXT:
+                *ref->var=obj->next;
+                break;
+            case OBJ_NEXTCONTENT:
+                *ref->var=obj->next_in_carry_list;
+                break;
+            case OBJ_NULL:
+                *ref->var=NULL;
+                break;
+            default:
+                bugf("Bad obj_ref_list type %d", ref->type);
+                break;
             }
 
     if  ( obj->carried_by != NULL )
         obj_from_char( obj );
     else if
-        ( obj->in_room != NULL )
+    ( obj->in_room != NULL )
         obj_from_room( obj );
 
     {
@@ -607,7 +623,7 @@ void extract_obj( OBJ_DATA *obj )
         if ( obj == map_obj[obj->x][obj->y] )
             map_obj[obj->x][obj->y] = obj->next_in_room;
         else
-            for ( obj2 = map_obj[obj->x][obj->y];obj2;obj2 = obj2->next_in_room )
+            for ( obj2 = map_obj[obj->x][obj->y]; obj2; obj2 = obj2->next_in_room )
                 if ( obj2->next_in_room && obj2->next_in_room == obj )
                     obj2->next_in_room = obj->next_in_room;
     }
@@ -664,12 +680,12 @@ void extract_char( CHAR_DATA *ch, bool fPull )
         QUEUE_DATA * q_next;
         PAGER_DATA *p;
         PAGER_DATA *p_next;
-        for ( p=ch->pcdata->pager;p;p=p_next )
+        for ( p=ch->pcdata->pager; p; p=p_next )
         {
             p_next = p->next;
             extract_pager(p);
         }
-        for ( q = ch->pcdata->queue;q;q = q_next )
+        for ( q = ch->pcdata->queue; q; q = q_next )
         {
             q_next = q->next;
             extract_queue(q);
@@ -680,21 +696,21 @@ void extract_char( CHAR_DATA *ch, bool fPull )
         if (*ref->var==ch)
             switch (ref->type)
             {
-                case CHAR_NEXT:
-                    *ref->var=ch->next;
-                    break;
-                case CHAR_NULL:
-                    *ref->var=NULL;
-                    break;
-                default:
-                    bugf("Bad char_ref_list type %d", ref->type);
-                    break;
+            case CHAR_NEXT:
+                *ref->var=ch->next;
+                break;
+            case CHAR_NULL:
+                *ref->var=NULL;
+                break;
+            default:
+                bugf("Bad char_ref_list type %d", ref->type);
+                break;
             }
 
     if ( fPull )
         die_follower( ch );
 
-    for ( bld = ch->first_building;bld;bld = bld_next )
+    for ( bld = ch->first_building; bld; bld = bld_next )
     {
         bld_next = bld->next_owned;
         if ( is_neutral(bld->type) )
@@ -933,7 +949,7 @@ OBJ_DATA *get_obj_carry( CHAR_DATA *ch, char *argument )
     for ( obj = ch->first_carry; obj != NULL; obj = obj->next_in_carry_list )
     {
         if ( obj->wear_loc == WEAR_NONE
-            &&   is_name( arg, obj->name ) && can_see_obj(ch,obj) )
+                &&   is_name( arg, obj->name ) && can_see_obj(ch,obj) )
         {
             if ( ++count == number )
                 return obj;
@@ -958,7 +974,7 @@ OBJ_DATA *get_obj_wear( CHAR_DATA *ch, char *argument )
     for ( obj = ch->first_carry; obj != NULL; obj = obj->next_in_carry_list )
     {
         if ( obj->wear_loc != WEAR_NONE
-            &&   is_name( arg, obj->name ) && can_see_obj(ch,obj) )
+                &&   is_name( arg, obj->name ) && can_see_obj(ch,obj) )
         {
             if ( ++count == number )
                 return obj;
@@ -1072,12 +1088,12 @@ bool can_see( CHAR_DATA *ch, CHAR_DATA *victim )
 //    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
 //        return FALSE;
     if ( IS_SET(victim->act, PLR_WIZINVIS)
-        &&   get_trust( ch ) < victim->invis )
+            &&   get_trust( ch ) < victim->invis )
         return FALSE;
 
     if ( IS_SET(victim->act, PLR_INCOG)
-        &&   get_trust( ch ) < victim->incog
-        &&   NOT_IN_ROOM(ch,victim) )
+            &&   get_trust( ch ) < victim->incog
+            &&   NOT_IN_ROOM(ch,victim) )
         return FALSE;
 
     if ( IS_SET(ch->act, PLR_HOLYLIGHT) )
@@ -1106,10 +1122,10 @@ bool can_see_obj( CHAR_DATA *ch, OBJ_DATA *obj )
 
     if ( IS_SET(ch->effect,EFFECT_BLIND) )
         if ( !blind_combat_check(ch) )
-    {
-        send_to_char( "You feel around your inventory, but can't find it.\n\r", ch );
-        return FALSE;
-    }
+        {
+            send_to_char( "You feel around your inventory, but can't find it.\n\r", ch );
+            return FALSE;
+        }
 
     return TRUE;
 }
@@ -1157,15 +1173,15 @@ void info( char * message, int lv )
         lv = 0;
     for ( d = first_desc; d; d = d->next )
         if ( ( d->connected == CON_PLAYING )
-        && d->character->level >= lv
-        && !IS_NPC(d->character)
-        && !IS_SET( d->character->deaf, CHANNEL_INFO ) )
-    {
-        sprintf( buf, "@@i@@B@@7[INFO]@@N@@b: %s%s%s\n\r",
-            color_string( d->character, "info" ), message,
-            color_string( d->character, "normal" ) );
-        send_to_char( buf, d->character );
-    }
+                && d->character->level >= lv
+                && !IS_NPC(d->character)
+                && !IS_SET( d->character->deaf, CHANNEL_INFO ) )
+        {
+            sprintf( buf, "@@i@@B@@7[INFO]@@N@@b: %s%s%s\n\r",
+                     color_string( d->character, "info" ), message,
+                     color_string( d->character, "normal" ) );
+            send_to_char( buf, d->character );
+        }
     return;
 }
 
@@ -1179,10 +1195,10 @@ void log_chan( const char *message, int lv )
     sprintf( buf, "[LOG]: %s\n\r", message );
     for ( d = first_desc; d; d = d->next )
         if ( ( d->connected == CON_PLAYING )
-        && ( get_trust( d->character ) == MAX_LEVEL )
-        && ( !IS_NPC( d->character ) )
-        && ( d->character->level >= lv )
-        && ( !IS_SET( d->character->deaf, CHANNEL_LOG ) ) )
+                && ( get_trust( d->character ) == MAX_LEVEL )
+                && ( !IS_NPC( d->character ) )
+                && ( d->character->level >= lv )
+                && ( !IS_SET( d->character->deaf, CHANNEL_LOG ) ) )
             send_to_char( buf, d->character );
     return;
 }
@@ -1269,7 +1285,7 @@ void extract_building( BUILDING_DATA *bld, bool msg )
     activate_building(bld,FALSE);
     if ( msg && !is_evil(bld) )
     {
-        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+        for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
         {
             obj_next = obj->next_in_room;
             if ( obj->z != bld->z )
@@ -1285,7 +1301,7 @@ void extract_building( BUILDING_DATA *bld, bool msg )
     }
     else
     {
-        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+        for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
         {
             obj_next = obj->next_in_room;
             if ( obj->z != bld->z )
@@ -1293,7 +1309,7 @@ void extract_building( BUILDING_DATA *bld, bool msg )
             obj->in_building = NULL;
         }
     }
-    for ( ch = first_char;ch;ch = ch->next )
+    for ( ch = first_char; ch; ch = ch->next )
     {
         if ( ch->x == bld->x && ch->y == bld->y && ch->z == bld->z && msg )
         {
@@ -1333,7 +1349,7 @@ CHAR_DATA *get_ch( char *argument )
 
     if ( !str_cmp(argument,"nobody") )
         return NULL;
-    for ( rch = first_char;rch;rch = rch->next )
+    for ( rch = first_char; rch; rch = rch->next )
         if ( !str_cmp(rch->name, argument) )
             return rch;
 
@@ -1396,7 +1412,7 @@ BUILDING_DATA *get_building_range( int x, int y, int x2, int y2, int z )
 CHAR_DATA *get_char_loc( int x, int y, int z )
 {
     CHAR_DATA *ch;
-    for ( ch = first_char;ch;ch = ch->next )
+    for ( ch = first_char; ch; ch = ch->next )
         if ( ch->x == x && ch->y == y && ch->z == z && ch->in_room->vnum == ROOM_VNUM_WMAP )
             return ch;
     return NULL;
@@ -1441,7 +1457,7 @@ void extract_vehicle( VEHICLE_DATA *vhc, bool msg )
             }
             else
             {
-                for ( vhc2 = map_vhc[vhc->x][vhc->y][vhc->z];vhc2;vhc2 = vhc2->next_in_room )
+                for ( vhc2 = map_vhc[vhc->x][vhc->y][vhc->z]; vhc2; vhc2 = vhc2->next_in_room )
                     if ( vhc2->next_in_room && vhc2->next_in_room == vhc )
                         vhc2->next_in_room = vhc->next_in_room;
             }
@@ -1537,7 +1553,7 @@ void char_to_building( CHAR_DATA *ch, BUILDING_DATA *bld )
                 vhc->in_building = ch->in_building;
         }
     }
-    for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
         obj->in_building = ch->in_building;
 }
 
@@ -1554,7 +1570,7 @@ CHAR_DATA *get_rand_char( int x, int y, int z )
         return NULL;
     if ( ch->x != x || ch->y != y )
         map_ch[x][y][z] = ch->next_in_room;
-    for ( ;ch; ch = ch->next_in_room )
+    for ( ; ch; ch = ch->next_in_room )
     {
         if ( ch->dead || (ch->c_sn == gsn_paradrop && ch->c_level < 20 ) )
             continue;
@@ -1593,7 +1609,7 @@ void check_prof(CHAR_DATA *ch)
         return;
     time = my_get_hours(ch,TRUE);
     ttl = ch->pcdata->prof_ttl;
-    for ( i=0;prof_times[i] > -1;i++ )
+    for ( i=0; prof_times[i] > -1; i++ )
     {
         if ( prof_times[i] >= time || prof_times[i+1] == -1 )
         {

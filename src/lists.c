@@ -198,7 +198,7 @@ void char_free_destructor( CHAR_DATA * cdat )
     free_string( cdat->last_tell );
     {
         int i;
-        for ( i=0;i<5;i++ )
+        for ( i=0; i<5; i++ )
         {
             free_string( cdat->alias[i] );
             free_string( cdat->alias_command[i] );

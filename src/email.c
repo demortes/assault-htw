@@ -45,20 +45,20 @@ bool valid_email_addy( char * address )
     for( ; *checkme != '\0'; checkme++ )
     {
         if (  ( IS_LETTER( *checkme ) )
-            || ( *checkme == '1' )
-            || ( *checkme == '2' )
-            || ( *checkme == '3' )
-            || ( *checkme == '4' )
-            || ( *checkme == '5' )
-            || ( *checkme == '6' )
-            || ( *checkme == '7' )
-            || ( *checkme == '8' )
-            || ( *checkme == '9' )
-            || ( *checkme == '0' )
-            || ( *checkme == '.' )
-            || ( *checkme == '@' )
-            || ( *checkme == '-' )
-            || ( *checkme == '_' )  )
+                || ( *checkme == '1' )
+                || ( *checkme == '2' )
+                || ( *checkme == '3' )
+                || ( *checkme == '4' )
+                || ( *checkme == '5' )
+                || ( *checkme == '6' )
+                || ( *checkme == '7' )
+                || ( *checkme == '8' )
+                || ( *checkme == '9' )
+                || ( *checkme == '0' )
+                || ( *checkme == '.' )
+                || ( *checkme == '@' )
+                || ( *checkme == '-' )
+                || ( *checkme == '_' )  )
             continue;
         else
         {
@@ -85,12 +85,12 @@ void do_email( CHAR_DATA * ch, char * argument )
     {
         sprintf( outbuf, "%s", "Syntax for email:\n\r" );
         sprintf( catbuf, "%s",
-            "set <email address>\n\r" );
+                 "set <email address>\n\r" );
         safe_strcat( MSL, outbuf, catbuf );
         if ( ch->pcdata->valid_email )
         {
             sprintf( catbuf, "Your email address is currently set to %s.\n\r",
-                ch->pcdata->email_address );
+                     ch->pcdata->email_address );
             safe_strcat( MSL, outbuf, catbuf );
         }
         else
@@ -100,7 +100,7 @@ void do_email( CHAR_DATA * ch, char * argument )
             else
             {
                 sprintf( catbuf, "Your email address has been set to %s, but has not been authorized by an Implementor.\n\r",
-                    ch->pcdata->email_address );
+                         ch->pcdata->email_address );
                 safe_strcat( MSL, outbuf, catbuf );
             }
         }
@@ -124,15 +124,15 @@ void do_email( CHAR_DATA * ch, char * argument )
             ch->pcdata->valid_email = TRUE;
             do_save( ch, "" );
             sprintf( outbuf,
-                "Your email address has been set to %s.\n\r",
-                ch->pcdata->email_address );
+                     "Your email address has been set to %s.\n\r",
+                     ch->pcdata->email_address );
             send_to_char( outbuf, ch );
             return;
         }
         else
         {
             sprintf( outbuf, "%s is not an acceptable email address.\n\r",
-                arg2 );
+                     arg2 );
             send_to_char( outbuf, ch );
             return;
         }
@@ -215,7 +215,7 @@ void do_email( CHAR_DATA * ch, char * argument )
 }
 
 void send_email( const char * m_address, const  char * m_subject, const
-char * mfilename )
+                 char * mfilename )
 {
     FILE *mailfp;
     char mailbuf[MSL];
@@ -225,7 +225,7 @@ char * mfilename )
     int forkval;
 
     sprintf( mailbuf, "mail -s \"%s\" %s <%s%s",
-        m_subject, m_address, MAIL_DIR, capitalize( mfilename ) );
+             m_subject, m_address, MAIL_DIR, capitalize( mfilename ) );
     signal( SIGCHLD, SIG_IGN );
     if ( ( forkval = fork() ) > 0 )
     {
@@ -276,7 +276,7 @@ bool save_mail_file( const char * mfilename, char * mtext )
 void send_rep_out( CHAR_DATA * ch, char * outbuf, bool mailme, char * msub )
 {
     if (  ( IS_NPC( ch ) )
-        || ( ch->pcdata->valid_email == FALSE )  )
+            || ( ch->pcdata->valid_email == FALSE )  )
     {
         mailme = FALSE;
     }
@@ -284,7 +284,7 @@ void send_rep_out( CHAR_DATA * ch, char * outbuf, bool mailme, char * msub )
     {
         bool saved_mail = FALSE;
         if (  ( !IS_NPC( ch ) )
-            && (  str_cmp( ch->pcdata->email_address, "not set" ) )  )
+                && (  str_cmp( ch->pcdata->email_address, "not set" ) )  )
         {
             char mailfilename[MSL];
             sprintf( mailfilename, "%s.mail",  ch->name );

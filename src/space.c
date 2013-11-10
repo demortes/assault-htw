@@ -97,7 +97,7 @@ void space_interpret( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    /* 
+    /*
      * Strip leading spaces.
      */
     while ( isspace(*argument) )
@@ -126,8 +126,8 @@ void space_interpret( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; space_cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( command[0] == space_cmd_table[cmd].name[0]
-            &&   !str_prefix( command, space_cmd_table[cmd].name )
-            &&   get_trust(ch) >= space_cmd_table[cmd].level )
+                &&   !str_prefix( command, space_cmd_table[cmd].name )
+                &&   get_trust(ch) >= space_cmd_table[cmd].level )
         {
             found = TRUE;
             break;
@@ -147,8 +147,8 @@ void space_interpret( CHAR_DATA *ch, char *argument )
         strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX" );
 
     if ( ( IS_SET(ch->act, PLR_LOG) )
-        ||   fLogAll
-        ||   space_cmd_table[cmd].log == LOG_ALWAYS )
+            ||   fLogAll
+            ||   space_cmd_table[cmd].log == LOG_ALWAYS )
     {
         sprintf( log_buf, "Log %s: %s", ch->name, logline );
         log_string( log_buf );
@@ -333,13 +333,13 @@ void do_space_move( CHAR_DATA *ch, char *argument )
         sprintf( buf, "\n\r@@gYou are at: @@W%s.\n\r\n\r@@gYou can go to: @@W\n\r", room_names[ch->section] );
         send_to_char(buf,ch);
         buf[0] = '\0';
-        for ( i=0;room_names[i] != NULL;i++ )
+        for ( i=0; room_names[i] != NULL; i++ )
             sprintf( buf+strlen(buf), "%s\n\r", room_names[i] );
         send_to_char(buf,ch);
         send_to_char("@@N\n\r", ch );
         return;
     }
-    for ( i=0;room_names[i] != NULL;i++ )
+    for ( i=0; room_names[i] != NULL; i++ )
     {
         if ( room_names[i] == NULL )
             break;

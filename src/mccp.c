@@ -78,7 +78,7 @@ bool process_compressed(DESCRIPTOR_DATA *d)
             if ((nWrite = write(d->descriptor, d->out_compress_buf + iStart, nBlock)) < 0)
             {
                 if (errno == EAGAIN ||
-                    errno == ENOSR)
+                        errno == ENOSR)
                     break;
 
                 return FALSE;

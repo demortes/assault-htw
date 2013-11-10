@@ -95,8 +95,8 @@ char *initial( const char *str );                           /* comm.c */
 void do_rename (CHAR_DATA* ch, char* argument)
 {
     char old_name[MAX_INPUT_LENGTH],
-        new_name[MAX_INPUT_LENGTH],
-        strsave [MAX_INPUT_LENGTH];
+         new_name[MAX_INPUT_LENGTH],
+         strsave [MAX_INPUT_LENGTH];
 
     CHAR_DATA* victim;
     FILE* file;
@@ -151,12 +151,12 @@ void do_rename (CHAR_DATA* ch, char* argument)
     }
 
     /* First, check if there is a player named that off-line */
-    #if !defined(machintosh) && !defined(MSDOS)
+#if !defined(machintosh) && !defined(MSDOS)
     sprintf( strsave, "%s%s%s%s", PLAYER_DIR, initial( new_name ),
-        "/", capitalize( new_name ) );
-    #else
+             "/", capitalize( new_name ) );
+#else
     sprintf( strsave, "%s%s", PLAYER_DIR, capitalize( new_name ) );
-    #endif
+#endif
 
     fclose (fpReserve);                                     /* close the reserve file */
     file = fopen (strsave, "r");                            /* attempt to to open pfile */
@@ -170,12 +170,12 @@ void do_rename (CHAR_DATA* ch, char* argument)
     fpReserve = fopen( NULL_FILE, "r" );                    /* reopen the extra file */
 
     /* Check .gz file ! */
-    #if !defined(machintosh) && !defined(MSDOS)
+#if !defined(machintosh) && !defined(MSDOS)
     sprintf( strsave, "%s%s%s%s.gz", PLAYER_DIR, initial( new_name ),
-        "/", capitalize( new_name ) );
-    #else
+             "/", capitalize( new_name ) );
+#else
     sprintf( strsave, "%s%s.gz", PLAYER_DIR, capitalize( new_name ) );
-    #endif
+#endif
 
     fclose (fpReserve);                                     /* close the reserve file */
     file = fopen (strsave, "r");                            /* attempt to to open pfile */
@@ -188,7 +188,7 @@ void do_rename (CHAR_DATA* ch, char* argument)
     }
     fpReserve = fopen( NULL_FILE, "r" );                    /* reopen the extra file */
 
-                                                            /* check for playing level-1 non-saved */
+    /* check for playing level-1 non-saved */
     if ( get_ch(new_name) && !str_cmp(get_ch(new_name)->name,new_name))
     {
         send_to_char ("A player with the name you specified already exists!\n\r",ch);
@@ -197,18 +197,18 @@ void do_rename (CHAR_DATA* ch, char* argument)
 
     /* Save the filename of the old name */
 
-    #if !defined(machintosh) && !defined(MSDOS)
+#if !defined(machintosh) && !defined(MSDOS)
     sprintf( strsave, "%s%s%s%s", PLAYER_DIR, initial( victim->name ),
-        "/", capitalize( victim->name ) );
-    #else
+             "/", capitalize( victim->name ) );
+#else
     sprintf( strsave, "%s%s", PLAYER_DIR, capitalize( victim->name )
-        );
-    #endif
+           );
+#endif
 
     {
         BUILDING_DATA *bld;
         OBJ_DATA *obj;
-        for (bld = first_building;bld;bld = bld->next)
+        for (bld = first_building; bld; bld = bld->next)
         {
             if ( !str_cmp(bld->owned,victim->name) )
             {
@@ -217,7 +217,7 @@ void do_rename (CHAR_DATA* ch, char* argument)
                 bld->owner = victim;
             }
         }
-        for(obj = first_obj;obj;obj = obj->next)
+        for(obj = first_obj; obj; obj = obj->next)
         {
             if ( !str_cmp(obj->owner,victim->name) )
             {
@@ -263,7 +263,7 @@ const char * name_expand (CHAR_DATA *ch)
         return outbuf;
     }
 
-    for (rch = first_char; rch && (rch != ch);rch = rch->next)
+    for (rch = first_char; rch && (rch != ch); rch = rch->next)
         if (is_name (name, rch->name))
             count++;
 

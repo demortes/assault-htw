@@ -184,12 +184,12 @@ void move_char( CHAR_DATA *ch, int door )
         BUILDING_DATA *bld;
         bld = get_char_building(ch);
         if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) )if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) && ((bld->owner != ch) || (ch->fighttimer > 0))  && !IS_IMMORTAL(ch) )
-        {
-            send_to_char( "You cannot exit this way.\n\r", ch );
-            if ( my_get_hours(ch,TRUE) == 0 )
-                send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
-            return;
-        }
+            {
+                send_to_char( "You cannot exit this way.\n\r", ch );
+                if ( my_get_hours(ch,TRUE) == 0 )
+                    send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
+                return;
+            }
     }
 
     if ( door == DIR_NORTH )
@@ -311,7 +311,7 @@ void move_char( CHAR_DATA *ch, int door )
         if ( IS_SET(ch->in_vehicle->flags,VEHICLE_EATS_FUEL) )
             ch->in_vehicle->fuel -= number_range(1,3);
     }
-    for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
     {
         if ( obj->carried_by != ch )
             continue;
@@ -322,7 +322,7 @@ void move_char( CHAR_DATA *ch, int door )
     x = ch->x;
     y = ch->y;
 
-    for ( fch = map_ch[xx][yy][z];fch;fch = fch_next )
+    for ( fch = map_ch[xx][yy][z]; fch; fch = fch_next )
     {
         fch_next = fch->next_in_room;
         if ( fch == ch )
@@ -357,7 +357,7 @@ void move_char( CHAR_DATA *ch, int door )
     ch->x = xx;
     ch->y = yy;
 
-    for ( fch = map_ch[x][y][z];fch;fch = fch->next_in_room )
+    for ( fch = map_ch[x][y][z]; fch; fch = fch->next_in_room )
     {
         if ( !can_see(fch,ch) || fch == ch )
             continue;
@@ -570,7 +570,7 @@ void do_scan( CHAR_DATA *ch, char *argument )
         level *= 2;
 
     i = 0;
-    for ( wch = first_char;wch;wch = wch->next )
+    for ( wch = first_char; wch; wch = wch->next )
     {
         if ( wch == ch || wch->z != ch->z )
             continue;
@@ -592,7 +592,7 @@ void do_scan( CHAR_DATA *ch, char *argument )
         return;
 
     i = 0;
-    for ( wbld = first_building;wbld;wbld = wbld->next )
+    for ( wbld = first_building; wbld; wbld = wbld->next )
     {
         if ( wbld->z != bld->z )
             continue;
@@ -843,7 +843,7 @@ void do_pit( CHAR_DATA *ch, char *argument )
     {
         sprintf( buf, "%s has gone out of the pit!", ch->name );
         info( buf, 0 );
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->type == BUILDING_HQ )
             {
@@ -872,7 +872,7 @@ void do_pit( CHAR_DATA *ch, char *argument )
             send_to_char( "Heh, no.\n\r", ch );
             return;
         }
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->type == BUILDING_HQ )
             {
@@ -917,7 +917,7 @@ void do_paintball( CHAR_DATA *ch, char *argument )
         if ( ( gun = get_eq_char(ch,WEAR_HOLD_HAND_L) ) != NULL )
             extract_obj(gun);
 
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->type == BUILDING_HQ && complete(bld) )
             {
@@ -959,11 +959,11 @@ void do_paintball( CHAR_DATA *ch, char *argument )
             send_to_char( "Heh, no.\n\r", ch );
             return;
         }
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->type == BUILDING_HQ && complete(bld) )
             {
-                for ( gun=ch->first_carry;gun;gun = gun->next_in_carry_list )
+                for ( gun=ch->first_carry; gun; gun = gun->next_in_carry_list )
                 {
                     if ( gun->item_type == ITEM_BOMB && gun->value[1] != 0 )
                         gun->value[1] = 0;
@@ -1064,17 +1064,17 @@ void do_teleport (CHAR_DATA *ch, char *argument )
         return;
     }
     range = obj->value[0];
-    for ( bld = first_active_building;bld;bld = bld->next_active )
+    for ( bld = first_active_building; bld; bld = bld->next_active )
     {
         if ( bld->z != ch->z )
             continue;
         if ( str_cmp(bld->owned,ch->name)
-            || bld->x + range < ch->x
-            || bld->x - range > ch->x
-            || bld->y + range < ch->y
-            || bld->y - range > ch->y
-            || bld->type != obj->value[1]
-            || !complete(bld) )
+                || bld->x + range < ch->x
+                || bld->x - range > ch->x
+                || bld->y + range < ch->y
+                || bld->y - range > ch->y
+                || bld->type != obj->value[1]
+                || !complete(bld) )
             continue;
 
         act( "$n presses a few buttons on $p, and vanishes!", ch, obj, NULL, TO_ROOM );
@@ -1195,7 +1195,7 @@ void move( CHAR_DATA *ch, int x, int y, int z )
         //amnon - remove me
     }
     else
-        for ( wch = map_ch[ch->x][ch->y][ch->z];wch;wch = wch->next_in_room )
+        for ( wch = map_ch[ch->x][ch->y][ch->z]; wch; wch = wch->next_in_room )
             if ( wch->next_in_room == ch )
                 wch->next_in_room = ch->next_in_room;
     ch->x = x;
@@ -1227,7 +1227,7 @@ void move_vehicle( VEHICLE_DATA *vhc, int x, int y, int z )
         //			free(map_vhc[vhc->x][vhc->y][vhc->z]);
     }
     else
-        for ( vhc2 = map_vhc[vhc->x][vhc->y][vhc->z];vhc2;vhc2 = vhc2->next_in_room )
+        for ( vhc2 = map_vhc[vhc->x][vhc->y][vhc->z]; vhc2; vhc2 = vhc2->next_in_room )
             if ( vhc2->next_in_room == vhc )
                 vhc2->next_in_room = vhc->next_in_room;
     vhc->x = x;
@@ -1253,7 +1253,7 @@ void move_obj( OBJ_DATA *obj, int x, int y, int z )
         }
         else
         {
-            for ( obj2 = map_obj[obj->x][obj->y];obj2;obj2 = obj2->next_in_room )
+            for ( obj2 = map_obj[obj->x][obj->y]; obj2; obj2 = obj2->next_in_room )
             {
                 if ( obj2->next_in_room == obj )
                 {
@@ -1367,7 +1367,7 @@ void do_land( CHAR_DATA *ch, char *argument )
         {
             i = 1;
             sprintf( buf, "@@gYou can land on:\n\r@@a0@@c: Randomly.\n\r" );
-            for ( bld = ch->first_building;bld;bld = bld->next_owned )
+            for ( bld = ch->first_building; bld; bld = bld->next_owned )
             {
                 if ( bld->type == BUILDING_SPACE_CENTER )
                 {
@@ -1395,7 +1395,7 @@ void do_land( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            for ( bld = ch->first_building;bld;bld = bld->next_owned )
+            for ( bld = ch->first_building; bld; bld = bld->next_owned )
             {
                 if ( bld->type == BUILDING_SPACE_CENTER )
                 {
@@ -1480,7 +1480,7 @@ void do_teleport_b( CHAR_DATA *ch, char *argument )
     }
     if ( argument[0] == '\0' )
     {
-        for ( bld2 = first_building;bld2;bld2 = bld2->next )
+        for ( bld2 = first_building; bld2; bld2 = bld2->next )
         {
             if ( bld2->type == BUILDING_TELEPORTER && !str_cmp(bld2->owned,bld->owned) && bld2 != bld )
             {
@@ -1503,7 +1503,7 @@ void do_teleport_b( CHAR_DATA *ch, char *argument )
         send_to_char( "Invalid teleporter number.\n\r", ch );
         return;
     }
-    for ( bld2 = first_building;bld2;bld2 = bld2->next )
+    for ( bld2 = first_building; bld2; bld2 = bld2->next )
     {
         if ( bld2->type == BUILDING_TELEPORTER && !str_cmp(bld2->owned,bld->owned) && bld2 != bld )
         {
@@ -1552,11 +1552,11 @@ void do_medal( CHAR_DATA *ch, char *argument )
     {
         int x,y;
         sprintf( buf, "%s has gone out of the medal arena!", ch->name );
-        for ( x=BORDER_SIZE;x<MEDAL_BORDER_X;x++ )
-            for ( y=BORDER_SIZE;y<MEDAL_BORDER_Y;y++ )
+        for ( x=BORDER_SIZE; x<MEDAL_BORDER_X; x++ )
+            for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
                 if ( map_bld[x][y][Z_PAINTBALL] )
                     extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
-        for ( obj = ch->first_carry;obj;obj = obj_next )
+        for ( obj = ch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
             if ( IS_SET(obj->extra_flags,ITEM_NODROP) || IS_SET(obj->extra_flags,ITEM_STICKY) )
@@ -1569,7 +1569,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
             extract_obj(obj);
         }
         info( buf, 0 );
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->type == BUILDING_HQ && complete(bld))
             {
@@ -1605,7 +1605,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
             send_to_char(buf,ch);
             return;
         }
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
         {
             if ( IS_SET(obj->extra_flags,ITEM_NODROP) )
             {
@@ -1621,7 +1621,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
             send_to_char( "You can't enter with any items or vehicles.\n\r", ch );
             return;
         }
-        for ( wch = first_char;wch;wch = wch->next )
+        for ( wch = first_char; wch; wch = wch->next )
         {
             if ( !medal(wch) )
                 continue;
@@ -1629,22 +1629,22 @@ void do_medal( CHAR_DATA *ch, char *argument )
             send_to_char(buf,ch);
             return;
         }
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             int i;
             if ( bld->type == BUILDING_HQ && complete(bld) )
             {
-                for ( obj = last_obj;obj;obj = obj->prev )
+                for ( obj = last_obj; obj; obj = obj->prev )
                     if ( obj->pIndexData->vnum == OBJ_VNUM_MEDAL )
-                {
-                    extract_obj(obj);
-                    break;
-                }
+                    {
+                        extract_obj(obj);
+                        break;
+                    }
                 sprintf( buf, "%s has entered the medal arena!", ch->name );
                 info( buf, 0 );
                 act( "$n has entered the medal arena!", ch, NULL, NULL, TO_ROOM );
                 move(ch,BORDER_SIZE,BORDER_SIZE,Z_PAINTBALL);
-                for ( obj = map_obj[ch->x][ch->y];obj;obj = obj_next )
+                for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj_next )
                 {
                     obj_next = obj->next_in_room;
                     if ( medal(obj) )
@@ -1657,7 +1657,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 make_medal_base(ch);
                 if ( set == 1 )
                 {
-                    for ( i=0;i<200;i++ )
+                    for ( i=0; i<200; i++ )
                         create_obj_atch(ch,1028);
                     create_obj_atch(ch,1148);
                     create_obj_atch(ch,1011);
@@ -1665,7 +1665,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 }
                 else if ( set == 2 )
                 {
-                    for ( i=0;i<200;i++ )
+                    for ( i=0; i<200; i++ )
                         create_obj_atch(ch,1012);
                     create_obj_atch(ch,1043);
 

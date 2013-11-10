@@ -93,7 +93,7 @@ void engineering_interpret( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    /* 
+    /*
      * Strip leading spaces.
      */
     while ( isspace(*argument) )
@@ -122,8 +122,8 @@ void engineering_interpret( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; eng_cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( command[0] == eng_cmd_table[cmd].name[0]
-            &&   !str_prefix( command, eng_cmd_table[cmd].name )
-            &&   get_trust(ch) >= eng_cmd_table[cmd].level )
+                &&   !str_prefix( command, eng_cmd_table[cmd].name )
+                &&   get_trust(ch) >= eng_cmd_table[cmd].level )
         {
             found = TRUE;
             break;
@@ -143,8 +143,8 @@ void engineering_interpret( CHAR_DATA *ch, char *argument )
         strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX" );
 
     if ( ( IS_SET(ch->act, PLR_LOG) )
-        ||   fLogAll
-        ||  eng_cmd_table[cmd].log == LOG_ALWAYS )
+            ||   fLogAll
+            ||  eng_cmd_table[cmd].log == LOG_ALWAYS )
     {
         sprintf( log_buf, "Log %s: %s", ch->name, logline );
         log_string( log_buf );
@@ -294,7 +294,7 @@ void do_eng_connect( CHAR_DATA *ch, char *argument )
             send_to_char(buf,ch);
         }
 
-        for ( i=0;i<8;i++ )
+        for ( i=0; i<8; i++ )
             obj->value[i] = 0;
     }
     return;
@@ -319,7 +319,7 @@ void do_wires( CHAR_DATA *ch, char *argument )
     }
     else
     {
-        for ( i=4;i<8;i++ )
+        for ( i=4; i<8; i++ )
         {
             if ( obj->value[i] == obj->value[0] )
             {
@@ -337,7 +337,7 @@ void do_wires( CHAR_DATA *ch, char *argument )
     }
     else
     {
-        for ( i=4;i<8;i++ )
+        for ( i=4; i<8; i++ )
         {
             if ( obj->value[i] == obj->value[1] )
             {
@@ -355,7 +355,7 @@ void do_wires( CHAR_DATA *ch, char *argument )
     }
     else
     {
-        for ( i=4;i<8;i++ )
+        for ( i=4; i<8; i++ )
         {
             if ( obj->value[i] == obj->value[2] )
             {
@@ -373,7 +373,7 @@ void do_wires( CHAR_DATA *ch, char *argument )
     }
     else
     {
-        for ( i=4;i<8;i++ )
+        for ( i=4; i<8; i++ )
         {
             if ( obj->value[i] == obj->value[3] )
             {
@@ -429,12 +429,12 @@ void do_engineer( CHAR_DATA *ch, char *argument )
         send_to_char( "You must use a better toolkit for these parts.\n\r", ch );
         return;
     }
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
         obj->value[i] = 0;
     obj->value[number_range(0,3)] = 1;
     obj->value[number_range(4,7)] = 1;
     wire = -1;
-    for ( i=0;i<4;i++ )
+    for ( i=0; i<4; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -443,7 +443,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     obj->value[wire] = 2;
     wire = -1;
-    for ( i=4;i<8;i++ )
+    for ( i=4; i<8; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -452,7 +452,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     obj->value[wire] = 2;
     wire = -1;
-    for ( i=0;i<4;i++ )
+    for ( i=0; i<4; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -461,7 +461,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     obj->value[wire] = 3;
     wire = -1;
-    for ( i=4;i<8;i++ )
+    for ( i=4; i<8; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -470,7 +470,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     obj->value[wire] = 3;
     wire = -1;
-    for ( i=0;i<4;i++ )
+    for ( i=0; i<4; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -479,7 +479,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     obj->value[wire] = 4;
     wire = -1;
-    for ( i=4;i<8;i++ )
+    for ( i=4; i<8; i++ )
     {
         if ( obj->value[i] != 0 )
             continue;
@@ -548,7 +548,7 @@ void act_eng_check( CHAR_DATA *ch, int level )
     else
         chance = ( 7 - ch->pcdata->skill[gsn_engineering] ) * 17;
     wire = number_range(4,7);
-    for ( i=4;i<8;i++ )
+    for ( i=4; i<8; i++ )
     {
         if ( obj->value[i] <= 0 )
             continue;

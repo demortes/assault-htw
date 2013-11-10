@@ -47,13 +47,13 @@ void do_alliances( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(argument,"all") )
         all = TRUE;
 
-    for ( i=0;i<MAX_ALLIANCE;i++ )
+    for ( i=0; i<MAX_ALLIANCE; i++ )
         ord[i] = i;
     if ( sort )
     {
-        for ( i=0;i<MAX_ALLIANCE;i++ )
+        for ( i=0; i<MAX_ALLIANCE; i++ )
         {
-            for ( x=0;x<i;x++ )
+            for ( x=0; x<i; x++ )
             {
                 if ( alliance_table[ord[i]].kills > alliance_table[ord[x]].kills )
                 {
@@ -70,7 +70,7 @@ void do_alliances( CHAR_DATA *ch, char *argument )
     x = 1;
     sprintf(buf, "\n\r@@W%sLeader      @@g|@@W  Members  @@g|@@W  Kills  @@g|@@W  Name@@g\n\r", IS_IMMORTAL(ch) ? "     " : " " );
     send_to_char(buf, ch);
-    for ( j = 0;j < MAX_ALLIANCE;j++ )
+    for ( j = 0; j < MAX_ALLIANCE; j++ )
     {
         i = ord[j];
         if ( alliance_table[i].name == NULL )
@@ -81,10 +81,10 @@ void do_alliances( CHAR_DATA *ch, char *argument )
         if ( IS_IMMORTAL(ch) )
             sprintf(buf+strlen(buf),"%2d. ", i );
         sprintf( buf+strlen(buf), "@@g[@@W%-10s@@g] @@W|@@N   [@@W%3d@@g]   @@W|@@N  [@@W%3d@@g]  @@W|@@N  %s@@g\n\r",
-            alliance_table[i].leader,
-            alliance_table[i].members,
-            alliance_table[i].kills,
-            alliance_table[i].name );
+                 alliance_table[i].leader,
+                 alliance_table[i].members,
+                 alliance_table[i].kills,
+                 alliance_table[i].name );
         x++;
         send_to_char( buf, ch );
     }
@@ -103,7 +103,7 @@ void do_awhere( CHAR_DATA *ch, char *argument )
         return;
     }
     sprintf( buf, "@@WMembers of@@N %s@@N:\n\r", alliance_table[ch->pcdata->alliance].name );
-    for ( wch = first_char;wch;wch = wch->next )
+    for ( wch = first_char; wch; wch = wch->next )
     {
         if ( ch->pcdata->alliance == wch->pcdata->alliance )
         {
@@ -140,7 +140,7 @@ void do_accept( CHAR_DATA *ch, char *argument )
             send_to_char( "You are already a member of an alliance.\n\r", ch );
             return;
         }
-        for ( i = 0;i < 99999;i++ )
+        for ( i = 0; i < 99999; i++ )
         {
             if ( alliance_table[i].name == NULL )
                 break;
@@ -287,25 +287,25 @@ void do_pipe( CHAR_DATA *ch, char *argument )
     char buf[MSL];
     FILE *fp;
 
-    #if defined (unix)
+#if defined (unix)
     fp = popen( argument, "r" );
-    #endif
+#endif
 
-    #if defined ( WIN32 )
+#if defined ( WIN32 )
     fp = _popen(argument, "r" );
-    #endif
+#endif
 
     fgetf( buf, MSL, fp );
 
     if ( ch && ch != NULL )
         send_to_char( buf, ch );
 
-    #if defined (unix)
+#if defined (unix)
     pclose( fp );
-    #endif
-    #if defined ( WIN32 )
+#endif
+#if defined ( WIN32 )
     _pclose (fp);
-    #endif
+#endif
 
     return;
 }
@@ -348,7 +348,7 @@ void do_createalliance(CHAR_DATA *ch, char *argument)
         }*/
     strcat(argument,"@@N");
     {
-        for ( i = 0;i< MAX_ALLIANCE;i++ )
+        for ( i = 0; i< MAX_ALLIANCE; i++ )
         {
             if ( alliance_table[i].name == NULL || alliance_table[i].members == 0)
             {
@@ -357,13 +357,13 @@ void do_createalliance(CHAR_DATA *ch, char *argument)
                     char file[MSL];                         /*Erase board data*/
                     BOARD_DATA *board;
                     sprintf( file, "boards/board.%d", OBJ_VNUM_ALLI_BOARD + i );
-                    for ( board = first_board;board;board = board->next )
+                    for ( board = first_board; board; board = board->next )
                     {
                         if ( board->vnum == OBJ_VNUM_ALLI_BOARD + i )
                         {
                             MESSAGE_DATA *msg;
                             MESSAGE_DATA *msg_next;
-                            for ( msg = board->first_message;msg;msg = msg_next )
+                            for ( msg = board->first_message; msg; msg = msg_next )
                             {
                                 msg_next = msg->next;
                                 UNLINK(msg, board->first_message, board->last_message, next, prev);

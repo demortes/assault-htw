@@ -829,13 +829,13 @@ void do_readrelevel( FILE * fp, RELEVEL_DATA * pRelevel );
 
 /* Relevel DATA */
 struct system_data {
-   RELEVEL_DATA   * pRelevelList;
+    RELEVEL_DATA   * pRelevelList;
 } rlvldata;
 
 struct relevel_data {
-   RELEVEL_DATA   * pNext;
-   char           * strName;
-   int              iLevel;
+    RELEVEL_DATA   * pNext;
+    char           * strName;
+    int              iLevel;
 };
 
 /* prototypes from db.c */
@@ -916,11 +916,11 @@ void    show_cmenu_to   args( ( DESCRIPTOR_DATA *d ) );     /* Class */
 void    show_bmenu_to   args( ( DESCRIPTOR_DATA *d ) );     /* Bonus */
 void   show_pmenu_to    args( ( DESCRIPTOR_DATA *d ) );     /* Planet */
 void    write_to_buffer args( ( DESCRIPTOR_DATA *d, const char *txt,
-int length ) );
+                                int length ) );
 void    send_to_char    args( ( const char *txt, CHAR_DATA *ch ) );
 void    show_string     args( ( DESCRIPTOR_DATA *d, char *input ) );
 void    act             args( ( const char *format, CHAR_DATA *ch,
-const void *arg1, const void *arg2, int type ) );
+                                const void *arg1, const void *arg2, int type ) );
 void    hang            args( ( const char *str ) );
 
 /* db.c */
@@ -977,7 +977,7 @@ void    log_f (char * fmt, ...) __attribute__ ((format(printf,1,2)));
 /* fight.c */
 void    gain_exp    args( ( CHAR_DATA *ch, int value ) );
 void    damage          args( ( CHAR_DATA *ch, CHAR_DATA *victim, int dam,
-int dt ) );
+                                int dt ) );
 void    damage_building args( ( CHAR_DATA *ch, BUILDING_DATA *bld, int dam ) );
 void    damage_vehicle  args( ( CHAR_DATA *ch, VEHICLE_DATA *vhc, int dam, int dt ) );
 void    update_pos      args( ( CHAR_DATA *victim ) );
@@ -1036,9 +1036,9 @@ CD *    get_char_loc      args( ( int x, int y, int z ) );
 OD *    get_obj_loc       args( ( CHAR_DATA *ch, char *argument, int x, int y ) );
 OD *    get_obj_type    args( ( OBJ_INDEX_DATA *pObjIndexData ) );
 OD *    get_obj_list    args( ( CHAR_DATA *ch, char *argument,
-OBJ_DATA *list ) );
+                                OBJ_DATA *list ) );
 OD *    get_obj_room    args( ( CHAR_DATA *ch, char *argument,
-OBJ_DATA *list ) );
+                                OBJ_DATA *list ) );
 OD *    get_obj_carry   args( ( CHAR_DATA *ch, char *argument ) );
 OD *    get_obj_wear    args( ( CHAR_DATA *ch, char *argument ) );
 OD *    get_obj_here    args( ( CHAR_DATA *ch, char *argument ) );
@@ -1164,11 +1164,11 @@ void    alarm_update args( ( void ) );
 void    building_update args( ( void ) );
 
 /* write.c */
-void    write_start     args( ( char * * dest, void * retfunc, void * retparm, CHAR_DATA * ch ) );
+void    write_start     args( ( char ** dest, void * retfunc, void * retparm, CHAR_DATA * ch ) );
 void    write_interpret args( ( CHAR_DATA * ch, char * argument ) );
 
 /* build.c */
-void  build_strdup(char * * dest,char * src,bool freesrc,CHAR_DATA * ch);
+void  build_strdup(char ** dest,char * src,bool freesrc,CHAR_DATA * ch);
 char * build_simpstrdup( char * buf);                       /* A plug in alternative to str_dup */
 void build_save args( ( void ) );
 extern const char * cDirs;

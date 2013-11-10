@@ -712,7 +712,7 @@ unsigned long int multi_table_lookup(const struct lookup_type * table,char * nam
         for (a=0; table[a].text != NULL; a++)
         {
             if (!str_prefix(curname,table[a].text)
-                || !str_cmp(curname,table[a].text))
+                    || !str_cmp(curname,table[a].text))
                 retval ^= ( ( !str_cmp(table[a].text, "nada" ) ) ? 0 : table[a].value );
         }
         name=one_argument(name,curname);
@@ -742,7 +742,7 @@ char * bit_table_lookup(const struct lookup_type * table, unsigned long int numb
     for ( a=0; number && table[a].text; a++ )
     {
         if ( ( number & table[a].value)==table[a].value &&
-            str_cmp( table[a].text, "nada" ) && str_cmp( table[a].text, "placeholder" ) )
+                str_cmp( table[a].text, "nada" ) && str_cmp( table[a].text, "placeholder" ) )
         {
             safe_strcat( MSL, buf,table[a].text);
             //	  safe_strcat( MSL, buf,", ");
@@ -771,10 +771,10 @@ void table_printout(const struct lookup_type * table,char * buf)
     a=0;
     buf[0]='\0';
 
-    for (a=0;table[a].text!=NULL;a++)
+    for (a=0; table[a].text!=NULL; a++)
     {
         if ( ( strcmp(table[a].text,"nada") )
-            &&   ( strcmp(table[a].text,"placeholder") ) )  /* If not an invalid choice */
+                &&   ( strcmp(table[a].text,"placeholder") ) )  /* If not an invalid choice */
         {
             safe_strcat( MSL, buf,"          ");
             safe_strcat( MSL, buf,table[a].text);
@@ -797,10 +797,10 @@ void wide_table_printout(const struct lookup_type * table,char * buf)
     foo = 0;
     buf[0]='\0';
 
-    for (a=0;table[a].text!=NULL;a++)
+    for (a=0; table[a].text!=NULL; a++)
     {
         if (  ( strcmp(table[a].text,"nada") )              /* If not an invalid choice */
-            && ( strcmp(table[a].text,"nada") )   )
+                && ( strcmp(table[a].text,"nada") )   )
         {
             safe_strcat( MSL, buf,"     ");
             sprintf( tmp, "%12s", table[a].text );
@@ -825,16 +825,16 @@ char * show_values(const struct lookup_type * table,int value, bool fBit)
     foo = 0;
     buf[0]='\0';
 
-    for (a=0;table[a].text!=NULL;a++)
+    for (a=0; table[a].text!=NULL; a++)
     {
         if (  ( strcmp(table[a].text,"nada") )              /* If not an invalid choice */
-            && ( strcmp(table[a].text,"placeholder") )  )
+                && ( strcmp(table[a].text,"placeholder") )  )
         {
             safe_strcat( MSL, buf,"     ");
             sprintf( tmp, "%s%-13s",
-                fBit?  (IS_SET( value, table[a].value ) ? "@@y*" : "@@g ") :
-            (value == table[a].value ? "@@y*" : "@@g "),
-                table[a].text );
+                     fBit?  (IS_SET( value, table[a].value ) ? "@@y*" : "@@g ") :
+                         (value == table[a].value ? "@@y*" : "@@g "),
+                         table[a].text );
             safe_strcat( MSL, buf,tmp );
             if ( ++foo % 4 == 0 )
                 safe_strcat( MSL, buf,"\n\r");

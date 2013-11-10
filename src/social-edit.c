@@ -79,7 +79,7 @@ void load_social_table ()
     }
 
     if(fscanf (fp, "%d\n", &maxSocial) != 1)
-    	bug("Read something other than one in social-edit.c",0);
+        bug("Read something other than one in social-edit.c",0);
 
     /* IMPORTANT to use malloc so we can realloc later on */
 
@@ -101,15 +101,15 @@ void save_social (const struct social_type *s, FILE *fp)
 {
     /* get rid of (null) */
     fprintf (fp, "%s~\n%s~\n%s~\n%s~\n%s~\n%s~\n%s~\n%s~\n\n",
-        s->name           ? s->name          : "" ,
-        s->char_no_arg    ? s->char_no_arg   : "" ,
-        s->others_no_arg  ? s->others_no_arg : "" ,
-        s->char_found     ? s->char_found    : "" ,
-        s->others_found   ? s->others_found  : "" ,
-        s->vict_found     ? s->vict_found    : "" ,
-        s->char_auto      ? s->char_auto     : "" ,
-        s->others_auto    ? s->others_auto   : ""
-    );
+             s->name           ? s->name          : "" ,
+             s->char_no_arg    ? s->char_no_arg   : "" ,
+             s->others_no_arg  ? s->others_no_arg : "" ,
+             s->char_found     ? s->char_found    : "" ,
+             s->others_found   ? s->others_found  : "" ,
+             s->vict_found     ? s->vict_found    : "" ,
+             s->char_auto      ? s->char_auto     : "" ,
+             s->others_auto    ? s->others_auto   : ""
+            );
 }
 
 void save_social_table()
@@ -125,11 +125,11 @@ void save_social_table()
         return;
     }
 
-    #ifdef CONST_SOCIAL                                     /* If old table still in use, count socials first */
+#ifdef CONST_SOCIAL                                     /* If old table still in use, count socials first */
 
     for (maxSocial = 0 ; social_table[maxSocial].name[0] ; maxSocial++)
         ;                                                   /* empty */
-    #endif
+#endif
 
     fprintf (fp, "%d\n", maxSocial);
 
@@ -199,10 +199,10 @@ void do_sedit (CHAR_DATA *ch, char *argument)
         /* Copy all elements of old table into new table, except the deleted social */
         for (i = 0, j = 0; i < maxSocial+1; i++)
             if (i != iSocial)                               /* copy, increase only if copied */
-        {
-            new_table[j] = social_table[i];
-            j++;
-        }
+            {
+                new_table[j] = social_table[i];
+                j++;
+            }
 
         free (social_table);
         social_table = new_table;
@@ -255,29 +255,29 @@ void do_sedit (CHAR_DATA *ch, char *argument)
     else if (!str_cmp(cmd, "show"))                         /* Show a certain social */
     {
         sprintf (buf, "Social: %s\n\r"
-            "(cnoarg) No argument given, character sees:\n\r"
-            "%s\n\r\n\r"
-            "(onoarg) No argument given, others see:\n\r"
-            "%s\n\r\n\r"
-            "(cfound) Target found, character sees:\n\r"
-            "%s\n\r\n\r"
-            "(ofound) Target found, others see:\n\r"
-            "%s\n\r\n\r"
-            "(vfound) Target found, victim sees:\n\r"
-            "%s\n\r\n\r"
-            "(cself) Target is character himself:\n\r"
-            "%s\n\r\n\r"
-            "(oself) Target is character himself, others see:\n\r"
-            "%s\n\r",
+                 "(cnoarg) No argument given, character sees:\n\r"
+                 "%s\n\r\n\r"
+                 "(onoarg) No argument given, others see:\n\r"
+                 "%s\n\r\n\r"
+                 "(cfound) Target found, character sees:\n\r"
+                 "%s\n\r\n\r"
+                 "(ofound) Target found, others see:\n\r"
+                 "%s\n\r\n\r"
+                 "(vfound) Target found, victim sees:\n\r"
+                 "%s\n\r\n\r"
+                 "(cself) Target is character himself:\n\r"
+                 "%s\n\r\n\r"
+                 "(oself) Target is character himself, others see:\n\r"
+                 "%s\n\r",
 
-            social_table[iSocial].name,
-            social_table[iSocial].char_no_arg,
-            social_table[iSocial].others_no_arg,
-            social_table[iSocial].char_found,
-            social_table[iSocial].others_found,
-            social_table[iSocial].vict_found,
-            social_table[iSocial].char_auto,
-            social_table[iSocial].others_auto);
+                 social_table[iSocial].name,
+                 social_table[iSocial].char_no_arg,
+                 social_table[iSocial].others_no_arg,
+                 social_table[iSocial].char_found,
+                 social_table[iSocial].others_found,
+                 social_table[iSocial].vict_found,
+                 social_table[iSocial].char_auto,
+                 social_table[iSocial].others_auto);
 
         send_to_char (buf,ch);
         return;                                             /* return right away, do not save the table */

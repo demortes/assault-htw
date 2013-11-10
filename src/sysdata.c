@@ -151,29 +151,29 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
         for ( looper = 0; looper < 1; looper++ )
         {
             sprintf( catbuf,"Level %d Immortals: %s\n\r",
-                81+looper,
-                sysdata.imms[looper].this_string );
+                     81+looper,
+                     sysdata.imms[looper].this_string );
             safe_strcat( MSL, outbuf, catbuf );
         }
         sprintf( catbuf, "Rooms freed: %d\n\r", sysdata.freemap );
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Wizlocked: %s\n\r",
-            ( wizlock ? "Yes" : "No" )  );
+                 ( wizlock ? "Yes" : "No" )  );
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Show Players Damage numbers in combat: %s\n\r",
-            ( sysdata.shownumbers ? "Yes" : "No" ) );
+                 ( sysdata.shownumbers ? "Yes" : "No" ) );
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Pika mod? %s\n\r",
-            ( sysdata.pikamod ? "Yes" : "No" ) );
+                 ( sysdata.pikamod ? "Yes" : "No" ) );
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Show Hidden Players in WHO list: %d\n\r",
-            sysdata.showhidden);
+                 sysdata.showhidden);
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Killfest? %s\n\r",
-            sysdata.killfest ? "Yes" : "No" );
+                 sysdata.killfest ? "Yes" : "No" );
         safe_strcat( MSL, outbuf, catbuf );
         sprintf( catbuf, "Kill Groups? %s\n\r",
-            sysdata.kill_groups ? "Yes" : "No" );
+                 sysdata.kill_groups ? "Yes" : "No" );
         safe_strcat( MSL, outbuf, catbuf );
         send_to_char( outbuf, ch );
         return;
@@ -213,7 +213,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
                 BUILDING_DATA *bld_next;
                 do_backup(ch,"savefest");
                 info("@@2@@aThe KILLING FEST has begun!@@N",0);
-                for ( bld = first_building;bld;bld = bld_next )
+                for ( bld = first_building; bld; bld = bld_next )
                 {
                     bld_next = bld->next;
                     extract_building(bld,TRUE);
@@ -264,10 +264,10 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
         argument = one_argument( argument, arg2 );
         if ( is_number( arg2 ) )
             if ( ( imm_level = atoi( arg2 ) - 81 ) < 0 || imm_level >= 5 )
-        {
-            send_to_char( "Imm levels must be 81 to 85\n\r", ch );
-            return;
-        }
+            {
+                send_to_char( "Imm levels must be 81 to 85\n\r", ch );
+                return;
+            }
 
         if ( str_cmp( arg2, "" ) )
         {
@@ -280,7 +280,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
                 char arg3[MSL];
                 strcpy( arg3, argument );
                 if (  ( imm_level < 0 )
-                    || ( imm_level >= 5 )  )
+                        || ( imm_level >= 5 )  )
                 {
                     send_to_char( "Illegal Immortal level selected.\n\r", ch );
                     return;

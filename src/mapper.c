@@ -116,9 +116,9 @@ void ShowCMap( CHAR_DATA *ch )
     y2 = ch->y + 10;
     x2 = ch->x + 10;
     send_to_char( "\e[9z", ch );
-    for ( x=x1;x<=x2;x++ )
+    for ( x=x1; x<=x2; x++ )
     {
-        for ( y=y1;y<=y2;y++ )
+        for ( y=y1; y<=y2; y++ )
         {
             sect = map_table.type[x][y][z];
             sprintf ( buf, "%s%d", (sect < 10)?"0":"",sect );
@@ -149,7 +149,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
     bool enemy = FALSE;
     bool inverse = FALSE;
 
-    bool terrain[SECT_MAX]={FALSE};
+    bool terrain[SECT_MAX]= {FALSE};
 
     outbuf[0] = '\0';
     color[0] = '\0';
@@ -190,7 +190,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
         int s;
         borderbuf[0] = '\0';
         sbuf[0] = '\0';
-        for ( s = 0;s < ch->map;s++ )
+        for ( s = 0; s < ch->map; s++ )
         {
             sprintf( sbuf+strlen(sbuf), makesmall("    ",small) );
         }
@@ -216,11 +216,11 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
     send_to_char( borderbuf, ch );
 
     for (y = ch->y + maxx; y >= ch->y - maxx; --y)
-    {                                                       /* every row */
+    {   /* every row */
         safe_strcat( MSL, outbuf, "@@c| " );
         sprintf( color, "@@c" );
         for (x = ch->x - ch->map; x <= ch->x + ch->map; ++x)
-        {                                                   /* every column */
+        {   /* every column */
 
             if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS-BORDER_SIZE )
                 in_border = TRUE;
@@ -389,7 +389,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                 }
                 else
                 {
-                    for ( wch = map_ch[x][y][z];wch;wch = wch->next_in_room )
+                    for ( wch = map_ch[x][y][z]; wch; wch = wch->next_in_room )
                     {
                         if ( !can_see(ch,wch) )
                             continue;
@@ -437,7 +437,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                             }
                         }
                         sprintf( color, "%s", ( !in_border ) ? "@@k" : (
-                            !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
+                                     !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
                     }
                     else
                     {
@@ -547,7 +547,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
             terrain[SECT_SNOW] = TRUE;
         }
         sprintf( tbuf, "@@WLegend:  " );
-        for ( j=0;j<SECT_MAX;j++ )
+        for ( j=0; j<SECT_MAX; j++ )
         {
             if ( !terrain[j] )
                 continue;
@@ -606,7 +606,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
 
     for (yy = ch->y + ymaxx; yy >= ch->y - ymaxx; --yy)
         //  for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
-    {                                                       /* every row */
+    {   /* every row */
         if ( yy < 0 )
             y = SPACE_SIZE + 1 + yy;
         else if ( yy >= SPACE_SIZE )
@@ -618,7 +618,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
         sprintf( color, "@@g" );
         for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
             //    for (yy = ch->y - ymaxx; yy <= ch->y + ymaxx; ++yy)
-        {                                                   /* every column */
+        {   /* every column */
 
             if ( xx < 0 )
                 x = SPACE_SIZE + 1 + xx;
@@ -628,9 +628,9 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                 x = xx;
 
             if ( ( ( ( xx - (ch->x - xmaxx)) + (yy - (ch->y - ymaxx)) ) <= 3 )
-                ||   ( ( ( (ch->x + xmaxx) - xx) + ((ch->y + ymaxx))-yy ) <= 3 )
-                ||   ( ( ( (ch->x + xmaxx) - xx) + (yy - (ch->y - ymaxx)) ) <= 3 )
-                ||   ( ( ( xx - (ch->x - xmaxx)) + ((ch->y + ymaxx))-yy ) <= 3 ) )
+                    ||   ( ( ( (ch->x + xmaxx) - xx) + ((ch->y + ymaxx))-yy ) <= 3 )
+                    ||   ( ( ( (ch->x + xmaxx) - xx) + (yy - (ch->y - ymaxx)) ) <= 3 )
+                    ||   ( ( ( xx - (ch->x - xmaxx)) + ((ch->y + ymaxx))-yy ) <= 3 ) )
             {
                 if ( small )
                 {
@@ -664,7 +664,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                 int ppl = 0;
                 int type = -1,ttype = -1;
 
-                for ( obj = map_obj[x][y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
                 {
                     ppl++;
                     type = obj->pIndexData->vnum-799;
@@ -706,7 +706,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                 char ppl_c[MSL];
 
                 {
-                    for ( whc = map_vhc[x][y][Z_SPACE];whc;whc = whc->next_in_room )
+                    for ( whc = map_vhc[x][y][Z_SPACE]; whc; whc = whc->next_in_room )
                     {
                         ppl++;
                         if ( ( wch = whc->driving ) == NULL )
@@ -777,7 +777,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
     yy = ch->y;
     if ( IS_SET(vhc->flags,VEHICLE_PSI_SCANNER) )
         send_to_char(scan,ch);
-    for ( obj = map_obj[xx][yy];obj;obj = obj->next_in_room )
+    for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
     {
         if ( obj->z != Z_SPACE )
             continue;
@@ -842,7 +842,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
     maxx = ch->map / 2;
 
     if ( quest )
-        for ( x = 0;x < SECT_MAX;x++ )
+        for ( x = 0; x < SECT_MAX; x++ )
             terrain[x] = 0;
 
     if ( IS_SET(ch->config,CONFIG_LARGEMAP) )
@@ -866,25 +866,25 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
             continue;
 
         if ( d->character != ch
-            &&  d->character->x > ch->x - maxx
-            &&  d->character->x < ch->x + maxx
-            &&  d->character->y > ch->y - maxx
-            &&  d->character->y < ch->y + maxx )
+                &&  d->character->x > ch->x - maxx
+                &&  d->character->x < ch->x + maxx
+                &&  d->character->y > ch->y - maxx
+                &&  d->character->y < ch->y + maxx )
+        {
+            xx=d->character->x;
+            yy=d->character->y;
+            if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) != NULL )
             {
-                     xx=d->character->x;
-                     yy=d->character->y;
-                         if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) != NULL )
-                         {
-                              if (obj->item_type==ITEM_WEAPON)
-                              range=obj->value[4]+1;
-                              }
-                              
-		                                sprintf( p_buf+strlen(p_buf), "%s%s%s%s %d/%d\n\r",
-(in_range(ch,d->character,range)) ? "*" : "",
-                                         (ch->y < yy) 
-? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" : 
-"East", (ch->x == xx) && (ch->y == yy) ? "Here" : "",  xx, yy);
-}
+                if (obj->item_type==ITEM_WEAPON)
+                    range=obj->value[4]+1;
+            }
+
+            sprintf( p_buf+strlen(p_buf), "%s%s%s%s %d/%d\n\r",
+                     (in_range(ch,d->character,range)) ? "*" : "",
+                     (ch->y < yy)
+                     ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" :
+                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "",  xx, yy);
+        }
     }
     if ( ch->z != Z_AIR )
     {
@@ -943,15 +943,15 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 
     }
     sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
-        (b_north[0] != '\0') ? b_north : wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
-        (b_east[0] != '\0')  ? b_east  : wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
-        (b_south[0] != '\0') ? b_south : wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
-        (b_west[0] != '\0')  ? b_west  : wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
+             (b_north[0] != '\0') ? b_north : wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
+             (b_east[0] != '\0')  ? b_east  : wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
+             (b_south[0] != '\0') ? b_south : wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
+             (b_west[0] != '\0')  ? b_west  : wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
 
     x = ch->x;
     y = ch->y;
     last = map_table.type[x][y][ch->z];
-    for ( y = ch->y;y < MAX_MAPS -2;y++ )
+    for ( y = ch->y; y < MAX_MAPS -2; y++ )
     {
         if ( map_table.type[x][y][ch->z] != last )
         {
@@ -960,7 +960,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
         }
     }
     y = ch->y;
-    for ( x = ch->x;x < MAX_MAPS-2;x++ )
+    for ( x = ch->x; x < MAX_MAPS-2; x++ )
     {
         if ( map_table.type[x][y][ch->z] != last )
         {
@@ -969,7 +969,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
         }
     }
     x = ch->x;
-    for ( y = ch->y;y > 2;y-- )
+    for ( y = ch->y; y > 2; y-- )
     {
         if ( map_table.type[x][y][ch->z] != last )
         {
@@ -978,7 +978,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
         }
     }
     y = ch->y;
-    for ( x = ch->x;x > 2;x-- )
+    for ( x = ch->x; x > 2; x-- )
     {
         if ( map_table.type[x][y][ch->z] != last )
         {
@@ -997,12 +997,12 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 
     if ( quest )
     {
-        for ( x = ch->x - ch->map/2;x < ch->x + ch->map/2;x++ )
-            for ( y = ch->y - ch->map/2;y < ch->y + ch->map/2;y++ )
+        for ( x = ch->x - ch->map/2; x < ch->x + ch->map/2; x++ )
+            for ( y = ch->y - ch->map/2; y < ch->y + ch->map/2; y++ )
                 terrain[map_table.type[x][y][1]]++;
 
         sprintf( b_buf, "\n\rBasic map description:\n\r\n\r" );
-        for ( x = 0;x < SECT_MAX;x++ )
+        for ( x = 0; x < SECT_MAX; x++ )
             if ( terrain[x] > 0 )
                 sprintf( b_buf+strlen(b_buf), "%d %s sectors.\n\r", terrain[x], wildmap_table[x].name );
     }
@@ -1015,7 +1015,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
     {
         send_to_char( g_buf, ch );
         send_to_char( w_buf, ch );
-                send_to_char( e_buf, ch );
+        send_to_char( e_buf, ch );
         send_to_char( b_buf, ch );
     }
     if ( !quest )
@@ -1042,7 +1042,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
     sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s%s          Level %d\n\r\n\r@@r[@@GExits:@@d ", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, (bld->maxhp <= build_table[bld->type].hp * 1.5 && upgradable(bld) )?" @@b(@@yU@@b)@@N" : "", bld->level);
     if ( ch->desc->mxp )
         strcat( borderbuf, "\e[1z" );
-    for ( i=0;i<4;i++ )
+    for ( i=0; i<4; i++ )
     {
         if ( bld->exit[i] )
         {
@@ -1077,7 +1077,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
     if ( !IS_SET(ch->config,CONFIG_BLIND) && bld->maxhp > 0 )
     {
         j = ((10000 / bld->maxhp) * bld->hp) / 1000;
-        for ( i=0;i<j;i++ )
+        for ( i=0; i<j; i++ )
             sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
     }
     sprintf( borderbuf+strlen(borderbuf), " %d HP\n\r", bld->hp );
@@ -1089,14 +1089,14 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
             j = ((10000 / bld->maxshield) * bld->shield) / 1000;
         else
             j = 0;
-        for ( i=0;i<j;i++ )
+        for ( i=0; i<j; i++ )
             sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
     }
     sprintf( borderbuf+strlen(borderbuf), " %d SHIELD@@N\n\r", bld->shield );
     send_to_char(borderbuf,ch);
     borderbuf[0] = '\0';
     outbuf[0] = '\0';
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
     {
         if ( bld->resources[i] > 0 )
         {
@@ -1128,7 +1128,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
         sprintf( borderbuf, "\n@@r[@@GExits:@@d @@N" );
         if ( ch->desc->mxp )
             strcat( borderbuf, "\e[1z" );
-        for ( i=0;i<4;i++ )
+        for ( i=0; i<4; i++ )
         {
             if ( bld->exit[i] )
             {
@@ -1158,7 +1158,7 @@ void ShowSpace( CHAR_DATA *ch )
     VEHICLE_DATA *vhc = ch->in_vehicle;
     int i,j=get_ship_range(vhc);
     pref[0] = '\0';
-    for ( i=0;i<((j*4)-34);i++ )
+    for ( i=0; i<((j*4)-34); i++ )
         sprintf( pref+strlen(pref)," ");
 
     sprintf(buf, "\n\r" );
@@ -1245,7 +1245,7 @@ void draw_space( CHAR_DATA *ch )
     int i;
     int j;
     sprintf( buf, "\n\r" );
-    for( i=1;i<6;i++ )
+    for( i=1; i<6; i++ )
     {
         j = number_range(1,6);
         if ( j == 1 )
@@ -1402,13 +1402,14 @@ void do_bscan(CHAR_DATA *ch,char *argument)
             break;
         if (y>ch->y+ch->map||y<ch->y-ch->map)
             break;
-        xx=x;yy=y;
+        xx=x;
+        yy=y;
         bld=map_bld[xx][yy][ch->z];
         if (bld!=NULL)
-{
+        {
             sprintf(buf,"%s owned by %s: %d.\n\r",bld->name,bld->owned, (dir==DIR_NORTH) || (dir==DIR_SOUTH) ? bld->y : bld->x);
-send_to_char(buf,ch);
-}
+            send_to_char(buf,ch);
+        }
     }
-return;
+    return;
 }

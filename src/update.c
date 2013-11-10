@@ -129,9 +129,9 @@ void alarm_handler (int signo)
 
         /* spec: log usage values */
         log_f("current usage: %d, last checkpoint: %d",
-            usage_now, last_checkpoint);
+              usage_now, last_checkpoint);
         log_f("SSM dups: %d, loops: %d, recent: %d",
-            ssm_dup_count, ssm_loops, ssm_recent_loops);
+              ssm_dup_count, ssm_loops, ssm_recent_loops);
 
         sprintf(buf,  "%s\n\r", szFrozenMessage );
         bug(buf,0);
@@ -201,7 +201,7 @@ int hit_gain( CHAR_DATA *ch )
 void spec_update( void )
 {
     CHAR_DATA *ch;
-    for ( ch = first_char;ch;ch = ch->next )
+    for ( ch = first_char; ch; ch = ch->next )
     {
         if ( !IS_SET(ch->config,CONFIG_BLIND) )
             continue;
@@ -228,19 +228,19 @@ void spec_up( CHAR_DATA *ch )
     if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) != NULL )
         if ( obj->item_type == ITEM_WEAPON )
             range = obj->value[4] + 1;
-    for ( x = ch->x - maxx;x < ch->x + maxx;x++ )
-        for ( y = ch->y - maxx;y < ch->y + maxx;y++ )
-    {
-        if ( x < 1 || y < 1 || x >= MAX_MAPS || y >= MAX_MAPS )
-            continue;
-        for ( wch = map_ch[x][y][z];wch;wch = wch->next_in_room )
+    for ( x = ch->x - maxx; x < ch->x + maxx; x++ )
+        for ( y = ch->y - maxx; y < ch->y + maxx; y++ )
         {
-            if ( wch == NULL || wch == ch || wch->z != ch->z )
-                break;
-            sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (IS_BETWEEN(x,ch->x-range,ch->x+range) && IS_BETWEEN(y,ch->y-range,ch->y+range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
-            send_to_char( buf, ch );
+            if ( x < 1 || y < 1 || x >= MAX_MAPS || y >= MAX_MAPS )
+                continue;
+            for ( wch = map_ch[x][y][z]; wch; wch = wch->next_in_room )
+            {
+                if ( wch == NULL || wch == ch || wch->z != ch->z )
+                    break;
+                sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (IS_BETWEEN(x,ch->x-range,ch->x+range) && IS_BETWEEN(y,ch->y-range,ch->y+range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
+                send_to_char( buf, ch );
+            }
         }
-    }
 }
 
 void gain_update( void )
@@ -361,7 +361,7 @@ void gain_update( void )
                         if ( allied(bch,ch) && !practicing(ch) )
                             continue;
 
-                        for ( i=0;i<8;i++ )
+                        for ( i=0; i<8; i++ )
                             if ( bld->resources[i] > 0 )
                                 complete = FALSE;
                         if ( complete )
@@ -454,9 +454,9 @@ void char_update( void )
          * Find dude with oldest save time.
          */
         if ( !IS_NPC(ch)
-            && ( ch->desc == NULL || ch->desc->connected == CON_PLAYING )
-            &&   ch->level >= 2
-            &&   ch->save_time < save_time )
+                && ( ch->desc == NULL || ch->desc->connected == CON_PLAYING )
+                &&   ch->level >= 2
+                &&   ch->save_time < save_time )
         {
             ch_save     = ch;
             save_time   = ch->save_time;
@@ -641,7 +641,7 @@ void bomb_update( void )
     BOMB_DATA *bomb_next;
     OBJ_DATA *obj;
     CHAR_DATA *ch = NULL;
-    for ( bomb = first_bomb;bomb;bomb = bomb_next )
+    for ( bomb = first_bomb; bomb; bomb = bomb_next )
     {
         bomb_next = bomb->next;
         obj = bomb->obj;
@@ -674,10 +674,10 @@ void bomb_update( void )
         }
         if ( obj->value[1] != 0 )
             if ( --obj->value[0] <= 0 )
-        {
-            explode(obj);
-            continue;
-        }
+            {
+                explode(obj);
+                continue;
+            }
     }
     return;
 }
@@ -697,7 +697,7 @@ void obj_update( void )
 
     obj_count = 0;
     quest_objs = 0;
-    for ( obj = first_obj;obj;obj = obj_next )
+    for ( obj = first_obj; obj; obj = obj_next )
     {
         obj_next = obj->next;
 
@@ -726,7 +726,7 @@ void obj_update( void )
             {
                 obj->quest_timer = 0;
                 obj->quest_map = 0;
-                for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+                for ( i=0; i<MAX_QUEST_ITEMS; i++ )
                 {
                     if ( quest_obj[i] == obj )
                     {
@@ -743,7 +743,7 @@ void obj_update( void )
             {
                 BUILDING_DATA *bld;
                 quest_objs--;
-                for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+                for ( i=0; i<MAX_QUEST_ITEMS; i++ )
                 {
                     if ( quest_obj[i] == obj )
                     {
@@ -833,7 +833,7 @@ void obj_update( void )
             if ( obj->in_building && obj->in_building->type == BUILDING_SECURE_WAREHOUSE )
                 continue;
             l = (map_bld[obj->value[2]][obj->value[3]][obj->z]) ? get_item_limit(map_bld[obj->value[2]][obj->value[3]][obj->z]) : -1;
-            for ( obj2 = map_obj[obj->value[2]][obj->value[3]];obj2;obj2 = obj2->next_in_room )
+            for ( obj2 = map_obj[obj->value[2]][obj->value[3]]; obj2; obj2 = obj2->next_in_room )
             {
                 if ( obj2->item_type == ITEM_BIOTUNNEL && obj2->value[0] == 0 && obj2->z == obj->z && !obj->carried_by)
                 {
@@ -852,7 +852,7 @@ void obj_update( void )
             }
             if ( i >= l )
                 continue;
-            for ( obj2 = map_obj[obj->x][obj->y];obj2;obj2 = obj2_next )
+            for ( obj2 = map_obj[obj->x][obj->y]; obj2; obj2 = obj2_next )
             {
                 obj2_next = obj2->next_in_room;
                 if ( obj2 == obj || obj2->z != obj->z || obj2->carried_by || !CAN_WEAR(obj2, ITEM_TAKE) )
@@ -907,10 +907,10 @@ void obj_update( void )
                     continue;
                 }
                 move_obj(obj,nx,ny,obj->z);
-                for (nx=obj->x-10;nx<obj->x+10;nx++)
+                for (nx=obj->x-10; nx<obj->x+10; nx++)
                 {
                     if ( ex ) break;
-                    for (ny=obj->y-10;ny<obj->y+10;ny++)
+                    for (ny=obj->y-10; ny<obj->y+10; ny++)
                     {
                         if ( ex ) break;
                         if ( map_bld[nx][ny][obj->z] && map_bld[nx][ny][obj->z]->active )
@@ -942,7 +942,7 @@ void obj_update( void )
             {
                 if ( number_percent() < 20 )
                 {
-                    for ( ch = map_ch[obj->x][obj->y][Z_SPACE];ch;ch = ch->next_in_room )
+                    for ( ch = map_ch[obj->x][obj->y][Z_SPACE]; ch; ch = ch->next_in_room )
                     {
                         if ( number_percent() < 50 && ch->in_vehicle && ch->in_vehicle->z == Z_SPACE )
                         {
@@ -1003,7 +1003,7 @@ void obj_update( void )
                 extract_obj(obj);
                 continue;
             }
-            for ( obj2 = obj->next_in_room;obj2;obj2 = obj2->next_in_room )
+            for ( obj2 = obj->next_in_room; obj2; obj2 = obj2->next_in_room )
             {
                 if ( obj2 == NULL )
                     break;
@@ -1062,7 +1062,7 @@ void obj_update( void )
 
 void update_last_obj()
 {
-    for (;last_obj->next;last_obj = last_obj->next)
+    for (; last_obj->next; last_obj = last_obj->next)
         if ( !last_obj->next )
             break;
     return;
@@ -1077,7 +1077,7 @@ void vehicle_update( void )
     CHAR_DATA *wch;
 
     vehicle_count = 0;
-    for ( vhc = first_vehicle;vhc;vhc = vhc_next )
+    for ( vhc = first_vehicle; vhc; vhc = vhc_next )
     {
         vehicle_count++;
         vhc_next = vhc->next;
@@ -1280,10 +1280,10 @@ void aggr_update( void )
                     act_sresearch( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_mine )
                     act_mine( wch, wch->c_level );
-/*
-                else if ( wch->c_sn == gsn_mark )
-                    act_mark( wch, wch->c_level );
-*/
+                /*
+                                else if ( wch->c_sn == gsn_mark )
+                                    act_mark( wch, wch->c_level );
+                */
                 else if ( wch->c_sn == gsn_fix )
                     act_fix( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_eng_check )
@@ -1325,16 +1325,16 @@ void maze_update( void )
     static bool under;
 
     under = !under;
-    for ( x = BORDER_SIZE;x < MAX_MAPS - BORDER_SIZE;x++ )
-        for ( y = BORDER_SIZE;y < MAX_MAPS - BORDER_SIZE;y++ )
-    {
-        if ( map_table.type[x][y][Z_UNDERGROUND] != SECT_MAGMA || under )
-            map_table.type[x][y][Z_UNDERGROUND] = SECT_UNDERGROUND;
-    }
+    for ( x = BORDER_SIZE; x < MAX_MAPS - BORDER_SIZE; x++ )
+        for ( y = BORDER_SIZE; y < MAX_MAPS - BORDER_SIZE; y++ )
+        {
+            if ( map_table.type[x][y][Z_UNDERGROUND] != SECT_MAGMA || under )
+                map_table.type[x][y][Z_UNDERGROUND] = SECT_UNDERGROUND;
+        }
     if ( under )
         init_fields();
 
-    for ( c = 0;c < MAX_MAPS / 10; c++ )
+    for ( c = 0; c < MAX_MAPS / 10; c++ )
     {
         more = TRUE;
         x = number_range(4,MAX_MAPS-4);
@@ -1363,7 +1363,7 @@ void maze_update( void )
                 more = FALSE;
         }
     }
-    for ( wch = first_char;wch; wch = wch->next )
+    for ( wch = first_char; wch; wch = wch->next )
         if ( wch->z == Z_UNDERGROUND )
             map_table.type[x][y][Z_UNDERGROUND] = SECT_BURNED;
 
@@ -1374,12 +1374,12 @@ void rooms_update( void )
 {
     int x,y,sect,z;
 
-    for ( z = 0;z < Z_MAX;z++ )
+    for ( z = 0; z < Z_MAX; z++ )
     {
 
-        for ( x = BORDER_SIZE;x < MAX_MAPS - BORDER_SIZE;x++ )
+        for ( x = BORDER_SIZE; x < MAX_MAPS - BORDER_SIZE; x++ )
         {
-            for ( y=BORDER_SIZE;y<MAX_MAPS-BORDER_SIZE;y++ )
+            for ( y=BORDER_SIZE; y<MAX_MAPS-BORDER_SIZE; y++ )
             {
                 if ( planet_table[z].system == 0 )
                     continue;
@@ -1581,7 +1581,7 @@ void quest_update( void )
 
     if ( type == 1 || type == 3 )
     {
-        for ( bld = last_building;bld;bld = bld->prev )
+        for ( bld = last_building; bld; bld = bld->prev )
         {
             if ( !bld->owner )
                 continue;
@@ -1650,7 +1650,7 @@ void quest_update( void )
             return;
         obj->quest_timer = 600;
         obj->quest_map = 10;
-        for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+        for ( i=0; i<MAX_QUEST_ITEMS; i++ )
         {
             if ( quest_obj[i] == NULL )
             {
@@ -1697,10 +1697,10 @@ void quest_update( void )
 
     sect = map_table.type[x][y][z];
     if ( ( sect == SECT_FIELD || sect == SECT_FOREST || sect == SECT_SNOW || sect == SECT_SAND || sect == SECT_ROCK )
-        && number_percent() < 70 )
+            && number_percent() < 70 )
     {
-        for ( x = obj->x - 7;x < obj->x + 7;x++ )
-            for ( y = obj->y - 7;y < obj->y + 7;y++ )
+        for ( x = obj->x - 7; x < obj->x + 7; x++ )
+            for ( y = obj->y - 7; y < obj->y + 7; y++ )
                 if ( get_building(x,y,z) || get_char_loc(x,y,z) )
                 {
                     protect = FALSE;
@@ -1719,7 +1719,7 @@ void quest_update( void )
             reset_building(bld,type);
         }
     }
-    for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+    for ( i=0; i<MAX_QUEST_ITEMS; i++ )
     {
         if ( quest_obj[i] == NULL )
         {
@@ -1767,7 +1767,7 @@ void explode( OBJ_DATA *obj )
     }
     if ( obj->z != Z_SPACE )
     {
-        for ( obj2 = map_obj[obj->x][obj->y];obj2;obj2 = obj_next )
+        for ( obj2 = map_obj[obj->x][obj->y]; obj2; obj2 = obj_next )
         {
             obj_next = obj2->next_in_room;
             if ( obj2->item_type == ITEM_BOMB && obj2->z == obj->z && obj2 != obj )
@@ -1790,63 +1790,63 @@ void explode( OBJ_DATA *obj )
         if ( obj->carried_by != NULL )
             dam *= 1.5;
 
-        for ( x = obj->x - maxx;x <= obj->x + maxx;x++ )
-            for ( y = obj->y - maxx;y <= obj->y + maxx;y++ )
-        {
-            if ( x < BORDER_SIZE || y < BORDER_SIZE || x > MAX_MAPS - BORDER_SIZE || y > MAX_MAPS -BORDER_SIZE )
-                continue;
-            if ( type == 0 )
+        for ( x = obj->x - maxx; x <= obj->x + maxx; x++ )
+            for ( y = obj->y - maxx; y <= obj->y + maxx; y++ )
             {
-                for ( vch = map_ch[x][y][z];vch;vch = vch_next )
+                if ( x < BORDER_SIZE || y < BORDER_SIZE || x > MAX_MAPS - BORDER_SIZE || y > MAX_MAPS -BORDER_SIZE )
+                    continue;
+                if ( type == 0 )
                 {
-                    vch_next = vch->next_in_room;
-                                                            //Add planets here
-                    if ( obj->z == Z_GROUND && (vch->z != 1 && vch->z != 0 ))
-                        continue;
-                    if ( ( obj->z != Z_GROUND && obj->z != Z_UNDERGROUND ) && obj->z != vch->z )
-                        continue;
-                    if ( obj->z != Z_GROUND && obj->z != Z_UNDERGROUND && obj->z != vch->z )
-                        continue;
-                    send_to_char( buf, vch );
-                    act( "The ground starts shaking!", vch, NULL, NULL, TO_CHAR );
-                    q = number_range(0,3);
-                    move_char(vch,q);
-                    q = number_range(0,3);
-                    move_char(vch,q);
-                    q = number_range(0,3);
-                    move_char(vch,q);
-                    damage( ch, vch, dam,-1 );
+                    for ( vch = map_ch[x][y][z]; vch; vch = vch_next )
+                    {
+                        vch_next = vch->next_in_room;
+                        //Add planets here
+                        if ( obj->z == Z_GROUND && (vch->z != 1 && vch->z != 0 ))
+                            continue;
+                        if ( ( obj->z != Z_GROUND && obj->z != Z_UNDERGROUND ) && obj->z != vch->z )
+                            continue;
+                        if ( obj->z != Z_GROUND && obj->z != Z_UNDERGROUND && obj->z != vch->z )
+                            continue;
+                        send_to_char( buf, vch );
+                        act( "The ground starts shaking!", vch, NULL, NULL, TO_CHAR );
+                        q = number_range(0,3);
+                        move_char(vch,q);
+                        q = number_range(0,3);
+                        move_char(vch,q);
+                        q = number_range(0,3);
+                        move_char(vch,q);
+                        damage( ch, vch, dam,-1 );
+                    }
                 }
-            }
-            else
-            {
-                bld = map_bld[x][y][obj->z];
-                if ( !bld )
-                    continue;
-                if ( ( vch = get_ch(bld->owned) ) == NULL && !is_evil(bld) )
-                    continue;
-                bld->value[9] = number_range(obj->level/3*2,obj->level);
-                if ( x == obj->x && y == obj->y )
-                    damage_building(ch,bld,dam);
                 else
-                    damage_building(ch,bld,dam/3);
-                for ( vch = map_ch[x][y][z];vch;vch = vch_next )
                 {
-                    vch_next = vch->next_in_room;
-                    if ( vch->z != obj->z )
+                    bld = map_bld[x][y][obj->z];
+                    if ( !bld )
                         continue;
-                    send_to_char( "A nuclear mushroom-blast surrounds the area!\n\r", vch );
-                    damage(ch,vch,dam,DAMAGE_BLAST);
+                    if ( ( vch = get_ch(bld->owned) ) == NULL && !is_evil(bld) )
+                        continue;
+                    bld->value[9] = number_range(obj->level/3*2,obj->level);
+                    if ( x == obj->x && y == obj->y )
+                        damage_building(ch,bld,dam);
+                    else
+                        damage_building(ch,bld,dam/3);
+                    for ( vch = map_ch[x][y][z]; vch; vch = vch_next )
+                    {
+                        vch_next = vch->next_in_room;
+                        if ( vch->z != obj->z )
+                            continue;
+                        send_to_char( "A nuclear mushroom-blast surrounds the area!\n\r", vch );
+                        damage(ch,vch,dam,DAMAGE_BLAST);
+                    }
                 }
             }
-        }
         extract_obj(obj);
         return;
     }
     if ( obj->pIndexData->vnum == OBJ_VNUM_FLASH_GRENADE )
     {
         sprintf( buf, "%s explodes in a really really bright flash!\n\r", obj->short_descr );
-        for ( vch = map_ch[obj->x][obj->y][obj->z];vch;vch = vch_next )
+        for ( vch = map_ch[obj->x][obj->y][obj->z]; vch; vch = vch_next )
         {
             vch_next = vch->next_in_room;
             if ( NOT_IN_ROOM(vch,obj) )
@@ -1877,7 +1877,7 @@ void explode( OBJ_DATA *obj )
     if ( obj->pIndexData->vnum == OBJ_VNUM_SMOKE_BOMB )
     {
         sprintf( buf, "%s explodes, releasing toxic smoke!\n\r", obj->short_descr );
-        for ( vch = map_ch[obj->x][obj->y][obj->z];vch;vch = vch_next )
+        for ( vch = map_ch[obj->x][obj->y][obj->z]; vch; vch = vch_next )
         {
             vch_next = vch->next_in_room;
             if ( NOT_IN_ROOM(vch,obj))
@@ -1905,7 +1905,7 @@ void explode( OBJ_DATA *obj )
     if ( obj->pIndexData->vnum == OBJ_VNUM_BIO_GRENADE )
     {
         sprintf( buf, "%s explodes, releasing a green cloud!\n\r", obj->short_descr );
-        for ( vch = map_ch[obj->x][obj->y][obj->y];vch;vch = vch_next )
+        for ( vch = map_ch[obj->x][obj->y][obj->y]; vch; vch = vch_next )
         {
             vch_next = vch->next_in_room;
             if ( NOT_IN_ROOM(vch,obj))
@@ -1928,7 +1928,7 @@ void explode( OBJ_DATA *obj )
     if ( obj->pIndexData->vnum == OBJ_VNUM_BURN_GRENADE )
     {
         sprintf( buf, "%s explodes, releasing a stinging chemical!\n\r", obj->short_descr );
-        for ( vch = map_ch[obj->x][obj->y][obj->z];vch;vch = vch_next )
+        for ( vch = map_ch[obj->x][obj->y][obj->z]; vch; vch = vch_next )
         {
             vch_next = vch->next_in_room;
             if ( NOT_IN_ROOM(vch, obj))
@@ -1991,39 +1991,39 @@ void explode( OBJ_DATA *obj )
             act( "$n takes a last breath, and EXPLODES into a million pieces!", obj->carried_by, NULL, NULL, TO_ROOM );
             act( "With your last breath, you gaze as the entire world around you goes up in flames.", obj->carried_by, NULL, NULL, TO_CHAR );
         }
-        for ( x=obj->x-1;x<=obj->x+1;x++ )
-            for ( y=obj->y-1;y<=obj->y+1;y++ )
+        for ( x=obj->x-1; x<=obj->x+1; x++ )
+            for ( y=obj->y-1; y<=obj->y+1; y++ )
                 if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
-                    for ( vch = map_ch[x][y][obj->z];vch;vch = vch_next )
+                    for ( vch = map_ch[x][y][obj->z]; vch; vch = vch_next )
                         //		for ( vch = first_char;vch;vch = vch_next )
-                        {
-                            vch_next = vch->next_in_room;
-                            if ( obj->value[3] == 3 )
-                                break;
-                            if ( vch == ch )
-                                continue;
+                    {
+                        vch_next = vch->next_in_room;
+                        if ( obj->value[3] == 3 )
+                            break;
+                        if ( vch == ch )
+                            continue;
 
-                            act( "You are blasted by the force of $p!", vch, obj, NULL, TO_CHAR );
-                            act( "$n is blasted by the force of $p!", vch, obj, NULL, TO_ROOM );
+                        act( "You are blasted by the force of $p!", vch, obj, NULL, TO_CHAR );
+                        act( "$n is blasted by the force of $p!", vch, obj, NULL, TO_ROOM );
 
-                            dam = dice(obj->weight,obj->value[2]);
+                        dam = dice(obj->weight,obj->value[2]);
 
-                            if ( vch->x != obj->x )
-                                dam /= 2;
-                            if ( vch->y != obj->y )
-                                dam /= 2;
+                        if ( vch->x != obj->x )
+                            dam /= 2;
+                        if ( vch->y != obj->y )
+                            dam /= 2;
 
-                            if ( obj->carried_by != NULL && vch == obj->carried_by )
-                                dam = obj->carried_by->hit * 3;
-                            if ( obj->carried_by != NULL )
-                                dam *= 1.5;
+                        if ( obj->carried_by != NULL && vch == obj->carried_by )
+                            dam = obj->carried_by->hit * 3;
+                        if ( obj->carried_by != NULL )
+                            dam *= 1.5;
 
-                            damage( ch, vch, dam,DAMAGE_BLAST );
-                        }
+                        damage( ch, vch, dam,DAMAGE_BLAST );
+                    }
         if ( obj->z != Z_SPACE )
         {
-            for ( x=obj->x-1;x<=obj->x+1;x++ )
-                for ( y=obj->y-1;y<=obj->y+1;y++ )
+            for ( x=obj->x-1; x<=obj->x+1; x++ )
+                for ( y=obj->y-1; y<=obj->y+1; y++ )
                     if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
                     {
                         bld = map_bld[x][y][obj->z];
@@ -2034,7 +2034,7 @@ void explode( OBJ_DATA *obj )
 
                         dam = number_range((obj->weight*obj->value[2])/2,obj->weight*obj->value[2]);
                         if ( obj->pIndexData->vnum == 1029 )//deadman
-                    //					dam /= 10;
+                            //					dam /= 10;
                             continue;
                         if ( x != obj->x )
                             dam /= 2;
@@ -2060,7 +2060,7 @@ void explode( OBJ_DATA *obj )
         {
             vch = ch;
             if ( ( abs(ch->x-obj->x) <= 1 && abs(ch->y-obj->y) <= 1 && obj->z == ch->z )
-                || obj->carried_by == vch)
+                    || obj->carried_by == vch)
             {
                 act( "You are blasted by the force of $p!", vch, obj, NULL, TO_CHAR );
                 act( "$n is blasted by the force of $p!", vch, obj, NULL, TO_ROOM );

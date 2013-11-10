@@ -168,7 +168,7 @@ void build_save()
     char filename[255];
     char buf[MAX_STRING_LENGTH];
 
-    for (a=0;a<CurLoops && saving_area>0;a++)
+    for (a=0; a<CurLoops && saving_area>0; a++)
     {
 
         if ( saving_area== START_SAVING)
@@ -201,11 +201,21 @@ void build_save()
 
         switch (Section)
         {
-            case BUILD_SEC_AREA:     build_save_area();     break;
-            case BUILD_SEC_HELP:     build_save_help();     break;
-            case BUILD_SEC_ROOMS:    build_save_rooms();    break;
-            case BUILD_SEC_OBJECTS:  build_save_objects();  break;
-            case BUILD_SEC_END:      build_save_end();      break;
+        case BUILD_SEC_AREA:
+            build_save_area();
+            break;
+        case BUILD_SEC_HELP:
+            build_save_help();
+            break;
+        case BUILD_SEC_ROOMS:
+            build_save_rooms();
+            break;
+        case BUILD_SEC_OBJECTS:
+            build_save_objects();
+            break;
+        case BUILD_SEC_END:
+            build_save_end();
+            break;
         }
     }
     return;
@@ -292,9 +302,9 @@ void build_save_objects()
     fprintf(SaveFile,"%s~\n",pObject->short_descr);
     fprintf(SaveFile,"%s~\n",pObject->description);
     fprintf(SaveFile,"%i %i %i\n",pObject->item_type,pObject->extra_flags,
-        pObject->wear_flags);
+            pObject->wear_flags);
 
-    for ( i=0;i<MAX_OBJECT_VALUES;i++ )
+    for ( i=0; i<MAX_OBJECT_VALUES; i++ )
         fprintf(SaveFile,"%i ", pObject->value[i]);
     /*     fprintf(SaveFile,"%i %i %i %i %i %i %i %i %i %i\n",val0,val1,val2,val3,
          pObject->value[4], pObject->value[5],pObject->value[6],pObject->value[7],

@@ -145,7 +145,7 @@ void do_research (CHAR_DATA *ch, char *argument )
     }
     if ( argument[0] == '\0' )
     {
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
         {
             if ( obj->item_type == ITEM_BLUEPRINT && obj->value[0] == bld->type )
                 break;
@@ -491,8 +491,7 @@ void act_dig( CHAR_DATA *ch, int level )
             if ( number_percent() < 50 )
                 type = ELEMENT_GRASS;
         }
-        else
-        if ( number_percent() < 50 )
+        else if ( number_percent() < 50 )
             type = ELEMENT_SOIL;
         if ( type == -1 )
         {
@@ -756,7 +755,7 @@ void do_chemistry( CHAR_DATA *ch, char *argument )
             return;
         }
 
-        for ( x = obj->value[0]-1;x > 0;x-- )
+        for ( x = obj->value[0]-1; x > 0; x-- )
             i = i * 10;
 
         x = ( container->value[obj->value[1]] / i ) % 10;
@@ -846,15 +845,15 @@ void act_chemistry( CHAR_DATA *ch, int level )
         int i;
         //Formulas
 
-        for ( i=0;formula_table[i].vnum != -1;i++ )
+        for ( i=0; formula_table[i].vnum != -1; i++ )
         {
             if ( ( obj->value[0] == formula_table[i].solid
-                && obj->value[1] == formula_table[i].liquid
-                && obj->value[2] == formula_table[i].gas )
-                || ( ch->class == CLASS_SCIENTIST && number_percent() < 10
-                && ( ( obj->value[0] > 0 && formula_table[i].solid > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) )
-                && ( ( obj->value[1] > 0 && formula_table[i].liquid > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) )
-                && ( ( obj->value[2] > 0 && formula_table[i].gas > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) ) ) )
+                    && obj->value[1] == formula_table[i].liquid
+                    && obj->value[2] == formula_table[i].gas )
+                    || ( ch->class == CLASS_SCIENTIST && number_percent() < 10
+                         && ( ( obj->value[0] > 0 && formula_table[i].solid > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) )
+                         && ( ( obj->value[1] > 0 && formula_table[i].liquid > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) )
+                         && ( ( obj->value[2] > 0 && formula_table[i].gas > 0 ) || ( obj->value[0] == 0 && formula_table[i].solid == 0 ) ) ) )
             {
                 item = formula_table[i].vnum;
                 break;
@@ -908,7 +907,7 @@ void do_target( CHAR_DATA *ch, char *argument )
     int time;
     BUILDING_DATA *bld = NULL;
     bool list = FALSE;
-int btime;
+    int btime;
     if ( IN_PIT(ch) )
         mreturn( "Not in the pit.\n\r", ch );
 
@@ -935,21 +934,21 @@ int btime;
         }
     }
     if ( ch->in_building && GUNNER(ch->in_building) && (ch->in_building->owner && ch->in_building->owner == ch) )
-        bld = ch->in_building; 
+        bld = ch->in_building;
 
-	if (list != TRUE && (ch->x != victim->x || ch->y != victim->y || ch->z != victim->z) && bld == NULL)
-	{	
-		if (ch->in_building && !open_bld(ch->in_building))
-		{
-			send_to_char( "You can't target from inside the building.\n\r", ch );
-			return;
-		}
-		if (victim->in_building && !open_bld(victim->in_building) )
-		{
-			send_to_char( "You can't target through walls.\n\r", ch );
-			return;
-		}
-	}
+    if (list != TRUE && (ch->x != victim->x || ch->y != victim->y || ch->z != victim->z) && bld == NULL)
+    {
+        if (ch->in_building && !open_bld(ch->in_building))
+        {
+            send_to_char( "You can't target from inside the building.\n\r", ch );
+            return;
+        }
+        if (victim->in_building && !open_bld(victim->in_building) )
+        {
+            send_to_char( "You can't target through walls.\n\r", ch );
+            return;
+        }
+    }
     if ( (  ( weapon = get_eq_char( ch, WEAR_HOLD_HAND_L ) ) == NULL || weapon->item_type != ITEM_WEAPON ) && ch->in_vehicle == NULL && bld == NULL )
     {
         if (  ( weapon = get_eq_char( ch, WEAR_HOLD_HAND_R ) ) == NULL )
@@ -1007,16 +1006,16 @@ int btime;
         int x,y;
 
         sprintf( buf, "You are able to target the following people:\n\r\n\r" );
-        for ( x=ch->x-range;x<=ch->x+range;x++ )
-            for ( y=ch->y-range;y<=ch->y+range;y++ )
-        {
-            if ( x < BORDER_SIZE || y < BORDER_SIZE || x > MAX_MAPS - BORDER_SIZE || y > MAX_MAPS - BORDER_SIZE )
-                continue;
-            for ( victim = map_ch[x][y][ch->z];victim;victim = victim->next_in_room )
+        for ( x=ch->x-range; x<=ch->x+range; x++ )
+            for ( y=ch->y-range; y<=ch->y+range; y++ )
             {
-                sprintf( buf+strlen(buf), "@@g%s @@c(@@a%d@@c/@@a%d@@c)\n\r", victim->name, x,y);
+                if ( x < BORDER_SIZE || y < BORDER_SIZE || x > MAX_MAPS - BORDER_SIZE || y > MAX_MAPS - BORDER_SIZE )
+                    continue;
+                for ( victim = map_ch[x][y][ch->z]; victim; victim = victim->next_in_room )
+                {
+                    sprintf( buf+strlen(buf), "@@g%s @@c(@@a%d@@c/@@a%d@@c)\n\r", victim->name, x,y);
+                }
             }
-        }
         send_to_char(buf,ch);
         return;
     }
@@ -1056,12 +1055,12 @@ int btime;
     if ( time < 5 )
         time = 5;
 
-if (IS_SET(ch->config,CONFIG_BLIND))
-{
-                                    if (!ch->in_building)
-                                    time=5;
-}
-                                  
+    if (IS_SET(ch->config,CONFIG_BLIND))
+    {
+        if (!ch->in_building)
+            time=5;
+    }
+
     if ( victim->z == Z_AIR && ch->z == Z_GROUND )
         time = 1;
 
@@ -1472,7 +1471,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
     {
         OBJ_DATA *obj;
         OBJ_DATA *comp = NULL;
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
             if ( obj->item_type == ITEM_COMPUTER )
                 if ( comp == NULL || obj->value[0] > comp->value[0] )
                     comp = obj;
@@ -1512,7 +1511,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
             send_to_char( "Install a back door at whose computer?\n\r", ch );
             return;
         }
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
             if ( obj->item_type == ITEM_COMPUTER )
                 if ( comp == NULL || obj->value[0] > comp->value[0] )
                     comp = obj;
@@ -1538,7 +1537,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
             send_to_char( "Your computer doesn't have that range.\n\r", ch );
             return;
         }
-        for ( obj = wch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = wch->first_carry; obj; obj = obj->next_in_carry_list )
         {
             if ( obj->item_type == ITEM_COMPUTER && obj->value[3] == 0 )
             {
@@ -1579,7 +1578,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
 
         x = atoi(arg2);
         y = atoi(arg3);
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
             if ( obj->item_type == ITEM_COMPUTER )
                 if ( comp == NULL || obj->value[0] > comp->value[0] )
                 {
@@ -1608,7 +1607,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
                 return;
             }
 
-            for ( obj = bounce->first_carry;obj;obj = obj->next_in_carry_list )
+            for ( obj = bounce->first_carry; obj; obj = obj->next_in_carry_list )
             {
                 if ( obj->item_type == ITEM_COMPUTER && obj->value[3] != 0 )
                 {
@@ -1779,7 +1778,7 @@ void act_computer( CHAR_DATA *ch, int level )
             ch->c_sn = -1;
             return;
         }
-        for ( obj = ch->victim->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->victim->first_carry; obj; obj = obj->next_in_carry_list )
         {
             if ( obj->item_type == ITEM_COMPUTER )
             {
@@ -1844,7 +1843,7 @@ void act_computer( CHAR_DATA *ch, int level )
     {
         OBJ_DATA *obj;
         bool found = FALSE;
-        for ( obj = ch->victim->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->victim->first_carry; obj; obj = obj->next_in_carry_list )
         {
             if ( obj->item_type == ITEM_COMPUTER )
             {
@@ -1887,7 +1886,7 @@ void act_computer( CHAR_DATA *ch, int level )
         OBJ_DATA *comp = NULL;
         BUILDING_DATA *bld2;
         char buf[MSL];
-        for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+        for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
             if ( obj->item_type == ITEM_COMPUTER )
                 if ( comp == NULL || obj->value[0] > comp->value[0] )
                     comp = obj;
@@ -1905,13 +1904,13 @@ void act_computer( CHAR_DATA *ch, int level )
             return;
         }
 
-        for ( bld2 = first_building;bld2;bld2 = bld2->next )
+        for ( bld2 = first_building; bld2; bld2 = bld2->next )
             if ( !str_cmp(bld2->owned,bld->owned) )
-        {
-            bld2->directories = comp->value[0];
-            bld2->real_dir = number_range(1,bld2->directories);
-            bld2->password = number_range(10000,99999);
-        }
+            {
+                bld2->directories = comp->value[0];
+                bld2->real_dir = number_range(1,bld2->directories);
+                bld2->password = number_range(10000,99999);
+            }
         sprintf( buf, "You set up %d directories, and only number %d is real!\n\r", comp->value[0], bld->real_dir );
         send_to_char( buf, ch );
         ch->c_sn = -1;
@@ -1927,12 +1926,12 @@ void act_computer( CHAR_DATA *ch, int level )
             ch->c_sn = -1;
             return;
         }
-        for ( bld2 = first_building;bld2;bld2 = bld2->next )
+        for ( bld2 = first_building; bld2; bld2 = bld2->next )
             if ( !str_cmp(bld2->owned,bld->owned) )
-        {
-            if ( IS_SET(bld2->value[1],INST_SPOOF) )
-                REMOVE_BIT(bld2->value[1],INST_SPOOF);
-        }
+            {
+                if ( IS_SET(bld2->value[1],INST_SPOOF) )
+                    REMOVE_BIT(bld2->value[1],INST_SPOOF);
+            }
         send_to_char( "Scan complete.\n\r", ch );
         ch->c_sn = -1;
         return;
@@ -1966,7 +1965,7 @@ void act_computer( CHAR_DATA *ch, int level )
             CHAR_DATA *vch;
             send_to_char( "You got that hacker!\n\r", ch );
             ch->c_sn = -1;
-            for ( vch = first_char;vch;vch = vch->next )
+            for ( vch = first_char; vch; vch = vch->next )
             {
                 if ( vch->bvictim == ch->in_building )
                 {
@@ -2092,7 +2091,7 @@ void do_sresearch (CHAR_DATA *ch, char *argument )
         char c_buf[MSL];
         sprintf( f_buf, "@@cCompleted Research:@@a\n\r" );
         sprintf( c_buf, "@@cResearchable:@@a\n\r" );
-        for ( i = 0;s_res_table[i].name != NULL;i++ )
+        for ( i = 0; s_res_table[i].name != NULL; i++ )
         {
             if ( s_res_table[i].name == NULL )
                 break;
@@ -2116,7 +2115,7 @@ void do_sresearch (CHAR_DATA *ch, char *argument )
         send_to_char(buf,ch);
         return;
     }
-    for ( i = 0;s_res_table[i].name != NULL;i++ )
+    for ( i = 0; s_res_table[i].name != NULL; i++ )
     {
         if ( s_res_table[i].name == NULL )
             break;
@@ -2198,9 +2197,9 @@ void act_sresearch( CHAR_DATA *ch, int level )
     }
     if(bld->value[1] % 25 == 0)
     {
-   	 sprintf( buf, "You continue researching %s  (%d%%)\n\r", s_res_table[bld->value[0]].name, bld->value[1] );
-    	send_to_char(buf,ch);
-    	act( "$n continues researching.\n\r", ch, NULL, NULL, TO_ROOM );
+        sprintf( buf, "You continue researching %s  (%d%%)\n\r", s_res_table[bld->value[0]].name, bld->value[1] );
+        send_to_char(buf,ch);
+        act( "$n continues researching.\n\r", ch, NULL, NULL, TO_ROOM );
     }
     bld->value[10] -= s_res_table[bld->value[0]].cost;
     bld->value[1]++;
@@ -2232,7 +2231,7 @@ void do_proficiencies(CHAR_DATA *ch, char *argument)
         sprintf(buf,"@@d");
         sprintf(buf2,"@@r");
         send_to_char( "\n\rName                Eng Bld Cmb  Desc\n\r----------------------------------------------------------------\n\r", ch );
-        for ( i=0;ability_table[i].engineering!=-1;i++ )
+        for ( i=0; ability_table[i].engineering!=-1; i++ )
         {
             if ( !has_ability(ch,i) )
                 sprintf(buf+strlen(buf),"%-20s %d   %d   %d   %s\n\r", ability_table[i].name, ability_table[i].engineering,ability_table[i].building,ability_table[i].combat,ability_table[i].desc );
@@ -2250,7 +2249,7 @@ void do_proficiencies(CHAR_DATA *ch, char *argument)
             send_to_char( "You don't have any more proficiency points!\n\r", ch );
             return;
         }
-        for ( i = 0;skill_table[i].gsn != -1;i++ )
+        for ( i = 0; skill_table[i].gsn != -1; i++ )
         {
             if ( !skill_table[i].prof )
                 continue;
@@ -2334,7 +2333,7 @@ void do_train(CHAR_DATA *ch, char *argument)
         return;
     }
     skill = -1;
-    for ( i=0;skill_table[i].gsn != -1;i++ )
+    for ( i=0; skill_table[i].gsn != -1; i++ )
     {
         if ( skill_table[i].gsn == -1 )
             break;
@@ -2367,8 +2366,8 @@ void do_train(CHAR_DATA *ch, char *argument)
     }
     if ( ch->pcdata->skill[skill] >= 100 )
     {
-	send_to_char( "That skill is already at 100%...\n\r", ch );
-	return;
+        send_to_char( "That skill is already at 100%...\n\r", ch );
+        return;
     }
     ch->pcdata->skill[skill]++;
     ch->pcdata->experience -= cost;

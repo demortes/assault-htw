@@ -48,7 +48,7 @@ include <types.h>
 /* Local functions */
 BOARD_DATA * load_board(OBJ_DATA * obj);
 void         save_board(BOARD_DATA * board,CHAR_DATA *ch);
-void finished_editing( MESSAGE_DATA * msg, char * * dest, CHAR_DATA * ch, bool saved);
+void finished_editing( MESSAGE_DATA * msg, char ** dest, CHAR_DATA * ch, bool saved);
 
 /* Some locals used to manage the list of messages: */
 
@@ -158,7 +158,7 @@ void do_show_contents( CHAR_DATA * ch, OBJ_DATA * obj )
     {
         cnt++;
         sprintf( buf, "[%3d] %12s : %s",
-            cnt, msg->author, msg->title );
+                 cnt, msg->author, msg->title );
         send_to_char( buf, ch );
 
     }
@@ -425,7 +425,7 @@ void do_delete( CHAR_DATA *ch, char * argument)
 
     /* See if person is writer or is recipient */
     if ( str_cmp(ch->name,msg->author) && !is_name(ch->name,msg->title)
-        && get_trust(ch) < MAX_LEVEL )
+            && get_trust(ch) < MAX_LEVEL )
     {
         if ( object->value[4] == -1 || str_cmp(alliance_table[object->value[4]].leader,ch->name))
         {
@@ -499,14 +499,14 @@ void do_show_message( CHAR_DATA *ch ,int mess_num, OBJ_DATA * obj )
             to_person = one_argument(msg->title,to_check);
             to_person = one_argument( to_person, private_name );
             if (  !str_cmp(to_check,"to:")
-                && str_prefix(private_name,ch->name)
-                && str_cmp(msg->author,ch->name) && ch->trust < 84 )
+                    && str_prefix(private_name,ch->name)
+                    && str_cmp(msg->author,ch->name) && ch->trust < 84 )
             {
                 send_to_char("This is a private message.\n\r",ch);
                 break;
             }
             sprintf( buf, "** [%d] %12s : %s ** \n\r\n\r%s\n\r",
-                cnt, msg->author, msg->title , msg->message );
+                     cnt, msg->author, msg->title , msg->message );
             send_to_char( buf, ch );
             break;
         }
@@ -613,16 +613,16 @@ void do_write( CHAR_DATA *ch, char *argument )
 
 /* Deals with taking message out of list if user aborts... */
 
-void finished_editing( MESSAGE_DATA * msg, char * * dest, CHAR_DATA * ch, bool saved)
+void finished_editing( MESSAGE_DATA * msg, char ** dest, CHAR_DATA * ch, bool saved)
 {
-    #ifdef CHECK_VALID_BOARD
+#ifdef CHECK_VALID_BOARD
     MESSAGE_DATA * SrchMsg;
-    #endif
+#endif
 
     if (!saved)
     {
-        #ifdef CHECK_VALID_BOARD
-        for (SrchMsg=msg->board->messages;SrchMsg != NULL;SrchMsg=SrchMsg->next)
+#ifdef CHECK_VALID_BOARD
+        for (SrchMsg=msg->board->messages; SrchMsg != NULL; SrchMsg=SrchMsg->next)
             if (SrchMsg==msg)
                 break;
 
@@ -631,7 +631,7 @@ void finished_editing( MESSAGE_DATA * msg, char * * dest, CHAR_DATA * ch, bool s
             /* Could not find this message in board list, just lose memory. */
             return;
         }
-        #endif
+#endif
 
         UNLINK(msg, msg->board->first_message, msg->board->last_message, next, prev);
         PUT_FREE(msg, message_free);

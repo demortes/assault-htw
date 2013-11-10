@@ -243,7 +243,7 @@ struct char_ref_type
         (last) = (link); \
     } while(0)
 
-                        /* Link at the head of the list rather than the tail.  Double linked */
+/* Link at the head of the list rather than the tail.  Double linked */
 #define TOPLINK(link, first, last, next, prev) \
     do \
     { \
@@ -260,7 +260,7 @@ struct char_ref_type
         (first) = (link); \
     } while(0)
 
-                        /* Insert link before ref link */
+/* Insert link before ref link */
 #define LINK_BEFORE(link, ref, first, last, next, prev) \
     do \
     { \
@@ -279,7 +279,7 @@ struct char_ref_type
         (ref)->prev = (link); \
     } while (0)
 
-                                /* Insert link after ref link */
+/* Insert link after ref link */
 #define LINK_AFTER(link, ref, first, last, next, prev) \
     do \
     { \
@@ -298,7 +298,7 @@ struct char_ref_type
         (ref)->next = (link); \
     } while (0)
 
-                                /* Unlink a double linked list */
+/* Unlink a double linked list */
 #define UNLINK(link, first, last, next, prev) \
     do \
     { \
@@ -319,7 +319,7 @@ struct char_ref_type
         (link)->prev = NULL; \
         (link)->next = NULL; \
     } while(0)
-                                /* Link to the end of a single-linked list */
+/* Link to the end of a single-linked list */
 #define SING_LINK(link, first, next, DATA_TYPE) \
     do \
     { \
@@ -335,7 +335,7 @@ struct char_ref_type
         (link)->next = NULL; \
     } while(0)
 
-            /* Link to head of a single-linked list (normal linking) */
+/* Link to head of a single-linked list (normal linking) */
 #define SING_TOPLINK(link, first, next) \
     do \
     { \
@@ -362,10 +362,10 @@ struct char_ref_type
         } \
     } while(0)
 
-                        /* Link to end of a half-linked list */
-                                                                                                                                                                                    /* Half linked lists have a LAST pointer, but not a PREV pointer, making
-                                                                                                                                                                                       them approximately halfway between a single linked list and a double
-                                                                                                                                                                                       linked list. -- Altrag */
+/* Link to end of a half-linked list */
+/* Half linked lists have a LAST pointer, but not a PREV pointer, making
+   them approximately halfway between a single linked list and a double
+   linked list. -- Altrag */
 #define HALF_LINK(link, first, last, next) \
     do \
     { \
@@ -377,7 +377,7 @@ struct char_ref_type
         (last) = (link); \
     } while(0)
 
-        /* Link to head of a half-linked list. */
+/* Link to head of a half-linked list. */
 #define HALF_TOPLINK(link, first, last, next) \
     do \
     { \
@@ -387,7 +387,7 @@ struct char_ref_type
         (first) = (link); \
     } while(0)
 
-    /* Unlink a half-linked list. */
+/* Unlink a half-linked list. */
 #define HALF_UNLINK(link, first, last, next, DATA_TYPE) \
     do \
     { \
@@ -414,17 +414,17 @@ struct char_ref_type
         } \
     } while(0)
 
-                                /*
-                                                                                                                                                                                                                                 * Miscellaneous macros.
-                                                                                                                                                                                                                                 */
+/*
+                                                                                                                                                                                                 * Miscellaneous macros.
+                                                                                                                                                                                                 */
 
-                                                                                                                                                                                                                                /* spec: macro-ised getmem as a wrapper around _getmem for mem_log handling */
+/* spec: macro-ised getmem as a wrapper around _getmem for mem_log handling */
 #define getmem(size) _getmem(size,_caller,1)
 #define qgetmem(size) _getmem(size,_caller,0)
 
-                                                                                                                                                                                                                                /* This one goes as a #define in merc.h.. dont worry.. itll work.. :) */
-                                                                                                                                                                                                                                /* spec: log all dispose's if mem_log==TRUE - also nuke trailing ; */
-                                                                                                                                                                                                                                /* spec: add dispose override, too */
+/* This one goes as a #define in merc.h.. dont worry.. itll work.. :) */
+/* spec: log all dispose's if mem_log==TRUE - also nuke trailing ; */
+/* spec: add dispose override, too */
 #define _dispose(mem,size,log) \
     do \
     { \
@@ -441,6 +441,6 @@ struct char_ref_type
 #define dispose(mem,size) _dispose(mem,size,1)
 #define qdispose(mem,size) _dispose(mem,size,0)
 
-        /*
-                                                                                                                                                                                                                                         * Miscellaneous macros.
-                                                                                                                                                                                                                                         */
+/*
+                                                                                                                                                                                                                                 * Miscellaneous macros.
+                                                                                                                                                                                                                                 */

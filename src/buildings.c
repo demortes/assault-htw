@@ -66,7 +66,7 @@ void building_update( void )
     //	building_count = 0;
     active_building_count = 0;
     //	for ( bld = first_building;bld;bld = bld_next )
-    for ( bld = first_active_building;bld;bld = bld_next )
+    for ( bld = first_active_building; bld; bld = bld_next )
     {
         bld_next = bld->next_active;
         //		bld_next = bld->next;
@@ -208,7 +208,7 @@ void building_update( void )
                     range = bld->level * 2;
 
                     y = bld->y;
-                    for ( x = bld->x - range;x < bld->x + range + 1;x++ )
+                    for ( x = bld->x - range; x < bld->x + range + 1; x++ )
                     {
                         if ( INVALID_COORDS(x,y) )
                             continue;
@@ -235,7 +235,7 @@ void building_update( void )
                     x = bld->x;
                     if ( !got )
                     {
-                        for ( y = bld->y - range;y < bld->y + range + 1;y++ )
+                        for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                         {
                             if ( INVALID_COORDS(x,y) )
                                 continue;
@@ -281,7 +281,7 @@ void building_update( void )
                 continue;
         }
         i = 0;
-        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+        for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
         {
             obj_next = obj->next_in_room;
             if ( obj->z != bld->z )
@@ -325,16 +325,16 @@ void building_update( void )
 
         switch( UPPER(bld->name[0]) )
         {
-            /**/        case 'A':
+        /**/        case 'A':
             if ( bld->type == BUILDING_ARMOR_FACTORY )
             {
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                 {
                     if ( obj->z == bld->z && obj->item_type == ITEM_ARMOR && obj->level < 99 )
                     {
                         int j,am;
                         am = (obj->level < 95 ) ? 5 : 99 - obj->level;
-                        for ( j=2;j<9;j++ )
+                        for ( j=2; j<9; j++ )
                             obj->value[j] += am;
                         obj->level += am;
                         break;
@@ -409,7 +409,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -485,57 +485,57 @@ void building_update( void )
             else if ( bld->type == BUILDING_ACIDBLASTER )
             {
                 range = 7;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of acid fires from the acidblaster!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of acid!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_ACID );
+                        }
+                        else
+                            send_to_char( "@@eYou manage to dodge the acid... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of acid fires from the acidblaster!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "@@eYou are hit by the burst of acid!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_ACID );
-                    }
-                    else
-                        send_to_char( "@@eYou manage to dodge the acid... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_ACID_TURRET )
             {
                 range = 3;
                 if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
                     range++;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of acid fires from a turret!@@n\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "@@eYou are hit by the burst of acid!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(15*(bld->level*2)), DAMAGE_ACID );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of acid fires from a turret!@@n\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of acid!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(15*(bld->level*2)), DAMAGE_ACID );
+                        }
+                        else
+                            send_to_char( "@@eYou manage to dodge the acid... for now...@@n\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "@@eYou manage to dodge the acid... for now...@@n\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_ARMORY )
             {
@@ -559,7 +559,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -588,7 +588,7 @@ void building_update( void )
                     obj->y = bld->y;
                     obj->z = bld->z;
                     obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
-                   
+
                     free_string(obj->owner);
                     obj->owner = str_dup(bld->owned);
                     break;
@@ -596,7 +596,7 @@ void building_update( void )
             }
 
             break;
-            /**/        case 'B':
+        /**/        case 'B':
             if ( bld->type == BUILDING_BOT_FACTORY )
             {
                 int vnum;
@@ -619,7 +619,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -653,19 +653,19 @@ void building_update( void )
             else if ( bld->type == BUILDING_BLACKOUT )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch != ch && ( bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance || practicing(ch) ) )
-                        continue;
-                    if ( !IS_SET(ch->effect,EFFECT_BARIN))
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        SET_BIT(ch->effect,EFFECT_BARIN);
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch != ch && ( bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance || practicing(ch) ) )
+                            continue;
+                        if ( !IS_SET(ch->effect,EFFECT_BARIN))
+                        {
+                            SET_BIT(ch->effect,EFFECT_BARIN);
+                        }
+                        break;
                     }
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_BIO_LAB )
             {
@@ -726,7 +726,7 @@ void building_update( void )
                 ch = bch;
                 if ( ch->in_building != bld || first_char->next == NULL )
                     continue;
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
                 {
                     obj_next = obj->next_in_room;
                     if ( obj->item_type != ITEM_MATERIAL || obj->x != bld->x || obj->y != bld->y || obj->z != bld->z || obj->carried_by != NULL )
@@ -770,7 +770,7 @@ void building_update( void )
                     continue;
                 p = number_range(1,web_data.num_players);
                 wch_next = first_char;
-                for ( wch = first_char;wch;wch = wch_next )
+                for ( wch = first_char; wch; wch = wch_next )
                 {
                     p--;
                     if ( wch == last_char )
@@ -843,10 +843,10 @@ void building_update( void )
                 }
             }
             break;
-            /**/        case 'C':
+        /**/        case 'C':
             if ( bld->type == BUILDING_COOLER )
             {
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                 {
                     if ( obj->z == bld->z && obj->heat > 0)
                     {
@@ -998,7 +998,8 @@ void building_update( void )
                     obj->value[2] = 1;
                 if ( IS_SET(bld->value[1],INST_PROCESSOR_UPGRADE) )
                     obj->value[4] = number_range((bld->level*5)/2,(bld->level*10)/2-10);
-                obj->value[1] = 75; obj->value[8] = obj->value[1];
+                obj->value[1] = 75;
+                obj->value[8] = obj->value[1];
             }
             else if ( bld->type == BUILDING_CHEMICAL_FACTORY )
             {
@@ -1043,7 +1044,7 @@ void building_update( void )
                 obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
             }
             break;
-            /**/        case 'D':
+        /**/        case 'D':
             if ( bld->type == BUILDING_DOOMSDAY_DEVICE )
             {
                 if ( bch->timer > 5 )
@@ -1058,37 +1059,37 @@ void building_update( void )
             else if ( bld->type == BUILDING_DIRT_TURRET )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range;x++ )
-                    for ( y = bld->y - range;y < bld->y + range;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range; x++ )
+                    for ( y = bld->y - range; y < bld->y + range; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) || practicing(ch) )
-                        continue;
-                    send_to_char( "A turret suddenly starts blasting sand and dirt around you!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        if ( ch->x > BORDER_SIZE + 1 && number_percent() < 25 && !map_bld[ch->x-1][ch->y][Z_UNDERGROUND] )
-                            map_table.type[ch->x-1][ch->y][Z_UNDERGROUND] = SECT_NULL;
-                        if ( ch->x < (MAX_MAPS - BORDER_SIZE) - 1 && number_percent() < 25 && !map_bld[ch->x+1][ch->y][Z_UNDERGROUND] )
-                            map_table.type[ch->x+1][ch->y][Z_UNDERGROUND] = SECT_NULL;
-                        if ( ch->y > BORDER_SIZE + 1 && number_percent() < 25 && !map_bld[ch->x][ch->y-1][Z_UNDERGROUND] )
-                            map_table.type[ch->x][ch->y-1][Z_UNDERGROUND] = SECT_NULL;
-                        if ( ch->y < (MAX_MAPS - BORDER_SIZE) - 1 && number_percent() < 25 && !map_bld[ch->x][ch->y+1][Z_UNDERGROUND] )
-                            map_table.type[ch->x][ch->y+1][Z_UNDERGROUND] = SECT_NULL;
-                    }
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) || practicing(ch) )
+                            continue;
+                        send_to_char( "A turret suddenly starts blasting sand and dirt around you!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            if ( ch->x > BORDER_SIZE + 1 && number_percent() < 25 && !map_bld[ch->x-1][ch->y][Z_UNDERGROUND] )
+                                map_table.type[ch->x-1][ch->y][Z_UNDERGROUND] = SECT_NULL;
+                            if ( ch->x < (MAX_MAPS - BORDER_SIZE) - 1 && number_percent() < 25 && !map_bld[ch->x+1][ch->y][Z_UNDERGROUND] )
+                                map_table.type[ch->x+1][ch->y][Z_UNDERGROUND] = SECT_NULL;
+                            if ( ch->y > BORDER_SIZE + 1 && number_percent() < 25 && !map_bld[ch->x][ch->y-1][Z_UNDERGROUND] )
+                                map_table.type[ch->x][ch->y-1][Z_UNDERGROUND] = SECT_NULL;
+                            if ( ch->y < (MAX_MAPS - BORDER_SIZE) - 1 && number_percent() < 25 && !map_bld[ch->x][ch->y+1][Z_UNDERGROUND] )
+                                map_table.type[ch->x][ch->y+1][Z_UNDERGROUND] = SECT_NULL;
+                        }
+
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_DEFENSE_LAB )
             {
@@ -1122,7 +1123,7 @@ void building_update( void )
                 obj->owner = str_dup(bld->owned);
             }
             break;
-            /**/        case 'E':
+        /**/        case 'E':
             if ( bld->type == BUILDING_EXPLOSIVES_SUPPLIER )
             {
 
@@ -1191,27 +1192,27 @@ void building_update( void )
                 if ( bld->z != Z_GROUND )
                     continue;
 
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,0) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    send_to_char( "Dirt and rocks fall over your head as the ground shakes!\n\r", ch );
-                    q = number_range(0,3);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    damage(bch,ch,bld->level * 10,-1);
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        send_to_char( "Dirt and rocks fall over your head as the ground shakes!\n\r", ch );
+                        q = number_range(0,3);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        damage(bch,ch,bld->level * 10,-1);
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_EMP_RESEARCH )
             {
@@ -1235,7 +1236,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -1267,101 +1268,101 @@ void building_update( void )
                 }
             }
             break;
-            /**/        case 'F':
+        /**/        case 'F':
             if ( bld->type == BUILDING_FIRE_TURRET )
             {
                 range = 3;
                 if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
                     range++;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of flames fires from a turret!@@n\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "@@eYou are hit by the burst of flame!@@n\n\r", ch );
-                        damage( bch, ch, number_fuzzy(20*(bld->level*2)), DAMAGE_FLAME );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of flames fires from a turret!@@n\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of flame!@@n\n\r", ch );
+                            damage( bch, ch, number_fuzzy(20*(bld->level*2)), DAMAGE_FLAME );
+                        }
+                        else
+                            send_to_char( "You manage to dodge the fire... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to dodge the fire... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_FLASH_TOWER )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "A Flash Tower begins flashing some bright red light at you!\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( !IS_SET(ch->effect,EFFECT_BLIND) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "A Flash Tower begins flashing some bright red light at you!\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level * 5) ) )
                         {
-                            send_to_char( "You suddenly can't see!\n\r", ch );
-                            SET_BIT(ch->effect,EFFECT_BLIND);
+                            if ( !IS_SET(ch->effect,EFFECT_BLIND) )
+                            {
+                                send_to_char( "You suddenly can't see!\n\r", ch );
+                                SET_BIT(ch->effect,EFFECT_BLIND);
+                            }
                         }
+                        else
+                            send_to_char( "It didn't bother you much...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "It didn't bother you much...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_FLAMESPITTER )
             {
                 range = 7;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of flames fires from the flamespitter!@@n\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of flame!@@n\n\r", ch );
+                            damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
+                        }
+                        else
+                            send_to_char( "You manage to dodge the fire... for now...@@n\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of flames fires from the flamespitter!@@n\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "@@eYou are hit by the burst of flame!@@n\n\r", ch );
-                        damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
-                    }
-                    else
-                        send_to_char( "You manage to dodge the fire... for now...@@n\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             break;
-            /**/        case 'G':
+        /**/        case 'G':
             if ( bld->type == BUILDING_GOVERNMENT_HALL && bch->pcdata->alliance != -1 )
             {
                 i = 0;
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                     if ( obj->x == bld->x && obj->y == bld->y && obj->z == bld->z && obj->item_type == ITEM_BOARD
-                    )
-                {
-                    i++;
-                    break;
-                }
+                       )
+                    {
+                        i++;
+                        break;
+                    }
                 if ( i <= 0 )
                 {
                     obj = create_object( get_obj_index(OBJ_VNUM_ALLI_BOARD), 0 );
@@ -1404,36 +1405,36 @@ void building_update( void )
                 if ( ey > MAX_MAPS - BORDER_SIZE )
                     ey = MAX_MAPS - BORDER_SIZE;
 
-                for ( x = sx;x < ex;x++ )
-                    for ( y = sy;y < ey;y++ )
-                {
-                    if ( x <= 0 || y <= 0 || y >= MAX_MAPS || y >= MAX_MAPS )
-                        continue;
-                    jam = map_bld[x][y][bld->z];
-                    if ( jam == NULL || jam == bld || !jam->active )
-                        continue;
-                    if ( jam->type == BUILDING_SECURE_WAREHOUSE )
-                        continue;
-                    steal = FALSE;
-                    for ( obj = map_obj[x][y];obj;obj = obj_next )
+                for ( x = sx; x < ex; x++ )
+                    for ( y = sy; y < ey; y++ )
                     {
-                        obj_next = obj->next_in_room;
-                        if ( obj->item_type == ITEM_MATERIAL && obj->z == bld->z )
-                            move_obj(obj,bld->x,bld->y,bld->z);
-                        steal = TRUE;
-                    }
-                    if ( steal && jam->type == BUILDING_WAREHOUSE )
-                    {
-                        if ( jam->owner != ch )
+                        if ( x <= 0 || y <= 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+                            continue;
+                        jam = map_bld[x][y][bld->z];
+                        if ( jam == NULL || jam == bld || !jam->active )
+                            continue;
+                        if ( jam->type == BUILDING_SECURE_WAREHOUSE )
+                            continue;
+                        steal = FALSE;
+                        for ( obj = map_obj[x][y]; obj; obj = obj_next )
                         {
-                            sprintf( buf, "%s's gatherer stealing from %s (%d/%d)", bld->owned, jam->owned, jam->x, jam->y );
-                            log_f(buf);
+                            obj_next = obj->next_in_room;
+                            if ( obj->item_type == ITEM_MATERIAL && obj->z == bld->z )
+                                move_obj(obj,bld->x,bld->y,bld->z);
+                            steal = TRUE;
                         }
-                        else
-                            send_to_char( "@@yWarning: One of your gatherers is stealing from your warehouse. You must move it out of the gatherer's range.@@N\n\r", ch );
-                    }
+                        if ( steal && jam->type == BUILDING_WAREHOUSE )
+                        {
+                            if ( jam->owner != ch )
+                            {
+                                sprintf( buf, "%s's gatherer stealing from %s (%d/%d)", bld->owned, jam->owned, jam->x, jam->y );
+                                log_f(buf);
+                            }
+                            else
+                                send_to_char( "@@yWarning: One of your gatherers is stealing from your warehouse. You must move it out of the gatherer's range.@@N\n\r", ch );
+                        }
 
-                }
+                    }
             }
             else if ( bld->type == BUILDING_GARAGE )
             {
@@ -1461,16 +1462,16 @@ void building_update( void )
                 obj->owner = str_dup(bld->owned);
             }
             break;
-            /**/        case 'H':
+        /**/        case 'H':
             if ( bld->type == BUILDING_HQ )
             {
                 i = 0;
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                     if ( obj->x == bld->x && obj->y == bld->y && obj->z == bld->z && obj->item_type == ITEM_BOARD )
-                {
-                    i++;
-                    break;
-                }
+                    {
+                        i++;
+                        break;
+                    }
                 if ( i <= 0 )
                 {
                     obj = create_object( get_obj_index(OBJ_VNUM_MAIN_BOARD), 0 );
@@ -1483,34 +1484,34 @@ void building_update( void )
             else if ( bld->type == BUILDING_HYDRO_PUMP )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of water flies towards you!@@n\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of water!@@n\n\r", ch );
+                            //					WAIT_STATE(ch,bld->level * 8);
+                            set_stun(ch,bld->level * 8);
+                            send_to_char( "The stream drops you to the ground!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(30+(bld->level*2)), -1 );
+                        }
+                        else
+                            send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of water flies towards you!@@n\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "@@eYou are hit by the burst of water!@@n\n\r", ch );
-                        //					WAIT_STATE(ch,bld->level * 8);
-                        set_stun(ch,bld->level * 8);
-                        send_to_char( "The stream drops you to the ground!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(30+(bld->level*2)), -1 );
-                    }
-                    else
-                        send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_HACKPORT )
             {
@@ -1525,7 +1526,7 @@ void building_update( void )
             }
 
             break;
-            /**/        case 'I':
+        /**/        case 'I':
             if ( bld->type == BUILDING_IMPROVED_MINE )
             {
                 int type;
@@ -1586,26 +1587,26 @@ void building_update( void )
                 if ( ey > MAX_MAPS - BORDER_SIZE )
                     ey = MAX_MAPS - BORDER_SIZE;
 
-                for ( x = sx;x < ex;x++ )
-                    for ( y = sy;y < ey;y++ )
-                {
-                    if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
-                        continue;
-                    jam = map_bld[x][y][z];
-                    if ( jam == NULL )
-                        continue;
-                    if ( jam->visible == TRUE )
-                        continue;
-                    if ( jam->owner )
+                for ( x = sx; x < ex; x++ )
+                    for ( y = sy; y < ey; y++ )
                     {
-                        if ( jam->owner->pcdata->alliance != -1 && jam->owner->pcdata->alliance == bch->pcdata->alliance )
+                        if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
                             continue;
-                        if ( jam->owner == bch )
+                        jam = map_bld[x][y][z];
+                        if ( jam == NULL )
                             continue;
+                        if ( jam->visible == TRUE )
+                            continue;
+                        if ( jam->owner )
+                        {
+                            if ( jam->owner->pcdata->alliance != -1 && jam->owner->pcdata->alliance == bch->pcdata->alliance )
+                                continue;
+                            if ( jam->owner == bch )
+                                continue;
+                        }
+                        jam->visible = TRUE;
+                        damage_building(bch,jam,bld->level * 20);
                     }
-                    jam->visible = TRUE;
-                    damage_building(bch,jam,bld->level * 20);
-                }
             }
             else if ( bld->type == BUILDING_IMPLANT_RESEARCH )
             {
@@ -1629,7 +1630,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -1661,7 +1662,7 @@ void building_update( void )
                 }
             }
             break;
-            /**/        case 'J':
+        /**/        case 'J':
             if ( bld->type == BUILDING_JAMMER )
             {
                 BUILDING_DATA *jam;
@@ -1684,74 +1685,74 @@ void building_update( void )
                 if ( ey > MAX_MAPS - BORDER_SIZE )
                     ey = MAX_MAPS - BORDER_SIZE;
 
-                for ( x = sx;x < ex;x++ )
-                    for ( y = sy;y < ey;y++ )
-                {
-                    if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
-                        continue;
-                    jam = map_bld[x][y][z];
-                    if ( jam == NULL )
-                        continue;
-                    if ( GUNNER(jam) )
-                        continue;
-                    if ( str_cmp(jam->owned,bld->owned) || jam->x + (bld->level * 2) < bld->x || jam->y + (bld->level * 2) < bld->y || jam->x - (bld->level * 2) > bld->x || jam->y - (bld->level * 2) > bld->y )
-                        continue;
-                    if ( number_percent() < bld->level * 15 )
-                        continue;
-                    jam->visible = FALSE;
-                }
+                for ( x = sx; x < ex; x++ )
+                    for ( y = sy; y < ey; y++ )
+                    {
+                        if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+                            continue;
+                        jam = map_bld[x][y][z];
+                        if ( jam == NULL )
+                            continue;
+                        if ( GUNNER(jam) )
+                            continue;
+                        if ( str_cmp(jam->owned,bld->owned) || jam->x + (bld->level * 2) < bld->x || jam->y + (bld->level * 2) < bld->y || jam->x - (bld->level * 2) > bld->x || jam->y - (bld->level * 2) > bld->y )
+                            continue;
+                        if ( number_percent() < bld->level * 15 )
+                            continue;
+                        jam->visible = FALSE;
+                    }
             }
             break;
-            /**/        case 'K':
+        /**/        case 'K':
             break;
-            /**/        case 'L':
+        /**/        case 'L':
             if ( bld->type == BUILDING_LAVA_THROWER )
             {
                 range = 6;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,6) )
-                        continue;
-                    send_to_char( "@@eA burst of burning lava fires from the lava thrower!@@n\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "@@eYou are hit by the lava!@@n\n\r", ch );
-                        damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,6) )
+                            continue;
+                        send_to_char( "@@eA burst of burning lava fires from the lava thrower!@@n\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the lava!@@n\n\r", ch );
+                            damage( bch, ch, number_fuzzy(40*(bld->level)), DAMAGE_FLAME );
+                        }
+                        else
+                            send_to_char( "You manage to dodge the lava... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to dodge the lava... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_LASER_BATTERY )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "You have been marked by a laser-guided missile!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "You are hit by the missile!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(100*(bld->level)), DAMAGE_LASER );
+                        if ( ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "You have been marked by a laser-guided missile!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are hit by the missile!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(100*(bld->level)), DAMAGE_LASER );
+                        }
+                        else
+                            send_to_char( "You manage to evade the missile...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to evade the missile...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_LUMBERYARD )
             {
@@ -1803,81 +1804,81 @@ void building_update( void )
             else if ( bld->type == BUILDING_LASER_TOWER )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                            continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    send_to_char( "A barrage of lasers starts flashing towards you!\n\r", ch );
-                    if ( number_percent() < ( 50 + (bld->level * 2) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        int dam = number_fuzzy(60+bld->level*2);
-                        send_to_char( "You are hit by the lasers!\n\r", ch );
-                        if ( number_percent() < ( 80 + (bld->level * 2) ) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        send_to_char( "A barrage of lasers starts flashing towards you!\n\r", ch );
+                        if ( number_percent() < ( 50 + (bld->level * 2) ) )
                         {
-                            dam += number_fuzzy(30+bld->level*2);
+                            int dam = number_fuzzy(60+bld->level*2);
                             send_to_char( "You are hit by the lasers!\n\r", ch );
+                            if ( number_percent() < ( 80 + (bld->level * 2) ) )
+                            {
+                                dam += number_fuzzy(30+bld->level*2);
+                                send_to_char( "You are hit by the lasers!\n\r", ch );
+                            }
+                            damage( bch, ch, dam, DAMAGE_LASER );
                         }
-                        damage( bch, ch, dam, DAMAGE_LASER );
-                    }
-                    else
-                        send_to_char( "You manage to dodge the lasers... for now...\n\r", ch );
+                        else
+                            send_to_char( "You manage to dodge the lasers... for now...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_L_TURRET )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                            continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                            continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        int dam = number_fuzzy(80);
-                        send_to_char( "You are hit by the turret!\n\r", ch );
-                        if ( number_percent() < ( 55 - (bld->level * 5) ) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
                         {
-                            dam += number_fuzzy(60);
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( map_table.type[ch->x][ch->y][ch->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            int dam = number_fuzzy(80);
                             send_to_char( "You are hit by the turret!\n\r", ch );
+                            if ( number_percent() < ( 55 - (bld->level * 5) ) )
+                            {
+                                dam += number_fuzzy(60);
+                                send_to_char( "You are hit by the turret!\n\r", ch );
+                            }
+                            damage( bch, ch, dam, DAMAGE_BLAST );
+                            if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                            {
+                                send_to_char( "The bullets were covered in acid!\n\r", ch );
+                                damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            }
                         }
-                        damage( bch, ch, dam, DAMAGE_BLAST );
-                        if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
-                        {
-                            send_to_char( "The bullets were covered in acid!\n\r", ch );
-                            damage(bch,ch,bld->level*10,DAMAGE_ACID);
-                        }
-                    }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             break;
-            /**/        case 'M':
+        /**/        case 'M':
             if ( bld->type == BUILDING_MINING_LAB )
             {
                 if ( i >= 1 )
@@ -1933,26 +1934,26 @@ void building_update( void )
             {
                 int q;
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
                             continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    q = number_range(0,3);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    if ( number_percent() < bld->level * 15 )
-                        move_char(ch,q);
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        q = number_range(0,3);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        if ( number_percent() < bld->level * 15 )
+                            move_char(ch,q);
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_MINE )
             {
@@ -2008,7 +2009,7 @@ void building_update( void )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -2042,49 +2043,49 @@ void building_update( void )
             else if ( bld->type == BUILDING_MAGNET_TOWER )
             {
                 range = 7;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,9) )
-                        continue;
-                    send_to_char( "A strange magnetic wave enfoulges you!\n\r", ch );
-                    if ( number_percent() < ( 20 * (bld->level) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        OBJ_DATA *obj;
-
-                        if ( ( obj = ch->first_carry ) == NULL )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,9) )
+                            continue;
+                        send_to_char( "A strange magnetic wave enfoulges you!\n\r", ch );
+                        if ( number_percent() < ( 20 * (bld->level) ) )
                         {
-                            break;
+                            OBJ_DATA *obj;
+
+                            if ( ( obj = ch->first_carry ) == NULL )
+                            {
+                                break;
+                            }
+                            while ( obj && ( IS_SET(obj->extra_flags,ITEM_NODROP) || IS_SET(obj->extra_flags,ITEM_STICKY) ) )
+                                obj = obj->next_in_carry_list;
+
+                            if ( !obj )
+                                break;
+                            set_fighting(bch,ch);
+                            act( "You discover $p floating towards the magnet tower!", ch, obj, NULL, TO_CHAR );
+                            act( "$n discovers $p floating towards the magnet tower!", ch, obj, NULL, TO_ROOM );
+                            obj_from_char(obj);
+                            obj->x = bld->x;
+                            obj->y = bld->y;
+                            obj->z = bld->z;
+                            free_string(obj->owner);
+                            obj->owner = str_dup(bld->owned);
+                            obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
                         }
-                        while ( obj && ( IS_SET(obj->extra_flags,ITEM_NODROP) || IS_SET(obj->extra_flags,ITEM_STICKY) ) )
-                            obj = obj->next_in_carry_list;
+                        else
+                            send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
 
-                        if ( !obj )
-                            break;
-                        set_fighting(bch,ch);
-                        act( "You discover $p floating towards the magnet tower!", ch, obj, NULL, TO_CHAR );
-                        act( "$n discovers $p floating towards the magnet tower!", ch, obj, NULL, TO_ROOM );
-                        obj_from_char(obj);
-                        obj->x = bld->x;
-                        obj->y = bld->y;
-                        obj->z = bld->z;
-                        free_string(obj->owner);
-                        obj->owner = str_dup(bld->owned);
-                        obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
-
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             break;
-            /**/        case 'N':
+        /**/        case 'N':
             if ( bld->type == BUILDING_NUKE_LAUNCHER )
             {
                 if ( bch->timer > 5 )
@@ -2100,9 +2101,9 @@ void building_update( void )
                     send_to_char( "@@eA reminder-> One of your launchers has a Nuke ready for use.@@N\n\r", ch );
             }
             break;
-            /**/        case 'O':
+        /**/        case 'O':
             break;
-            /**/        case 'P':
+        /**/        case 'P':
             if ( bld->type == BUILDING_PROCESSING_PLANT )
             {
 
@@ -2254,112 +2255,112 @@ void building_update( void )
             else if ( bld->type == BUILDING_PSYCHOSTER )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "Waves of horrible images flow through your head!\n\r", ch );
+                        damage( bch, ch, number_fuzzy(30+(bld->level*2)), DAMAGE_PSYCHIC );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "Waves of horrible images flow through your head!\n\r", ch );
-                    damage( bch, ch, number_fuzzy(30+(bld->level*2)), DAMAGE_PSYCHIC );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_PSYCHIC_RADAR )
             {
                 range = 30;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
-                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_UNDERGROUND) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
-                                continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    sprintf( buf, "%s has been detected nearby at %d/%d!\n\r", ch->name, ch->x, ch->y );
-                    send_to_char(buf,bch);
-                    break;
-                }
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
+                                if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_UNDERGROUND) ) == NULL || ch == bch || IS_IMMORTAL(ch) )
+                                    continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        sprintf( buf, "%s has been detected nearby at %d/%d!\n\r", ch->name, ch->x, ch->y );
+                        send_to_char(buf,bch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_PARTICLE_EMITTER )
             {
                 range = 4;
                 OBJ_DATA *obj2;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( x <= 1 || x >=498 || y <= 1 || y >= 498 )
-                        continue;
-                    for ( obj2 = map_obj[x][y];obj2;obj2 = obj2->next_in_room )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( !obj2 )
+                        if ( x <= 1 || x >=498 || y <= 1 || y >= 498 )
                             continue;
-                        if ( obj2->z != bld->z )
-                            continue;
-                        if ( obj2->item_type != ITEM_BOMB || obj2->value[1] <= 0 )
-                            continue;
-                        obj2->value[1] = 0;
+                        for ( obj2 = map_obj[x][y]; obj2; obj2 = obj2->next_in_room )
+                        {
+                            if ( !obj2 )
+                                continue;
+                            if ( obj2->z != bld->z )
+                                continue;
+                            if ( obj2->item_type != ITEM_BOMB || obj2->value[1] <= 0 )
+                                continue;
+                            obj2->value[1] = 0;
+                        }
                     }
-                }
             }
             else if ( bld->type == BUILDING_POISON_TURRET )
             {
                 range = 6;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,6) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "You are hit by some strange poisoned bullet!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(8*(bld->level*2)), DAMAGE_ACID );
-                        if ( !IS_SET(ch->effect,EFFECT_SLOW) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,6) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
                         {
-                            SET_BIT(ch->effect,EFFECT_SLOW);
-                            send_to_char("You feel sluggish!\n\r", ch );
+                            send_to_char( "You are hit by some strange poisoned bullet!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(8*(bld->level*2)), DAMAGE_ACID );
+                            if ( !IS_SET(ch->effect,EFFECT_SLOW) )
+                            {
+                                SET_BIT(ch->effect,EFFECT_SLOW);
+                                send_to_char("You feel sluggish!\n\r", ch );
+                            }
                         }
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_PROJECTOR )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
-                        if ( !IS_SET(ch->effect,EFFECT_VISION) )
-                            SET_BIT(ch->effect,EFFECT_VISION);
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                            if ( !IS_SET(ch->effect,EFFECT_VISION) )
+                                SET_BIT(ch->effect,EFFECT_VISION);
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_PSYCHIC_AMPLIFIER )
             {
@@ -2372,7 +2373,7 @@ void building_update( void )
                 if  ( lev < 4 )
                     continue;
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -2405,7 +2406,7 @@ void building_update( void )
             }
 
             break;
-            /**/        case 'Q':
+        /**/        case 'Q':
             if ( bld->type == BUILDING_QUARRY )
             {
                 if ( !bch || bch->class != CLASS_MINER )
@@ -2439,109 +2440,110 @@ void building_update( void )
                 obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
             }
             break;
-            /**/        case 'R':
-                                                            if (bld->type==136) //rec hall
-                                                            {
-                                                                                if (i>=20) continue;
-                 if (number_percent()<20)
-                 {
-                                       if (number_percent()<80)
-                                       {
- obj = create_object( get_obj_index(1500),0); //beer
-send_to_loc("Another beer rolls out of a processing machine and bounces over the floor.\n\r",bld->x,bld->y,bld->z);
-}
- else
- {
- obj = create_object( get_obj_index(1501),0); //damn cubans
- send_to_loc("A cuban cigar, fresh from the nation hated by so many, plops from an open box and lands on the floor.\n\r",bld->x,bld->y,bld->z);
-}
+        /**/        case 'R':
+            if (bld->type==136) //rec hall
+            {
+                if (i>=20) continue;
+                if (number_percent()<20)
+                {
+                    if (number_percent()<80)
+                    {
+                        obj = create_object( get_obj_index(1500),0); //beer
+                        send_to_loc("Another beer rolls out of a processing machine and bounces over the floor.\n\r",bld->x,bld->y,bld->z);
+                    }
+                    else
+                    {
+                        obj = create_object( get_obj_index(1501),0); //damn cubans
+                        send_to_loc("A cuban cigar, fresh from the nation hated by so many, plops from an open box and lands on the floor.\n\r",bld->x,bld->y,bld->z);
+                    }
                     obj->x = bld->x;
                     obj->y = bld->y;
                     obj->z = bld->z;
                     obj_to_room( obj, get_room_index(ROOM_VNUM_WMAP) );
-                    }
-}
-else             if ( bld->type == BUILDING_ROCK_TOWER )
+                }
+            }
+            else             if ( bld->type == BUILDING_ROCK_TOWER )
             {
                 range = 6;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,6) )
-                        continue;
-                    if ( number_percent() < ( 40 + (bld->level * 2) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        obj = create_object( get_obj_index( OBJ_VNUM_MATERIAL ), 0 );
-                        obj->x = bld->x;
-                        obj->y = bld->y;
-                        obj->value[0] = 5;
-                        obj->weight = 20 * bld->level;
-                        free_string( obj->name );
-                        obj->name = str_dup("Resource Rock");
-                        free_string( obj->short_descr );
-                        free_string( obj->description );
-                        obj->short_descr = str_dup("@@gA giant, heavy @@drock@@N");
-                        obj->description = str_dup("@@gA giant, heavy @@drock@@N");
-                        obj_to_char(obj,ch);
-                        act( "$p is thrown at you! You catch it!", ch, obj, NULL, TO_CHAR );
-                        act( "$p is thrown at $n! $e catches it!", ch, obj, NULL, TO_ROOM );
-                        damage(bch,ch,number_range(obj->weight/2,obj->weight),-1);
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,6) )
+                            continue;
+                        if ( number_percent() < ( 40 + (bld->level * 2) ) )
+                        {
+                            obj = create_object( get_obj_index( OBJ_VNUM_MATERIAL ), 0 );
+                            obj->x = bld->x;
+                            obj->y = bld->y;
+                            obj->value[0] = 5;
+                            obj->weight = 20 * bld->level;
+                            free_string( obj->name );
+                            obj->name = str_dup("Resource Rock");
+                            free_string( obj->short_descr );
+                            free_string( obj->description );
+                            obj->short_descr = str_dup("@@gA giant, heavy @@drock@@N");
+                            obj->description = str_dup("@@gA giant, heavy @@drock@@N");
+                            obj_to_char(obj,ch);
+                            act( "$p is thrown at you! You catch it!", ch, obj, NULL, TO_CHAR );
+                            act( "$p is thrown at $n! $e catches it!", ch, obj, NULL, TO_ROOM );
+                            damage(bch,ch,number_range(obj->weight/2,obj->weight),-1);
+                        }
+                        else
+                        {
+                            send_to_char( "Giant rocks roll around the room!\r\n", ch );
+                            send_warning(bch,bld,ch);
+                        }
                     }
-                    else
-                    {
-                        send_to_char( "Giant rocks roll around the room!\r\n", ch );
-                        send_warning(bch,bld,ch);
-                    }
-                }
                 continue;
             }
             else if ( bld->type == BUILDING_ROCKETCANNON )
             {
                 int rockets = number_range(1,bld->level),j,hit=0,dam=0;
                 range = 7;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( rockets==1)
-                        sprintf(buf,"You spot a rocket heading your way!\n\r");
-                    else
-                        sprintf( buf, "You spot %d rockets heading your way!\n\r", rockets );
-                    send_to_char( buf, ch );
-                    for ( j=0;j<rockets;j++ )
-                        if ( number_percent() < 70 )
-                    {
-                        hit++; dam += number_range(20,30);
-                    }
-                    if ( hit == 0 )
-                        send_to_char( "You didn't get hit!\n\r", ch );
-                    else if ( hit == 1 )
-                        sprintf( buf, "You are hit by one of the rockets! " );
-                    else
-                        sprintf( buf, "You are hit by %d rockets! ", hit );
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( rockets==1)
+                            sprintf(buf,"You spot a rocket heading your way!\n\r");
+                        else
+                            sprintf( buf, "You spot %d rockets heading your way!\n\r", rockets );
+                        send_to_char( buf, ch );
+                        for ( j=0; j<rockets; j++ )
+                            if ( number_percent() < 70 )
+                            {
+                                hit++;
+                                dam += number_range(20,30);
+                            }
+                        if ( hit == 0 )
+                            send_to_char( "You didn't get hit!\n\r", ch );
+                        else if ( hit == 1 )
+                            sprintf( buf, "You are hit by one of the rockets! " );
+                        else
+                            sprintf( buf, "You are hit by %d rockets! ", hit );
 
-                    if ( dam > 0 )
-                        damage(bch,ch,dam,DAMAGE_BLAST);
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        if ( dam > 0 )
+                            damage(bch,ch,dam,DAMAGE_BLAST);
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             break;
-            /**/        case 'S':
+        /**/        case 'S':
             if ( bld->type == BUILDING_SPY_TRAINING )
             {
                 if ( i >= 1 )
@@ -2590,49 +2592,49 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
             else if ( bld->type == BUILDING_STATUE_SPELGURU || bld->type == BUILDING_STATUE_CYLIS || bld->type == BUILDING_STATUE_DEMISE || bld->type == BUILDING_STATUE_WULFSTON )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch != ch && ( bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance ) )
-                        continue;
-                    if ( bld->type == BUILDING_STATUE_SPELGURU && !IS_SET(ch->effect,EFFECT_RESOURCEFUL))
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "You feel more resourceful.\n\r", ch );
-                        SET_BIT(ch->effect,EFFECT_RESOURCEFUL);
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch != ch && ( bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance ) )
+                            continue;
+                        if ( bld->type == BUILDING_STATUE_SPELGURU && !IS_SET(ch->effect,EFFECT_RESOURCEFUL))
+                        {
+                            send_to_char( "You feel more resourceful.\n\r", ch );
+                            SET_BIT(ch->effect,EFFECT_RESOURCEFUL);
+                        }
+                        else if ( bld->type == BUILDING_STATUE_CYLIS && !IS_SET(ch->effect,EFFECT_BOMBER))
+                        {
+                            send_to_char( "You feel angry, explosive!\n\r", ch );
+                            SET_BIT(ch->effect,EFFECT_BOMBER);
+                        }
+                        else if ( bld->type == BUILDING_STATUE_DEMISE && !IS_SET(ch->effect,EFFECT_POSTAL))
+                        {
+                            send_to_char( "You go POSTAL!\n\r", ch );
+                            SET_BIT(ch->effect,EFFECT_POSTAL);
+                        }
+                        else if ( bld->type == BUILDING_STATUE_WULFSTON && !IS_SET(ch->effect,EFFECT_WULFSKIN))
+                        {
+                            send_to_char( "You howl with rage as your skin changes!\n\r", ch );
+                            SET_BIT(ch->effect,EFFECT_WULFSKIN);
+                        }
+                        break;
                     }
-                    else if ( bld->type == BUILDING_STATUE_CYLIS && !IS_SET(ch->effect,EFFECT_BOMBER))
-                    {
-                        send_to_char( "You feel angry, explosive!\n\r", ch );
-                        SET_BIT(ch->effect,EFFECT_BOMBER);
-                    }
-                    else if ( bld->type == BUILDING_STATUE_DEMISE && !IS_SET(ch->effect,EFFECT_POSTAL))
-                    {
-                        send_to_char( "You go POSTAL!\n\r", ch );
-                        SET_BIT(ch->effect,EFFECT_POSTAL);
-                    }
-                    else if ( bld->type == BUILDING_STATUE_WULFSTON && !IS_SET(ch->effect,EFFECT_WULFSKIN))
-                    {
-                        send_to_char( "You howl with rage as your skin changes!\n\r", ch );
-                        SET_BIT(ch->effect,EFFECT_WULFSKIN);
-                    }
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_STATUE_SERYX )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( x < BORDER_SIZE || y < BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE )
-                        continue;
-                    if ( map_table.type[x][y][bld->z] == SECT_MAGMA || map_table.type[x][y][bld->z] == SECT_NULL )
-                        map_table.type[x][y][bld->z] = SECT_UNDERGROUND;
-                    if ( map_table.type[x][y][bld->z] == SECT_SNOW_BLIZZARD )
-                        map_table.type[x][y][bld->z] = SECT_SNOW;
-                }
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( x < BORDER_SIZE || y < BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE )
+                            continue;
+                        if ( map_table.type[x][y][bld->z] == SECT_MAGMA || map_table.type[x][y][bld->z] == SECT_NULL )
+                            map_table.type[x][y][bld->z] = SECT_UNDERGROUND;
+                        if ( map_table.type[x][y][bld->z] == SECT_SNOW_BLIZZARD )
+                            map_table.type[x][y][bld->z] = SECT_SNOW;
+                    }
             }
             else if ( bld->type == BUILDING_SOLAR_FACILITY )
             {
@@ -2663,7 +2665,7 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
                 if ( map_vhc[bld->x][bld->y][bld->z] )
                     map_vhc[bld->x][bld->y][bld->z]->timer = 0;
 
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
                 {
                     obj_next = obj->next_in_room;
                     if ( obj->item_type != ITEM_MATERIAL || obj->x != bld->x || obj->y != bld->y || obj->z != bld->z || obj->carried_by != NULL || obj->value[0] != 3 )
@@ -2697,42 +2699,42 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
                 if ( ey > MAX_MAPS - BORDER_SIZE )
                     ey = MAX_MAPS - BORDER_SIZE;
 
-                for ( x = sx;x <= ex;x++ )
-                    for ( y = sy;y <= ey;y++ )
-                {
-                    if ( x <= 2 || y <= 2 || y >= MAX_MAPS-2 || y >= MAX_MAPS-2 )
-                        continue;
-                    jam = map_bld[x][y][z];
-
-                    if ( jam == NULL || !map_bld[x][y][z] )
-                        continue;
-                    if ( jam == bld )
-                        continue;
-                    if ( bch )
+                for ( x = sx; x <= ex; x++ )
+                    for ( y = sy; y <= ey; y++ )
                     {
-                        if ( jam->owner )
+                        if ( x <= 2 || y <= 2 || y >= MAX_MAPS-2 || y >= MAX_MAPS-2 )
+                            continue;
+                        jam = map_bld[x][y][z];
+
+                        if ( jam == NULL || !map_bld[x][y][z] )
+                            continue;
+                        if ( jam == bld )
+                            continue;
+                        if ( bch )
                         {
-                            if ( jam->owner != bch )
+                            if ( jam->owner )
+                            {
+                                if ( jam->owner != bch )
+                                    continue;
+                            }
+                        }
+                        else
+                        {
+                            if ( str_cmp(jam->owned,bld->owned) )
                                 continue;
                         }
-                    }
-                    else
-                    {
-                        if ( str_cmp(jam->owned,bld->owned) )
+                        if ( !complete(jam) )
                             continue;
+                        if ( jam->shield >= jam->maxshield )
+                            continue;
+                        if ( jam->value[9] > 0 )
+                            continue;
+                        s = bld->shield;
+                        if ( jam->maxshield - jam->shield < s )
+                            s = jam->maxshield - jam->shield;
+                        bld->shield -= s;
+                        jam->shield += s;
                     }
-                    if ( !complete(jam) )
-                        continue;
-                    if ( jam->shield >= jam->maxshield )
-                        continue;
-                    if ( jam->value[9] > 0 )
-                        continue;
-                    s = bld->shield;
-                    if ( jam->maxshield - jam->shield < s )
-                        s = jam->maxshield - jam->shield;
-                    bld->shield -= s;
-                    jam->shield += s;
-                }
             }
             else if ( bld->type == BUILDING_SPY_SATELLITE || bld->type == BUILDING_SPY_QUARTERS || bld->type == BUILDING_SHOCKWAVE )
             {
@@ -2758,91 +2760,91 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
             else if ( bld->type == BUILDING_STUNGUN )
             {
                 range = 6;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "A Stungun fires at you!\n\r", ch );
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are SHOCKED by the stungun!\n\r", ch );
+                            set_stun(ch,13);
+                            damage(bch, ch, (number_range(1, 5)), DAMAGE_ENVIRO);
+                        }
+                        else
+                            send_to_char( "You ignore the shock.\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "A Stungun fires at you!\n\r", ch );
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "You are SHOCKED by the stungun!\n\r", ch );
-                        set_stun(ch,13);
-                        damage(bch, ch, (number_range(1, 5)), DAMAGE_ENVIRO);
-                    }
-                    else
-                        send_to_char( "You ignore the shock.\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_S_TURRET )
             {
                 range = 3;
                 if ( IS_SET(bld->value[1],INST_LASER_AIMS) )
                     range++;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( map_table.type[ch->x][ch->y][bld->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "You are hit by the turret!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(20+(bld->level*2)), DAMAGE_BULLETS );
-                        if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
                         {
-                            send_to_char( "The bullets were covered in acid!\n\r", ch );
-                            damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
                         }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( map_table.type[ch->x][ch->y][bld->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are hit by the turret!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(20+(bld->level*2)), DAMAGE_BULLETS );
+                            if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                            {
+                                send_to_char( "The bullets were covered in acid!\n\r", ch );
+                                damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            }
+                        }
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             else if ( bld->type == BUILDING_SURFACE_JOLTER )
             {
                 range = 5;
                 if ( bld->z != Z_GROUND )
                     continue;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,0) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    send_to_char( "A wave of electricity flows through the tunnels!\n\r", ch );
-                    send_to_char( "You are zapped!\n\r", ch );
-                    damage( bch, ch, number_fuzzy(20+(bld->level*20)), DAMAGE_LASER );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        send_to_char( "A wave of electricity flows through the tunnels!\n\r", ch );
+                        send_to_char( "You are zapped!\n\r", ch );
+                        damage( bch, ch, number_fuzzy(20+(bld->level*20)), DAMAGE_LASER );
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_SNOW_DIGGER )
             {
@@ -2850,70 +2852,70 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
                 if ( bld->z != Z_GROUND )
                     continue;
 
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,1) ) == NULL )
-                        if ( ( ch = get_rand_char(x,y,0) ) == NULL )
-                            continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                            continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( ch->z == 1 )
-                        send_to_char( "The ground begins to crack!\n\r", ch );
-                    else if ( ch->z == 0 )
-                        send_to_char( "The gound above you begins to crack!\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || !AIR_VEHICLE(ch->in_vehicle->type)) && ch->z == 1 )
-                    {
-                        int x,y;
-                        set_fighting(bch,ch);
-                        act( "The ground breaks, and you fall downwards!", ch, NULL, NULL, TO_CHAR );
-                        act( "The ground breaks, and $n falls downwards!", ch, NULL, NULL, TO_ROOM );
-                        x = URANGE(5,number_range(ch->x-(bld->level*3),ch->x+(bld->level*3)),MAX_MAPS-5);
-                        y = URANGE(5,number_range(ch->y-(bld->level*3),ch->y+(bld->level*3)),MAX_MAPS-5);
-                        if ( x <= 4 )
-                            x = 4;
-                        if ( y <= 4 )
-                            y = 4;
-                        if ( x >= MAX_MAPS-BORDER_SIZE )
-                            x = MAX_MAPS-BORDER_SIZE;
-                        if ( y >= MAX_MAPS-BORDER_SIZE )
-                            y = MAX_MAPS-BORDER_SIZE;
-                        while (map_table.type[x][y][Z_UNDERGROUND] == SECT_MAGMA)
+                        if ( ( ch = get_rand_char(x,y,1) ) == NULL )
+                            if ( ( ch = get_rand_char(x,y,0) ) == NULL )
+                                continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
                         {
-                            if ( x >= MAX_MAPS-BORDER_SIZE && y >= MAX_MAPS-BORDER_SIZE )
-                                break;
-                            if ( (number_percent() < 50 || y >= MAX_MAPS-BORDER_SIZE) && x < MAX_MAPS-BORDER_SIZE )
-                            {
-                                x++;
-                            }
-                            else
-                            {
-                                if ( y < MAX_MAPS-BORDER_SIZE )
-                                    y++;
-                            }
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
                         }
-                        move(ch,x,y,Z_UNDERGROUND);
-                        act( "$n falls from above!", ch, NULL, NULL, TO_ROOM );
-                        do_look(ch,"");
-                    }
-                    else if ( ch->z == Z_UNDERGROUND && number_percent() < 55 + (bld->level*7) )
-                    {
-                        send_to_char( "The ground from above collapses over your head!\n\r", ch );
-                        damage(bch,ch,bld->level * 20,-1);
-                    }
-                    else
-                        send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( ch->z == 1 )
+                            send_to_char( "The ground begins to crack!\n\r", ch );
+                        else if ( ch->z == 0 )
+                            send_to_char( "The gound above you begins to crack!\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || !AIR_VEHICLE(ch->in_vehicle->type)) && ch->z == 1 )
+                        {
+                            int x,y;
+                            set_fighting(bch,ch);
+                            act( "The ground breaks, and you fall downwards!", ch, NULL, NULL, TO_CHAR );
+                            act( "The ground breaks, and $n falls downwards!", ch, NULL, NULL, TO_ROOM );
+                            x = URANGE(5,number_range(ch->x-(bld->level*3),ch->x+(bld->level*3)),MAX_MAPS-5);
+                            y = URANGE(5,number_range(ch->y-(bld->level*3),ch->y+(bld->level*3)),MAX_MAPS-5);
+                            if ( x <= 4 )
+                                x = 4;
+                            if ( y <= 4 )
+                                y = 4;
+                            if ( x >= MAX_MAPS-BORDER_SIZE )
+                                x = MAX_MAPS-BORDER_SIZE;
+                            if ( y >= MAX_MAPS-BORDER_SIZE )
+                                y = MAX_MAPS-BORDER_SIZE;
+                            while (map_table.type[x][y][Z_UNDERGROUND] == SECT_MAGMA)
+                            {
+                                if ( x >= MAX_MAPS-BORDER_SIZE && y >= MAX_MAPS-BORDER_SIZE )
+                                    break;
+                                if ( (number_percent() < 50 || y >= MAX_MAPS-BORDER_SIZE) && x < MAX_MAPS-BORDER_SIZE )
+                                {
+                                    x++;
+                                }
+                                else
+                                {
+                                    if ( y < MAX_MAPS-BORDER_SIZE )
+                                        y++;
+                                }
+                            }
+                            move(ch,x,y,Z_UNDERGROUND);
+                            act( "$n falls from above!", ch, NULL, NULL, TO_ROOM );
+                            do_look(ch,"");
+                        }
+                        else if ( ch->z == Z_UNDERGROUND && number_percent() < 55 + (bld->level*7) )
+                        {
+                            send_to_char( "The ground from above collapses over your head!\n\r", ch );
+                            damage(bch,ch,bld->level * 20,-1);
+                        }
+                        else
+                            send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_STORAGE )
             {
@@ -2937,7 +2939,7 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
                     continue;
                 }
 
-                for ( i=1;;i++ )
+                for ( i=1;; i++ )
                 {
                     vnum = load_list[lev][i].vnum;
                     if ( vnum == -1 || vnum == 0 )
@@ -2971,7 +2973,7 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
             }
 
             break;
-            /**/        case 'T':
+        /**/        case 'T':
             if ( bld->type == BUILDING_TANNERY )
             {
                 if ( i >= 20 || number_percent() < (100 - (bld->level*25) ) )
@@ -3060,201 +3062,201 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
                 if ( ey > MAX_MAPS - BORDER_SIZE )
                     ey = MAX_MAPS - BORDER_SIZE;
 
-                for ( x = sx;x < ex;x++ )
-                    for ( y = sy;y < ey;y++ )
-                {
-                    if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
-                        continue;
-                    jam = map_bld[x][y][z];
-                    if ( jam == NULL )
-                        continue;
-                    if ( jam->value[3] != 0 || is_neutral(jam->type) )
-                        continue;
-                    if ( !jam->owner || !bld->owner )
-                        continue;
-                    if ( jam->owner == bld->owner )
-                        continue;
-                    if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == jam->owner->pcdata->alliance )
-                        continue;
-                    if ( number_percent() < bld->level * 10 )
-                        continue;
-                    if ( IS_SET(bld->value[1],INST_FIREWALL) && number_percent() < bld->level * 20 )
-                        continue;
-                    jam->value[3] = 2;
-                    free_string(jam->attacker);
-                    jam->attacker = str_dup(bch->name);
-                    send_to_char( "@@yThere has been a security breach in one of your systems!@@N\n\r", jam->owner );
-                    if ( jam->z != Z_PAINTBALL )
-                        jam->owner->fighttimer = 480;
-                    if ( bld->owner->z != Z_PAINTBALL )
-                        bld->owner->fighttimer = 120 * 8;
-                    break;
-                }
+                for ( x = sx; x < ex; x++ )
+                    for ( y = sy; y < ey; y++ )
+                    {
+                        if ( x < 0 || y < 0 || y >= MAX_MAPS || y >= MAX_MAPS )
+                            continue;
+                        jam = map_bld[x][y][z];
+                        if ( jam == NULL )
+                            continue;
+                        if ( jam->value[3] != 0 || is_neutral(jam->type) )
+                            continue;
+                        if ( !jam->owner || !bld->owner )
+                            continue;
+                        if ( jam->owner == bld->owner )
+                            continue;
+                        if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == jam->owner->pcdata->alliance )
+                            continue;
+                        if ( number_percent() < bld->level * 10 )
+                            continue;
+                        if ( IS_SET(bld->value[1],INST_FIREWALL) && number_percent() < bld->level * 20 )
+                            continue;
+                        jam->value[3] = 2;
+                        free_string(jam->attacker);
+                        jam->attacker = str_dup(bch->name);
+                        send_to_char( "@@yThere has been a security breach in one of your systems!@@N\n\r", jam->owner );
+                        if ( jam->z != Z_PAINTBALL )
+                            jam->owner->fighttimer = 480;
+                        if ( bld->owner->z != Z_PAINTBALL )
+                            bld->owner->fighttimer = 120 * 8;
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_TRAFFIC_JAMMER )
             {
                 range = 7;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( !ch->in_vehicle || ch->in_vehicle == NULL || ch->in_vehicle->fuel <= 0 )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,7) )
-                        continue;
-                    send_to_char( "Your vehicle starts shaking!\n\r", ch );
-                    if ( number_percent() < ( 20 * (bld->level) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        ch->in_vehicle->fuel -= number_range(1,bld->level * 40);
-                        if ( ch->in_vehicle->fuel < 0 )
-                            ch->in_vehicle->fuel = 0;
-                        set_fighting(bch,ch);
-                    }
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( !ch->in_vehicle || ch->in_vehicle == NULL || ch->in_vehicle->fuel <= 0 )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,7) )
+                            continue;
+                        send_to_char( "Your vehicle starts shaking!\n\r", ch );
+                        if ( number_percent() < ( 20 * (bld->level) ) )
+                        {
+                            ch->in_vehicle->fuel -= number_range(1,bld->level * 40);
+                            if ( ch->in_vehicle->fuel < 0 )
+                                ch->in_vehicle->fuel = 0;
+                            set_fighting(bch,ch);
+                        }
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_TRACTOR_BEAM )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( !ch->in_vehicle || ch->in_vehicle == NULL || ch->in_vehicle->fuel <= 0 )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "Your vehicle starts shaking!\n\r", ch );
-                    if ( number_percent() < ( 20 * (bld->level) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        ch->in_vehicle->driving = NULL;
-                        move_vehicle(ch->in_vehicle,bld->x,bld->y,bld->z);
-                        ch->in_vehicle = NULL;
-                        set_fighting(bch,ch);
-                        send_to_char( "Your vehicle shimmers, and disappears!\n\r", ch );
-                    }
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( !ch->in_vehicle || ch->in_vehicle == NULL || ch->in_vehicle->fuel <= 0 )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "Your vehicle starts shaking!\n\r", ch );
+                        if ( number_percent() < ( 20 * (bld->level) ) )
+                        {
+                            ch->in_vehicle->driving = NULL;
+                            move_vehicle(ch->in_vehicle,bld->x,bld->y,bld->z);
+                            ch->in_vehicle = NULL;
+                            set_fighting(bch,ch);
+                            send_to_char( "Your vehicle shimmers, and disappears!\n\r", ch );
+                        }
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_TURRET )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                            continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                            continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "You are hit by the turret!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(40+(bld->level*2)), DAMAGE_BULLETS );
-                        if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
                         {
-                            send_to_char( "The bullets were covered in acid!\n\r", ch );
-                            damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
                         }
-                    }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( map_table.type[ch->x][ch->y][ch->z] == SECT_FOREST && !IS_SET(bld->value[1],INST_GPS) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are hit by the turret!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(40+(bld->level*2)), DAMAGE_BULLETS );
+                            if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                            {
+                                send_to_char( "The bullets were covered in acid!\n\r", ch );
+                                damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            }
+                        }
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_T_TURRET )
             {
                 range = 8;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,8) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "You are hit by the turret!\n\r", ch );
-                        damage( bch, ch, number_fuzzy(1+(bld->level*2)), DAMAGE_BULLETS );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,8) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are hit by the turret!\n\r", ch );
+                            damage( bch, ch, number_fuzzy(1+(bld->level*2)), DAMAGE_BULLETS );
+                        }
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
 
             break;
-            /**/        case 'U':
+        /**/        case 'U':
             if ( bld->type == BUILDING_UNDERGROUND_TURRET )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
                             continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "A turret fires at you!\n\r", ch );
-                    if ( number_percent() < ( 65 + (bld->level * 5) ) )
-                    {
-                        send_to_char( "You are hit by the turret!\n\r", ch );
-                        damage( bch, ch, number_fuzzy((bld->level*20)), DAMAGE_BULLETS );
-                        if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
-                        {
-                            send_to_char( "The bullets were covered in acid!\n\r", ch );
-                            damage(bch,ch,bld->level*10,DAMAGE_ACID);
-                        }
-                    }
-                    else
-                        send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "A turret fires at you!\n\r", ch );
+                        if ( number_percent() < ( 65 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "You are hit by the turret!\n\r", ch );
+                            damage( bch, ch, number_fuzzy((bld->level*20)), DAMAGE_BULLETS );
+                            if ( IS_SET(bld->value[1],INST_ACID_DEFENSE) && ch && ch->position != POS_DEAD )
+                            {
+                                send_to_char( "The bullets were covered in acid!\n\r", ch );
+                                damage(bch,ch,bld->level*10,DAMAGE_ACID);
+                            }
+                        }
+                        else
+                            send_to_char( "You manage to dodge the bullets... for now...\n\r", ch );
+
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             break;
-            /**/        case 'V':
+        /**/        case 'V':
             if ( bld->type == BUILDING_VIRUS_ANALYZER )
             {
                 bld->value[0] = 0;
             }
             break;
-            /**/        case 'W':
+        /**/        case 'W':
             if ( bld->type == BUILDING_WARP )
             {
                 if ( i >= 1 )
@@ -3276,82 +3278,82 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
             {
                 range = 4;
 
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                            continue;
-
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                            continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    send_to_char( "@@eA burst of bullets is fired at you!@@n\n\r", ch );
-                    if ( number_percent() < 50 )
-                    {
-                        int dam = (bld->level * 10);
-                        if ( ch->z == Z_AIR )
-                            dam *= 1.5;
-                        set_fighting(bch,ch);
-                        send_to_char( "@@eThe bullets strike you!@@n\n\r", ch );
-                        damage(bch,ch,dam,DAMAGE_BULLETS);
-                    }
-                    else
-                        send_to_char( "You stormed through the bullets unharmed...\n\r", ch );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
+                        {
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
+                        }
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        send_to_char( "@@eA burst of bullets is fired at you!@@n\n\r", ch );
+                        if ( number_percent() < 50 )
+                        {
+                            int dam = (bld->level * 10);
+                            if ( ch->z == Z_AIR )
+                                dam *= 1.5;
+                            set_fighting(bch,ch);
+                            send_to_char( "@@eThe bullets strike you!@@n\n\r", ch );
+                            damage(bch,ch,dam,DAMAGE_BULLETS);
+                        }
+                        else
+                            send_to_char( "You stormed through the bullets unharmed...\n\r", ch );
+
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_WEATHER_MACHINE )
             {
                 range = 7;
 
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
-                            continue;
-                    if ( is_evil(bld) )
-                        bch = ch;
-                    else
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                            continue;
-                    }
-                    if ( !building_can_shoot(bld,ch,range) )
-                        continue;
-                    if ( ch->hit == 1 )
-                        continue;
-                    send_to_char( "A gust of wind blows at you, followed by a giant ice storm!\n\r", ch );
-                    if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || AIR_VEHICLE(ch->in_vehicle->type)) )
-                    {
-                        int dam = 50 + (bld->level * 20);
-                        if ( ch->z == Z_AIR )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( is_evil(bld) )
+                            bch = ch;
+                        else
                         {
-                            dam *= 1.5;
-                            i=number_range(0,3);
-                            ch->c_level = i;
+                            if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                                continue;
                         }
-                        if ( dam >= ch->hit )
-                            dam = ch->hit - 1;
-                        set_fighting(bch,ch);
-                        send_to_char( "The blizzard strikes you!\n\r", ch );
-                        damage(bch, ch, dam, DAMAGE_ENVIRO);
-                    }
-                    else
-                        send_to_char( "You stormed through the blizzard unharmed...\n\r", ch );
+                        if ( !building_can_shoot(bld,ch,range) )
+                            continue;
+                        if ( ch->hit == 1 )
+                            continue;
+                        send_to_char( "A gust of wind blows at you, followed by a giant ice storm!\n\r", ch );
+                        if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || AIR_VEHICLE(ch->in_vehicle->type)) )
+                        {
+                            int dam = 50 + (bld->level * 20);
+                            if ( ch->z == Z_AIR )
+                            {
+                                dam *= 1.5;
+                                i=number_range(0,3);
+                                ch->c_level = i;
+                            }
+                            if ( dam >= ch->hit )
+                                dam = ch->hit - 1;
+                            set_fighting(bch,ch);
+                            send_to_char( "The blizzard strikes you!\n\r", ch );
+                            damage(bch, ch, dam, DAMAGE_ENVIRO);
+                        }
+                        else
+                            send_to_char( "You stormed through the blizzard unharmed...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_WEB_RESEARCH )
             {
@@ -3421,103 +3423,103 @@ else             if ( bld->type == BUILDING_ROCK_TOWER )
             else if ( bld->type == BUILDING_WAVE_GENERATOR )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
+                    {
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            if ( bld->z != Z_GROUND || ( ch = get_rand_char(x,y,Z_AIR) ) == NULL )
+                                continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
                             continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    send_to_char( "@@eA burst of supersonic waves hurt your ears!@@n\n\r", ch );
-                    damage( bch, ch, number_fuzzy(10*(bld->level*2)), DAMAGE_SOUND );
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        send_to_char( "@@eA burst of supersonic waves hurt your ears!@@n\n\r", ch );
+                        damage( bch, ch, number_fuzzy(10*(bld->level*2)), DAMAGE_SOUND );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_WARP_TOWER )
             {
                 range = 5;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,5) )
-                        continue;
-                    send_to_char( "A bright ray of light surrounds you!\n\r", ch );
-                    if ( number_percent() < ( 20 * (bld->level) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        int x,y;
-                        set_fighting(bch,ch);
-                        act( "You feel yourself transported elsewhere!", ch, NULL, NULL, TO_CHAR );
-                        act( "$n dissolves from the world!", ch, NULL, NULL, TO_ROOM );
-                        x = URANGE(5,number_range(ch->x-(bld->level*10),ch->x+(bld->level*10)),MAX_MAPS-5);
-                        y = URANGE(5,number_range(ch->y-(bld->level*10),ch->y+(bld->level*10)),MAX_MAPS-5);
-                        if ( x <= 4 )
-                            x = 4;
-                        if ( y <= 4 )
-                            y = 4;
-                        if ( y >= MAX_MAPS-4 )
-                            y =MAX_MAPS-4;
-                        if ( x >= MAX_MAPS-4 )
-                            x = MAX_MAPS-4;
-                        move(ch,x,y,ch->z);
-                        if ( ch->in_vehicle )
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,5) )
+                            continue;
+                        send_to_char( "A bright ray of light surrounds you!\n\r", ch );
+                        if ( number_percent() < ( 20 * (bld->level) ) )
                         {
-                            if ( number_percent() < 20 )
+                            int x,y;
+                            set_fighting(bch,ch);
+                            act( "You feel yourself transported elsewhere!", ch, NULL, NULL, TO_CHAR );
+                            act( "$n dissolves from the world!", ch, NULL, NULL, TO_ROOM );
+                            x = URANGE(5,number_range(ch->x-(bld->level*10),ch->x+(bld->level*10)),MAX_MAPS-5);
+                            y = URANGE(5,number_range(ch->y-(bld->level*10),ch->y+(bld->level*10)),MAX_MAPS-5);
+                            if ( x <= 4 )
+                                x = 4;
+                            if ( y <= 4 )
+                                y = 4;
+                            if ( y >= MAX_MAPS-4 )
+                                y =MAX_MAPS-4;
+                            if ( x >= MAX_MAPS-4 )
+                                x = MAX_MAPS-4;
+                            move(ch,x,y,ch->z);
+                            if ( ch->in_vehicle )
                             {
-                                ch->in_vehicle->driving = NULL;
-                                move_vehicle(ch->in_vehicle,number_fuzzy(ch->x),number_fuzzy(ch->y),ch->z);
-                                ch->in_vehicle = NULL;
-                                act( "You have been seperated from your vehicle!", ch, NULL, NULL, TO_CHAR );
+                                if ( number_percent() < 20 )
+                                {
+                                    ch->in_vehicle->driving = NULL;
+                                    move_vehicle(ch->in_vehicle,number_fuzzy(ch->x),number_fuzzy(ch->y),ch->z);
+                                    ch->in_vehicle = NULL;
+                                    act( "You have been seperated from your vehicle!", ch, NULL, NULL, TO_CHAR );
+                                }
                             }
+                            act( "$n dissolves into the world!", ch, NULL, NULL, TO_ROOM );
+                            do_look(ch,"");
                         }
-                        act( "$n dissolves into the world!", ch, NULL, NULL, TO_ROOM );
-                        do_look(ch,"");
-                    }
-                    else
-                        send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
+                        else
+                            send_to_char( "Nothing seems to have happened... yet...\n\r", ch );
 
-                    send_warning(bch,bld,ch);
-                    break;
-                }
+                        send_warning(bch,bld,ch);
+                        break;
+                    }
             }
             else if ( bld->type == BUILDING_WATER_PUMP )
             {
                 range = 4;
-                for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-                    for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-                {
-                    if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
-                        continue;
-                    if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
-                        continue;
-                    if ( !building_can_shoot(bld,ch,4) )
-                        continue;
-                    send_to_char( "@@eA burst of water flies towards you!@@n\n\r", ch );
-                    if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+                    for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                     {
-                        send_to_char( "@@eYou are hit by the burst of water!@@n\n\r", ch );
-                        damage( bch, ch, number_fuzzy(40+(bld->level*2)), -1 );
+                        if ( ( ch = get_rand_char(x,y,bld->z) ) == NULL )
+                            continue;
+                        if ( bch->pcdata->alliance != -1 && bch->pcdata->alliance == ch->pcdata->alliance && !practicing(ch) )
+                            continue;
+                        if ( !building_can_shoot(bld,ch,4) )
+                            continue;
+                        send_to_char( "@@eA burst of water flies towards you!@@n\n\r", ch );
+                        if ( number_percent() < ( 75 + (bld->level * 5) ) )
+                        {
+                            send_to_char( "@@eYou are hit by the burst of water!@@n\n\r", ch );
+                            damage( bch, ch, number_fuzzy(40+(bld->level*2)), -1 );
+                        }
+                        else
+                            send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
+                        send_warning(bch,bld,ch);
+                        break;
                     }
-                    else
-                        send_to_char( "By the time the stream reaches you, it has become too weak...\n\r", ch );
-                    send_warning(bch,bld,ch);
-                    break;
-                }
             }
             break;
-            /**/        case 'X':
+        /**/        case 'X':
             break;
-            /**/        case 'Y':
+        /**/        case 'Y':
             break;
-            /**/        case 'Z':
+        /**/        case 'Z':
             break;
         }
 
@@ -3554,7 +3556,7 @@ void do_construct( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    for ( i =0;i<4;i++ )
+    for ( i =0; i<4; i++ )
         parts[i] = FALSE;
 
     hit = 0;
@@ -3563,7 +3565,7 @@ void do_construct( CHAR_DATA *ch, char *argument )
     speed = 0;
     flags = 0;
     type = -1;
-    for ( obj = ch->first_carry;obj;obj = obj_next )
+    for ( obj = ch->first_carry; obj; obj = obj_next )
     {
         obj_next = obj->next_in_carry_list;
         if ( obj->item_type != ITEM_PART )
@@ -3751,7 +3753,7 @@ void do_mimic( CHAR_DATA *ch, char *argument )
         send_to_char( "Please provide a building to mimic.\n\r", ch );
         return;
     }
-    for ( i = 1;i<MAX_BUILDING;i++ )
+    for ( i = 1; i<MAX_BUILDING; i++ )
     {
         if ( !str_cmp(build_table[i].name,argument) )
         {
@@ -3784,9 +3786,9 @@ bool check_missile_defense(OBJ_DATA *obj)
     if ( yy >= MAX_MAPS )
         yy = MAX_MAPS-1;
     z = obj->z;
-    for ( ;x <= xx;x++ )
+    for ( ; x <= xx; x++ )
     {
-        for ( y=y1;y <= yy;y++ )
+        for ( y=y1; y <= yy; y++ )
         {
             if ( INVALID_COORDS(x,y) )
                 continue;
@@ -3842,7 +3844,7 @@ void check_alien_hide(OBJ_DATA *obj)
     t = (obj->value[0]==DAMAGE_BULLETS)?3:(obj->value[0]==DAMAGE_GENERAL)?2:(obj->value[0]==DAMAGE_BLAST)?4:(obj->value[0]==DAMAGE_ACID)?5:(obj->value[0]==DAMAGE_FLAME)?6:(obj->value[0]==DAMAGE_LASER)?7:(obj->value[0]==DAMAGE_SOUND)?8:-1;
     if ( t == -1 )
         return;
-    for ( i=2;i<9;i++ )
+    for ( i=2; i<9; i++ )
     {
         if ( i == t )
             continue;

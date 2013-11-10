@@ -74,9 +74,9 @@ char *  const   where_name      [] =
  * Local functions.
  */
 char *  format_obj_to_char      args( ( OBJ_DATA *obj, CHAR_DATA *ch,
-bool fShort ) );
+                                        bool fShort ) );
 void    show_list_to_char       args( ( OBJ_DATA *list, CHAR_DATA *ch,
-bool fShort, bool fShowNothing ) );
+                                        bool fShort, bool fShowNothing ) );
 void    show_char_to_char_0     args( ( CHAR_DATA *victim, CHAR_DATA *ch, bool truncate ) );
 void    show_char_to_char_1     args( ( CHAR_DATA *victim, CHAR_DATA *ch ) );
 void    show_char_to_char       args( ( CHAR_DATA *list, CHAR_DATA *ch ) );
@@ -257,7 +257,7 @@ void show_room_list_to_char( OBJ_DATA *list, CHAR_DATA *ch, bool fShort, bool fS
     nShow       = 0;
 
     /* First, show vehicles */
-    for ( vhc = map_vhc[ch->x][ch->y][ch->z];vhc;vhc = vhc->next_in_room )
+    for ( vhc = map_vhc[ch->x][ch->y][ch->z]; vhc; vhc = vhc->next_in_room )
     {
         if ( !vhc )
             continue;
@@ -471,7 +471,7 @@ void show_char_to_char_1( CHAR_DATA *victim, CHAR_DATA *ch )
     for ( iWear = 0; iWear < MAX_WEAR; iWear++ )
     {
         if ( ( obj = get_eq_char( victim, iWear ) ) != NULL
-            &&   can_see_obj( ch, obj ) )
+                &&   can_see_obj( ch, obj ) )
         {
             if ( !found )
             {
@@ -686,26 +686,26 @@ void do_examine( CHAR_DATA *ch, char *argument )
     {
         switch ( obj->item_type )
         {
-            default:
-                break;
+        default:
+            break;
 
-            case ITEM_BOMB:
-                if ( obj->value[1] != 0 )
-                    sprintf( buf, "It is set to explode in %d seconds!\n\r", obj->value[0] );
-                else
-                    sprintf( buf, "It is not armed.\n\r" );
-                send_to_char( buf, ch );
-                break;
+        case ITEM_BOMB:
+            if ( obj->value[1] != 0 )
+                sprintf( buf, "It is set to explode in %d seconds!\n\r", obj->value[0] );
+            else
+                sprintf( buf, "It is not armed.\n\r" );
+            send_to_char( buf, ch );
+            break;
 
-            case ITEM_ARMOR:
-                sprintf( buf, "%s has %d damage. It appears to be good against %s.", capitalize(obj->short_descr), obj->value[1], ( obj->value[0] == DAMAGE_BULLETS ) ? "bullet damage" : (obj->value[0] == DAMAGE_BLAST) ? "blast damage" : (obj->value[0] == DAMAGE_ACID) ? "acid damage" : (obj->value[0] == DAMAGE_LASER) ? "laser damage" : (obj->value[0] == DAMAGE_FLAME) ? "Fire damage" : "general damage" );
-                send_to_char( buf, ch);
-                break;
+        case ITEM_ARMOR:
+            sprintf( buf, "%s has %d damage. It appears to be good against %s.", capitalize(obj->short_descr), obj->value[1], ( obj->value[0] == DAMAGE_BULLETS ) ? "bullet damage" : (obj->value[0] == DAMAGE_BLAST) ? "blast damage" : (obj->value[0] == DAMAGE_ACID) ? "acid damage" : (obj->value[0] == DAMAGE_LASER) ? "laser damage" : (obj->value[0] == DAMAGE_FLAME) ? "Fire damage" : "general damage" );
+            send_to_char( buf, ch);
+            break;
 
-            case ITEM_COMPUTER:
-                sprintf( buf, "It has %d more uses of battery life.\n\r", obj->value[1] );
-                send_to_char( buf, ch);
-                break;
+        case ITEM_COMPUTER:
+            sprintf( buf, "It has %d more uses of battery life.\n\r", obj->value[1] );
+            send_to_char( buf, ch);
+            break;
         }
 
     }
@@ -815,11 +815,11 @@ void do_time( CHAR_DATA *ch, char *argument )
     else                             suf = "th";
 
     sprintf( buf, "@@cIt is @@a%d @@co'clock @@a%s@@c Game Time.@@N\n\r@@WAssault @@cstarted up at @@a%s@@N\r@@cThe system time is @@a%s@@N\r",
-        (time_info.hour % 12 == 0) ? 12 : time_info.hour % 12,
-        time_info.hour >= 12 ? "pm" : "am",
-        str_boot_time,
-        (char *) ctime( &current_time )
-        );
+             (time_info.hour % 12 == 0) ? 12 : time_info.hour % 12,
+             time_info.hour >= 12 ? "pm" : "am",
+             str_boot_time,
+             (char *) ctime( &current_time )
+           );
 
     if ( sysdata.qpmode > 0 )
         sprintf(buf+strlen(buf),"@@cQPMode is enabled for @@a%d@@c more minutes!@@N\n\r", sysdata.qpmode / 4 );
@@ -846,22 +846,22 @@ void do_help( CHAR_DATA *ch, char *argument )
 
         if ( !str_cmp(argument,"hq") )
         {
-                show_building_info(ch,BUILDING_HQ);
-                return;
+            show_building_info(ch,BUILDING_HQ);
+            return;
         }
-        for ( i = 1;i<MAX_BUILDING;i++ )
+        for ( i = 1; i<MAX_BUILDING; i++ )
         {
-                if ( build_table[i].rank > 9999 || build_table[i].disabled )
-                        continue;
-                if ( !str_cmp(build_table[i].name,argument) || !str_cmp(build_table[i].symbol,argument))
-                {
-                        show_building_info(ch,i);
-                        building = TRUE;
-                        return;
-                }
+            if ( build_table[i].rank > 9999 || build_table[i].disabled )
+                continue;
+            if ( !str_cmp(build_table[i].name,argument) || !str_cmp(build_table[i].symbol,argument))
+            {
+                show_building_info(ch,i);
+                building = TRUE;
+                return;
+            }
         }
     }
-    for ( i=0;s_res_table[i].name != NULL;i++ )
+    for ( i=0; s_res_table[i].name != NULL; i++ )
     {
         if ( !str_cmp(s_res_table[i].name,argument) )
         {
@@ -897,7 +897,7 @@ void do_help( CHAR_DATA *ch, char *argument )
                     pch = strtok(helpbuf,"\n");
                     while (pch != NULL)
                     {
-                    if ((*pch) && (*pch != '~') && (*pch != '\0'))
+                        if ((*pch) && (*pch != '~') && (*pch != '\0'))
                         {
                             sprintf(buf, "@@r| @@G|@@N %s\r\n", pch);
                             pch = strtok (NULL, "\r\n");
@@ -907,8 +907,8 @@ void do_help( CHAR_DATA *ch, char *argument )
 
                     free(helpbuf);
                     send_to_char( "@@r| @@G|@@N                                                                       @@r___@@N\r\n"
-                        "@@r|  @@G`---------------------------------------------------------------------' @@Wo@@r |@@N\r\n"
-                        "@@r`___________________________________________________________________________@@r/@@N\r\n", ch);
+                                  "@@r|  @@G`---------------------------------------------------------------------' @@Wo@@r |@@N\r\n"
+                                  "@@r`___________________________________________________________________________@@r/@@N\r\n", ch);
                 }
             }
             sep = TRUE;
@@ -916,13 +916,13 @@ void do_help( CHAR_DATA *ch, char *argument )
         }
         else
         {
-/*              if ( !str_infix(argument,pHelp->keyword) )
-                {
+            /*              if ( !str_infix(argument,pHelp->keyword) )
+                            {
 
-                {
-                        one_argument(pHelp->keyword,help);
-                        sprintf( buf2+strlen(buf2), "@@C%s, ", help );
-                }*/
+                            {
+                                    one_argument(pHelp->keyword,help);
+                                    sprintf( buf2+strlen(buf2), "@@C%s, ", help );
+                            }*/
         }
     }
     if ( !sep )
@@ -931,9 +931,9 @@ void do_help( CHAR_DATA *ch, char *argument )
         append_file( ch, HELP_FILE, argument );
         if ( buf2[0] != '\0' )
         {
-                send_to_char( "\n\r\n\rMaybe you are looking for one of these:\n\r",ch);
-                send_to_char(buf2,ch);
-                send_to_char( "@@N\n\r", ch );
+            send_to_char( "\n\r\n\rMaybe you are looking for one of these:\n\r",ch);
+            send_to_char(buf2,ch);
+            send_to_char( "@@N\n\r", ch );
         }
         return;
     }
@@ -947,8 +947,8 @@ void do_help( CHAR_DATA *ch, char *argument )
         char buf[MSL];
         if ( ( obj = get_obj_carry(ch,argument) ) != NULL )
         {
-                sprintf( buf, "\n\r@@NIf you're looking for help about %s, you can try to ""identify"" it (Not all objects can be identified)", obj->short_descr );
-                send_to_char( buf, ch );
+            sprintf( buf, "\n\r@@NIf you're looking for help about %s, you can try to ""identify"" it (Not all objects can be identified)", obj->short_descr );
+            send_to_char( buf, ch );
         }
     }
     return;
@@ -1029,7 +1029,7 @@ void do_who( CHAR_DATA *ch, char *argument )
         char * name;
         int rankfrom;
         int rankto;
-    } 
+    }
     ranking[] = {
         { "Private",        1,      9       },
         { "Specialist",     10,     19      },
@@ -1041,10 +1041,10 @@ void do_who( CHAR_DATA *ch, char *argument )
         { "Major",          250,    499     },
         { "Colonel",        500,    999     },
         { "General",        1000,   9998    },
-		{ "Immortal",       9999,   9999    },
+        { "Immortal",       9999,   9999    },
         {NULL , 0, 0}
     };
-   
+
     if ( blind )
         sprintf( buf, "Visible players online:\n\r" );
     else if ( !IS_SET(ch->config,CONFIG_MINCOLORS) )
@@ -1078,7 +1078,7 @@ void do_who( CHAR_DATA *ch, char *argument )
         sprintf( s_buf, "@@b (STAFF) @@N" );
     }
     true_cnt = 0;
-    for ( type=1;type<=2;type++ )
+    for ( type=1; type<=2; type++ )
     {
         if ( !blind )
         {
@@ -1097,16 +1097,16 @@ void do_who( CHAR_DATA *ch, char *argument )
             }
         }
 
-        for ( wch = first_char;wch;wch = wch->next )
+        for ( wch = first_char; wch; wch = wch->next )
         {
-			if ( (type == 1 && !IS_IMMORTAL(wch) )
-                || (type == 2 && IS_IMMORTAL(wch) ) )
+            if ( (type == 1 && !IS_IMMORTAL(wch) )
+                    || (type == 2 && IS_IMMORTAL(wch) ) )
                 continue;
 
-		for (i = 0; ranking[i].name !=NULL; i++) {
-			if (get_rank(wch) >= ranking[i].rankfrom && get_rank(wch) <= ranking[i].rankto)
-				sprintf(rankingbuf, "%s", ranking[i].name);
-		}
+            for (i = 0; ranking[i].name !=NULL; i++) {
+                if (get_rank(wch) >= ranking[i].rankfrom && get_rank(wch) <= ranking[i].rankto)
+                    sprintf(rankingbuf, "%s", ranking[i].name);
+            }
             true_cnt++;
             if ( !can_see(ch,wch) || (IS_LINKDEAD(wch) && ch->trust < 84) )
             {
@@ -1115,17 +1115,17 @@ void do_who( CHAR_DATA *ch, char *argument )
                 continue;
             }
 
-	    if ( IS_IMMORTAL(wch) )
-	    {
-		if ( can_see(ch,wch) )
-		{
-			imm_cnt++;
-		}
-		else
-		{
-			continue;
-		}
-	    }
+            if ( IS_IMMORTAL(wch) )
+            {
+                if ( can_see(ch,wch) )
+                {
+                    imm_cnt++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
 
             rank = get_rank(wch) ;
             if ( rank < g_rank )
@@ -1142,32 +1142,32 @@ void do_who( CHAR_DATA *ch, char *argument )
             else if ( sysdata.kill_groups )
             {
                 sprintf( buf, "@@d| %s%4d@@N | %d |%-9s| %s |",
-                    (get_trust(wch) <= 1)?"@@g":(get_trust(wch)==79)?"@@W":"@@y",
-                    rank,
-                    wch->kill_group,
-                    IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
-                IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
-                !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
-                ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
-                ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
-                (IS_NEWBIE(wch)) ? n_buf :
-                ( str_cmp(wch->pcdata->who_name,"off") ) ? wch->pcdata->who_name : " ",
-                    (wch->sex == 1) ? "M" : "F" );
+                         (get_trust(wch) <= 1)?"@@g":(get_trust(wch)==79)?"@@W":"@@y",
+                         rank,
+                         wch->kill_group,
+                         IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
+                         IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
+                         !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
+                         ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
+                         ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
+                         (IS_NEWBIE(wch)) ? n_buf :
+                         ( str_cmp(wch->pcdata->who_name,"off") ) ? wch->pcdata->who_name : " ",
+                         (wch->sex == 1) ? "M" : "F" );
             }
             else
             {
                 sprintf( buf, "@@d| %s%4d@@g |%-9s@@g| %s |",
-                    (get_trust(wch) <= 1)?"@@g":(get_trust(wch)==79)?"@@W":"@@y",
-                    rank,
-                    IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
-                IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
-                !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
-                ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
-                ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
-                (IS_NEWBIE(wch)) ? n_buf :
-                (IS_SET(wch->pcdata->pflags,PLR_BASIC)) ? "  @@yB@@bA@@yS@@bI@@yC@@N  " :
-                ( str_cmp(wch->pcdata->who_name,"off") ) ? wch->pcdata->who_name : " ",
-                    (wch->sex == 1) ? "M" : "F" );
+                         (get_trust(wch) <= 1)?"@@g":(get_trust(wch)==79)?"@@W":"@@y",
+                         rank,
+                         IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
+                         IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
+                         !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
+                         ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
+                         ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
+                         (IS_NEWBIE(wch)) ? n_buf :
+                         (IS_SET(wch->pcdata->pflags,PLR_BASIC)) ? "  @@yB@@bA@@yS@@bI@@yC@@N  " :
+                         ( str_cmp(wch->pcdata->who_name,"off") ) ? wch->pcdata->who_name : " ",
+                         (wch->sex == 1) ? "M" : "F" );
             }
 
             if ( wch->in_building && wch->in_building->type == BUILDING_CLUB && complete(wch->in_building) && wch != ch )
@@ -1188,10 +1188,10 @@ void do_who( CHAR_DATA *ch, char *argument )
     if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
         hidden_cnt = 0;
 
-    for ( type=0;type<hidden_cnt;type++)
-	{
-		send_to_char(h_buf,ch);
-	}
+    for ( type=0; type<hidden_cnt; type++)
+    {
+        send_to_char(h_buf,ch);
+    }
 
     if ( true_cnt + hidden_cnt - imm_cnt > max_players )
         max_players = true_cnt + hidden_cnt - imm_cnt;
@@ -1207,21 +1207,21 @@ void do_who( CHAR_DATA *ch, char *argument )
     if ( blind )
     {
         sprintf( buf, "\n\rTotal Players: %d\n\rImm: %d\n\rHidden: %d\n\rMax this Reboot: %d\n\rMax Ever: %d\n\r", true_cnt+hidden_cnt,
-	    imm_cnt,
-            hidden_cnt,
-            max_players, max_players_ever );
+                 imm_cnt,
+                 hidden_cnt,
+                 max_players, max_players_ever );
         send_to_char(buf,ch);
         return;
     }
 
     sprintf( buf,
-        "@@d|@@g=============================================================================@@N\n\r" );
+             "@@d|@@g=============================================================================@@N\n\r" );
     sprintf( buf+strlen(buf), "@@d| @@d(@@W%d T@@gotal Player%s@@d)  (@@W%d I@@gmm@@d)  (@@W%d H@@gidden@@d)  (@@W%d M@@gax This Reboot@@d)  (@@W%d M@@gax Ever@@d)\n\r@@N", true_cnt+hidden_cnt, ( true_cnt+hidden_cnt > 1 ) ? "s" : "", imm_cnt, hidden_cnt,
-        max_players,max_players_ever );
+             max_players,max_players_ever );
     sprintf( buf+strlen(buf), "@@d|                              @@eASSAULT: High Tech War\n\r" );
 
     safe_strcat( MAX_STRING_LENGTH, buf,
-        "@@d|@@g=============================================================================@@N\n\r" );
+                 "@@d|@@g=============================================================================@@N\n\r" );
 
     send_to_char( buf, ch );
     send_to_char( color_string( ch, "normal" ), ch );
@@ -1332,21 +1332,21 @@ void do_ranks( CHAR_DATA *ch, char *argument )
 {
 
     send_to_char( "@@d|@@w===============================================@@N\r\n"
-                "@@d|@@w @@eRanking Information@@N\r\n"
-                "@@d|@@w===============================================@@N\r\n"
-                "@@d|@@W Title           @@d|@@W       Rank@@N\r\n"
-                "@@d|@@w-----------------+-----------------------------@@N\r\n"
-                "@@d|@@a Private         @@w|@@W      1  -  9@@N\r\n"
-                "@@d|@@a Specialist      @@w|@@W     10  -  19@@N\r\n"
-                "@@d|@@a Corporal        @@w|@@W     20  -  44@@N\r\n"
-                "@@d|@@a Sergeant        @@w|@@W     45  -  74@@N\r\n"
-                "@@d|@@a Officer         @@w|@@W     75  -  99@@N\r\n"
-                "@@d|@@a Lieutenant      @@w|@@W    100  -  149@@N\r\n"
-                "@@d|@@a Captain         @@w|@@W    150  -  249@@N\r\n"
-                "@@d|@@a Major           @@w|@@W    250  -  499@@N\r\n"
-                "@@d|@@a Colonel         @@w|@@W    500  -  999@@N\r\n"
-                "@@d|@@a General         @@w|@@W   1000  +@@N\r\n"
-                "@@d|@@w===============================================@@N\r\n", ch);
+                  "@@d|@@w @@eRanking Information@@N\r\n"
+                  "@@d|@@w===============================================@@N\r\n"
+                  "@@d|@@W Title           @@d|@@W       Rank@@N\r\n"
+                  "@@d|@@w-----------------+-----------------------------@@N\r\n"
+                  "@@d|@@a Private         @@w|@@W      1  -  9@@N\r\n"
+                  "@@d|@@a Specialist      @@w|@@W     10  -  19@@N\r\n"
+                  "@@d|@@a Corporal        @@w|@@W     20  -  44@@N\r\n"
+                  "@@d|@@a Sergeant        @@w|@@W     45  -  74@@N\r\n"
+                  "@@d|@@a Officer         @@w|@@W     75  -  99@@N\r\n"
+                  "@@d|@@a Lieutenant      @@w|@@W    100  -  149@@N\r\n"
+                  "@@d|@@a Captain         @@w|@@W    150  -  249@@N\r\n"
+                  "@@d|@@a Major           @@w|@@W    250  -  499@@N\r\n"
+                  "@@d|@@a Colonel         @@w|@@W    500  -  999@@N\r\n"
+                  "@@d|@@a General         @@w|@@W   1000  +@@N\r\n"
+                  "@@d|@@w===============================================@@N\r\n", ch);
 }
 
 void do_password( CHAR_DATA *ch, char *argument )
@@ -1406,14 +1406,14 @@ void do_password( CHAR_DATA *ch, char *argument )
     *pArg = '\0';
 
     if (  ( ch->pcdata->pwd != '\0' )
-        && ( arg1[0] == '\0' || arg2[0] == '\0' )  )
+            && ( arg1[0] == '\0' || arg2[0] == '\0' )  )
     {
         send_to_char( "Syntax: password <old> <new>.\n\r", ch );
         return;
     }
 
     if (  ( ch->pcdata->pwd != '\0' )
-        && ( strcmp( crypt( arg1, ch->pcdata->pwd ), ch->pcdata->pwd ) )  )
+            && ( strcmp( crypt( arg1, ch->pcdata->pwd ), ch->pcdata->pwd ) )  )
     {
         WAIT_STATE( ch, 40 );
         send_to_char( "Wrong password.  Wait 10 seconds.\n\r", ch );
@@ -1515,7 +1515,7 @@ void do_commands( CHAR_DATA *ch, char *argument )
         else if ( !str_prefix( arg1, "actions" ))
             show_only = 4;
         else if ( !str_prefix( arg1, "objects" )
-            || !str_prefix( arg1, "manipulation") )
+                  || !str_prefix( arg1, "manipulation") )
             show_only = 5;
         else if ( !str_prefix( arg1, "alliance" ))
             show_only = C_TYPE_ALLI;
@@ -1534,7 +1534,7 @@ void do_commands( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( cmd_table[cmd].level <=  L_GOD
-            &&   cmd_table[cmd].level <= get_trust( ch ) )
+                &&   cmd_table[cmd].level <= get_trust( ch ) )
         {
             if ( cmd_table[cmd].show == C_SHOW_NEVER )
                 continue;
@@ -1550,7 +1550,7 @@ void do_commands( CHAR_DATA *ch, char *argument )
     for ( col = 0; col < 8; col++ )
     {
         if (  ( show_only > -1 )
-            && ( show_only != col ) )
+                && ( show_only != col ) )
             continue;
         safe_strcat(MAX_STRING_LENGTH, show_table[col].buf, "@@N\n\r" );
         send_to_char( show_table[col].buf, ch );
@@ -1792,21 +1792,21 @@ void do_config( CHAR_DATA *ch, char *argument )
 
         send_to_char( "\n\r@@W[@@R--------@@eGeneral Options@@R--------@@W]\n\r", ch );
         send_to_char(  IS_SET(ch->config, CONFIG_PUBMAIL)
-            ? "@@r[@@a+PUBMAIL  @@r] @@GOther people can see your email address.\n\r"
-            : "@@d[@@c-pubmail  @@d] @@GOther people can NOT see your email address.\n\r"
-        , ch );
+                       ? "@@r[@@a+PUBMAIL  @@r] @@GOther people can see your email address.\n\r"
+                       : "@@d[@@c-pubmail  @@d] @@GOther people can NOT see your email address.\n\r"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_TELNET_GA)
-            ? "@@r[@@a+TELNETGA @@r] @@GYou receive a telnet GA sequence.\n\r"
-            : "@@d[@@c-telnetga @@d] @@GYou don't receive a telnet GA sequence.\n\r"
-        , ch );
+                       ? "@@r[@@a+TELNETGA @@r] @@GYou receive a telnet GA sequence.\n\r"
+                       : "@@d[@@c-telnetga @@d] @@GYou don't receive a telnet GA sequence.\n\r"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_FULL_ANSI)
-            ? "@@r[@@a+FULLANSI @@r] @@GYour client supports FULL ANSI.\n\r"
-            : "@@d[@@c-fullansi @@d] @@GYour client does not support full ANSI (GMUD).\n\r"
-        , ch );
+                       ? "@@r[@@a+FULLANSI @@r] @@GYour client supports FULL ANSI.\n\r"
+                       : "@@d[@@c-fullansi @@d] @@GYour client does not support full ANSI (GMUD).\n\r"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_ECHAN )
-            ? "@@r[@@a+ECHAN    @@r] @@GYour title shows when you use channels.\r\n"
-            : "@@d[@@c-echan    @@d] @@GYour title does NOT show when you use channels.\r\n"
-        , ch );
+                       ? "@@r[@@a+ECHAN    @@r] @@GYour title shows when you use channels.\r\n"
+                       : "@@d[@@c-echan    @@d] @@GYour title does NOT show when you use channels.\r\n"
+                       , ch );
         //	send_to_char(  IS_SET(ch->config, CONFIG_QUESTS )
         //	    ? "@@r[@@a+QUESTS   @@r] @@GYou see information about quests.\r\n"
         //	    : "@@d[@@c-quests   @@d] @@GYou see information about quests.\r\n"
@@ -1814,104 +1814,104 @@ void do_config( CHAR_DATA *ch, char *argument )
 
         send_to_char( "\n\r@@W[@@R-------@@eGame-play Options@@R-------@@W]\n\r", ch );
         send_to_char(  IS_SET(ch->config, CONFIG_NOFOLLOW )
-            ? "@@r[@@a+NOFOLLOW @@r] @@GYou do not allow people to follow you.\r\n"
-            : "@@d[@@c-nofollow @@d] @@GYou allow people to follow you.\r\n"
-        , ch );
+                       ? "@@r[@@a+NOFOLLOW @@r] @@GYou do not allow people to follow you.\r\n"
+                       : "@@d[@@c-nofollow @@d] @@GYou allow people to follow you.\r\n"
+                       , ch );
 
         send_to_char( "\n\r@@W[@@R--------@@eDisplay Options@@R--------@@W]\n\r", ch );
         send_to_char(  IS_SET(ch->config, CONFIG_COMBINE)
-            ? "@@r[@@a+COMBINE  @@r] @@GYou see object lists in combined format.\n\r"
-            : "@@d[@@c-combine  @@d] @@GYou see object lists in single format.\n\r"
-        , ch );
+                       ? "@@r[@@a+COMBINE  @@r] @@GYou see object lists in combined format.\n\r"
+                       : "@@d[@@c-combine  @@d] @@GYou see object lists in single format.\n\r"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_PROMPT)
-            ? "@@r[@@a+PROMPT   @@r] @@GYou have a prompt.\n\r"
-            : "@@d[@@c-prompt   @@d] @@GYou don't have a prompt.\n\r"
-        , ch );
+                       ? "@@r[@@a+PROMPT   @@r] @@GYou have a prompt.\n\r"
+                       : "@@d[@@c-prompt   @@d] @@GYou don't have a prompt.\n\r"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_EXITS )
-            ? "@@r[@@a+EXITS    @@r] @@GYou see building exits at the bottom.\r\n"
-            : "@@d[@@c-exits    @@d] @@GYou do not see building exits at the bottom.\r\n"
-        , ch );
+                       ? "@@r[@@a+EXITS    @@r] @@GYou see building exits at the bottom.\r\n"
+                       : "@@d[@@c-exits    @@d] @@GYou do not see building exits at the bottom.\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_BRIEF )
-            ? "@@r[@@a+BRIEF    @@r] @@GYou don't see buildings' descriptions.\r\n"
-            : "@@d[@@c-brief    @@d] @@GYou see buildings' descriptions.\r\n"
-        , ch );
+                       ? "@@r[@@a+BRIEF    @@r] @@GYou don't see buildings' descriptions.\r\n"
+                       : "@@d[@@c-brief    @@d] @@GYou see buildings' descriptions.\r\n"
+                       , ch );
 
         send_to_char( "\n\r@@W[@@R---------@@eColor Options@@R---------@@W]\n\r", ch );
         send_to_char( IS_SET( ch->config, CONFIG_COLOR )
-            ? "@@r[@@a+COLOR    @@r] @@GYou recieve 'ANSI' color.\n\r"
-            : "@@d[@@c-color    @@d] @@GYou don't receive 'ANSI' color.\n\r"
-        , ch );
+                      ? "@@r[@@a+COLOR    @@r] @@GYou recieve 'ANSI' color.\n\r"
+                      : "@@d[@@c-color    @@d] @@GYou don't receive 'ANSI' color.\n\r"
+                      , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_NOCOLORS )
-            ? "@@r[@@a+NOCOLORS @@r] @@GYou see only map colors.\r\n"
-            : "@@d[@@c-nocolors @@d] @@GYou see everything in colors (Turn this on to only see the map in color).\r\n"
-        , ch );
+                       ? "@@r[@@a+NOCOLORS @@r] @@GYou see only map colors.\r\n"
+                       : "@@d[@@c-nocolors @@d] @@GYou see everything in colors (Turn this on to only see the map in color).\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_MINCOLORS )
-            ? "@@r[@@a+MINCOLORS@@r] @@GYou see minimal colors.\r\n"
-            : "@@d[@@c-mincolors@@d] @@GYou see full colors (Turn this on to see less colors in the game).\r\n"
-        , ch );
+                       ? "@@r[@@a+MINCOLORS@@r] @@GYou see minimal colors.\r\n"
+                       : "@@d[@@c-mincolors@@d] @@GYou see full colors (Turn this on to see less colors in the game).\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_NOBLACK )
-            ? "@@r[@@a+NOBLACK  @@r] @@GYou do not see the color Black.\r\n"
-            : "@@d[@@c-noblack  @@d] @@GYou can see black text.\r\n"
-        , ch );
+                       ? "@@r[@@a+NOBLACK  @@r] @@GYou do not see the color Black.\r\n"
+                       : "@@d[@@c-noblack  @@d] @@GYou can see black text.\r\n"
+                       , ch );
 
         send_to_char( "\n\r@@W[@@R----------@@eMap Options@@R----------@@W]\n\r", ch );
         send_to_char(  IS_SET(ch->config, CONFIG_SMALLMAP )
-            ? "@@r[@@a+SMALLMAP @@r] @@GYou see the small symbols on the map.\r\n"
-            : "@@d[@@c-smallmap @@d] @@GYou do not see the small symbols on the map.\r\n"
-        , ch );
+                       ? "@@r[@@a+SMALLMAP @@r] @@GYou see the small symbols on the map.\r\n"
+                       : "@@d[@@c-smallmap @@d] @@GYou do not see the small symbols on the map.\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_TINYMAP )
-            ? "@@r[@@a+TINYMAP  @@r] @@GYou see the tiny symbols on the map.\r\n"
-            : "@@d[@@c-tinymap  @@d] @@GYou do not see the tiny symbols on the map.\r\n"
-        , ch );
+                       ? "@@r[@@a+TINYMAP  @@r] @@GYou see the tiny symbols on the map.\r\n"
+                       : "@@d[@@c-tinymap  @@d] @@GYou do not see the tiny symbols on the map.\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_LARGEMAP )
-            ? "@@r[@@a+LONGMAP  @@r] @@GYou see the vertically-long map.\r\n"
-            : "@@d[@@c-longmap  @@d] @@GYou see the vertically-short map.\r\n"
-        , ch );
+                       ? "@@r[@@a+LONGMAP  @@r] @@GYou see the vertically-long map.\r\n"
+                       : "@@d[@@c-longmap  @@d] @@GYou see the vertically-short map.\r\n"
+                       , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_INVERSE )
-            ? "@@r[@@a+INVERSE  @@r] @@GYou see inversed map colors.\r\n"
-            : "@@d[@@c-inverse  @@d] @@GYou do not see inversed map colors.\r\n"
-        , ch );
+                       ? "@@r[@@a+INVERSE  @@r] @@GYou see inversed map colors.\r\n"
+                       : "@@d[@@c-inverse  @@d] @@GYou do not see inversed map colors.\r\n"
+                       , ch );
 
         send_to_char( "\n\r@@W[@@R---------@@eEnhancements@@R----------@@W]\n\r", ch );
         send_to_char( IS_SET(ch->config, CONFIG_SOUND)
-            ? "@@r[@@a+SOUND    @@r] @@GYou hear sounds sent by the mud.\n\r"
-            : "@@d[@@c-sound    @@d] @@GYou do not hear sounds sent by the mud.\n\r"
-        , ch );
+                      ? "@@r[@@a+SOUND    @@r] @@GYou hear sounds sent by the mud.\n\r"
+                      : "@@d[@@c-sound    @@d] @@GYou do not hear sounds sent by the mud.\n\r"
+                      , ch );
         send_to_char(  IS_SET(ch->config, CONFIG_IMAGE )
-            ? "@@r[@@a+IMAGE    @@r] @@GYour client supports the IMAGE MXP tag.\n\r"
-            : "@@d[@@c-image    @@d] @@GYour client does not support the IMAGE MXP tag.\n\r"
-        , ch );
+                       ? "@@r[@@a+IMAGE    @@r] @@GYour client supports the IMAGE MXP tag.\n\r"
+                       : "@@d[@@c-image    @@d] @@GYour client does not support the IMAGE MXP tag.\n\r"
+                       , ch );
 
         send_to_char( "\n\r@@W[@@R--------@@eMisc. Settings@@R---------@@W]\n\r", ch );
 
         send_to_char(  IS_SET(ch->act, PLR_SILENCE)
-            ? "@@r[@@a+SILENCE  @@r] @@GYou are silenced.\n\r"
-            : ""
-        , ch );
+                       ? "@@r[@@a+SILENCE  @@r] @@GYou are silenced.\n\r"
+                       : ""
+                       , ch );
 
         send_to_char( !IS_SET(ch->act, PLR_NO_EMOTE)
-            ? ""
-            : "@@r[@@a+NOEMOTE  @@r] @@GYou can't emote.\n\r"
-        , ch );
+                      ? ""
+                      : "@@r[@@a+NOEMOTE  @@r] @@GYou can't emote.\n\r"
+                      , ch );
 
         send_to_char( !IS_SET(ch->act, PLR_NO_TELL)
-            ? ""
-            : "@@r[@@a+NOTELL   @@r] @@GYou can't use 'tell'.\n\r"
-        , ch );
+                      ? ""
+                      : "@@r[@@a+NOTELL   @@r] @@GYou can't use 'tell'.\n\r"
+                      , ch );
 
         send_to_char(  IS_SET(ch->config, CONFIG_CLIENT)
-            ? "@@r[@@a+CLIENT  @@r] @@GYou are using the ASSAULT Client.\n\r"
-            : ""
-        , ch );
+                       ? "@@r[@@a+CLIENT  @@r] @@GYou are using the ASSAULT Client.\n\r"
+                       : ""
+                       , ch );
 
         if ( my_get_hours(ch,FALSE) == 0 && ch->pcdata->deaths == 0 )
             send_to_char(  IS_SET(ch->config, CONFIG_HELPER )
-                ? "@@r[@@a+HELPER   @@r] @@GYou see helper messages.\r\n"
-                : "@@d[@@c-helper   @@d] @@GYou do not see helper messages.\r\n"
-            , ch );
+                           ? "@@r[@@a+HELPER   @@r] @@GYou see helper messages.\r\n"
+                           : "@@d[@@c-helper   @@d] @@GYou do not see helper messages.\r\n"
+                           , ch );
 
         sprintf( buf, "@@aTerminal set to@@d  @@c%i @@aRows@@d, @@c%i @@aColumns@@d.@@N\n\r",
-            ch->pcdata->term_rows, ch->pcdata->term_columns );
+                 ch->pcdata->term_rows, ch->pcdata->term_columns );
         send_to_char( buf, ch );
     }
     else
@@ -1994,32 +1994,32 @@ void do_config( CHAR_DATA *ch, char *argument )
         if ( fSet )
         {
 //            SET_BIT    (config_var?ch->config:ch->act, bit);
-	    if(config_var)
-		SET_BIT(ch->config, bit);
-	    else
-		SET_BIT(ch->act, bit);
+            if(config_var)
+                SET_BIT(ch->config, bit);
+            else
+                SET_BIT(ch->act, bit);
             send_to_char( "@@dEnabled.@@N\n\r", ch );
             if ( bit == CONFIG_FULL_ANSI )
             {
                 char scrollbuf[MSL];
                 sprintf( scrollbuf, "%s%s%s%i;%ir%s%i;%iH",
-                    CRS_RESET,
-                    CRS_CLS,
-                    CRS_CMD,
-                    0,
-                    ch->pcdata->term_rows - 12,
-                    CRS_CMD,
-                    ch->pcdata->term_rows - 13,
-                    0 );
+                         CRS_RESET,
+                         CRS_CLS,
+                         CRS_CMD,
+                         0,
+                         ch->pcdata->term_rows - 12,
+                         CRS_CMD,
+                         ch->pcdata->term_rows - 13,
+                         0 );
                 send_to_char( scrollbuf, ch );
             }
         }
         else
         {
-	    if(config_var)
-		REMOVE_BIT(ch->config, bit);
-	    else
-		REMOVE_BIT(ch->act, bit);
+            if(config_var)
+                REMOVE_BIT(ch->config, bit);
+            else
+                REMOVE_BIT(ch->act, bit);
             send_to_char( "@@dDisabled.@@N\n\r", ch );
             if ( bit == CONFIG_FULL_ANSI )
             {
@@ -2055,23 +2055,23 @@ void do_wizlist ( CHAR_DATA *ch, char *argument )
 void do_pubmail ( CHAR_DATA *ch, char *argument )
 {
     ( IS_SET ( ch->config, CONFIG_PUBMAIL )
-        ? do_config( ch, "-pubmail" )
-        : do_config( ch, "+pubmail" ) );
+      ? do_config( ch, "-pubmail" )
+      : do_config( ch, "+pubmail" ) );
 }
 
 void do_sound ( CHAR_DATA *ch, char *argument )
 {
     ( IS_SET ( ch->config, CONFIG_SOUND )
-        ? do_config( ch, "+sound" )
-        : do_config( ch, "-sound") );
+      ? do_config( ch, "+sound" )
+      : do_config( ch, "-sound") );
 }
 
 void do_combine ( CHAR_DATA *ch, char *argument )
 {
 
     ( IS_SET ( ch->config, CONFIG_COMBINE )
-        ? do_config( ch, "-combine" )
-        : do_config( ch, "+combine" ) );
+      ? do_config( ch, "-combine" )
+      : do_config( ch, "+combine" ) );
 
 }
 
@@ -2114,8 +2114,8 @@ void do_prompt( CHAR_DATA *ch, char *argument )
     if ( argument[0] == '\0' || !str_cmp(argument,"off") )
     {
         ( IS_SET ( ch->config, CONFIG_PROMPT )
-            ? do_config( ch, "-prompt" )
-            : do_config( ch, "+prompt" ) );
+          ? do_config( ch, "-prompt" )
+          : do_config( ch, "+prompt" ) );
         return;
     }
 
@@ -2128,7 +2128,7 @@ void do_prompt( CHAR_DATA *ch, char *argument )
     else if ( !str_cmp(argument,"grave") )
         strcpy( buf, "@@d[@@w(@@e%h@@d/@@R%H@@w HP@@w) @@w(@@l%T@@d/@@B%t @@wTMR@@w) @@w(@@y%Q @@wQP) @@w(@@r%x @@wTNR@@w) @@w(@@a%C @@w%s@@w)@@d]@@N" );
     else if ( !str_cmp(argument,"pwnage") )
-	strcpy( buf, "%s:%C @@d(%E) @@G(QP@@r%Q@@d/@@GXP@@r%x@@G)%c@@d%T @@b(T:@@m%r@@b) @@cHP@@a%h@@d/@@c%H @@d(@@RVH@@e%v@@d/@@R%V VF@@e%f@@d/@@R%F VA@@e%m@@d/@@R%M@@d) %q@@N >%c");
+        strcpy( buf, "%s:%C @@d(%E) @@G(QP@@r%Q@@d/@@GXP@@r%x@@G)%c@@d%T @@b(T:@@m%r@@b) @@cHP@@a%h@@d/@@c%H @@d(@@RVH@@e%v@@d/@@R%V VF@@e%f@@d/@@R%F VA@@e%m@@d/@@R%M@@d) %q@@N >%c");
 
     else
     {
@@ -2276,7 +2276,7 @@ void do_colist( CHAR_DATA *ch, char *argument )
     char buf[MAX_STRING_LENGTH];
 
     if IS_NPC( ch )
-            return;
+        return;
 
     send_to_char( "@@WColor Codes: @@yTo use color codes within a string, use the following\n\r", ch );
     send_to_char( "characters in sequence: @@@@<letter>.@@N\n\r\n\r", ch );
@@ -2288,9 +2288,9 @@ void do_colist( CHAR_DATA *ch, char *argument )
         if ( col >= 29 )
             continue;
         sprintf( buf, "%c - %s%-14s@@N    ",
-            ansi_table[col].letter,
-            IS_SET( ch->config, CONFIG_COLOR ) ? ansi_table[col].value : "",
-            ansi_table[col].name );
+                 ansi_table[col].letter,
+                 IS_SET( ch->config, CONFIG_COLOR ) ? ansi_table[col].value : "",
+                 ansi_table[col].name );
         send_to_char( buf, ch );
         if ( ++n % 3 == 0 )
             send_to_char( "\n\r", ch );
@@ -2309,16 +2309,16 @@ void do_highscores( CHAR_DATA *ch, char *argument )
     int order[100];
     bool appears[100];
 
-    for ( i = 0;i<100;i++ )
+    for ( i = 0; i<100; i++ )
     {
         order[i] = -1;
         appears[i] = FALSE;
     }
     //	order[0] = 0;
-    for ( j = 0;j < 100;j++ )
+    for ( j = 0; j < 100; j++ )
     {
         max = -1;
-        for ( i=0;i<100;i++ )
+        for ( i=0; i<100; i++ )
         {
             if ( score_table[i].kills == 0 && score_table[i].buildings == 0 && score_table[i].time == 0 )
                 continue;
@@ -2350,7 +2350,7 @@ void do_highscores( CHAR_DATA *ch, char *argument )
 
     send_to_char( "\n\r@@G  @@d| @@GName         @@d| @@GKills @@d| @@GBuildings @@d| @@GHours @@d| @@GKilled By\n\r", ch );
     sprintf( buf, "@@r------------------------------------------------------------------------------\n\r" );
-    for ( i=0;i<leng;i++ )
+    for ( i=0; i<leng; i++ )
     {
         if ( order[i] == -1 || score_table[i].name == NULL )
             break;
@@ -2373,15 +2373,15 @@ void do_highranks( CHAR_DATA *ch, char *argument )
     int order[30];
     bool appears[30];
 
-    for ( i = 0;i<30;i++ )
+    for ( i = 0; i<30; i++ )
     {
         order[i] = -1;
         appears[i] = FALSE;
     }
-    for ( j = 0;j < 30;j++ )
+    for ( j = 0; j < 30; j++ )
     {
         max = -1;
-        for ( i=0;i<30;i++ )
+        for ( i=0; i<30; i++ )
         {
             if ( j >= 30 )
                 break;
@@ -2409,7 +2409,7 @@ void do_highranks( CHAR_DATA *ch, char *argument )
 
     send_to_char( "\n\r@@G  @@d| @@GName         @@d| @@GRank\n\r", ch );
     sprintf( buf, "@@r----------------------------------------\n\r" );
-    for ( i=0;i<leng;i++ )
+    for ( i=0; i<leng; i++ )
     {
         if ( order[i] == -1 || rank_table[order[i]].name == NULL )
         {
@@ -2434,7 +2434,7 @@ void do_map( CHAR_DATA *ch, char *argument )
     {
         int i;
         char buf[MSL];
-        for ( i=0;i<SECT_MAX;i++ )
+        for ( i=0; i<SECT_MAX; i++ )
         {
             sprintf( buf, "%s%s @@N- %-20s    @@RHeat: @@e%-3d,  @@dRun Diff.: @@g%-3d,  @@cFuel Cons.: @@a%-3d\n\r",wildmap_table[i].color,(IS_SET(ch->config,CONFIG_SMALLMAP)) ? makesmall(wildmap_table[i].mark,2) : wildmap_table[i].mark, wildmap_table[i].name, wildmap_table[i].heat, wildmap_table[i].speed, wildmap_table[i].fuel  );
             send_to_char(buf,ch);
@@ -2473,7 +2473,7 @@ void do_alias( CHAR_DATA *ch, char *argument )
     if ( arg[0] == '\0' || arg2[0] == '\0' || !is_number(arg) || is_number(arg2) )
     {
         char buf[MSL];
-        for (i=0;i<5;i++)
+        for (i=0; i<5; i++)
         {
             if ( str_cmp(ch->alias[i],"") )
             {
@@ -2526,7 +2526,7 @@ void do_quest( CHAR_DATA *ch, char *argument )
         sprintf( borderbuf, "@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@W-@@g-@@N\n\r" );
         send_to_char( borderbuf, ch );
         //		for ( obj = first_obj;obj;obj = obj->next )
-        for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+        for ( i=0; i<MAX_QUEST_ITEMS; i++ )
         {
             if ( quest_obj[i] == NULL )
                 continue;
@@ -2710,7 +2710,7 @@ void do_identify( CHAR_DATA *ch, char *argument )
             send_to_char( "* Special Effect: Blindness\n\r", ch );
         if ( IS_SET(obj->value[3],WEAPON_POISON) )
             send_to_char( "* Special Effect: Poison\n\r", ch
-                );
+                        );
         if ( IS_SET(obj->value[3],WEAPON_HITS_AIR) )
             send_to_char( "\n\r* This weapon can hit airborn targets.\n\r", ch );
     }
@@ -2744,7 +2744,7 @@ void do_identify( CHAR_DATA *ch, char *argument )
         int i;
         sprintf( buf, "Statistics for: %s\n\r", capitalize(obj->short_descr) );
         sprintf( buf+strlen(buf), "Vehicle Addon: Install using the command @@eVInstall@@N.\n\r" );
-        for ( i=2;i<10;i++ )
+        for ( i=2; i<10; i++ )
         {
             if ( i > 0 && i < MAX_VEHICLE )
                 sprintf( buf+strlen(buf), "Installs on: %s.\n\r", vehicle_desc[obj->value[i]] );
@@ -2916,7 +2916,7 @@ void do_stats( CHAR_DATA *ch, char *argument )
     if ( ( target = get_char_world(ch,argument) ) == NULL )
         target = ch;
 
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
         resources[i] = 0;
     armor = 0;
     weapons = 0;
@@ -2926,11 +2926,11 @@ void do_stats( CHAR_DATA *ch, char *argument )
         send_to_char( "You must be at a bank you own to use this command.\n\r", ch );
         return;
     }
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         if ( !str_cmp(bld->owned,target->name) )
         {
-            for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+            for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == bld->z )
                 {
@@ -2965,7 +2965,7 @@ void do_skills( CHAR_DATA *ch, char *argument )
 
     sprintf( cbuf, "\n\r@@xProficiencies:@@N\n\r" );
     send_to_char( "\n\r@@xNormal Skills:@@N\n\r", ch );
-    for ( i = 0;skill_table[i].gsn != -1;i++ )
+    for ( i = 0; skill_table[i].gsn != -1; i++ )
     {
         if ( skill_table[i].prof )
         {
@@ -2977,7 +2977,7 @@ void do_skills( CHAR_DATA *ch, char *argument )
     }
     send_to_char(cbuf,ch);
     send_to_char("\n\r",ch);
-    for ( i=0;ability_table[i].engineering != -1;i++ )
+    for ( i=0; ability_table[i].engineering != -1; i++ )
     {
         if ( has_ability(ch,i) )
         {
@@ -2997,7 +2997,7 @@ void do_classes( CHAR_DATA *ch, char *argument )
 
     sprintf( buf, "\n\r@@NClasses available to you:\n\r\n\r" );
     sprintf( buf2, "\n\r@@dClasses not available to you yet (At rank %d):\n\r\n\r", rank );
-    for ( i=0;i<MAX_CLASS;i++ )
+    for ( i=0; i<MAX_CLASS; i++ )
     {
         if ( class_table[i].rank <= rank )
             sprintf( buf+strlen(buf), "%s%s - %s: %s\n\r", ( class_table[i].rec ) ? "@@a" : "@@c", class_table[i].who_name, class_table[i].name, class_table[i].desc );
@@ -3124,7 +3124,7 @@ void do_formulas( CHAR_DATA *ch, char *argument )
     char buf[MSL];
 
     sprintf( buf, "Formulas you have acquired:\n\r" );
-    for ( i=0;formula_table[i].vnum != -1;i++ )
+    for ( i=0; formula_table[i].vnum != -1; i++ )
     {
         if ( formula_table[i].rank > get_rank(ch) )
         {
@@ -3171,11 +3171,11 @@ void show_building_info(CHAR_DATA *ch, int i)
     if ( i<0 || i >= MAX_BUILDING )
         return;
 
-    for ( j=0;j<SECT_MAX;j++ )
+    for ( j=0; j<SECT_MAX; j++ )
         ter[j] = FALSE;
 
     sprintf( buf, "@@dBuilding Information:\n\r@@aName:@@c %s    %s\n\r@@aHP:@@c %d    @@aShield:@@c %d\n\r@@aType:@@c %s\n\r@@aMax Allowed: @@c%d\n\r@@dIron: @@g%d @@bSkins: @@y%d @@RCopper: @@e%d @@bGold: @@y%d @@gSilver:@@W %d @@dRocks:@@g %d @@bSticks:@@y %d @@GLogs:@@r %d.\n\r@@aRequires:@@c %s L%d",
-        build_table[i].name, build_table[i].symbol, build_table[i].hp, build_table[i].shield, building_title[build_table[i].act], build_table[i].max, build_table[i].resources[0], build_table[i].resources[1], build_table[i].resources[2], build_table[i].resources[3], build_table[i].resources[4], build_table[i].resources[5], build_table[i].resources[6], build_table[i].resources[7], build_table[build_table[i].requirements].name, build_table[i].requirements_l );
+             build_table[i].name, build_table[i].symbol, build_table[i].hp, build_table[i].shield, building_title[build_table[i].act], build_table[i].max, build_table[i].resources[0], build_table[i].resources[1], build_table[i].resources[2], build_table[i].resources[3], build_table[i].resources[4], build_table[i].resources[5], build_table[i].resources[6], build_table[i].resources[7], build_table[build_table[i].requirements].name, build_table[i].requirements_l );
     send_to_char( buf, ch );
     if ( build_table[i].rank > 0 )
         sprintf( buf, " and Rank %d.\n\r", build_table[i].rank );
@@ -3183,13 +3183,13 @@ void show_building_info(CHAR_DATA *ch, int i)
         sprintf( buf, ".\n\r" );
     send_to_char(buf,ch);
 
-    for ( j = 0;j<MAX_BUILDING;j++ )
+    for ( j = 0; j<MAX_BUILDING; j++ )
         if ( build_table[j].requirements == i && build_table[j].rank <= 0 && !build_table[j].disabled )
-    {
-        sprintf( buf, "@@aRequired for:@@c %s\n\r", build_table[j].name );
-        send_to_char( buf, ch );
-    }
-    for ( j=0;j<MAX_BUILDON;j++ )
+        {
+            sprintf( buf, "@@aRequired for:@@c %s\n\r", build_table[j].name );
+            send_to_char( buf, ch );
+        }
+    for ( j=0; j<MAX_BUILDON; j++ )
         if (build_table[i].buildon[j] < SECT_MAX)
             ter[build_table[i].buildon[j]] = TRUE;
     sprintf( buf, "@@aBuild on:@@c " );
@@ -3199,7 +3199,7 @@ void show_building_info(CHAR_DATA *ch, int i)
     }
     else
     {
-        for ( j=0;j<SECT_MAX;j++ )
+        for ( j=0; j<SECT_MAX; j++ )
             if ( ter[j] )
                 sprintf( buf+strlen(buf), "%s%s ", wildmap_table[j].color, wildmap_table[j].name );
     }
@@ -3295,7 +3295,7 @@ void display_details_old( CHAR_DATA * viewer, CHAR_DATA *ch )
         send_to_char( "Affected by: Slow\n\r", viewer );
     if ( IS_SET(ch->effect,EFFECT_ENCRYPTION) )
         send_to_char( "Affected by: Encryption\n\r", viewer );
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
     {
         if ( ch->refund[i] > 0 )
         {
@@ -3324,7 +3324,7 @@ void do_list( CHAR_DATA *ch, char *argument)
     }
     buf[0] = '\0';
     send_to_char( "Needed for completion:\n\r", ch );
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
     {
         if ( bld->resources[i] > 0 )
         {
@@ -3337,19 +3337,19 @@ void do_list( CHAR_DATA *ch, char *argument)
 
 void do_rules (CHAR_DATA *ch, char *argument)
 {
-     char arg[MSL];
-     one_argument(argument,arg);
-     if (arg[0]=='\0')
-     do_pipe(ch,"tail -n 120 ../information/general");
-else      if (!str_cmp(arg,"atmosphere"))
-do_pipe(ch,"tail -n 100 ../information/atmosphere");
-else if (!str_cmp(arg,"attacking"))
-do_pipe(ch,"tail -n 100 ../information/attacking");
-else if (!str_cmp(arg,"cheating"))
-do_pipe(ch,"tail -n 100 ../information/cheating");
-else if (!str_cmp(arg,"immortals"))
-do_pipe(ch,"tail -n 100 ../information/immortals");
-else
-mreturn("Syntax: rules; followed by either atmosphere, attacking, cheating, or immortals.\n\r",ch);
-return;
+    char arg[MSL];
+    one_argument(argument,arg);
+    if (arg[0]=='\0')
+        do_pipe(ch,"tail -n 120 ../information/general");
+    else      if (!str_cmp(arg,"atmosphere"))
+        do_pipe(ch,"tail -n 100 ../information/atmosphere");
+    else if (!str_cmp(arg,"attacking"))
+        do_pipe(ch,"tail -n 100 ../information/attacking");
+    else if (!str_cmp(arg,"cheating"))
+        do_pipe(ch,"tail -n 100 ../information/cheating");
+    else if (!str_cmp(arg,"immortals"))
+        do_pipe(ch,"tail -n 100 ../information/immortals");
+    else
+        mreturn("Syntax: rules; followed by either atmosphere, attacking, cheating, or immortals.\n\r",ch);
+    return;
 }

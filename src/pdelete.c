@@ -83,13 +83,13 @@ void do_sdelete( CHAR_DATA *ch, char *argument )
     *pArg = '\0';
 
     if (  ( ch->pcdata->pwd != '\0' )
-        && ( arg1[0] == '\0' )  )
+            && ( arg1[0] == '\0' )  )
     {
         send_to_char( "Syntax: pdelete (password)\n\r", ch );
         return;
     }
     if (  ( ch->pcdata->pwd != '\0' )
-        && ( strcmp( crypt( arg1, ch->pcdata->pwd ), ch->pcdata->pwd ) )  )
+            && ( strcmp( crypt( arg1, ch->pcdata->pwd ), ch->pcdata->pwd ) )  )
     {
         WAIT_STATE( ch, 40 );
         send_to_char( "Wrong password.  Wait 10 seconds.\n\r", ch );
@@ -109,7 +109,7 @@ void do_sdelete( CHAR_DATA *ch, char *argument )
     }
     ch->trust = 0;
     min = 0;
-    for ( i=0;i<100;i++ )
+    for ( i=0; i<100; i++ )
     {
         if ( min == -1 )
             if ( ( score_table[i].kills < ch->pcdata->pkills || ( score_table[i].kills == ch->pcdata->pkills &&score_table[min].buildings < ch->pcdata->bkills ) || ( score_table[i].kills == ch->pcdata->pkills &&score_table[min].buildings == ch->pcdata->bkills  && score_table[i].time < my_get_hours(ch,FALSE) ) ) )
@@ -142,14 +142,14 @@ void do_sdelete( CHAR_DATA *ch, char *argument )
         OBJ_DATA *obj = first_obj;
         OBJ_DATA *obj_next = obj;
         CHAR_DATA *wch;
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             if ( !str_cmp(bld->owned,ch->name) && !is_neutral(bld->type) )
                 extract_building(bld,TRUE);
         }
         save_buildings();
-        for ( obj = first_obj;obj;obj = obj_next )
+        for ( obj = first_obj; obj; obj = obj_next )
         {
             obj_next = obj->next;
             if ( !str_cmp(obj->owner,ch->name) || (obj->carried_by && obj->carried_by == ch) )
@@ -158,7 +158,7 @@ void do_sdelete( CHAR_DATA *ch, char *argument )
         if ( ch == map_ch[ch->x][ch->y][ch->z] )
             map_ch[ch->x][ch->y][ch->z] = ch->next_in_room;
         else
-            for ( wch = map_ch[ch->x][ch->y][ch->z];wch;wch = wch->next_in_room )
+            for ( wch = map_ch[ch->x][ch->y][ch->z]; wch; wch = wch->next_in_room )
                 if ( wch->next_in_room == ch )
                     wch->next_in_room = ch->next_in_room;
     }
@@ -184,7 +184,7 @@ void do_sdelete( CHAR_DATA *ch, char *argument )
     ch->pcdata->pbdeaths = 0;
     ch->pcdata->nukemwins = 0;
     ch->pcdata->dead = FALSE;
-    for ( i=0;i<MAX_SKILL;i++ )
+    for ( i=0; i<MAX_SKILL; i++ )
         ch->pcdata->skill[i] = 0;
     ch->pcdata->alliance = -1;
     ch->pcdata->prof_points = 0;
@@ -267,14 +267,14 @@ void do_nuke( CHAR_DATA *ch, char *argument)
         OBJ_DATA *obj = first_obj;
         OBJ_DATA *obj_next = obj;
         CHAR_DATA *wch;
-        for ( bld = first_building;bld;bld = bld_next )
+        for ( bld = first_building; bld; bld = bld_next )
         {
             bld_next = bld->next;
             if ( !str_cmp(bld->owned,victim->name) && !is_neutral(bld->type) )
                 extract_building(bld,TRUE);
         }
         save_buildings();
-        for ( obj = first_obj;obj;obj = obj_next )
+        for ( obj = first_obj; obj; obj = obj_next )
         {
             obj_next = obj->next;
             if ( !str_cmp(obj->owner,victim->name) )
@@ -283,7 +283,7 @@ void do_nuke( CHAR_DATA *ch, char *argument)
         if ( victim == map_ch[victim->x][victim->y][victim->z] )
             map_ch[victim->x][victim->y][victim->z] = victim->next_in_room;
         else
-            for ( wch = map_ch[victim->x][victim->y][victim->z];wch;wch = wch->next_in_room )
+            for ( wch = map_ch[victim->x][victim->y][victim->z]; wch; wch = wch->next_in_room )
                 if ( wch->next_in_room == victim )
                     wch->next_in_room = victim->next_in_room;
     }

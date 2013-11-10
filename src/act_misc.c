@@ -65,7 +65,7 @@ bool can_build( int type, int sect, int planet )
 {
     int i,sec;
 
-    for ( i=0;i<MAX_BUILDON;i++ )
+    for ( i=0; i<MAX_BUILDON; i++ )
     {
         sec = build_table[type].buildon[i];
         if ( sec == sect )
@@ -189,13 +189,13 @@ void do_a_build( CHAR_DATA *ch, char *argument )
 
     buf2[0] = '\0';
 
-    for ( i = 0;i < MAX_BUILDING_TYPES;i++ )
+    for ( i = 0; i < MAX_BUILDING_TYPES; i++ )
     {
         bact[i] = 0;
         tact[i] = TRUE;
         ndist[i] = -1;
     }
-    for ( i = 0;i<MAX_BUILDING;i++ )
+    for ( i = 0; i<MAX_BUILDING; i++ )
     {
         if ( sysdata.killfest )
             built[i] = 5;
@@ -205,10 +205,10 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         count[i] = 0;
     }
     if ( sysdata.killfest )
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
             build[bld->type] = TRUE;
 
-    for ( bld = ch->first_building;bld;bld = bld->next_owned )
+    for ( bld = ch->first_building; bld; bld = bld->next_owned )
     {
         if ( sysdata.killfest )
         {
@@ -271,11 +271,11 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         }
     }
     if ( !built[BUILDING_HQ]>0 )
-        for ( i = 0;i<MAX_BUILDING;i++ )
-    {
-        built[i] = 0;
-        build[i] = FALSE;
-    }
+        for ( i = 0; i<MAX_BUILDING; i++ )
+        {
+            built[i] = 0;
+            build[i] = FALSE;
+        }
 
     built[0] = 1;
 
@@ -292,7 +292,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         sprintf(s_buf,"\n\r");
         if ( ( bld = get_building(ch->x,ch->y,ch->z) ) != NULL )
         {
-            for ( i=0;i<8;i++ )
+            for ( i=0; i<8; i++ )
             {
                 if ( bld->resources[i] > 0 )
                 {
@@ -327,7 +327,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
             bool disp[7];
             sh_int p[7];
 
-            for ( i=0;i<7;i++ )
+            for ( i=0; i<7; i++ )
             {
                 disp[i] = FALSE;
                 p[i] = 0;
@@ -341,7 +341,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
             sprintf( buf5, "\n\r*%s:\n\r\n\r", building_title[5] );
             sprintf( buf6, "\n\r*%s:\n\r\n\r", building_title[6] );
 
-            for ( i=1;i<MAX_BUILDING;i++ )
+            for ( i=1; i<MAX_BUILDING; i++ )
             {
                 if ( is_neutral(i) )
                     continue;
@@ -403,7 +403,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
             goto comments;
         }
 
-        for ( i=0;i<MAX_BUILDING;i++ )
+        for ( i=0; i<MAX_BUILDING; i++ )
         {
             ok = FALSE;
             while ( (j=buildings_lists[cact1][bact[cact1]]) > 0 && !ok && !tact[cact1] )
@@ -479,9 +479,9 @@ void do_a_build( CHAR_DATA *ch, char *argument )
             }
 
             sprintf(s_buf, "%s%-24s%s       %s%-24s%s       %s%-24s%s\n\r",
-                tact[cact1] ? "@@a" : "", tact[cact1] ? building_title[cact1] : (j>0) ? build_table[j].name : "", tact[cact1] ? "@@c" : "",
-                tact[cact2] ? "@@a" : "", tact[cact2] ? building_title[cact2] : (k>0) ? build_table[k].name : "", tact[cact2] ? "@@c" : "",
-                tact[cact3] ? "@@a" : "", tact[cact3] ? building_title[cact3] : (m>0) ? build_table[m].name : "", tact[cact3] ? "@@c" : "" );
+                    tact[cact1] ? "@@a" : "", tact[cact1] ? building_title[cact1] : (j>0) ? build_table[j].name : "", tact[cact1] ? "@@c" : "",
+                    tact[cact2] ? "@@a" : "", tact[cact2] ? building_title[cact2] : (k>0) ? build_table[k].name : "", tact[cact2] ? "@@c" : "",
+                    tact[cact3] ? "@@a" : "", tact[cact3] ? building_title[cact3] : (m>0) ? build_table[m].name : "", tact[cact3] ? "@@c" : "" );
 
             if ( !(m <= 0 && j <= 0 && k <= 0 ) || tact[BUILDING_OTHER] )
                 safe_strcat(MSL,buf,s_buf);
@@ -503,7 +503,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
                 break;
         }
         send_to_char(buf,ch);
-        comments:
+comments:
         //		if ( my_get_minutes(ch,FALSE) < 20 )
         //			send_to_char( "\n\r@@gNote that the @@abright@@g-colored text are not actual buildings, merely general building catagories that will fill up when you get more technology.\n\rThe first building you can make is the @@cHeadquarters@@g.\n\r\n\r", ch );
         sprintf( buf, "\n\r@@cThe current building limit is @@a%d@@a.@@N\n\r", BUILDING_LIMIT );
@@ -526,7 +526,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
 
         send_to_char( "\n\rName                    IR    SK    CO    GO    SI    RO    ST    LO\n\r" , ch );
         send_to_char( "--------------------------------------------------------------------\n\r", ch );
-        for ( i = 1;i<MAX_BUILDING;i++ )
+        for ( i = 1; i<MAX_BUILDING; i++ )
         {
             int j;
 
@@ -554,7 +554,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
             else
             {
                 sprintf( buf+strlen(buf), "@@a%-24s", build_table[order[i]].name );
-                for ( j = 0;j<8;j++ )
+                for ( j = 0; j<8; j++ )
                     sprintf( buf+strlen(buf), "%s%-6d", resource_color_table[j].color, build_table[order[i]].resources[j] );
                 sprintf( buf+strlen(buf), "\n\r" );
             }
@@ -578,7 +578,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         sprintf( buf, "@@aCompleted Buildings:\n\r" );
         sprintf( ibuf, "@@cIncomplete Buildings:\n\r" );
         i = 0;
-        for (bld = ch->first_building;bld;bld = bld->next_owned )
+        for (bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( is_neutral(bld->type) || IS_SET(bld->value[1],INST_SPOOF) )
                 continue;
@@ -619,7 +619,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         sprintf( buf, "Completed Buildings:\n\r" );
         sprintf( ibuf, "Incomplete Buildings:\n\r" );
         i = 0;
-        for (bld = ch->first_building;bld;bld = bld->next_owned )
+        for (bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( is_neutral(bld->type) || IS_SET(bld->value[1],INST_SPOOF) )
                 continue;
@@ -665,7 +665,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
     else if ( !str_cmp(argument,"greenhouse") )
         sprintf(argument,"lumberyard");
 
-    for ( i=0;i<MAX_BUILDING;i++ )
+    for ( i=0; i<MAX_BUILDING; i++ )
     {
         if ( !str_prefix(argument, build_table[i].name) )
         {
@@ -703,14 +703,14 @@ void do_a_build( CHAR_DATA *ch, char *argument )
                 return;
             }
             if ( (i == BUILDING_SCUD_LAUNCHER && (build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_ATOM_BOMBER] ) )
-                || (i == BUILDING_NUKE_LAUNCHER && (build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_ATOM_BOMBER] ) )
-                )
+                    || (i == BUILDING_NUKE_LAUNCHER && (build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_ATOM_BOMBER] ) )
+               )
             {
                 send_to_char( "You can only have one superweapon.\n\r", ch );
                 return;
             }
             if ( ( i == BUILDING_STATUE_SPELGURU || i == BUILDING_STATUE_CYLIS || i == BUILDING_STATUE_DEMISE || i == BUILDING_STATUE_WULFSTON ) &&
-                ( build[BUILDING_STATUE_CYLIS] || build[BUILDING_STATUE_SPELGURU] || build[BUILDING_STATUE_DEMISE] || build[BUILDING_STATUE_WULFSTON] ) )
+                    ( build[BUILDING_STATUE_CYLIS] || build[BUILDING_STATUE_SPELGURU] || build[BUILDING_STATUE_DEMISE] || build[BUILDING_STATUE_WULFSTON] ) )
             {
                 send_to_char( "You can only have one statue.\n\r", ch );
                 return;
@@ -751,7 +751,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
     {
         send_to_char( "No such structure.\n\r", ch );
 
-        for ( i=0;i<MAX_BUILDING_TYPES;i++ )
+        for ( i=0; i<MAX_BUILDING_TYPES; i++ )
             if ( !str_cmp(argument,building_title[i]) )
                 send_to_char( "You've typed the name of a building @@ycatagory@@N, not a building @@ename@@N. Please select an actual building to make.\n\r", ch );
 
@@ -780,9 +780,9 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         if ( yy > MAX_MAPS - BORDER_SIZE )
             yy = MAX_MAPS - BORDER_SIZE;
 
-        for ( x = x1;x<xx;x++ )
+        for ( x = x1; x<xx; x++ )
         {
-            for ( y=y1;y<yy;y++ )
+            for ( y=y1; y<yy; y++ )
             {
                 if ( map_table.type[x][y][ch->z] == SECT_LAVA && i == BUILDING_TUNNEL )
                     lava = TRUE;
@@ -888,7 +888,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         bld->hp *= 1.3;
         bld->shield *= 1.3;
     }
-    for ( i=0;i<ch->pcdata->skill[gsn_building];i++ )
+    for ( i=0; i<ch->pcdata->skill[gsn_building]; i++ )
     {
         if ( bld->level >= MAX_BUILDING_LEVEL || bld->type == BUILDING_SPACE_CENTER )
             break;
@@ -912,10 +912,10 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         bool ter[SECT_MAX];
         int j,k;
 
-        for ( j=0;j<SECT_MAX;j++ )
+        for ( j=0; j<SECT_MAX; j++ )
             ter[j] = FALSE;
         buf[0] = '\0';
-        for ( j=0;j<MAX_BUILDON;j++ )
+        for ( j=0; j<MAX_BUILDON; j++ )
         {
             k = build_table[bld->type].buildon[j];
             if ( k < 0 || k >= SECT_MAX )
@@ -935,28 +935,32 @@ void do_a_build( CHAR_DATA *ch, char *argument )
     if ( ch->pcdata->set_exit == DIR_NORTH || ch->pcdata->set_exit == -1 || map_bld[bld->x][bld->y+1][bld->z] )
     {
         bld->exit[DIR_NORTH] = TRUE;
-        y = bld->y + 1; x = bld->x;
+        y = bld->y + 1;
+        x = bld->x;
         if ( ( bld2 = map_bld[x][y][bld->z] ) != NULL )
             bld2->exit[DIR_SOUTH] = TRUE;
     }
     if ( ch->pcdata->set_exit == DIR_EAST || ch->pcdata->set_exit == -1 || map_bld[bld->x+1][bld->y][bld->z] )
     {
         bld->exit[DIR_EAST] = TRUE;
-        x = bld->x + 1; y = bld->y;
+        x = bld->x + 1;
+        y = bld->y;
         if ( ( bld2 = map_bld[x][y][bld->z] ) != NULL )
             bld2->exit[DIR_WEST] = TRUE;
     }
     if ( ch->pcdata->set_exit == DIR_SOUTH || ch->pcdata->set_exit == -1 || map_bld[bld->x][bld->y-1][bld->z] )
     {
         bld->exit[DIR_SOUTH] = TRUE;
-        y = bld->y - 1; x = bld->x;
+        y = bld->y - 1;
+        x = bld->x;
         if ( ( bld2 = map_bld[x][y][bld->z] ) != NULL )
             bld2->exit[DIR_NORTH] = TRUE;
     }
     if ( ch->pcdata->set_exit == DIR_WEST || ch->pcdata->set_exit == -1 || map_bld[bld->x-1][bld->y][bld->z] )
     {
         bld->exit[DIR_WEST] = TRUE;
-        x = bld->x - 1; y = bld->y;
+        x = bld->x - 1;
+        y = bld->y;
         if ( ( bld2 = map_bld[x][y][bld->z] ) != NULL )
             bld2->exit[DIR_EAST] = TRUE;
     }
@@ -968,11 +972,11 @@ void do_a_build( CHAR_DATA *ch, char *argument )
     send_to_char( "\n\r", ch );
     act( "$n starts building a structure.", ch, NULL, NULL, TO_ROOM );
     if ( sysdata.killfest )
-        for ( i=0;i<8;i++ )
+        for ( i=0; i<8; i++ )
             bld->resources[i] = 0;
     if ( ch->pcdata->skill[gsn_building] > 0 )
     {
-        for ( i=0;i<8;i++ )
+        for ( i=0; i<8; i++ )
             if ( bld->resources[i] > 0 )
                 bld->resources[i] -= (bld->resources[i] * ch->pcdata->skill[gsn_building]) /100;
     }
@@ -1002,11 +1006,11 @@ void act_build( CHAR_DATA *ch, int level )
         return;
     }
 
-    for ( i = 0;i<8;i++ )
+    for ( i = 0; i<8; i++ )
     {
         if ( bld->resources[i] > 0 )
         {
-            for ( obj = ch->first_carry;obj;obj = obj_next )
+            for ( obj = ch->first_carry; obj; obj = obj_next )
             {
                 if ( ch->pcdata->reimb <= 0 )
                 {
@@ -1139,7 +1143,7 @@ void do_upgrade( CHAR_DATA *ch, char *argument )
         send_to_char( "Finish building it first.\n\r", ch );
         return;
     }
-    for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
     {
         if ( obj->item_type != ITEM_BLUEPRINT || obj->level <= bld->level )
             continue;
@@ -1176,7 +1180,7 @@ void do_upgrade( CHAR_DATA *ch, char *argument )
         ave = (ch->pcdata->skill[gsn_building] + ch->pcdata->skill[gsn_engineering]);
         if ( ave >= 2 )
             ave /= 2;
-        for ( i=0;i<ave;i++ )
+        for ( i=0; i<ave; i++ )
         {
             if ( bld->level >= MAX_BUILDING_LEVEL )
                 break;
@@ -1242,7 +1246,7 @@ void do_makeexit( CHAR_DATA *ch, char *argument )
     }
     if ( all )
     {
-        for ( dir=0;dir<4;dir++ )
+        for ( dir=0; dir<4; dir++ )
             bld->exit[dir] = TRUE;
     }
     else
@@ -1271,7 +1275,7 @@ void do_closeexit( CHAR_DATA *ch, char *argument )
         send_to_char( "In your OWN building, please.\n\r", ch);
         return;
     }
-    for ( dir = 0;dir < 4;dir++ )
+    for ( dir = 0; dir < 4; dir++ )
         if ( bld->exit[dir] == TRUE )
             exits++;
     if ( ( dir = parse_direction(ch,argument) ) < 0 || dir > 3 )
@@ -1394,12 +1398,14 @@ void do_throw( CHAR_DATA *ch, char *argument )
             return;
         }
         rev = -1;
-        x = victim->x; y = victim->y;
+        x = victim->x;
+        y = victim->y;
         if ( number_percent() > ch->pcdata->skill[gsn_grenades] )
             x = number_range(x-1,x+1);
         if ( number_percent() > ch->pcdata->skill[gsn_grenades] )
             y = number_range(y-1,y+1);
-        obj->x = x; obj->y = y;
+        obj->x = x;
+        obj->y = y;
         sprintf( buf, "You throw %s as hard as you can towards %s!", obj->short_descr, victim->name);
         act( buf, ch, NULL, NULL, TO_CHAR );
         sprintf( buf, "$n throws %s towards %s!", obj->short_descr, victim->name );
@@ -1489,12 +1495,12 @@ void do_activate( CHAR_DATA *ch, char *argument )
             send_to_char( "It's hard to jump to another alliance member when you're not a member of one.\n\r", ch );
             return;
         }
-        for ( vch = first_char;vch;vch = vch->next )
+        for ( vch = first_char; vch; vch = vch->next )
             if ( vch != ch && vch->pcdata->alliance == ch->pcdata->alliance && (vch->z == Z_GROUND || vch->z == Z_UNDERGROUND) && (!found || number_percent() < 50) )
-        {
-            victim = vch;
-            found = TRUE;
-        }
+            {
+                victim = vch;
+                found = TRUE;
+            }
         if ( !found )
         {
             send_to_char( "No reachable alliance members found.\n\r", ch );
@@ -1586,78 +1592,78 @@ void do_heal( CHAR_DATA *ch, char *argument )
         return;
     }
     if ( ( obj = get_obj_carry(ch,  argument) ) == NULL )
-         	{
+    {
         send_to_char( "You are not carrying that!\n\r", ch );
         return;
-        }
+    }
     if ( obj->item_type != ITEM_MEDPACK )
-{
-                   
-                 if (obj->pIndexData->vnum==1500) //beer
-{
-                                   extract_obj(obj);
-                                   act("$n has another beer; what an alcoholic.",ch,NULL,NULL,TO_ROOM);
-                                   if (!IS_SET(ch->effect,EFFECT_DRUNK))
-                                   {
-SET_BIT(ch->effect,EFFECT_DRUNK);                                                                        
-                                                                        mreturn("You can't help chugging the damned thing. Woooooooo!\n\rYou feel tipsy.\n\r",ch);
-}
-else if (IS_SET(ch->effect,EFFECT_DRUNK) && !IS_SET(ch->effect,EFFECT_CONFUSE))
-{
-     send_to_char("What the hell; you slam another one!\n\r",ch);
-     if (number_percent()<40)
-     {
-     SET_BIT(ch->effect,EFFECT_CONFUSE);
-     act("$n looks a little unsteady.",ch,NULL,NULL,TO_ROOM);
-send_to_char("You feel drunker somehow... Woooooo!\n\r",ch);
-}
-return;
-}
-else if (IS_SET(ch->effect,EFFECT_DRUNK) && IS_SET(ch->effect,EFFECT_CONFUSE))
-{
-switch (number_range(1,10))
-{
-case 1:
-     send_to_char("You're hick-upping too damn bad right now, but you manage another one.\n\r",ch);
-     break;
-     case 2:
-          send_to_char("If you have another one, you'll surely puke; but why not?\n\r",ch);
-          break;
-          case 3:
-               do_drop(ch,"all");
-               send_to_char("Woops... Hehhehheheh...\n\r",ch);
-               break;
-               case 4:
+    {
+
+        if (obj->pIndexData->vnum==1500) //beer
+        {
+            extract_obj(obj);
+            act("$n has another beer; what an alcoholic.",ch,NULL,NULL,TO_ROOM);
+            if (!IS_SET(ch->effect,EFFECT_DRUNK))
+            {
+                SET_BIT(ch->effect,EFFECT_DRUNK);
+                mreturn("You can't help chugging the damned thing. Woooooooo!\n\rYou feel tipsy.\n\r",ch);
+            }
+            else if (IS_SET(ch->effect,EFFECT_DRUNK) && !IS_SET(ch->effect,EFFECT_CONFUSE))
+            {
+                send_to_char("What the hell; you slam another one!\n\r",ch);
+                if (number_percent()<40)
+                {
+                    SET_BIT(ch->effect,EFFECT_CONFUSE);
+                    act("$n looks a little unsteady.",ch,NULL,NULL,TO_ROOM);
+                    send_to_char("You feel drunker somehow... Woooooo!\n\r",ch);
+                }
+                return;
+            }
+            else if (IS_SET(ch->effect,EFFECT_DRUNK) && IS_SET(ch->effect,EFFECT_CONFUSE))
+            {
+                switch (number_range(1,10))
+                {
+                case 1:
+                    send_to_char("You're hick-upping too damn bad right now, but you manage another one.\n\r",ch);
+                    break;
+                case 2:
+                    send_to_char("If you have another one, you'll surely puke; but why not?\n\r",ch);
+                    break;
+                case 3:
+                    do_drop(ch,"all");
+                    send_to_char("Woops... Hehhehheheh...\n\r",ch);
+                    break;
+                case 4:
                     send_to_char("Yes ma'am.\n\r",ch);
                     break;
-                    case 5:
-                         send_to_char("I amaze myself; don't you?\n\r",ch);
-                         break;       
-case 6:
-     send_to_char("Zhure...\n\r",ch);
-     break;
-     case 7:
-          send_to_char("Iv u wanna... Yeah...\n\r",ch);
-          break;
-          case 8:
-               send_to_char("I'm so zhrunk... Wooooo!\n\r",ch);
-               break;
-               case 9:
+                case 5:
+                    send_to_char("I amaze myself; don't you?\n\r",ch);
+                    break;
+                case 6:
+                    send_to_char("Zhure...\n\r",ch);
+                    break;
+                case 7:
+                    send_to_char("Iv u wanna... Yeah...\n\r",ch);
+                    break;
+                case 8:
+                    send_to_char("I'm so zhrunk... Wooooo!\n\r",ch);
+                    break;
+                case 9:
                     send_to_char("I's love... Beer... Zhyeah... Have another one...\n\r",ch);
                     break;
-                    case 10:
-                         send_to_char("Ozh kayze...\n\r",ch);
-                         break;
-                         }
-                         return;
-                         }
-}
-else
-{
-                 send_to_char( "This isn't a Medpack!\n\r", ch );
-        return;
+                case 10:
+                    send_to_char("Ozh kayze...\n\r",ch);
+                    break;
+                }
+                return;
+            }
+        }
+        else
+        {
+            send_to_char( "This isn't a Medpack!\n\r", ch );
+            return;
+        }
     }
-}
     if ( obj->value[1] == 1 )
     {
         if ( ch->disease == 0 )
@@ -1751,7 +1757,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
 
         if ( build_table[bld->type].act == BUILDING_LAB )
         {
-            for ( bld2 = ch->first_building;bld2;bld2 = bld2_next )
+            for ( bld2 = ch->first_building; bld2; bld2 = bld2_next )
             {
                 bld2_next = bld2->next_owned;
                 type = build_table[bld2->type].requirements;
@@ -1781,7 +1787,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            for ( i=1;i<MAX_BUILDING;i++ )
+            for ( i=1; i<MAX_BUILDING; i++ )
             {
                 if ( !str_prefix(argument,build_table[i].name) )
                 {
@@ -1797,7 +1803,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
             return;
         }
         send_to_char(buf,ch);
-        for ( bld2 = ch->first_building;bld2;bld2 = bld2_next )
+        for ( bld2 = ch->first_building; bld2; bld2 = bld2_next )
         {
             bld2_next = bld2->next_owned;
 
@@ -1817,7 +1823,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
         WAIT_STATE(ch,20*8);
         return;
     }
-    for ( bld2 = ch->first_building;bld2;bld2 = bld2->next_owned )
+    for ( bld2 = ch->first_building; bld2; bld2 = bld2->next_owned )
         if ( bld2 != bld && bld2->type == bld->type && complete(bld2) )
             check = FALSE;
 
@@ -1846,13 +1852,13 @@ void do_demolish( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            for ( i=0;i<8;i++ )
+            for ( i=0; i<8; i++ )
                 if ( build_table[bld->type].resources[i] > 0 )
-            {
-                obj = create_material(i);
-                obj->value[1] = build_table[bld->type].resources[i];
-                obj_to_char(obj,ch);
-            }
+                {
+                    obj = create_material(i);
+                    obj->value[1] = build_table[bld->type].resources[i];
+                    obj_to_char(obj,ch);
+                }
             send_to_char( "@@aFor the first 5 hours of gameplay, you are refunded for demolished buildings.@@N\n\r", ch );
         }
     }
@@ -1962,7 +1968,7 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     int resource[8];
     int i;
 
-    for ( i = 0;i<8;i++ )
+    for ( i = 0; i<8; i++ )
     {
         type[i] = FALSE;
         resource[i] = 0;
@@ -1991,7 +1997,7 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     {
         OBJ_DATA *obj_next;
         int x;
-        for ( obj = ch->first_carry;obj;obj = obj_next )
+        for ( obj = ch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
             if ( obj->item_type != ITEM_MATERIAL || obj->value[0] < 0 || obj->value[0] > 7 )
@@ -2001,11 +2007,11 @@ void do_chunk( CHAR_DATA *ch, char *argument )
             found = TRUE;
             extract_obj(obj);
         }
-        for ( i = 0;i<8;i++ )
+        for ( i = 0; i<8; i++ )
         {
             if ( resource[i] <= 0 )
                 continue;
-            for ( x = resource[i];x>0;x -= 20000)
+            for ( x = resource[i]; x>0; x -= 20000)
             {
                 obj = create_material(i);
                 obj->value[1] = x;
@@ -2033,7 +2039,7 @@ void do_chunk( CHAR_DATA *ch, char *argument )
         send_to_char( "You can only chunk materials.\n\r", ch);
         return;
     }
-    for ( obj2 = ch->first_carry;obj2;obj2 = obj2_next )
+    for ( obj2 = ch->first_carry; obj2; obj2 = obj2_next )
     {
         obj2_next = obj2->next_in_carry_list;
         if ( obj2->item_type != ITEM_MATERIAL || obj2->value[0] != obj->value[0] || obj2 == obj )
@@ -2051,7 +2057,7 @@ void do_chunk( CHAR_DATA *ch, char *argument )
         send_to_char( "Materials chunked!\n\r", ch);
 
     ch->carry_weight = 0;
-    for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
         ch->carry_weight += obj->weight;
     return;
 }
@@ -2168,10 +2174,10 @@ void do_install( CHAR_DATA *ch, char *argument )
         return;
     }
     if ( obj->value[1] != bld->type
-        && obj->value[2] != bld->type
-        && obj->value[3] != bld->type
-        && obj->value[4] != bld->type
-        && obj->value[1] != -1 )
+            && obj->value[2] != bld->type
+            && obj->value[3] != bld->type
+            && obj->value[4] != bld->type
+            && obj->value[1] != -1 )
     {
         send_to_char( "This upgrade cannot be installed here.\n\r", ch );
         return;
@@ -2202,7 +2208,7 @@ void do_install( CHAR_DATA *ch, char *argument )
     if ( obj->pIndexData->vnum == 11 )                      // Dr Norton
     {
         sprintf(buf,"%s", bld->owned );
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
             if ( !str_cmp(bld->owned,buf) )
                 bld->value[3] = 0;
         send_to_char( "Dr. Norton fixed your base right up!\n\r", ch );
@@ -2330,7 +2336,7 @@ void do_implant( CHAR_DATA *ch, char *argument )
     act( "You implant $p in your body!", ch, obj, NULL, TO_CHAR );
     act( "$n implants $p in $s body!", ch, obj, NULL, TO_ROOM );
     if ( !IS_SET(ch->implants,bit_value))
-    	SET_BIT(ch->implants,bit_value);
+        SET_BIT(ch->implants,bit_value);
     return;
 }
 
@@ -2353,15 +2359,15 @@ void do_qpspend( CHAR_DATA *ch, char *argument )
         send_to_char( "Not here.\n\r", ch );
         return;
     }
-if (!str_cmp(arg,"norton"))
-{
-                        if (ch->quest_points<500)
-                        mreturn("You need 500 quest points to buy a Norton.\n\r",ch);
-obj = create_object(get_obj_index(11),0);
-obj_to_char(obj,ch);
-ch->quest_points-=500;
-mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
-}
+    if (!str_cmp(arg,"norton"))
+    {
+        if (ch->quest_points<500)
+            mreturn("You need 500 quest points to buy a Norton.\n\r",ch);
+        obj = create_object(get_obj_index(11),0);
+        obj_to_char(obj,ch);
+        ch->quest_points-=500;
+        mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
+    }
 
     if ( !str_cmp(arg,"buy") )
     {
@@ -2372,7 +2378,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
 
             if ( length > 100 )
                 ch->pcdata->pagelen = 100;
-            for ( i=MIN_LOAD_OBJ;i<MAX_LOAD_OBJ;i++ )
+            for ( i=MIN_LOAD_OBJ; i<MAX_LOAD_OBJ; i++ )
             {
                 if ( i == 1043 || i == OBJ_VNUM_ACID_SPRAY || i == 1062)
                     continue;
@@ -2390,7 +2396,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
                     continue;
                 sprintf( buf+strlen(buf), "@@g[@@W%4d@@g] [@@a%4d@@g] @@N%-25s\n\r", i, pObj->level, pObj->short_descr );
             }
-            for ( i=MIN_QUEST_OBJ;i<=MAX_QUEST_OBJ;i++ )
+            for ( i=MIN_QUEST_OBJ; i<=MAX_QUEST_OBJ; i++ )
             {
                 if ( ( pObj = get_obj_index(i)) == NULL || i == 9 || i == 12 || i == 11 )
                     continue;
@@ -2408,7 +2414,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
 
             if ( length > 100 )
                 ch->pcdata->pagelen = 100;
-            for ( i=MIN_LOAD_OBJ;i<MAX_LOAD_OBJ;i++ )
+            for ( i=MIN_LOAD_OBJ; i<MAX_LOAD_OBJ; i++ )
             {
                 if ( i == 1043 || i == OBJ_VNUM_ACID_SPRAY )
                     continue;
@@ -2423,7 +2429,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
                     continue;
                 sprintf( buf+strlen(buf), "@@g[@@W%4d@@g] [@@a%4d@@g] @@N%-25s\n\r", i, pObj->level, pObj->short_descr );
             }
-            for ( i=MIN_QUEST_OBJ;i<=MAX_QUEST_OBJ;i++ )
+            for ( i=MIN_QUEST_OBJ; i<=MAX_QUEST_OBJ; i++ )
             {
                 if ( ( pObj = get_obj_index(i)) == NULL || i == 9 || i == 12 || i == 11)
                     continue;
@@ -2540,8 +2546,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
         }
         if ( !str_cmp(arg,"move") )
             mmove = TRUE;
-        else
-        if ( ch->fighttimer > 0 )
+        else if ( ch->fighttimer > 0 )
         {
             send_to_char( "Not during combat.\n\r", ch );
             return;
@@ -2570,11 +2575,11 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
         y = atoi(argument);
         if ( ch->z == Z_PAINTBALL )
             if ( ( !pit && x >= PIT_BORDER_X && y >= PIT_BORDER_Y )
-            || ( pit  && x <= PIT_BORDER_X && y <= PIT_BORDER_Y ) )
-        {
-            send_to_char( "You can't transport in and out of the pit.\n\r", ch );
-            return;
-        }
+                    || ( pit  && x <= PIT_BORDER_X && y <= PIT_BORDER_Y ) )
+            {
+                send_to_char( "You can't transport in and out of the pit.\n\r", ch );
+                return;
+            }
         if ( ch->x == x && ch->y == y )
         {
             send_to_char( "That won't do much.\n\r", ch );
@@ -2632,24 +2637,24 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
                 send_to_char( "Invalid sector type.\n\r", ch );
                 return;
             }
-            for ( xx = x-10;xx<x+10;xx++ )
-                for ( yy = y-10;yy<y+10;yy++ )
-            {
-                bld2 = get_building(xx,yy,ch->z);
-                if ( bld2 == NULL )
-                    continue;
-                if ( str_cmp(bld2->owned,ch->name) )
+            for ( xx = x-10; xx<x+10; xx++ )
+                for ( yy = y-10; yy<y+10; yy++ )
                 {
-                    send_to_char( "You can't move buildings near enemy bases.\n\r", ch );
-                    return;
+                    bld2 = get_building(xx,yy,ch->z);
+                    if ( bld2 == NULL )
+                        continue;
+                    if ( str_cmp(bld2->owned,ch->name) )
+                    {
+                        send_to_char( "You can't move buildings near enemy bases.\n\r", ch );
+                        return;
+                    }
                 }
-            }
             if ( ( bld2 = get_building(x,y,ch->z) ) != NULL )
             {
                 send_to_char( "There is already a building there!\n\r", ch );
                 return;
             }
-            for ( obj = map_obj[bld->x][bld->y];obj;obj = obj_next )
+            for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj_next )
             {
                 obj_next = obj->next_in_room;
                 if ( obj->z != bld->z )
@@ -2675,7 +2680,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
             }
         }
         send_to_char( "You dissolve from the room.\n\r", ch );
-        for ( vch = first_char;vch;vch = vch->next )
+        for ( vch = first_char; vch; vch = vch->next )
         {
             if ( vch->x == ch->x && vch->y == ch->y && vch->z == ch->z && vch != ch )
                 act( "$N dissolves from the room!", vch, NULL, ch, TO_CHAR );
@@ -2685,8 +2690,8 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
 
         {
             int xx,yy;
-            for ( xx = x - 3;xx <= x + 3;xx++ )
-                for ( yy = y - 3;yy <= y + 3;yy++ )
+            for ( xx = x - 3; xx <= x + 3; xx++ )
+                for ( yy = y - 3; yy <= y + 3; yy++ )
                     if ( xx > 0 && yy > 0 && xx < MAX_MAPS && yy < MAX_MAPS )
                         if ( ( bld = get_building(xx,yy,ch->z)  ) != NULL )
                             if ( bld->type == BUILDING_TRAP && str_cmp(ch->name,bld->owned))
@@ -2772,7 +2777,7 @@ mreturn("You buy yourself a Norton installation for 500 quest points!\n\r",ch);
             send_to_char( buf, ch );
             return;
         }
-        for ( i = 0;i < 8;i++ )
+        for ( i = 0; i < 8; i++ )
             bld->resources[i] = 0;
         bld->hp = bld->maxhp;
         bld->shield = bld->maxshield;
@@ -2950,7 +2955,7 @@ void do_doom( CHAR_DATA *ch, char *argument )
             dvalue = 1;
         }
         act( "You press a button, and a thick, green cloud covers the world!", ch, NULL, NULL, TO_CHAR );
-        for ( vch = first_char;vch;vch = vch->next )
+        for ( vch = first_char; vch; vch = vch->next )
         {
             if ( vch == ch || vch->z != 1 )
                 continue;
@@ -2976,25 +2981,25 @@ void do_doom( CHAR_DATA *ch, char *argument )
     else if ( bld->type == BUILDING_HACKPORT )
     {
         OBJ_DATA *obj;
-        for ( obj = first_obj;obj;obj = obj->next )
+        for ( obj = first_obj; obj; obj = obj->next )
             if ( obj->item_type == ITEM_COMPUTER )
-        {
-            if ( obj->in_building && obj->in_building->active == FALSE )
-                continue;
-            if ( obj->in_building && (obj->owner == NULL || str_cmp(obj->owner,obj->in_building->owned) ) )
             {
-                free_string(obj->owner);
-                obj->owner = str_dup(bld->owned);
+                if ( obj->in_building && obj->in_building->active == FALSE )
+                    continue;
+                if ( obj->in_building && (obj->owner == NULL || str_cmp(obj->owner,obj->in_building->owned) ) )
+                {
+                    free_string(obj->owner);
+                    obj->owner = str_dup(bld->owned);
+                }
+                if ( vch == NULL || str_cmp(vch->name,obj->owner) )
+                    vch = get_ch(obj->owner);
+                if ( !vch || vch == NULL || IS_IMMORTAL(vch) )
+                    continue;
+                if ( vch == ch || ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == vch->pcdata->alliance ) )
+                    continue;
+                obj->value[3] = 1;
+                i++;
             }
-            if ( vch == NULL || str_cmp(vch->name,obj->owner) )
-                vch = get_ch(obj->owner);
-            if ( !vch || vch == NULL || IS_IMMORTAL(vch) )
-                continue;
-            if ( vch == ch || ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == vch->pcdata->alliance ) )
-                continue;
-            obj->value[3] = 1;
-            i++;
-        }
         if ( i == 0 )
         {
             send_to_char( "Here's a tip... wait until some players with computers log on.\n\r", ch );
@@ -3007,7 +3012,7 @@ void do_doom( CHAR_DATA *ch, char *argument )
         OBJ_DATA *obj;
         OBJ_DATA *obj_next;
         act( "You press a button, and begin transmitting the signal!", ch, NULL, NULL, TO_CHAR );
-        for ( obj = first_obj;obj;obj = obj_next )
+        for ( obj = first_obj; obj; obj = obj_next )
         {
             obj_next = obj->next;
             if ( obj->item_type == ITEM_COMPUTER )
@@ -3152,7 +3157,7 @@ void do_refine( CHAR_DATA *ch, char *argument )
     {
         char name[MSL];
         OBJ_DATA *obj_next;
-        for ( obj = ch->first_carry;obj;obj = obj_next )
+        for ( obj = ch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
             if ( obj->wear_loc != WEAR_NONE || IS_SET(obj->extra_flags,ITEM_STICKY) )
@@ -3185,9 +3190,9 @@ void do_refine( CHAR_DATA *ch, char *argument )
     act( "You refine $p.", ch, obj, NULL, TO_CHAR );
     act( "$n refines $p.", ch, obj, NULL, TO_ROOM );
     extract_obj(obj);
-    for ( ; i > 0;i-- )
+    for ( ; i > 0; i-- )
     {
-	 x = (number_percent() < 7) ? ITEM_COPPER : (number_percent() < 7) ? ITEM_GOLD : (number_percent() < 18) ? ITEM_SILVER : ITEM_IRON;
+        x = (number_percent() < 7) ? ITEM_COPPER : (number_percent() < 7) ? ITEM_GOLD : (number_percent() < 18) ? ITEM_SILVER : ITEM_IRON;
 //        x = (number_percent() < 5) ? ITEM_COPPER : (number_percent() < 5) ? ITEM_GOLD : (number_percent() < 15) ? ITEM_SILVER : ITEM_IRON;
         if ( x == ITEM_IRON )
             iron++;
@@ -3264,7 +3269,7 @@ void do_sell( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(argument,"all") )
     {
         OBJ_DATA *obj_next;
-        for ( obj = ch->first_carry;obj;obj = obj_next )
+        for ( obj = ch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
             if ( obj->wear_loc != WEAR_NONE || ( obj->item_type != ITEM_ARMOR && obj->item_type != ITEM_WEAPON ) )
@@ -3507,11 +3512,11 @@ void do_winstall( CHAR_DATA *ch, char *argument )
             send_to_char( "The weapon already has that effect.\n\r", ch );
             return;
         }
-/*        if (weapon->value[4]>weapon->pIndexData->value[4]
-|| weapon->value[6] > weapon->pIndexData->value[6]
-|| weapon->value[7] > weapon->pIndexData->value[7]
-|| weapon->value[3]!=weapon->pIndexData->value[3])
-mreturn("No enhancements; no sticky for you!\n\r",ch); */
+        /*        if (weapon->value[4]>weapon->pIndexData->value[4]
+        || weapon->value[6] > weapon->pIndexData->value[6]
+        || weapon->value[7] > weapon->pIndexData->value[7]
+        || weapon->value[3]!=weapon->pIndexData->value[3])
+        mreturn("No enhancements; no sticky for you!\n\r",ch); */
         SET_BIT(weapon->extra_flags,ITEM_STICKY);
         if ( !IS_SET(weapon->extra_flags,ITEM_NODROP) )
             SET_BIT(weapon->extra_flags,ITEM_NODROP);
@@ -3519,7 +3524,7 @@ mreturn("No enhancements; no sticky for you!\n\r",ch); */
     else if ( obj->value[0] == 5 )
     {
         if ( weapon->value[7]+clip_table[weapon->value[2]].dam
-            >= (clip_table[weapon->value[2]].dam+weapon->pIndexData->value[7]) * 1.1 )
+                >= (clip_table[weapon->value[2]].dam+weapon->pIndexData->value[7]) * 1.1 )
         {
             send_to_char( "This won't do anything.\n\r", ch );
             return;
@@ -3650,7 +3655,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
         ch->fighttimer = 1;
         ch->c_sn = gsn_practice;
         ch->c_time = 80;
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             {
                 if ( bld->x < 0 )
@@ -3663,7 +3668,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
                     bld->shield = bld->value[5];
                 else
                     bld->shield = bld->maxshield;
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next )
                     if ( obj->z == bld->z && obj->value[1] != 0 && obj->item_type == ITEM_BOMB )
                         if ( !str_cmp(obj->owner,ch->name) )
                             obj->value[1] = 0;
@@ -3682,7 +3687,7 @@ void do_practice( CHAR_DATA *ch, char *argument )
         }
         if ( ch->z == Z_PAINTBALL )
             return;
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             bld->value[2] = bld->hp;
             if ( bld->type != BUILDING_SPACE_CENTER )
@@ -3786,9 +3791,9 @@ void do_track( CHAR_DATA *ch, char *argument )
         bool found = FALSE;
         //		send_to_char( "Track whom?\n\r", ch );
         sprintf( buf, "Tracable Targets:\n\r\n\r" );
-        for ( wch = first_char;wch;wch = wch->next )
+        for ( wch = first_char; wch; wch = wch->next )
         {
-            for ( obj = wch->first_carry;obj;obj = obj->next_in_carry_list )
+            for ( obj = wch->first_carry; obj; obj = obj->next_in_carry_list )
             {
                 if ( obj->item_type == ITEM_COMPUTER && obj->value[3] != 0 )
                 {
@@ -3809,7 +3814,7 @@ void do_track( CHAR_DATA *ch, char *argument )
         send_to_char( "You can't find that target.\n\r", ch );
         return;
     }
-    for ( obj = wch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = wch->first_carry; obj; obj = obj->next_in_carry_list )
     {
         if ( obj->item_type == ITEM_COMPUTER && obj->value[3] != 0 )
         {
@@ -3864,7 +3869,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
         CHAR_DATA *wch;
         OBJ_DATA *bomb;
 
-        for ( wch = first_char;wch;wch = wch->next )
+        for ( wch = first_char; wch; wch = wch->next )
         {
             if ( allied(ch,wch) || wch->z == Z_NEWBIE || IS_IMMORTAL(wch) || IS_NEWBIE(wch) )
                 continue;
@@ -3873,7 +3878,9 @@ void do_spy( CHAR_DATA *ch, char *argument )
                 bomb = create_object(get_obj_index(999),0);
                 bomb->weight = 1;
                 bomb->value[2] = bld->level * 750;
-                bomb->x = wch->x; bomb->y = wch->y; bomb->z= wch->z;
+                bomb->x = wch->x;
+                bomb->y = wch->y;
+                bomb->z= wch->z;
                 bomb->value[0] = 5;
                 bomb->value[1] = 1;
                 free_string(bomb->owner);
@@ -3890,7 +3897,9 @@ void do_spy( CHAR_DATA *ch, char *argument )
         CHAR_DATA *wch;
         int map,x,y,z;
         map = ch->map;
-        x = ch->x; y = ch->y; z = ch->z;
+        x = ch->x;
+        y = ch->y;
+        z = ch->z;
         if ( ( wch = get_char_world(ch,argument) ) == NULL )
         {
             send_to_char( "You can't find that target.\n\r", ch );
@@ -3924,29 +3933,29 @@ void do_spy( CHAR_DATA *ch, char *argument )
             send_to_char( "You can't find that target.\n\r", ch );
             return;
         }
-        for ( i = 0;i<MAX_BUILDING;i++ )
+        for ( i = 0; i<MAX_BUILDING; i++ )
             buildings[i] = 0;
         act( "You send your spies on a mission.\n\r", ch, NULL, NULL, TO_CHAR );
-        for ( bld2=first_building;bld2;bld2 = bld2->next )
+        for ( bld2=first_building; bld2; bld2 = bld2->next )
             if ( !str_cmp(bld2->owned,wch->name) )
-        {
-            buildings[bld2->type]++;
-            if ( defense_building(bld2) )
-                x += bld2->level;
-            if ( bld->level >= 4 && bld2->type == BUILDING_HQ )
             {
-                obj = create_object(get_obj_index(1028),0);
-                obj->x = bld2->x;
-                obj->y = bld2->y;
-                obj->z = bld2->z;
-                obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
-                obj->value[1] = 1;
-                obj->value[0] = 120;
-                free_string(obj->owner);
-                obj->owner = str_dup(ch->name);
-                b++;
+                buildings[bld2->type]++;
+                if ( defense_building(bld2) )
+                    x += bld2->level;
+                if ( bld->level >= 4 && bld2->type == BUILDING_HQ )
+                {
+                    obj = create_object(get_obj_index(1028),0);
+                    obj->x = bld2->x;
+                    obj->y = bld2->y;
+                    obj->z = bld2->z;
+                    obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
+                    obj->value[1] = 1;
+                    obj->value[0] = 120;
+                    free_string(obj->owner);
+                    obj->owner = str_dup(ch->name);
+                    b++;
+                }
             }
-        }
         x = number_range(x/1.1,x*1.1);
         sprintf( buf, "Your spies report: We estimate %s's defense rating is at %d.\n\r", wch->name, x );
         if ( bld->level >= 4 )
@@ -3961,7 +3970,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
         if ( bld->level >= 5 )
         {
             send_to_char( "\n\rOur spies have delivered a more detailed report of the enemy's base:\n\r", ch );
-            for ( i = 0;i<MAX_BUILDING;i++ )
+            for ( i = 0; i<MAX_BUILDING; i++ )
             {
                 if ( buildings[i] == 0 )
                     continue;
@@ -3985,7 +3994,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
             return;
         }
         act( "You transmit a shockwave at your target location!\n\r", ch, NULL, NULL, TO_CHAR );
-        for ( bld2=wch->first_building;bld2;bld2 = bld2->next_owned )
+        for ( bld2=wch->first_building; bld2; bld2 = bld2->next_owned )
         {
             if ( bld2->type != BUILDING_DUMMY )
                 continue;
@@ -4124,7 +4133,7 @@ void do_locate( CHAR_DATA *ch, char *argument )
     y = ch->y;
     if ( ch->class == CLASS_SCANNER )
         m = 50;
-    for ( obj = ch->first_carry;obj;obj = obj->next_in_carry_list )
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
     {
         if ( obj->item_type == ITEM_LOCATOR && obj->value[0] > m )
         {
@@ -4132,14 +4141,14 @@ void do_locate( CHAR_DATA *ch, char *argument )
             scanner = obj;
         }
     }
-    for ( i=0;i < m;i++ )
+    for ( i=0; i < m; i++ )
     {
         y = ch->y + i;
-        for ( x = ch->x-i;x < ch->x+i;x++ )
+        for ( x = ch->x-i; x < ch->x+i; x++ )
         {
             if (INVALID_COORDS(x,y) )
                 continue;
-            for ( obj = map_obj[x][y];obj;obj = obj->next_in_room )
+            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4151,11 +4160,11 @@ void do_locate( CHAR_DATA *ch, char *argument )
         if ( ex )
             break;
         y = ch->y - i;
-        for ( x = ch->x-i;x < ch->x+i;x++ )
+        for ( x = ch->x-i; x < ch->x+i; x++ )
         {
             if (INVALID_COORDS(x,y) )
                 continue;
-            for ( obj = map_obj[x][y];obj;obj = obj->next_in_room )
+            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4167,11 +4176,11 @@ void do_locate( CHAR_DATA *ch, char *argument )
         if ( ex )
             break;
         x = ch->x + i;
-        for ( y = ch->y-i;y < ch->y+i;y++ )
+        for ( y = ch->y-i; y < ch->y+i; y++ )
         {
             if (INVALID_COORDS(x,y) )
                 continue;
-            for ( obj = map_obj[x][y];obj;obj = obj->next_in_room )
+            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4183,11 +4192,11 @@ void do_locate( CHAR_DATA *ch, char *argument )
         if ( ex )
             break;
         x = ch->x - i;
-        for ( y = ch->y-i;y < ch->y+i;y++ )
+        for ( y = ch->y-i; y < ch->y+i; y++ )
         {
             if (INVALID_COORDS(x,y) )
                 continue;
-            for ( obj = map_obj[x][y];obj;obj = obj->next_in_room )
+            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4218,9 +4227,9 @@ void do_locate( CHAR_DATA *ch, char *argument )
     if ( map_obj[x][y]->z == Z_UNDERGROUND )
     {
         sprintf( buf, "%s is located to the %s%s!\n\r",
-            obj->short_descr,
-            (obj->y == ch->y ) ? "" : (obj->y > ch->y)?"North":"South",
-            (obj->x == ch->x ) ? "" : (obj->x > ch->x)?"East":"West" );
+                 obj->short_descr,
+                 (obj->y == ch->y ) ? "" : (obj->y > ch->y)?"North":"South",
+                 (obj->x == ch->x ) ? "" : (obj->x > ch->x)?"East":"West" );
     }
     else
         sprintf( buf, "%s located at %d/%d\n\r", (map_obj[x][y]->z != ch->z) ? "Unidentified object" : map_obj[x][y]->short_descr,x,y );
@@ -4263,8 +4272,8 @@ void do_paradrop( CHAR_DATA *ch, char *argument )
         send_to_char( "You can't go to that location.\n\r", ch );
         return;
     }
-    for ( xx=x-3;xx<=x+3;xx++ )
-        for ( yy=y-3;yy<=y+3;yy++ )
+    for ( xx=x-3; xx<=x+3; xx++ )
+        for ( yy=y-3; yy<=y+3; yy++ )
             if ( !INVALID_COORDS(x,y) && map_bld[xx][yy][ch->z] != NULL && map_bld[xx][yy][ch->z]->active == FALSE )
             {
                 send_to_char( "You can't go to that location.\n\r", ch );
@@ -4427,27 +4436,27 @@ void do_sblast(CHAR_DATA *ch, char *argument)
         send_to_char( "It doesn't have enough charge!\n\r", ch );
         return;
     }
-    for ( x = bld->x - range;x < bld->x + range + 1;x++ )
-        for ( y = bld->y - range;y < bld->y + range + 1;y++ )
-    {
-        if ( ( wch = get_rand_char(x,y,bld->z) ) == NULL )
-            continue;
-        if ( wch == ch )
-            continue;
-        if ( IS_IMMORTAL(wch) )
-            continue;
-        if ( ch->pcdata->alliance != -1 && wch->pcdata->alliance == ch->pcdata->alliance )
-            continue;
-        send_to_char( "An electrical ring flows throughout the area, zapping you!\n\r", wch );
-        damage( ch, wch, number_fuzzy(30+(bld->level*2)), DAMAGE_PSYCHIC );
-        bld->shield -= 30;
-        i++;
-        if ( bld->shield <= 0 )
+    for ( x = bld->x - range; x < bld->x + range + 1; x++ )
+        for ( y = bld->y - range; y < bld->y + range + 1; y++ )
         {
-            bld->shield = 0;
-            break;
+            if ( ( wch = get_rand_char(x,y,bld->z) ) == NULL )
+                continue;
+            if ( wch == ch )
+                continue;
+            if ( IS_IMMORTAL(wch) )
+                continue;
+            if ( ch->pcdata->alliance != -1 && wch->pcdata->alliance == ch->pcdata->alliance )
+                continue;
+            send_to_char( "An electrical ring flows throughout the area, zapping you!\n\r", wch );
+            damage( ch, wch, number_fuzzy(30+(bld->level*2)), DAMAGE_PSYCHIC );
+            bld->shield -= 30;
+            i++;
+            if ( bld->shield <= 0 )
+            {
+                bld->shield = 0;
+                break;
+            }
         }
-    }
     sprintf( buf, "You hit %d people!\n\r", i );
     send_to_char(buf,ch);
     WAIT_STATE(ch,14);
@@ -4474,26 +4483,26 @@ void do_psy_message( CHAR_DATA *ch, char *argument )
     }
     one_argument(argument,arg);
     if ( str_cmp(arg,"demolish")
-        && str_prefix(arg,"east")
-        && str_prefix(arg,"west")
-        && str_prefix(arg,"south")
-        && str_prefix(arg,"north")
-        && str_cmp(arg,"fire")
-        && str_cmp(arg,"shoot")
-        && str_cmp(arg,"set")
-        && str_cmp(arg,"arm")
-        && str_cmp(arg,"drop")
-        && str_cmp(arg,"throw")
-        && str_cmp(arg,"target")
-        && str_cmp(arg,"swap")
-        && str_cmp(arg,"security")
-        && str_cmp(arg,"exit") )
+            && str_prefix(arg,"east")
+            && str_prefix(arg,"west")
+            && str_prefix(arg,"south")
+            && str_prefix(arg,"north")
+            && str_cmp(arg,"fire")
+            && str_cmp(arg,"shoot")
+            && str_cmp(arg,"set")
+            && str_cmp(arg,"arm")
+            && str_cmp(arg,"drop")
+            && str_cmp(arg,"throw")
+            && str_cmp(arg,"target")
+            && str_cmp(arg,"swap")
+            && str_cmp(arg,"security")
+            && str_cmp(arg,"exit") )
     {
         send_to_char( "You can't issue this command. Must be:\n\rDemolish, East, West, North, South, Fire, Shoot, Set, Arm, Drop, Throw, Target, Swap, Security, Exit.\n\r", ch );
         return;
     }
     range = 3 + bld->level;
-    for ( wch = first_char;wch;wch = wch->next )
+    for ( wch = first_char; wch; wch = wch->next )
     {
         if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
             continue;
@@ -4541,7 +4550,7 @@ void construct_space_vessal( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    for (i=0;s_res_table[i].name != NULL;i++ )
+    for (i=0; s_res_table[i].name != NULL; i++ )
     {
         if ( !IS_SET(bld->value[s_res_table[i].type],s_res_table[i].bit ) )
             continue;
@@ -4681,7 +4690,7 @@ void space_mine( CHAR_DATA *ch, char *argument )
         send_to_char( "You can't carry any more items.\n\r", ch );
         return;
     }
-    for ( obj = map_obj[ch->x][ch->y];obj;obj = obj->next_in_room )
+    for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj->next_in_room )
         if ( obj->item_type == ITEM_ASTEROID )
             break;
 
@@ -4706,7 +4715,7 @@ void act_mine( CHAR_DATA *ch, int level )
     char buf[MSL];
     int i,chance;
 
-    for ( obj = map_obj[ch->x][ch->y];obj;obj = obj->next_in_room )
+    for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj->next_in_room )
         if ( obj->item_type == ITEM_ASTEROID )
             break;
 
@@ -4792,7 +4801,7 @@ void do_backup_building( CHAR_DATA *ch, char *argument )
         return;
     }
     if ( f == 1 )
-        for ( i=0;i<10;i++ )
+        for ( i=0; i<10; i++ )
             obj->value[i] = bld->value[i];
     if ( f == 2 )
     {
@@ -4801,7 +4810,7 @@ void do_backup_building( CHAR_DATA *ch, char *argument )
             send_to_char( "This disk doesn't contain data for this building.\n\r", ch );
             return;
         }
-        for ( i=0;i<10;i++ )
+        for ( i=0; i<10; i++ )
             if ( i != 2 )
                 bld->value[i] = obj->value[i];
         send_to_char( "Data Loaded.\n\r", ch );
@@ -4986,7 +4995,7 @@ void do_run( CHAR_DATA * ch, char *argument )
     WAIT_STATE(ch,loop);
     if ( !IS_SET(ch->effect,EFFECT_RUNNING) )
         SET_BIT(ch->effect,EFFECT_RUNNING);
-    for ( ;loop > 0;loop-- )
+    for ( ; loop > 0; loop-- )
         add_to_queue(ch,argument);
     check_queue(ch);
     return;
@@ -5350,7 +5359,7 @@ void do_settunnel( CHAR_DATA *ch, char *argument )
         send_to_char( "That is out of range of the tunnel.\n\r", ch );
         return;
     }
-    for ( obj2 = map_obj[x][y];obj2;obj2 = obj2->next_in_room )
+    for ( obj2 = map_obj[x][y]; obj2; obj2 = obj2->next_in_room )
     {
         if ( obj2->z != ch->z )
             continue;
@@ -5378,7 +5387,7 @@ void respawn_buildings(CHAR_DATA *ch)
     OBJ_DATA *obj;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
-    for ( bld = ch->first_building;bld;bld = bld->next_owned )
+    for ( bld = ch->first_building; bld; bld = bld->next_owned )
     {
         if ( bld->x < 0 )
             bld->x *= -1;
@@ -5387,8 +5396,9 @@ void respawn_buildings(CHAR_DATA *ch)
         map_bld[bld->x][bld->y][bld->z] = bld;
         bld->hp = bld->maxhp;
         bld->shield = bld->maxshield;
-        bld->value[9] = 0; bld->value[3] = 0;
-        for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next )
+        bld->value[9] = 0;
+        bld->value[3] = 0;
+        for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next )
             if ( obj->z == bld->z && obj->value[1] != 0 && obj->item_type == ITEM_BOMB )
                 if ( !str_cmp(obj->owner,ch->name) )
                     obj->value[1] = 0;
@@ -5448,7 +5458,7 @@ void show_pager(CHAR_DATA *ch)
     send_to_char("@@dl=--------------------=------------------=\n\r", ch );
     send_to_char("!@@GX________________________________________@@d\\\n\r", ch );
     send_to_char("!@@G|                                        @@d|\n\r", ch );
-    for(p=ch->pcdata->pager;p;p=p->next)
+    for(p=ch->pcdata->pager; p; p=p->next)
     {
         i++;
         sprintf(buf,"@@d|@@G| @@e(%2d)@@r %-8s@@g %24s@@d |\n\r", i,p->from,p->time);

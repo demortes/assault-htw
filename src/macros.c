@@ -50,7 +50,7 @@ sh_int get_psuedo_level( CHAR_DATA *ch )
 bool    ok_to_use( CHAR_DATA *ch, int value )
 {
     if ( value == NO_USE
-        &&   get_trust(ch) < 85 )
+            &&   get_trust(ch) < 85 )
     {
         send_to_char( "Only Creators may use this value.\n\r", ch );
         return FALSE;
@@ -70,24 +70,24 @@ bool    check_level_use( CHAR_DATA *ch, int level )
 
     switch ( level )
     {
-        case 85:
-            safe_strcat( MSL, out, "Creators only.\n\r" );
-            break;
-        case 84:
-            safe_strcat( MSL, out, "Supremes or higher.\n\r" );
-            break;
-        case 83:
-            safe_strcat( MSL, out, "Dieties or higher.\n\r" );
-            break;
-        case 82:
-            safe_strcat( MSL, out, "Immortals or higher.\n\r" );
-            break;
-        case 81:
-            safe_strcat( MSL, out, "Heroes or higher.\n\r" );
-            break;
-        default:
-            sprintf( buf, "level %d players and higher.\n\r", level );
-            safe_strcat( MSL, out, buf );
+    case 85:
+        safe_strcat( MSL, out, "Creators only.\n\r" );
+        break;
+    case 84:
+        safe_strcat( MSL, out, "Supremes or higher.\n\r" );
+        break;
+    case 83:
+        safe_strcat( MSL, out, "Dieties or higher.\n\r" );
+        break;
+    case 82:
+        safe_strcat( MSL, out, "Immortals or higher.\n\r" );
+        break;
+    case 81:
+        safe_strcat( MSL, out, "Heroes or higher.\n\r" );
+        break;
+    default:
+        sprintf( buf, "level %d players and higher.\n\r", level );
+        safe_strcat( MSL, out, buf );
     }
     send_to_char( out, ch );
     return FALSE;
@@ -163,7 +163,7 @@ OBJ_DATA * create_locator( int range )
 bool complete( BUILDING_DATA *bld )
 {
     int i;
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
         if ( bld->resources[i] > 0 )
             return FALSE;
     return TRUE;
@@ -262,7 +262,7 @@ bool is_upgrade( int type )
 {
     int i;
 
-    for ( i = 0;i<8;i++ )
+    for ( i = 0; i<8; i++ )
         if ( build_table[type].resources[i] != 0 )
             return FALSE;
     return TRUE;
@@ -275,7 +275,7 @@ bool is_neutral( int type )
     return FALSE;
     if ( type < 0 || type > MAX_BUILDING )
         return FALSE;
-    for ( i = 0;i<8;i++ )
+    for ( i = 0; i<8; i++ )
         if ( build_table[type].resources[i] != -1 )
             return FALSE;
     return TRUE;
@@ -293,7 +293,7 @@ int get_char_cost( CHAR_DATA *ch )
     BUILDING_DATA *bld;
     int cost = 0;
 
-    for ( bld = ch->first_building;bld;bld = bld->next_owned )
+    for ( bld = ch->first_building; bld; bld = bld->next_owned )
     {
         cost += bld->level;
     }
@@ -337,7 +337,7 @@ bool building_can_shoot( BUILDING_DATA *bld, CHAR_DATA *ch, int range )
 bool open_bld( BUILDING_DATA *bld )
 {
     if ( build_table[bld->type].act == BUILDING_OFFENSE
-        )
+       )
         return TRUE;
     return FALSE;
 }
@@ -364,39 +364,72 @@ int get_bit_value( int bit )
 {
     switch (bit)
     {
-        case 1: return BIT_1;
-        case 2: return BIT_2;
-        case 3: return BIT_3;
-        case 4: return BIT_4;
-        case 5: return BIT_5;
-        case 6: return BIT_6;
-        case 7: return BIT_7;
-        case 8: return BIT_8;
-        case 9: return BIT_9;
-        case 10: return BIT_10;
-        case 11: return BIT_11;
-        case 12: return BIT_12;
-        case 13: return BIT_13;
-        case 14: return BIT_14;
-        case 15: return BIT_15;
-        case 16: return BIT_16;
-        case 17: return BIT_17;
-        case 18: return BIT_18;
-        case 19: return BIT_19;
-        case 20: return BIT_20;
-        case 21: return BIT_21;
-        case 22: return BIT_22;
-        case 23: return BIT_23;
-        case 24: return BIT_24;
-        case 25: return BIT_25;
-        case 26: return BIT_26;
-        case 27: return BIT_27;
-        case 28: return BIT_28;
-        case 29: return BIT_29;
-        case 30: return BIT_30;
-        case 31: return BIT_31;
-        case 32: return BIT_32;
-        default: return 0;
+    case 1:
+        return BIT_1;
+    case 2:
+        return BIT_2;
+    case 3:
+        return BIT_3;
+    case 4:
+        return BIT_4;
+    case 5:
+        return BIT_5;
+    case 6:
+        return BIT_6;
+    case 7:
+        return BIT_7;
+    case 8:
+        return BIT_8;
+    case 9:
+        return BIT_9;
+    case 10:
+        return BIT_10;
+    case 11:
+        return BIT_11;
+    case 12:
+        return BIT_12;
+    case 13:
+        return BIT_13;
+    case 14:
+        return BIT_14;
+    case 15:
+        return BIT_15;
+    case 16:
+        return BIT_16;
+    case 17:
+        return BIT_17;
+    case 18:
+        return BIT_18;
+    case 19:
+        return BIT_19;
+    case 20:
+        return BIT_20;
+    case 21:
+        return BIT_21;
+    case 22:
+        return BIT_22;
+    case 23:
+        return BIT_23;
+    case 24:
+        return BIT_24;
+    case 25:
+        return BIT_25;
+    case 26:
+        return BIT_26;
+    case 27:
+        return BIT_27;
+    case 28:
+        return BIT_28;
+    case 29:
+        return BIT_29;
+    case 30:
+        return BIT_30;
+    case 31:
+        return BIT_31;
+    case 32:
+        return BIT_32;
+    default:
+        return 0;
     }
     return 0;
 }
@@ -458,7 +491,7 @@ void check_building_destroyed( BUILDING_DATA *bld )
     {
         OBJ_DATA *obj;
         OBJ_DATA *obj_next;
-        for ( obj = bch->first_carry;obj;obj = obj_next )
+        for ( obj = bch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
             if ( obj->item_type != ITEM_BLUEPRINT )
@@ -580,7 +613,7 @@ void update_ranks( CHAR_DATA *ch )
 
     min = 0;
     rank = get_rank(ch);
-    for ( i = 0;i<30;i++ )
+    for ( i = 0; i<30; i++ )
     {
         if ( !stop && (rank_table[i].name == NULL || !str_cmp(rank_table[i].name,ch->name) ) )
         {
@@ -598,7 +631,7 @@ void update_ranks( CHAR_DATA *ch )
     rank_table[min].name = str_dup(ch->name);
     rank_table[min].rank = rank;
     save_ranks();
-    
+
     if ( rank > max )
     {
         web_data.highest_rank = rank;
@@ -663,46 +696,46 @@ void make_medal_base( CHAR_DATA *ch )
     OBJ_DATA *obj;
     int x,y,i,t,h;
 
-    for ( x=BORDER_SIZE;x<100;x++ )
-        for ( y=BORDER_SIZE;y<30;y++ )
+    for ( x=BORDER_SIZE; x<100; x++ )
+        for ( y=BORDER_SIZE; y<30; y++ )
             if ( map_bld[x][y][Z_PAINTBALL] )
                 extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
 
     h = URANGE(30,my_get_hours(ch,TRUE),100);
-    for ( x=BORDER_SIZE+10;x<MEDAL_BORDER_X;x++ )
-        for ( y=BORDER_SIZE;y<MEDAL_BORDER_Y;y++ )
-    {
-        if ( number_percent() < 50 )
-            continue;
-        i = number_range(1,5);
-        if ( i == 1 )
-            t = BUILDING_FLAMESPITTER;
-        else if ( i == 2 )
-            t = BUILDING_STUNGUN;
-        else if ( i == 3 )
-            t = BUILDING_L_TURRET;
-        else if ( i == 4 )
-            t = BUILDING_PSYCHOSTER;
-        else
-            t = BUILDING_HYDRO_PUMP;
-        bld = create_building(t);
-        if ( bld->owned != NULL )
-            free_string(bld->owned);
-        bld->owned = str_dup("nobody");
-        bld->owner = NULL;
-        bld->hp = (bld->hp * h) / 100;
-        bld->x = x;
-        bld->y = y;
-        bld->exit[0] = TRUE;
-        bld->exit[1] = TRUE;
-        bld->exit[2] = TRUE;
-        bld->exit[3] = TRUE;
-        for ( i=0;i<8;i++ )
-            bld->resources[i] = 0;
-        bld->z = Z_PAINTBALL;
-        activate_building(bld,TRUE);
-        map_bld[x][y][Z_PAINTBALL] = bld;
-    }
+    for ( x=BORDER_SIZE+10; x<MEDAL_BORDER_X; x++ )
+        for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
+        {
+            if ( number_percent() < 50 )
+                continue;
+            i = number_range(1,5);
+            if ( i == 1 )
+                t = BUILDING_FLAMESPITTER;
+            else if ( i == 2 )
+                t = BUILDING_STUNGUN;
+            else if ( i == 3 )
+                t = BUILDING_L_TURRET;
+            else if ( i == 4 )
+                t = BUILDING_PSYCHOSTER;
+            else
+                t = BUILDING_HYDRO_PUMP;
+            bld = create_building(t);
+            if ( bld->owned != NULL )
+                free_string(bld->owned);
+            bld->owned = str_dup("nobody");
+            bld->owner = NULL;
+            bld->hp = (bld->hp * h) / 100;
+            bld->x = x;
+            bld->y = y;
+            bld->exit[0] = TRUE;
+            bld->exit[1] = TRUE;
+            bld->exit[2] = TRUE;
+            bld->exit[3] = TRUE;
+            for ( i=0; i<8; i++ )
+                bld->resources[i] = 0;
+            bld->z = Z_PAINTBALL;
+            activate_building(bld,TRUE);
+            map_bld[x][y][Z_PAINTBALL] = bld;
+        }
     x = number_range(BORDER_SIZE+18,42);
     y = number_range(3,21);
     obj = create_object(get_obj_index(OBJ_VNUM_MEDAL),0);
@@ -759,7 +792,7 @@ void reset_building(BUILDING_DATA *bld,int type)
     bld->owned = str_dup("Nobody");
     bld->owner = NULL;
     bld->name = str_dup(build_table[type].name);
-    for ( i = 0;i < 8;i++ )
+    for ( i = 0; i < 8; i++ )
         bld->resources[i] = 0;
 }
 
@@ -789,15 +822,15 @@ OBJ_DATA * make_quest_base( int type, int size, int z )
             bad = TRUE;
             continue;
         }
-        for ( xx = x-size-4;xx<x+size+4;xx++ )
-            for ( yy = y-size-4;yy<y+size+4;yy++ )
+        for ( xx = x-size-4; xx<x+size+4; xx++ )
+            for ( yy = y-size-4; yy<y+size+4; yy++ )
                 if ( map_bld[xx][yy][z] )
                     bad = TRUE;
 
     }
-    for ( xx = x-size;xx<x+size;xx++ )
+    for ( xx = x-size; xx<x+size; xx++ )
     {
-        for ( yy = y-size;yy<y+size;yy++ )
+        for ( yy = y-size; yy<y+size; yy++ )
         {
             skip = !skip;
             if ( number_percent() < 15 )
@@ -816,7 +849,7 @@ OBJ_DATA * make_quest_base( int type, int size, int z )
             map_bld[bld->x][bld->y][bld->z] = bld;
             reset_building(bld,type);
             bld->timer = 60;
-            for ( i=0;i<4;i++ )
+            for ( i=0; i<4; i++ )
                 bld->exit[i] = TRUE;
         }
     }
@@ -850,7 +883,7 @@ bool open_scaffold(CHAR_DATA *ch, OBJ_DATA *obj)
 
     if ( !sysdata.killfest )
     {
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             if ( is_neutral(bld->type) )
                 continue;
@@ -878,9 +911,9 @@ bool open_scaffold(CHAR_DATA *ch, OBJ_DATA *obj)
     bld->owner = ch;
     sprintf(buf,"%s @@copens up into the @@a%s@@c!@@N\n\r",obj->short_descr,bld->name);
     send_to_loc(buf,obj->x,obj->y,obj->z);
-    for ( i=0;i<8;i++ )
+    for ( i=0; i<8; i++ )
         bld->resources[i] = 500;
-    for ( i=0;i<4;i++ )
+    for ( i=0; i<4; i++ )
         bld->exit[i] = TRUE;
     bld->hp = 1;
     bld->shield = 1;
@@ -958,7 +991,7 @@ int count_buildings(CHAR_DATA *victim)
     BUILDING_DATA *bld;
     if ( !victim || victim == NULL )
         return 999;
-    for ( bld = victim->first_building;bld;bld = bld->next_owned )
+    for ( bld = victim->first_building; bld; bld = bld->next_owned )
         i++;
     return i;
 }

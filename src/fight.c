@@ -255,35 +255,35 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
     {
         switch( victim->position )
         {
-            case POS_MORTAL:
-                act( "$n is mortally wounded, and will die soon, if not aided.",
-                    victim, NULL, NULL, TO_ROOM );
-                send_to_char(
-                    "You are mortally wounded, and will die soon, if not aided.\n\r",
-                    victim );
-                break;
+        case POS_MORTAL:
+            act( "$n is mortally wounded, and will die soon, if not aided.",
+                 victim, NULL, NULL, TO_ROOM );
+            send_to_char(
+                "You are mortally wounded, and will die soon, if not aided.\n\r",
+                victim );
+            break;
 
-            case POS_INCAP:
-                act( "$n is incapacitated and will slowly die, if not aided.",
-                    victim, NULL, NULL, TO_ROOM );
-                send_to_char(
-                    "You are incapacitated and will slowly die, if not aided.\n\r",
-                    victim );
-                break;
+        case POS_INCAP:
+            act( "$n is incapacitated and will slowly die, if not aided.",
+                 victim, NULL, NULL, TO_ROOM );
+            send_to_char(
+                "You are incapacitated and will slowly die, if not aided.\n\r",
+                victim );
+            break;
 
-            case POS_DEAD:
+        case POS_DEAD:
 
-                act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
-                send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
-                sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
-                break;
+            act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
+            send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
+            sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
+            break;
 
-            default:
-                if ( dam > victim->max_hit / 4 )
-                    send_to_char( "That really did HURT!\n\r", victim );
-                if ( victim->hit < victim->max_hit / 4 )
-                    send_to_char( "You sure are BLEEDING!\n\r", victim );
-                break;
+        default:
+            if ( dam > victim->max_hit / 4 )
+                send_to_char( "That really did HURT!\n\r", victim );
+            if ( victim->hit < victim->max_hit / 4 )
+                send_to_char( "You sure are BLEEDING!\n\r", victim );
+            break;
         }
     }                                                       /* end of if statement */
 
@@ -350,7 +350,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
 
     min = 0;
 
-    for ( q = victim->pcdata->queue;q;q = q_next )
+    for ( q = victim->pcdata->queue; q; q = q_next )
     {
         q_next = q->next;
         extract_queue(q);
@@ -360,7 +360,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
     if ( victim->fighttimer > 0 && !str_cmp(victim->name,argument) )
         suicide = TRUE;
 
-    for ( bld = first_active_building;bld;bld = bld->next_active )
+    for ( bld = first_active_building; bld; bld = bld->next_active )
     {
         if ( !bld->active )
             continue;
@@ -399,40 +399,40 @@ void raw_kill( CHAR_DATA *victim, char *argument )
 
     if ( ( bomb = get_eq_char( victim, WEAR_BODY ) ) != NULL )
         if ( bomb->item_type == ITEM_BOMB && ( bomb->value[1] != 1 || bomb->value[0] != 0 ))
-    {
-        int xx = victim->x;
-        int yy = victim->y;
-
-        if ( victim->in_vehicle )
         {
-            extract_vehicle(victim->in_vehicle,TRUE);
-            victim->in_vehicle = NULL;
+            int xx = victim->x;
+            int yy = victim->y;
+
+            if ( victim->in_vehicle )
+            {
+                extract_vehicle(victim->in_vehicle,TRUE);
+                victim->in_vehicle = NULL;
+            }
+            obj_from_char(bomb);
+            bomb->x = victim->x;
+            bomb->y = victim->y;
+            bomb->z = victim->z;
+            obj_to_room(bomb,get_room_index(ROOM_VNUM_WMAP));
+            move( victim, 0,0,victim->z);
+            explode(bomb);
+            move( victim, xx, yy, victim->z );
         }
-        obj_from_char(bomb);
-        bomb->x = victim->x;
-        bomb->y = victim->y;
-        bomb->z = victim->z;
-        obj_to_room(bomb,get_room_index(ROOM_VNUM_WMAP));
-        move( victim, 0,0,victim->z);
-        explode(bomb);
-        move( victim, xx, yy, victim->z );
-    }
 
     min = -1;
-    for ( i=0;i<100;i++ )
+    for ( i=0; i<100; i++ )
     {
         if ( min == -1 )
         {
             if ( ( score_table[i].kills < victim->pcdata->pkills )
-                || ( score_table[i].kills == victim->pcdata->pkills && score_table[i].buildings < victim->pcdata->bkills )
-                || ( score_table[i].kills == victim->pcdata->pkills && score_table[i].buildings == victim->pcdata->bkills && score_table[i].time < my_get_hours(victim,FALSE) ) )
+                    || ( score_table[i].kills == victim->pcdata->pkills && score_table[i].buildings < victim->pcdata->bkills )
+                    || ( score_table[i].kills == victim->pcdata->pkills && score_table[i].buildings == victim->pcdata->bkills && score_table[i].time < my_get_hours(victim,FALSE) ) )
                 min = i;
         }
         else
         {
             if ( ( score_table[i].kills < score_table[min].kills )
-                || ( score_table[i].kills == score_table[min].kills && score_table[min].buildings < score_table[i].buildings )
-                || ( score_table[i].kills == score_table[min].kills && score_table[min].buildings == score_table[i].buildings  && score_table[i].time < score_table[min].time ) )
+                    || ( score_table[i].kills == score_table[min].kills && score_table[min].buildings < score_table[i].buildings )
+                    || ( score_table[i].kills == score_table[min].kills && score_table[min].buildings == score_table[i].buildings  && score_table[i].time < score_table[min].time ) )
                 min = i;
         }
 
@@ -459,7 +459,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
         save_scores();
     }
 
-    for ( obj = first_obj;obj;obj = obj_next )
+    for ( obj = first_obj; obj; obj = obj_next )
     {
         obj_next = obj->next;
         if ( obj->carried_by )
@@ -477,7 +477,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
             } */
         extract_obj(obj);
     }
-    for ( obj = victim->first_carry;obj;obj = obj_next )
+    for ( obj = victim->first_carry; obj; obj = obj_next )
     {
         obj_next = obj->next_in_carry_list;
         if ( obj->wear_loc == WEAR_FINGER_L || obj->wear_loc == WEAR_FINGER_R )
@@ -497,7 +497,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
         }
         extract_obj(obj);
     }
-    for ( i = 0;i<MAX_SKILL;i++ )
+    for ( i = 0; i<MAX_SKILL; i++ )
     {
         if ( skill_table[i].prof )
             continue;
@@ -508,15 +508,15 @@ void raw_kill( CHAR_DATA *victim, char *argument )
     }
     if ( !suicide )
     {
-        for ( i=0;i<8;i++ )
+        for ( i=0; i<8; i++ )
             if ( victim->refund[i] > 0 )
-        {
-            obj = create_material(i);
-            obj->value[1] = victim->refund[i];
-            obj->weight = 1;
-            obj_to_char(obj,victim);
-            victim->refund[i] = 0;
-        }
+            {
+                obj = create_material(i);
+                obj->value[1] = victim->refund[i];
+                obj->weight = 1;
+                obj_to_char(obj,victim);
+                victim->refund[i] = 0;
+            }
     }
     if ( victim->in_vehicle )
     {
@@ -588,7 +588,7 @@ void pdie(CHAR_DATA *ch)
         bool build = FALSE,fOld;
         fOld = load_char_obj( d, buf, FALSE );
         char bbuf[MSL];
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             if ( !str_cmp(bld->owned,ch->name) )
             {
@@ -882,7 +882,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
         if ( INVALID_COORDS(xx,yy) )
             break;
 
-        for ( vch = map_ch[xx][yy][z];vch;vch = vch->next_in_room )
+        for ( vch = map_ch[xx][yy][z]; vch; vch = vch->next_in_room )
         {
             if ( vch == NULL )
                 break;
@@ -964,13 +964,13 @@ void do_shoot( CHAR_DATA *ch, char *argument )
             if ( number_percent() < 50 )
                 dam *= 2;
 
-            for ( i=0;i<4;i++ )
+            for ( i=0; i<4; i++ )
                 if ( number_percent() < 25 && bld->exit[i] == FALSE )
-            {
-                bld->exit[i] = TRUE;
-                sprintf( buf, "The building's %s wall collapses from the blast.\n\r", i==DIR_NORTH?"Northern":i==DIR_SOUTH?"Southern":i==DIR_EAST?"Eastern":"Western" );
-                send_to_char(buf,ch);
-            }
+                {
+                    bld->exit[i] = TRUE;
+                    sprintf( buf, "The building's %s wall collapses from the blast.\n\r", i==DIR_NORTH?"Northern":i==DIR_SOUTH?"Southern":i==DIR_EAST?"Eastern":"Western" );
+                    send_to_char(buf,ch);
+                }
         }
         if ( clip_table[weapon->value[2]].type == DAMAGE_EMP )
         {
@@ -1031,7 +1031,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
             act( "$n's becomes light headed!", victim, NULL, NULL, TO_ROOM );
         }
         if ( ch->z != Z_SPACE && ((clip_table[weapon->value[2]].explode && number_percent() < 10) || (has_ability(ch,1) && number_percent() < 15) ))
-        {                                                   //Exploding ammo or explosive weapons
+        {   //Exploding ammo or explosive weapons
 
             act( "The explosion tears you to pieces!", victim, NULL, NULL, TO_CHAR );
             act( "The explosion tears $n to pieces!", victim, NULL, NULL, TO_ROOM );
@@ -1041,12 +1041,12 @@ void do_shoot( CHAR_DATA *ch, char *argument )
         if ( ch->victim != ch )
         {
             if ( ch->victim->in_room->vnum != ROOM_VNUM_WMAP ||
-                (clip_table[weapon->value[2]].speed+weapon->value[9]>=30) ||
-                (ch->z != victim->z)                 ||
-                (!IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) ||
-                (!IS_BETWEEN(victim->y,ch->y-range,ch->y+range)) ||
-				((ch->in_building && !open_bld(ch->in_building)) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z)) ||
-				((ch->victim->in_building && !open_bld(ch->victim->in_building) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z))))
+                    (clip_table[weapon->value[2]].speed+weapon->value[9]>=30) ||
+                    (ch->z != victim->z)                 ||
+                    (!IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) ||
+                    (!IS_BETWEEN(victim->y,ch->y-range,ch->y+range)) ||
+                    ((ch->in_building && !open_bld(ch->in_building)) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z)) ||
+                    ((ch->victim->in_building && !open_bld(ch->victim->in_building) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z))))
             {
                 ch->victim = ch;
                 send_to_char( "You have lost track of your target.\n\r", ch );
@@ -1223,7 +1223,7 @@ void do_set( CHAR_DATA *ch, char *argument )
     }
     if ( !str_cmp(arg,"all") )
     {
-        for ( bomb = ch->first_carry;bomb;bomb = bomb->next_in_carry_list )
+        for ( bomb = ch->first_carry; bomb; bomb = bomb->next_in_carry_list )
         {
             if ( bomb->item_type != ITEM_BOMB )
                 continue;
@@ -1247,7 +1247,7 @@ void do_set( CHAR_DATA *ch, char *argument )
         send_to_char( "This isn't a bomb!\n\r", ch );
         return;
     }
-                                                            //grenade or deadman
+    //grenade or deadman
     if ( bomb->value[4] == 1 || bomb->pIndexData->vnum == 1029 )
     {
         send_to_char( "You can't set that.\n\r", ch );
@@ -1447,7 +1447,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
             {
                 OBJ_DATA *obj;
                 extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                     obj->in_building = NULL;
                 map_bld[bld->x][bld->y][bld->z] = NULL;
                 bld->x *= -1;
@@ -1465,7 +1465,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
             {
                 OBJ_DATA *obj;
                 extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
-                for ( obj = map_obj[bld->x][bld->y];obj;obj = obj->next_in_room )
+                for ( obj = map_obj[bld->x][bld->y]; obj; obj = obj->next_in_room )
                     obj->in_building = NULL;
                 map_bld[bld->x][bld->y][bld->z] = NULL;
                 gain_exp(ch,bld->level);
@@ -1525,14 +1525,16 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                             else
                                 sprintf( ibuf, "@@a%s@@W didn't leave @@a%s@@W a single building.", ch->name, vch->name );
                             info(ibuf,0);
-                            for ( bld2 = ch->first_building;bld2;bld2 = bld2->next_owned )
+                            for ( bld2 = ch->first_building; bld2; bld2 = bld2->next_owned )
                             {
                                 if ( bld2->type == BUILDING_HUNTING_LODGE )
                                 {
                                     OBJ_DATA *obj;
 
                                     obj = create_object(get_obj_index(OBJ_VNUM_FLAG),0);
-                                    obj->x = bld2->x; obj->y = bld2->y; obj->z = bld2->z;
+                                    obj->x = bld2->x;
+                                    obj->y = bld2->y;
+                                    obj->z = bld2->z;
                                     obj_to_room(obj,ch->in_room);
                                     sprintf( ibuf, "%s's (rank %d) Flag for destroying %s's (rank %d) HQ.", ch->name, get_rank(ch), vch->name, get_rank(vch) );
                                     free_string(obj->description);
@@ -1551,7 +1553,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     update_ranks(ch);
                 }
                 buf[0] = '\0';
-                for ( i = 0;i<8;i++ )
+                for ( i = 0; i<8; i++ )
                 {
                     vch->refund[i] += build_table[bld->type].resources[i] / 1.5;
                     if ( (build_table[bld->type].resources[i] / 1.5) > 0 )
@@ -1742,7 +1744,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 bcount += 1;
             if ( get_building(x-1,y,bld->z) )
                 bcount += 1;
-            for ( wch = map_ch[x][y][bld->z];wch;wch = wch->next_in_room )
+            for ( wch = map_ch[x][y][bld->z]; wch; wch = wch->next_in_room )
                 pcount++;
             sprintf( buf, "@@yReports assume the SCUD to hit %d building(s) and %d player(s), landing at %d/%d@@N\n\r", bcount, pcount, x, y );
             send_to_char( buf, ch );
@@ -1762,25 +1764,25 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 else
                     range = 5;
 
-                for ( xx = x - range;xx < x + range;xx++ )
-                    for ( yy = x - range;yy < x + range;yy++ )
-                {
-                    if ( INVALID_COORDS(xx,yy) )
-                        continue;
-                    if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
+                for ( xx = x - range; xx < x + range; xx++ )
+                    for ( yy = x - range; yy < x + range; yy++ )
                     {
-                        bld2->value[9] += bld->level * 100;
-                        send_to_loc( "@@yThe building fills with nuclear fallout!!@@N\n\r", bld->x, bld->y, bld->z );
-                    }
-                    for ( obj = map_obj[xx][yy];obj;obj = obj->next_in_room )
-                    {
-                        if ( obj->z != ch->z )
+                        if ( INVALID_COORDS(xx,yy) )
                             continue;
-                        if ( !IS_SET(obj->extra_flags,ITEM_NUCLEAR) )
-                            SET_BIT(obj->extra_flags,ITEM_NUCLEAR);
-                        obj->attacker = ch;
+                        if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
+                        {
+                            bld2->value[9] += bld->level * 100;
+                            send_to_loc( "@@yThe building fills with nuclear fallout!!@@N\n\r", bld->x, bld->y, bld->z );
+                        }
+                        for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
+                        {
+                            if ( obj->z != ch->z )
+                                continue;
+                            if ( !IS_SET(obj->extra_flags,ITEM_NUCLEAR) )
+                                SET_BIT(obj->extra_flags,ITEM_NUCLEAR);
+                            obj->attacker = ch;
+                        }
                     }
-                }
             }
             bld->value[0] = 360;
             WAIT_STATE(ch,15);
@@ -1803,25 +1805,25 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 else
                     range = 5;
 
-                for ( xx = x - range;xx < x + range;xx++ )
-                    for ( yy = x - range;yy < x + range;yy++ )
-                {
-                    if ( INVALID_COORDS(xx,yy) )
-                        continue;
-                    if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
+                for ( xx = x - range; xx < x + range; xx++ )
+                    for ( yy = x - range; yy < x + range; yy++ )
                     {
-                        bld2->value[9] += bld->level * 100;
-                        send_to_loc( "@@yThe building fills with nuclear fallout!!@@N\n\r", bld->x, bld->y, bld->z );
-                    }
-                    for ( obj = map_obj[xx][yy];obj;obj = obj->next_in_room )
-                    {
-                        if ( obj->z != ch->z )
+                        if ( INVALID_COORDS(xx,yy) )
                             continue;
-                        if ( !IS_SET(obj->extra_flags,ITEM_NUCLEAR) )
-                            SET_BIT(obj->extra_flags,ITEM_NUCLEAR);
-                        obj->attacker = ch;
+                        if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
+                        {
+                            bld2->value[9] += bld->level * 100;
+                            send_to_loc( "@@yThe building fills with nuclear fallout!!@@N\n\r", bld->x, bld->y, bld->z );
+                        }
+                        for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
+                        {
+                            if ( obj->z != ch->z )
+                                continue;
+                            if ( !IS_SET(obj->extra_flags,ITEM_NUCLEAR) )
+                                SET_BIT(obj->extra_flags,ITEM_NUCLEAR);
+                            obj->attacker = ch;
+                        }
                     }
-                }
             }
             ammo->x = x;
             ammo->y = y;
@@ -1857,7 +1859,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
     ammo->weight = bld->level * 20;
     free_string(ammo->owner);
     ammo->owner = str_dup(ch->name);
-    for ( wch = map_ch[x][y][bld->z];wch;wch = wch->next_in_room )
+    for ( wch = map_ch[x][y][bld->z]; wch; wch = wch->next_in_room )
     {
         send_to_char( "@@eYou detect a missile being fired towards your location!@@N\n\r", wch );
         if ( wch->fighttimer < 60 )
@@ -2168,12 +2170,12 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
             }
 
             sprintf( log_buf, "%s (%d%s%s) killed by %s at %d/%d/%d",
-                victim->name,
-                my_get_hours(victim,TRUE),
-                masskill ? "-MASSKILL" : "",
-                IS_NEWBIE(victim) ? "-NEWBIE" : "",
-                ch->name,
-                victim->x, victim->y, victim->z );
+                     victim->name,
+                     my_get_hours(victim,TRUE),
+                     masskill ? "-MASSKILL" : "",
+                     IS_NEWBIE(victim) ? "-NEWBIE" : "",
+                     ch->name,
+                     victim->x, victim->y, victim->z );
             log_string( log_buf );
             monitor_chan( victim, log_buf, MONITOR_COMBAT );
             if ( IN_PIT(victim) && IN_PIT(ch) )
@@ -2242,10 +2244,10 @@ void do_boom( CHAR_DATA *ch, char *argument )
     if ( y2 < 3 )
         y2 = 3;
 
-    for ( ;x<xx;x = x_n )
+    for ( ; x<xx; x = x_n )
     {
         x_n = x + 1;
-        for ( y=y2;y<yy;y++ )
+        for ( y=y2; y<yy; y++ )
         {
             if ( INVALID_COORDS(x,y) || ( x == bld->x && y == bld->y ) )
                 continue;
@@ -2262,7 +2264,7 @@ void do_boom( CHAR_DATA *ch, char *argument )
                     dam *= 2;
                 damage_building(ch,bld2,dam);
             }
-            for ( wch = map_ch[x][y][z];wch;wch = wch_next )
+            for ( wch = map_ch[x][y][z]; wch; wch = wch_next )
             {
                 wch_next = wch->next_in_room;
                 if ( wch == ch )
@@ -2458,7 +2460,7 @@ void do_gunner_shoot( CHAR_DATA *ch, char *argument )
         if ( IS_SET(bld->value[5],GUNNER_NUCLEAR) && number_percent()<20)
         {
             OBJ_DATA *obj;
-            for ( obj = victim->first_carry;obj;obj = obj->next_in_carry_list )
+            for ( obj = victim->first_carry; obj; obj = obj->next_in_carry_list )
             {
                 if ( IS_SET(obj->extra_flags,ITEM_NUCLEAR) || obj->wear_loc == WEAR_NONE )
                     continue;

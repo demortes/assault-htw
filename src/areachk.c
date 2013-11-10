@@ -57,61 +57,61 @@ void swap_global_hash(char Tp, void * Ptr, int old_vnum, int new_vnum)
 
     switch (Tp)
     {
-        case 'R':
-            /* Delete old hash table entry */
+    case 'R':
+        /* Delete old hash table entry */
 
-            iHash   = old_vnum % MAX_KEY_HASH;
-            prevRoomIndex = NULL;
-            for (pRoomIndex = room_index_hash[iHash]; pRoomIndex != NULL; pRoomIndex=pRoomIndex->next)
-            {
-                if (pRoomIndex == (ROOM_INDEX_DATA *) Ptr)
-                    break;
-                prevRoomIndex = pRoomIndex;
-            }
+        iHash   = old_vnum % MAX_KEY_HASH;
+        prevRoomIndex = NULL;
+        for (pRoomIndex = room_index_hash[iHash]; pRoomIndex != NULL; pRoomIndex=pRoomIndex->next)
+        {
+            if (pRoomIndex == (ROOM_INDEX_DATA *) Ptr)
+                break;
+            prevRoomIndex = pRoomIndex;
+        }
 
-            if (pRoomIndex != NULL)
-            {
-                if (prevRoomIndex == NULL)
-                    room_index_hash[iHash]=pRoomIndex->next;
-                else
-                    prevRoomIndex->next=pRoomIndex->next;
-            }
+        if (pRoomIndex != NULL)
+        {
+            if (prevRoomIndex == NULL)
+                room_index_hash[iHash]=pRoomIndex->next;
+            else
+                prevRoomIndex->next=pRoomIndex->next;
+        }
 
-            /* Add another */
+        /* Add another */
 
-            iHash                   = new_vnum % MAX_KEY_HASH;
-            pRoomIndex->next        = room_index_hash[iHash];
-            room_index_hash[iHash]  = pRoomIndex;
+        iHash                   = new_vnum % MAX_KEY_HASH;
+        pRoomIndex->next        = room_index_hash[iHash];
+        room_index_hash[iHash]  = pRoomIndex;
 
-            break;
+        break;
 
-        case 'O':
-            /* Delete old hash table entry */
+    case 'O':
+        /* Delete old hash table entry */
 
-            iHash   = old_vnum % MAX_KEY_HASH;
-            prevObjIndex = NULL;
-            for (pObjIndex = obj_index_hash[iHash]; pObjIndex != NULL; pObjIndex=pObjIndex->next)
-            {
-                if (pObjIndex == (OBJ_INDEX_DATA *) Ptr)
-                    break;
-                prevObjIndex = pObjIndex;
-            }
+        iHash   = old_vnum % MAX_KEY_HASH;
+        prevObjIndex = NULL;
+        for (pObjIndex = obj_index_hash[iHash]; pObjIndex != NULL; pObjIndex=pObjIndex->next)
+        {
+            if (pObjIndex == (OBJ_INDEX_DATA *) Ptr)
+                break;
+            prevObjIndex = pObjIndex;
+        }
 
-            if (pObjIndex != NULL)
-            {
-                if (prevObjIndex == NULL)
-                    obj_index_hash[iHash]=pObjIndex->next;
-                else
-                    prevObjIndex->next=pObjIndex->next;
-            }
+        if (pObjIndex != NULL)
+        {
+            if (prevObjIndex == NULL)
+                obj_index_hash[iHash]=pObjIndex->next;
+            else
+                prevObjIndex->next=pObjIndex->next;
+        }
 
-            /* Add another */
+        /* Add another */
 
-            iHash                   = new_vnum % MAX_KEY_HASH;
-            pObjIndex->next        = obj_index_hash[iHash];
-            obj_index_hash[iHash]  = pObjIndex;
+        iHash                   = new_vnum % MAX_KEY_HASH;
+        pObjIndex->next        = obj_index_hash[iHash];
+        obj_index_hash[iHash]  = pObjIndex;
 
-            break;
+        break;
 
     }
     return;

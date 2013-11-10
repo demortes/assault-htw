@@ -71,7 +71,7 @@ void pre_parse( char * list, char * victimname, char * containername, char * thi
         if ( arg1[0] == '\0' )
             break;
         if (  ( !str_cmp( "from", arg1 ) )
-            || ( !str_cmp( "in", arg1 ) )  )
+                || ( !str_cmp( "in", arg1 ) )  )
         {
             argument = one_argument( argument, container_name );
         }
@@ -239,9 +239,9 @@ char *smash_swear( char *str )
     for ( i = 0; str[i] != '\0'; i++ )
     {
         if (  ( str[i]   == 'f' || str[i]   == 'F'  )
-            && ( str[i+1] == 'u' || str[i+1] == 'U'  )
-            && ( str[i+2] == 'c' || str[i+2] == 'C'  )
-            && ( str[i+3] == 'k' || str[i+3] == 'K'  )  )
+                && ( str[i+1] == 'u' || str[i+1] == 'U'  )
+                && ( str[i+2] == 'c' || str[i+2] == 'C'  )
+                && ( str[i+3] == 'k' || str[i+3] == 'K'  )  )
         {
             str[i] = '*';
             str[i +1] = '*';
@@ -261,9 +261,9 @@ char *smash_swear( char *str )
             i += 3;
         } */
         if (  ( str[i]   == 'c' || str[i]   == 'C'  )
-            && ( str[i+1] == 'u' || str[i+1] == 'U'  )
-            && ( str[i+2] == 'n' || str[i+2] == 'N'  )
-            && ( str[i+3] == 't' || str[i+3] == 'T'  )  )
+                && ( str[i+1] == 'u' || str[i+1] == 'U'  )
+                && ( str[i+2] == 'n' || str[i+2] == 'N'  )
+                && ( str[i+3] == 't' || str[i+3] == 'T'  )  )
         {
             str[i] = '*';
             str[i +1] = '*';
@@ -272,10 +272,10 @@ char *smash_swear( char *str )
             i += 3;
         }
         if (  ( str[i]   == 'p' || str[i]   == 'P'  )
-            && ( str[i+1] == 'e' || str[i+1] == 'E'  )
-            && ( str[i+2] == 'n' || str[i+2] == 'N'  )
-            && ( str[i+3] == 'i' || str[i+3] == 'I'  )
-            && ( str[i+4] == 's' || str[i+4] == 'S'  )  )
+                && ( str[i+1] == 'e' || str[i+1] == 'E'  )
+                && ( str[i+2] == 'n' || str[i+2] == 'N'  )
+                && ( str[i+3] == 'i' || str[i+3] == 'I'  )
+                && ( str[i+4] == 's' || str[i+4] == 'S'  )  )
         {
             str[i] = '*';
             str[i +1] = '*';
@@ -296,9 +296,9 @@ char *smash_swear( char *str )
             i += 3;
         } */
         if (  ( str[i]   == 'c' || str[i]   == 'C'  )
-            && ( str[i+1] == 'o' || str[i+1] == 'O'  )
-            && ( str[i+2] == 'c' || str[i+2] == 'C'  )
-            && ( str[i+3] == 'k' || str[i+3] == 'K'  )  )
+                && ( str[i+1] == 'o' || str[i+1] == 'O'  )
+                && ( str[i+2] == 'c' || str[i+2] == 'C'  )
+                && ( str[i+3] == 'k' || str[i+3] == 'K'  )  )
         {
             str[i] = '*';
             str[i +1] = '*';
@@ -307,8 +307,8 @@ char *smash_swear( char *str )
             i += 3;
         }
         if (  ( str[i]   == 'f' || str[i]   == 'F'  )
-            && ( str[i+1] == 'a' || str[i+1] == 'A'  )
-            && ( str[i+2] == 'g' || str[i+2] == 'G'  ) )
+                && ( str[i+1] == 'a' || str[i+1] == 'A'  )
+                && ( str[i+2] == 'g' || str[i+2] == 'G'  ) )
         {
             str[i] = '*';
             str[i +1] = '*';
@@ -460,8 +460,8 @@ char *capitalize( const char *str )
     for ( i = 0; str[i] != '\0'; i++ )
     {
         if (  ( str[i]   == '@'   )
-            && ( str[i+1] == '@'   )
-            && ( str[i+2] != '\0'  )  )
+                && ( str[i+1] == '@'   )
+                && ( str[i+2] != '\0'  )  )
         {
             strcap[i] = str[i];
             strcap[i +1] = str[i+1];
@@ -475,7 +475,7 @@ char *capitalize( const char *str )
     strcap[i] = '\0';
     for ( i = 0; strcap[i] != '\0' && !isalpha( strcap[i] ); i++ );
     if (  ( i > 0 )
-        && ( strcap[i] != '\0' )  )
+            && ( strcap[i] != '\0' )  )
         i++;
     if ( strcap[i] != '\0' )
         strcap[i] = UPPER(strcap[i]);
@@ -515,53 +515,95 @@ char *capitalize( const char *str )
         /* Should be more efficient than all those 'if' statements ;) */
         switch ( strcap[i] )
         {
-            default:                                        /* Non-alphabetic letters and not '@' */
-                ignore_next = FALSE;                        /* Not a color code */
-                count = 0;
-                break;
-            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
-            case 'g': case 'h': case 'i': case 'j': case 'k': case 'l':
-            case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-            case 's': case 't': case 'u': case 'v': case 'w': case 'x':
-            case 'y': case 'z':                             /* Any lowercase letter */
-                if ( ignore_next )
-                    ignore_next = FALSE;                    /* We ignore the case of the this letter */
-                else if ( first_letter )
-                {
-                    first_letter = FALSE;                   /* Reset the flag */
-                    strcap[i] = UPPER(strcap[i]);           /* We set this letter to uppercase */
-                }
-                count = 0;
-                break;
-            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
-            case 'G': case 'H': case 'I': case 'J': case 'K': case 'L':
-            case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X':
-            case 'Y': case 'Z':                             /* Any uppercase letter */
-                /* Then its the first letter in the string */
-                if ( ignore_next )
-                    ignore_next = FALSE;                    /* We ignore the case of the this letter */
-                else if ( first_letter )
-                    first_letter = FALSE;                   /* We ignore the case of the this letter */
-                else
-                    strcap[i] = LOWER(strcap[i]);           /* Set this letter to lowercase */
-                count = 0;
-                break;
-            case '@':
-                if ( ++count >= 2 )                         /* If there are two or more '@@'s in a row */
-                    ignore_next = TRUE;                     /* Set the flag to ignore the next letter */
-                break;
+        default:                                        /* Non-alphabetic letters and not '@' */
+            ignore_next = FALSE;                        /* Not a color code */
+            count = 0;
+            break;
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':                             /* Any lowercase letter */
+            if ( ignore_next )
+                ignore_next = FALSE;                    /* We ignore the case of the this letter */
+            else if ( first_letter )
+            {
+                first_letter = FALSE;                   /* Reset the flag */
+                strcap[i] = UPPER(strcap[i]);           /* We set this letter to uppercase */
+            }
+            count = 0;
+            break;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':                             /* Any uppercase letter */
+            /* Then its the first letter in the string */
+            if ( ignore_next )
+                ignore_next = FALSE;                    /* We ignore the case of the this letter */
+            else if ( first_letter )
+                first_letter = FALSE;                   /* We ignore the case of the this letter */
+            else
+                strcap[i] = LOWER(strcap[i]);           /* Set this letter to lowercase */
+            count = 0;
+            break;
+        case '@':
+            if ( ++count >= 2 )                         /* If there are two or more '@@'s in a row */
+                ignore_next = TRUE;                     /* Set the flag to ignore the next letter */
+            break;
         }
     } while ( ( strcap[++i] = *++str ) != '\0' );           /* loop until end of string */
 
     i = 0;                                                  /* str = oldstr;  Reset variables */
-    #if 0
+#if 0
     /* Copy strcap back into the old string */
     while ( ( *str++ = strcap[i++] ) != '\0' )
         ;
 
     return ( oldstr );                                      /* Return pointer to start of old string */
-    #endif
+#endif
     return ( strcap );
 }
 
@@ -591,20 +633,20 @@ int my_strlen( const char *text )
 
         switch( status )
         {
-            case 0:
-            case 1:
-                if ( c == '@' )
-                    status++;
-                else
-                    status = 0;
-                break;
-            case 2:
-                if ( c == '@' )
-                    length -= 2;
-                else
-                    length -= 3;                            /* Subtract for '@@x' */
+        case 0:
+        case 1:
+            if ( c == '@' )
+                status++;
+            else
                 status = 0;
-                break;
+            break;
+        case 2:
+            if ( c == '@' )
+                length -= 2;
+            else
+                length -= 3;                            /* Subtract for '@@x' */
+            status = 0;
+            break;
         }
     }
     return( length );
@@ -630,17 +672,17 @@ int nocol_strlen( const char *text )
 
         switch( status )
         {
-            case 0:
-            case 1:
-                if ( c == '@' )
-                    status++;
-                else
-                    status = 0;
-                break;
-            case 2:
-                length -= 3;                                /* Subtract for '@@x' */
-                status=0;
-                break;
+        case 0:
+        case 1:
+            if ( c == '@' )
+                status++;
+            else
+                status = 0;
+            break;
+        case 2:
+            length -= 3;                                /* Subtract for '@@x' */
+            status=0;
+            break;
         }
     }
     return( length );
@@ -665,18 +707,18 @@ int ccode_len( const char *text, sh_int desired )
 
         switch( status )
         {
-            case 0:
-            case 1:
-                if ( c == '@' )
-                    status++;
-                else
-                    status = 0;
-                break;
-            case 2:
-                if ( c != '@' )
-                    length += 3;                            /* Subtract for '@@x' */
-                status=0;
-                break;
+        case 0:
+        case 1:
+            if ( c == '@' )
+                status++;
+            else
+                status = 0;
+            break;
+        case 2:
+            if ( c != '@' )
+                length += 3;                            /* Subtract for '@@x' */
+            status=0;
+            break;
         }
     }
     return( length + desired );
@@ -778,9 +820,9 @@ char * str_mod( char * mod_string,  char *argument )
                     while ( buf2 != word )
                         buf[i++] = *(buf2++);
                     while (  ( !isspace ( *(buf2++) ) )
-                        || (  ( multiple )
-                        && (  ( buf2[0] != '\'' )
-                        && ( buf2[0] != '\0' ) ) )  );
+                             || (  ( multiple )
+                                   && (  ( buf2[0] != '\'' )
+                                         && ( buf2[0] != '\0' ) ) )  );
                     buf[i] = '\0';
                     safe_strcat ( MSL, buf, buf2 );
                 }
@@ -1001,44 +1043,78 @@ char *item_type_name( OBJ_DATA *obj )
 
     switch ( obj->item_type )
     {
-        case ITEM_LIGHT:            return "light";
-        case ITEM_AMMO:             return "ammo";
-        case ITEM_BOMB:             return "bomb";
-        case ITEM_BLUEPRINT:        return "blueprint";
-        case ITEM_SUIT:     return "suit";
-        case ITEM_MEDPACK:          return "medpack";
-        case ITEM_WEAPON:           return "weapon";
-        case ITEM_DRONE:            return "drone";
-        case ITEM_ARMOR:            return "armor";
-        case ITEM_TELEPORTER:       return "teleporter";
-        case ITEM_IMPLANT:          return "implant";
-        case ITEM_BOARD:            return "bulletin board";
-        case ITEM_INSTALLATION: return "installation";
-        case ITEM_TOKEN:            return "token";
-        case ITEM_MATERIAL:         return "material";
-        case ITEM_FLAG:             return "flag";
-        case ITEM_DART_BOARD:   return "dart board";
-        case ITEM_ELEMENT:      return "element";
-        case ITEM_CONTAINER:    return "container";
-        case ITEM_WEAPON_UP:    return "weapon upgrade";
-        case ITEM_PIECE:        return "piece";
-        case ITEM_COMPUTER:     return "computer";
-        case ITEM_LOCATOR:      return "item locator";
-        case ITEM_SKILL_UP:     return "skill upgrade";
-        case ITEM_PART:     return "vehicle part";
-        case ITEM_DISK:     return "disk";
-        case ITEM_TRASH:        return "trash";
-        case ITEM_ASTEROID:     return "asteroid";
-        case ITEM_VEHICLE_UP:   return "vehicle addon";
-        case ITEM_TOOLKIT:      return "toolkit";
-        case ITEM_SCAFFOLD:     return "scaffold";
-        case ITEM_ORE:      return "ore";
-        case ITEM_BIOTUNNEL:    return "Bio Tunnel";
-        case ITEM_BATTERY:      return "battery";
+    case ITEM_LIGHT:
+        return "light";
+    case ITEM_AMMO:
+        return "ammo";
+    case ITEM_BOMB:
+        return "bomb";
+    case ITEM_BLUEPRINT:
+        return "blueprint";
+    case ITEM_SUIT:
+        return "suit";
+    case ITEM_MEDPACK:
+        return "medpack";
+    case ITEM_WEAPON:
+        return "weapon";
+    case ITEM_DRONE:
+        return "drone";
+    case ITEM_ARMOR:
+        return "armor";
+    case ITEM_TELEPORTER:
+        return "teleporter";
+    case ITEM_IMPLANT:
+        return "implant";
+    case ITEM_BOARD:
+        return "bulletin board";
+    case ITEM_INSTALLATION:
+        return "installation";
+    case ITEM_TOKEN:
+        return "token";
+    case ITEM_MATERIAL:
+        return "material";
+    case ITEM_FLAG:
+        return "flag";
+    case ITEM_DART_BOARD:
+        return "dart board";
+    case ITEM_ELEMENT:
+        return "element";
+    case ITEM_CONTAINER:
+        return "container";
+    case ITEM_WEAPON_UP:
+        return "weapon upgrade";
+    case ITEM_PIECE:
+        return "piece";
+    case ITEM_COMPUTER:
+        return "computer";
+    case ITEM_LOCATOR:
+        return "item locator";
+    case ITEM_SKILL_UP:
+        return "skill upgrade";
+    case ITEM_PART:
+        return "vehicle part";
+    case ITEM_DISK:
+        return "disk";
+    case ITEM_TRASH:
+        return "trash";
+    case ITEM_ASTEROID:
+        return "asteroid";
+    case ITEM_VEHICLE_UP:
+        return "vehicle addon";
+    case ITEM_TOOLKIT:
+        return "toolkit";
+    case ITEM_SCAFFOLD:
+        return "scaffold";
+    case ITEM_ORE:
+        return "ore";
+    case ITEM_BIOTUNNEL:
+        return "Bio Tunnel";
+    case ITEM_BATTERY:
+        return "battery";
     }
 
     sprintf( log, "Item_type_name: Object: %d.  Unknown Type: %d",
-        obj->pIndexData->vnum, obj->item_type );
+             obj->pIndexData->vnum, obj->item_type );
     monitor_chan( NULL, log, MONITOR_OBJ );
     bug( log, 0 );
     return "(unknown)";
@@ -1048,39 +1124,72 @@ char *item_type_desc( int type )
 {
     switch ( type )
     {
-        case ITEM_LIGHT:            return "(unknown)";
-        case ITEM_AMMO:             return "Ammo can be LOADed into weapons, so they can fire after they run out.";
-        case ITEM_BOMB:             return "Bombs are dangerous tools of destruction - Just SET them, ARM them, and RUN AWAY!";
-        case ITEM_BLUEPRINT:        return "Blueprints are used to upgrade buildings. They can only upgrade buildings by 1 level at a time.";
-        case ITEM_SUIT:     return "Suits are used with the ACTIVATE command, suits can have special functions such as teleportation.";
-        case ITEM_MEDPACK:          return "Medpacks are used with the HEAL command, they can cure your wounds when you use them.";
-        case ITEM_WEAPON:           return "Weapons are the basic attack items - Wield/wear one, then FIRE or SHOOT at your enemies.";
-        case ITEM_DRONE:            return "Just drop them, and they'll do their job. Repair drones, for example, fix damaged buildings.";
-        case ITEM_ARMOR:            return "Armor can protect you from hits - Each armor type protects against a different damage type.";
-        case ITEM_TELEPORTER:       return "A Teleporter is used to take you back to one of your controlled buildings, in a certain radius.";
-        case ITEM_IMPLANT:          return "Implants are given to Bio Lab players, and can be used to increase their stats (HP, carry ability...).";
-        case ITEM_BOARD:            return "Boards are found in players' HQs and Government Centers (alliance boards). You can READ and WRITE messages on them!";
-        case ITEM_INSTALLATION: return "You can INSTALL these into buildings, each giving a different effect.";
-        case ITEM_TOKEN:            return "Tokens give players quest points when they are picked up.";
-        case ITEM_MATERIAL:         return "Ranging from sticks to gold, these are the basic elements needed to build a structure.";
-        case ITEM_FLAG:             return "Flags you get for destroying a player's base. You can save them at the lodge as trophies!";
-        case ITEM_DART_BOARD:   return "You can play Darts in a hunting lodge, and this is what you play with.";
-        case ITEM_ELEMENT:      return "Elements are items you can process using the Chemistry command to create new items.";
-        case ITEM_CONTAINER:    return "Containers are what you put elements in before you can mix them.";
-        case ITEM_WEAPON_UP:    return "Weapon Upgrades can be WINSTALLed into weapons to give them special effects.";
-        case ITEM_PIECE:        return "Piece items can be combined together to create new items.";
-        case ITEM_COMPUTER:     return "Computers can be used to upload viruses to enemy buildings and track players down.";
-        case ITEM_LOCATOR:      return "An item locator will scan the surroundings for items, letting you know whether you're close to an enemy base.";
-        case ITEM_SKILL_UP:     return "Skill Upgrades are used to instantly increase your skill at a certain action.";
-        case ITEM_PART:     return "A Vehicle Part used to construct vehicles.";
-        case ITEM_DISK:     return "A disk containing software such as password crackers or viruses.";
-        case ITEM_TRASH:        return "Useless junk.";
-        case ITEM_ASTEROID:     return "Asteroids can be mined for metals in space, and might hold some hidden items within.";
-        case ITEM_VEHICLE_UP:   return "Vehicle addons add special features to vehicles (increased range, scanner, etc).";
-        case ITEM_TOOLKIT:      return "Toolkits are used by engineers to upgrade vehicles.";
-        case ITEM_SCAFFOLD:     return "Creates the layout for a new building.";
-        case ITEM_ORE:      return "Research these to produce new items!";
-        case ITEM_BIOTUNNEL:    return "Transport all the items in the room to a receiving tunnel.";
+    case ITEM_LIGHT:
+        return "(unknown)";
+    case ITEM_AMMO:
+        return "Ammo can be LOADed into weapons, so they can fire after they run out.";
+    case ITEM_BOMB:
+        return "Bombs are dangerous tools of destruction - Just SET them, ARM them, and RUN AWAY!";
+    case ITEM_BLUEPRINT:
+        return "Blueprints are used to upgrade buildings. They can only upgrade buildings by 1 level at a time.";
+    case ITEM_SUIT:
+        return "Suits are used with the ACTIVATE command, suits can have special functions such as teleportation.";
+    case ITEM_MEDPACK:
+        return "Medpacks are used with the HEAL command, they can cure your wounds when you use them.";
+    case ITEM_WEAPON:
+        return "Weapons are the basic attack items - Wield/wear one, then FIRE or SHOOT at your enemies.";
+    case ITEM_DRONE:
+        return "Just drop them, and they'll do their job. Repair drones, for example, fix damaged buildings.";
+    case ITEM_ARMOR:
+        return "Armor can protect you from hits - Each armor type protects against a different damage type.";
+    case ITEM_TELEPORTER:
+        return "A Teleporter is used to take you back to one of your controlled buildings, in a certain radius.";
+    case ITEM_IMPLANT:
+        return "Implants are given to Bio Lab players, and can be used to increase their stats (HP, carry ability...).";
+    case ITEM_BOARD:
+        return "Boards are found in players' HQs and Government Centers (alliance boards). You can READ and WRITE messages on them!";
+    case ITEM_INSTALLATION:
+        return "You can INSTALL these into buildings, each giving a different effect.";
+    case ITEM_TOKEN:
+        return "Tokens give players quest points when they are picked up.";
+    case ITEM_MATERIAL:
+        return "Ranging from sticks to gold, these are the basic elements needed to build a structure.";
+    case ITEM_FLAG:
+        return "Flags you get for destroying a player's base. You can save them at the lodge as trophies!";
+    case ITEM_DART_BOARD:
+        return "You can play Darts in a hunting lodge, and this is what you play with.";
+    case ITEM_ELEMENT:
+        return "Elements are items you can process using the Chemistry command to create new items.";
+    case ITEM_CONTAINER:
+        return "Containers are what you put elements in before you can mix them.";
+    case ITEM_WEAPON_UP:
+        return "Weapon Upgrades can be WINSTALLed into weapons to give them special effects.";
+    case ITEM_PIECE:
+        return "Piece items can be combined together to create new items.";
+    case ITEM_COMPUTER:
+        return "Computers can be used to upload viruses to enemy buildings and track players down.";
+    case ITEM_LOCATOR:
+        return "An item locator will scan the surroundings for items, letting you know whether you're close to an enemy base.";
+    case ITEM_SKILL_UP:
+        return "Skill Upgrades are used to instantly increase your skill at a certain action.";
+    case ITEM_PART:
+        return "A Vehicle Part used to construct vehicles.";
+    case ITEM_DISK:
+        return "A disk containing software such as password crackers or viruses.";
+    case ITEM_TRASH:
+        return "Useless junk.";
+    case ITEM_ASTEROID:
+        return "Asteroids can be mined for metals in space, and might hold some hidden items within.";
+    case ITEM_VEHICLE_UP:
+        return "Vehicle addons add special features to vehicles (increased range, scanner, etc).";
+    case ITEM_TOOLKIT:
+        return "Toolkits are used by engineers to upgrade vehicles.";
+    case ITEM_SCAFFOLD:
+        return "Creates the layout for a new building.";
+    case ITEM_ORE:
+        return "Research these to produce new items!";
+    case ITEM_BIOTUNNEL:
+        return "Transport all the items in the room to a receiving tunnel.";
     }
 
     return "(unknown)";

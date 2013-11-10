@@ -42,7 +42,7 @@
 #include "ack.h"
 
 bool    check_social    args( ( CHAR_DATA *ch, char *command,
-char *argument ) );
+                                char *argument ) );
 
 /* Disabled stuff - Wyn */
 bool    check_disabled  args ( ( CHAR_DATA *ch, const struct cmd_type *command ) );
@@ -491,8 +491,8 @@ const   struct  cmd_type        cmd_table       [] =
         "log",         do_log,     POS_DEAD,        0,     LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_ALWAYS
     },
-    
-    { 
+
+    {
         "logs",          do_logs,     POS_DEAD,        0,     LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_ALWAYS
     },
@@ -619,14 +619,14 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_MISC, C_SHOW_NEVER
     },
 
-    { 
-	"quote",          do_quote,       POS_DEAD,        0,  LOG_NORMAL,
-	C_TYPE_MISC, C_SHOW_ALWAYS 
-    },
-    
     {
-	"quotes",	  do_quote,	  POS_DEAD,	   0,  LOG_NORMAL,
-	C_TYPE_MISC, C_SHOW_ALWAYS
+        "quote",          do_quote,       POS_DEAD,        0,  LOG_NORMAL,
+        C_TYPE_MISC, C_SHOW_ALWAYS
+    },
+
+    {
+        "quotes",	  do_quote,	  POS_DEAD,	   0,  LOG_NORMAL,
+        C_TYPE_MISC, C_SHOW_ALWAYS
     },
 
     {
@@ -679,7 +679,7 @@ const   struct  cmd_type        cmd_table       [] =
         "research",         do_research,      POS_STANDING,    0,  LOG_NORMAL,
         C_TYPE_ACTION, C_SHOW_SKILL
     },
-        {
+    {
         "rules",         do_rules,     POS_DEAD,        0,     LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_ALWAYS
     },
@@ -951,7 +951,7 @@ const   struct  cmd_type        cmd_table       [] =
         "bmove",           do_move,        POS_DEAD,    85,   LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
-    
+
     {
         "bomb",    do_bomb,       POS_STANDING,    90,       LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
@@ -962,7 +962,7 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
     { "chedit",         do_chedit,      POS_DEAD,        85,      LOG_NORMAL,      C_TYPE_IMM, C_SHOW_ALWAYS},
-        {
+    {
         "devastate",    do_devastate,       POS_STANDING,    90,       LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
@@ -1166,7 +1166,7 @@ const   struct  cmd_type        cmd_table       [] =
         "peek",           do_peek,        POS_DEAD,       83,  LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
-        {
+    {
         "phase",    do_phase,       POS_STANDING,    80,       LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
@@ -1235,11 +1235,11 @@ const   struct  cmd_type        cmd_table       [] =
         "shutdown",       do_shutdown,    POS_DEAD,    87,   LOG_ALWAYS,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
-        {
+    {
         "smite",          do_smite,      POS_DEAD,       83,  LOG_ALWAYS,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
-        {
+    {
         "survey",    do_survey,       POS_STANDING,    80,       LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
@@ -1264,7 +1264,7 @@ const   struct  cmd_type        cmd_table       [] =
         "users",          do_users,       POS_DEAD,    83,   LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
-        {
+    {
         "vset",    do_vset,       POS_STANDING,    83,       LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
@@ -1414,8 +1414,8 @@ void comlog( CHAR_DATA *ch, int cmd, char *args )
         ltime = current_time;
     }
     fprintf(fplog, "%.24s :: %12.12s: %s %s\n", ctime(&current_time),
-        ch->name, cmd_table[cmd].name,
-        (cmd_table[cmd].log == LOG_NEVER ? "XXX" : args));
+            ch->name, cmd_table[cmd].name,
+            (cmd_table[cmd].log == LOG_NEVER ? "XXX" : args));
     fflush(fplog);
 }
 
@@ -1523,7 +1523,7 @@ void interpret( CHAR_DATA *ch, char *argument )
         int i;
         char command2[MSL];
         command2[0] = '\0';
-        for ( i = 0;i<5;i++ )
+        for ( i = 0; i<5; i++ )
         {
             if ( ch->alias[i] == "" )
                 continue;
@@ -1553,16 +1553,16 @@ void interpret( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( cmd_table[cmd].level == MAX_LEVEL
-            &&  ( trust < MAX_LEVEL )   )
+                &&  ( trust < MAX_LEVEL )   )
             continue;
 
         if ( cmd_table[cmd].level == MAX_LEVEL
-            &&  ( trust < MAX_LEVEL )   )
+                &&  ( trust < MAX_LEVEL )   )
             continue;
 
         if ( command[0] == cmd_table[cmd].name[0]
-            &&   !str_prefix( command, cmd_table[cmd].name )
-            &&   ( cmd_table[cmd].level <= trust ) )
+                &&   !str_prefix( command, cmd_table[cmd].name )
+                &&   ( cmd_table[cmd].level <= trust ) )
         {
 
             found = TRUE;
@@ -1575,7 +1575,7 @@ void interpret( CHAR_DATA *ch, char *argument )
     {
         char buf[MSL];
         if ( ch->c_sn == gsn_dead || ch->c_sn == gsn_warp || ch->c_sn == gsn_paradrop || ch->dead || ch->position == POS_DEAD
-            )
+           )
         {
             send_to_char( "Not now.\n\r", ch );
             return;
@@ -1596,15 +1596,14 @@ void interpret( CHAR_DATA *ch, char *argument )
         strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX@@N");
 
     if ( ( IS_SET(ch->act, PLR_LOG) )
-        ||   fLogAll
-        ||   cmd_table[cmd].log == LOG_ALWAYS )
+            ||   fLogAll
+            ||   cmd_table[cmd].log == LOG_ALWAYS )
     {
         sprintf( log_buf, "Log %s: %s", ch->name, logline );
         log_string( log_buf );
         if ( IS_SET( ch->act, PLR_LOG ) )
             monitor_chan( ch, log_buf, MONITOR_BAD );
-        else
-        if ( cmd_table[cmd].level >= LEVEL_HERO )
+        else if ( cmd_table[cmd].level >= LEVEL_HERO )
         {
             if ( ch->trust < 90 )
                 monitor_chan( ch, log_buf, MONITOR_GEN_IMM );
@@ -1630,8 +1629,8 @@ void interpret( CHAR_DATA *ch, char *argument )
          */
         if ( !check_social( ch, command, argument )
 
-            //	&&   ( !IMC || !imc_command_hook( ch, command, argument ) )
-            )
+                //	&&   ( !IMC || !imc_command_hook( ch, command, argument ) )
+           )
         {
             /*	    if ( *command == '[' )
                     {
@@ -1664,30 +1663,30 @@ void interpret( CHAR_DATA *ch, char *argument )
     {
         switch( ch->position )
         {
-            case POS_DEAD:
-                send_to_char( "Lie still; you are @@dDEAD@@N.\n\r", ch );
-                break;
+        case POS_DEAD:
+            send_to_char( "Lie still; you are @@dDEAD@@N.\n\r", ch );
+            break;
 
-            case POS_STUNNED:
-                ch->position = POS_STANDING;
-                break;
+        case POS_STUNNED:
+            ch->position = POS_STANDING;
+            break;
 
-            case POS_MORTAL:
-            case POS_INCAP:
-                send_to_char( "You are @@Rhurt@@N far too bad for that.\n\r", ch );
-                break;
+        case POS_MORTAL:
+        case POS_INCAP:
+            send_to_char( "You are @@Rhurt@@N far too bad for that.\n\r", ch );
+            break;
 
-            case POS_SLEEPING:
-                send_to_char( "Oh, go back to @@Wsleep!@@N\n\r", ch );
-                break;
+        case POS_SLEEPING:
+            send_to_char( "Oh, go back to @@Wsleep!@@N\n\r", ch );
+            break;
 
-            case POS_RESTING:
-                send_to_char( "Naaaaaah... You feel too @@brelaxed@@N...\n\r", ch);
-                break;
+        case POS_RESTING:
+            send_to_char( "Naaaaaah... You feel too @@brelaxed@@N...\n\r", ch);
+            break;
 
-            case POS_SNEAKING:
-                send_to_char( "Not while you're sneaking!\n\r", ch);
-                break;
+        case POS_SNEAKING:
+            send_to_char( "Not while you're sneaking!\n\r", ch);
+            break;
 
         }
         return;
@@ -1720,7 +1719,7 @@ bool check_social( CHAR_DATA *ch, char *command, char *argument )
     for ( cmd = 0; social_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( command[0] == social_table[cmd].name[0]
-            &&   !str_prefix( command, social_table[cmd].name ) )
+                &&   !str_prefix( command, social_table[cmd].name ) )
         {
             found = TRUE;
             break;
@@ -1762,8 +1761,8 @@ bool check_social( CHAR_DATA *ch, char *command, char *argument )
             char             ldmsg [ MAX_STRING_LENGTH ];
 
             if (   ( !str_cmp(victim->pcdata->ignore_list[0], ch->name) ||
-                !str_cmp(victim->pcdata->ignore_list[1], ch->name) ||
-                !str_cmp(victim->pcdata->ignore_list[2], ch->name) )   )
+                     !str_cmp(victim->pcdata->ignore_list[1], ch->name) ||
+                     !str_cmp(victim->pcdata->ignore_list[2], ch->name) )   )
             {
                 send_to_char( "They are ignoring you.\n\r", ch );
                 return TRUE;
@@ -1815,7 +1814,7 @@ void do_disable (CHAR_DATA *ch, char *argument)
         }
 
         send_to_char ("Disabled commands:\n\r"
-            "Command      To Level    By Level   Disabled by\n\r",ch);
+                      "Command      To Level    By Level   Disabled by\n\r",ch);
 
         for (p = disabled_first; p; p = p->next)
         {
@@ -1852,7 +1851,7 @@ void do_disable (CHAR_DATA *ch, char *argument)
             disabled_first = p->next;
         else                                                /* Find the node before this one */
         {
-                                                            /* empty for */
+            /* empty for */
             for (q = disabled_first; q->next != p; q = q->next);
             q->next = p->next;
         }

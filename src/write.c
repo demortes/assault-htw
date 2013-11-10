@@ -41,7 +41,7 @@
 
 /* This file deals with multi-line editing, and writing. */
 
-typedef void RET_FUN  ( void * , char * * , CHAR_DATA * , bool ) ;
+typedef void RET_FUN  ( void * , char ** , CHAR_DATA * , bool ) ;
 
 struct buf_data_struct
 {
@@ -49,7 +49,7 @@ struct buf_data_struct
     BUF_DATA_STRUCT  *  next;
     BUF_DATA_STRUCT  *  prev;
     CHAR_DATA        *  ch;
-    char           * *  dest;
+    char           **  dest;
     char             *  buf;
     int                 pos;
     RET_FUN          *  returnfunc;
@@ -90,7 +90,7 @@ char *first_arg( char *argument, char *arg_first, bool fCase )
 
     cEnd = ' ';
     if ( *argument == '\'' || *argument == '"'
-        || *argument == '%'  || *argument == '(' )
+            || *argument == '%'  || *argument == '(' )
     {
         if ( *argument == '(' )
         {
@@ -120,7 +120,7 @@ char *first_arg( char *argument, char *arg_first, bool fCase )
     return argument;
 }
 
-void write_start( char * * dest, void * retfunc, void * retparm, CHAR_DATA * ch )
+void write_start( char ** dest, void * retfunc, void * retparm, CHAR_DATA * ch )
 {
     BUF_DATA_STRUCT * buf_data;
     char *        buf;
@@ -174,7 +174,7 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
     if (buf_data == NULL)
     {
         bugf("Call to write_interpret when not writing (char=%s)\n\r",
-            ch->name);
+             ch->name);
         ch->position=POS_STANDING;
         return;
     }
@@ -204,7 +204,7 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
     if (argument[0] == '\0' || UPPER(argument[0] == 'S' || UPPER(argument[0]) == 'Q'))
     {
         bool save;
-        char * * dest;
+        char ** dest;
         CHAR_DATA * ch;
 
         if (UPPER(argument[0]) == 'Q')
@@ -308,7 +308,9 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
 
         new_buf[0] = '\0';
         buf_length = strlen( buf );
-        pos = 0; npos =0; wpos = 0;
+        pos = 0;
+        npos =0;
+        wpos = 0;
         word[0] = '\0';
 
         for ( ; ; )
@@ -321,14 +323,16 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
             if ( pBuf == ' ' )
             {
                 new_buf[npos] = ' ';
-                pos++; npos++;
+                pos++;
+                npos++;
                 continue;
             }
 
             if ( !isgraph( pBuf ) )
             {
                 new_buf[npos] = pBuf;
-                pos++; npos++;
+                pos++;
+                npos++;
                 continue;
             }
 
@@ -339,7 +343,8 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
                     break;
 
                 word[wpos] = pBuf;
-                pos++; wpos++;
+                pos++;
+                wpos++;
                 pBuf = buf[pos];
             }
             word[wpos] = '\0';
@@ -348,10 +353,10 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
             {
                 if ( arg2[0] != '\0' )
                     for ( foo = 0; arg2[foo] != '\0'; foo++ )
-                {
-                    new_buf[npos] = arg2[foo];
-                    npos++;
-                }
+                    {
+                        new_buf[npos] = arg2[foo];
+                        npos++;
+                    }
                 else
                 {
                     /* Do nothing (much). */
@@ -373,7 +378,7 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
         /* -gulp-  Copy new_buf into message structure... */
 
         src=buf;
-        for (i=0;i<npos;i++)
+        for (i=0; i<npos; i++)
             *(src++)=new_buf[i];
         *(src)='\0';
 
@@ -451,72 +456,72 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
             c=*(src++);
             switch (c)
             {
-                case '\n':                                  /* Convert /n/r into one space */
-                    if (   (*src    == '\r')
+            case '\n':                                  /* Convert /n/r into one space */
+                if (   (*src    == '\r')
                         && (*(src+1)== '\n')
                         && (*(src+2)== '\r')
-                        )
-                    {
-                        /* Do not convert paragraph endings. */
-                        dest[n++]=c;                        /* \n */
-                        dest[n++]=*(src++);                 /* \r */
-                        dest[n++]=*(src++);                 /* \n */
-                        dest[n++]=*(src++);                 /* \r */
-                        col=0;
-                        srcspc=NULL;
-                        destspc=0;
-                        break;
-                    }
+                   )
+                {
+                    /* Do not convert paragraph endings. */
+                    dest[n++]=c;                        /* \n */
+                    dest[n++]=*(src++);                 /* \r */
+                    dest[n++]=*(src++);                 /* \n */
+                    dest[n++]=*(src++);                 /* \r */
+                    col=0;
+                    srcspc=NULL;
+                    destspc=0;
+                    break;
+                }
 
-                    /* Also if there is a space on the next line, don't merge. */
-                    if (   (*src    == '\r')
+                /* Also if there is a space on the next line, don't merge. */
+                if (   (*src    == '\r')
                         && (*(src+1)== ' ') )
-                    {
-                        dest[n++]=c;                        /* \n */
-                        dest[n++]=*(src++);                 /* \r */
-                        col=0;
-                        srcspc=NULL;
-                        destspc=0;
-                        break;
-                    }
+                {
+                    dest[n++]=c;                        /* \n */
+                    dest[n++]=*(src++);                 /* \r */
+                    col=0;
+                    srcspc=NULL;
+                    destspc=0;
+                    break;
+                }
 
-                    /* Otherwise convert to a space */
-                    /* Get rid of spaces at end of a line. */
-                    if (n>0)
-                    {
-                        while (dest[--n]==' ');
-                        n++;
-                    }
-                    dest[n++]=' ';
-                    col++;
+                /* Otherwise convert to a space */
+                /* Get rid of spaces at end of a line. */
+                if (n>0)
+                {
+                    while (dest[--n]==' ');
+                    n++;
+                }
+                dest[n++]=' ';
+                col++;
 
-                    srcspc=src-1;
+                srcspc=src-1;
+                destspc=n-1;
+                break;
+            case '\r':
+                break;
+
+            case '\t':                                  /* Tab */
+                col+=7;
+            case '.':                                   /* Punctuation */
+            case ' ':
+            case ',':
+            case ';':
+            case '?':
+            case '!':
+            case ')':
+                srcspc=src-1;
+                destspc=n-1;
+            case '-':
+                if (srcspc==NULL)
+                {
+                    srcspc=src-1;                       /* Only use a dash if necessary */
                     destspc=n-1;
-                    break;
-                case '\r':
-                    break;
-
-                case '\t':                                  /* Tab */
-                    col+=7;
-                case '.':                                   /* Punctuation */
-                case ' ':
-                case ',':
-                case ';':
-                case '?':
-                case '!':
-                case ')':
-                    srcspc=src-1;
-                    destspc=n-1;
-                case '-':
-                    if (srcspc==NULL)
-                    {
-                        srcspc=src-1;                       /* Only use a dash if necessary */
-                        destspc=n-1;
-                    }
-                default:
-                    dest[n++]=c;
-                    col++;
-                    break;
+                }
+            default:
+                dest[n++]=c;
+                col++;
+                break;
             }
 
             if (col >= lastcol)
@@ -561,7 +566,7 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
         /* Copy from dest back into buffer */
 
         src=buf;
-        for (i=0;i<n;i++)
+        for (i=0; i<n; i++)
             *(src++)=dest[i];
         *(src)='\0';
 

@@ -182,11 +182,11 @@ void do_immbrand( CHAR_DATA *ch, char *argument )
         {
             brand = brand_list->this_one;
             sprintf( buf, "[%3d] @@r%s@@W: @@GBrander@@W: %s  @@a%s @@ePriority: %s@@N\n\r",
-                vnum,
-                brand->branded,
-                brand->branded_by,
-                brand->dt_stamp,
-                brand->priority );
+                     vnum,
+                     brand->branded,
+                     brand->branded_by,
+                     brand->dt_stamp,
+                     brand->priority );
             safe_strcat( MSL, buf1, buf );
             vnum++;
             if ( vnum > 100 )
@@ -226,11 +226,11 @@ void do_immbrand( CHAR_DATA *ch, char *argument )
             {
                 brand = brand_list->this_one;
                 sprintf( buf, "[%3d] @@r%s@@W: @@GBrander@@W: %s  @@a%s @@ePriority: %s@@N\n\r",
-                    anum,
-                    brand->branded,
-                    brand->branded_by,
-                    brand->dt_stamp,
-                    brand->priority );
+                         anum,
+                         brand->branded,
+                         brand->branded_by,
+                         brand->dt_stamp,
+                         brand->priority );
                 safe_strcat( MSL, buf1, buf );
                 safe_strcat( MSL, buf1, brand->message );
                 send_to_char( buf1, ch );
@@ -315,11 +315,11 @@ void do_immbrand( CHAR_DATA *ch, char *argument )
         }
         buf1[0] = '\0';
         sprintf( buf, "[%3d] %s: Brander: %s  Date: %s Priority: %s\n\r",
-            vnum,
-            ch->current_brand->branded,
-            ch->current_brand->branded_by,
-            ch->current_brand->dt_stamp,
-            ch->current_brand->priority );
+                 vnum,
+                 ch->current_brand->branded,
+                 ch->current_brand->branded_by,
+                 ch->current_brand->dt_stamp,
+                 ch->current_brand->priority );
         safe_strcat( MSL, buf1, buf );
         safe_strcat( MSL, buf1, ch->current_brand->message );
         send_to_char( buf1, ch );

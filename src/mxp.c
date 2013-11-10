@@ -58,8 +58,8 @@ int count_mxp_tags (const int bMXP, const char *txt, int length)
     int bInEntity = FALSE;
 
     for (p = txt, count = 0;
-        length > 0;
-        p++, length--)
+            length > 0;
+            p++, length--)
     {
         c = *p;
 
@@ -78,7 +78,7 @@ int count_mxp_tags (const int bMXP, const char *txt, int length)
                 bInEntity = FALSE;
         }                                                   /* end of being inside a tag */
         else switch (c)
-        {
+            {
 
             case MXP_BEGc:
                 bInTag = TRUE;
@@ -102,22 +102,22 @@ int count_mxp_tags (const int bMXP, const char *txt, int length)
                 {
                     switch (c)
                     {
-                        case '<':                           /* < becomes &lt; */
-                        case '>':                           /* > becomes &gt; */
-                            count += 3;
-                            break;
+                    case '<':                           /* < becomes &lt; */
+                    case '>':                           /* > becomes &gt; */
+                        count += 3;
+                        break;
 
-                        case '&':
-                            count += 4;                     /* & becomes &amp; */
-                            break;
+                    case '&':
+                        count += 4;                     /* & becomes &amp; */
+                        break;
 
-                        case '"':                           /* " becomes &quot; */
-                            count += 5;
-                            break;
+                    case '"':                           /* " becomes &quot; */
+                        count += 5;
+                        break;
 
                     }                                       /* end of inner switch */
                 }                                           /* end of MXP enabled */
-        }                                                   /* end of switch on character */
+            }                                                   /* end of switch on character */
 
     }                                                       /* end of counting special characters */
 
@@ -133,8 +133,8 @@ void convert_mxp_tags (const int bMXP, char * dest, const char *src, int length)
     int bInEntity = FALSE;
 
     for (ps = src, pd = dest;
-        length > 0;
-        ps++, length--)
+            length > 0;
+            ps++, length--)
     {
         c = *ps;
         if (bInTag)                                         /* in a tag, eg. <send> */
@@ -156,7 +156,7 @@ void convert_mxp_tags (const int bMXP, char * dest, const char *src, int length)
                 bInEntity = FALSE;
         }                                                   /* end of being inside a tag */
         else switch (c)
-        {
+            {
             case MXP_BEGc:
                 bInTag = TRUE;
                 if (bMXP)
@@ -179,29 +179,29 @@ void convert_mxp_tags (const int bMXP, char * dest, const char *src, int length)
                 {
                     switch (c)
                     {
-                        case '<':
-                            memcpy (pd, "&lt;", 4);
-                            pd += 4;
-                            break;
+                    case '<':
+                        memcpy (pd, "&lt;", 4);
+                        pd += 4;
+                        break;
 
-                        case '>':
-                            memcpy (pd, "&gt;", 4);
-                            pd += 4;
-                            break;
+                    case '>':
+                        memcpy (pd, "&gt;", 4);
+                        pd += 4;
+                        break;
 
-                        case '&':
-                            memcpy (pd, "&amp;", 5);
-                            pd += 5;
-                            break;
+                    case '&':
+                        memcpy (pd, "&amp;", 5);
+                        pd += 5;
+                        break;
 
-                        case '"':
-                            memcpy (pd, "&quot;", 6);
-                            pd += 6;
-                            break;
+                    case '"':
+                        memcpy (pd, "&quot;", 6);
+                        pd += 6;
+                        break;
 
-                        default:
-                            *pd++ = c;
-                            break;                          /* end of default */
+                    default:
+                        *pd++ = c;
+                        break;                          /* end of default */
 
                     }                                       /* end of inner switch */
                 }
@@ -209,7 +209,7 @@ void convert_mxp_tags (const int bMXP, char * dest, const char *src, int length)
                     *pd++ = c;                              /* not MXP - just copy character */
                 break;
 
-        }                                                   /* end of switch on character */
+            }                                                   /* end of switch on character */
 
     }                                                       /* end of converting special characters */
 }                                                           /* end of convert_mxp_tags */
@@ -228,17 +228,17 @@ void turn_on_mxp (DESCRIPTOR_DATA *d)
     /* Building tag */
 
     write_to_buffer( d, MXPTAG
-    /*      (d,"!ELEMENT Bl \"<send href='blast &x; &y;' "
-           "hint='&name;   Owner: &owner;    &x; &y;' prompt>\" "
-           "ATT='x y owner name'"),
-    */
-        (d,"!ELEMENT Bl \"<send 'Blast &x; &y;|computer connect &x; &y;|help &name;|Info &x; &y;' hint='&name;   Owner: &owner;   &x;   &y;|Blast|Connect|Help|Info: &name;  Owner: &owner;  Loc: &x; &y;'>\" ATT='x y owner name' "),
+                     /*      (d,"!ELEMENT Bl \"<send href='blast &x; &y;' "
+                            "hint='&name;   Owner: &owner;    &x; &y;' prompt>\" "
+                            "ATT='x y owner name'"),
+                     */
+                     (d,"!ELEMENT Bl \"<send 'Blast &x; &y;|computer connect &x; &y;|help &name;|Info &x; &y;' hint='&name;   Owner: &owner;   &x;   &y;|Blast|Connect|Help|Info: &name;  Owner: &owner;  Loc: &x; &y;'>\" ATT='x y owner name' "),
 
-        0);
+                     0);
     /* Player tag (for who lists, tells etc.) */
     write_to_buffer( d, MXPTAG
-        (d,"!ELEMENT Player \"<send href='tell &#39;&name;&#39; ' "
-        "hint='Send a message to &name;' prompt>\" "
-        "ATT='name'"),
-        0);
+                     (d,"!ELEMENT Player \"<send href='tell &#39;&name;&#39; ' "
+                      "hint='Send a message to &name;' prompt>\" "
+                      "ATT='name'"),
+                     0);
 }                                                           /* end of turn_on_mxp */

@@ -49,132 +49,132 @@ struct build_help_type  build_help_table[MAX_POSSIBLE_BUILDING];
 const struct clip_type  clip_table[MAX_AMMO]     =
 {
     //	Name			Dam	BuildDam		Hit	Explode	Speed  	Type
-    {                                                       //Pistol
+    {   //Pistol
         "9mm Ammo",       30,     2,          53,     FALSE,  4,  DAMAGE_BULLETS
     },
-    {                                                       //Magnum
+    {   //Magnum
         "17mm-Remington Ammo",    40,     2,          65,     FALSE,  6,  DAMAGE_BULLETS
     },
-    {                                                       //Colt
+    {   //Colt
         "45mm-Colt Ammo",     40,     2,          60,     FALSE,  4,  DAMAGE_BULLETS
     },
-    {                                                       //Bazookas
+    {   //Bazookas
         "Rockets",        230,    90,             35,     TRUE,   40, DAMAGE_BLAST
     },
-    {                                                       //Acid Sprayer
+    {   //Acid Sprayer
         "Acid",           70,     0,          35,     FALSE,  2,  DAMAGE_ACID
     },
-    {                                                       //Hmmm... Tanks maybe?
+    {   //Hmmm... Tanks maybe?
         "Tank Rockets",       100,    30,             75,     TRUE,   30, DAMAGE_BLAST
     },
-    {                                                       //Vehicles
+    {   //Vehicles
         "Railgun",        10,     4,          75,     FALSE,  2,  DAMAGE_BULLETS
     },
-    {                                                       //Flamethrower
+    {   //Flamethrower
         "Flame",          40,     20,             35,     FALSE,  2,  DAMAGE_FLAME
     },
-    {                                                       //Cookie launcher *sigh*
+    {   //Cookie launcher *sigh*
         "Explosive Cookie",   40,     50,             65,     TRUE,   20, DAMAGE_GENERAL
     },
-    {                                                       //Sniper Rifle
+    {   //Sniper Rifle
         "308 Winchester Ammo",    300,    1,          85,     FALSE,  100,    DAMAGE_BULLETS
     },
-    {                                                       //Stealth Floaters
+    {   //Stealth Floaters
         "Stealth Bomb",       10, 150,            90, TRUE,   0,  DAMAGE_BLAST
     },
-    {                                                       //BBQer
+    {   //BBQer
         "BBQ Fire",       40,     20,             55,     FALSE,  20,  DAMAGE_FLAME
     },
-    {                                                       //Laser Guns
+    {   //Laser Guns
         "Laser",          30,     20,             90,     FALSE,  5,  DAMAGE_LASER
     },
-    {                                                       //Laser Machine-Guns
+    {   //Laser Machine-Guns
         "Laser",          30,     20,             70,     FALSE,  3,  DAMAGE_LASER
     },
-    {                                                       //Sniper Rifle (LS)
+    {   //Sniper Rifle (LS)
         "20x100 Hispano",     400,    1,          99,     FALSE,  70, DAMAGE_BULLETS
     },
-    {                                                       //AK47
+    {   //AK47
         "7.62mm Ammo",        30,     20,             50,     FALSE,  2,  DAMAGE_BULLETS
     },
-    {                                                       //Paintball
+    {   //Paintball
         "Paint",          1,  0,          50,     FALSE,  6,  DAMAGE_PAINT
     },
-    {                                                       //Laser Tank
+    {   //Laser Tank
         "Laser Beam",         70,     15,             50,     FALSE,  4,  DAMAGE_LASER
     },
-    {                                                       //Fire Bazooka
+    {   //Fire Bazooka
         "Fire Rocket",        150,    1,          20,     TRUE,   100,    DAMAGE_FLAME
     },
-    {                                                       //Shotgun
+    {   //Shotgun
         "Shotgun Shell",      70,     7,          20,     FALSE,  30, DAMAGE_BULLETS
     },
-    {                                                       //Mechs
+    {   //Mechs
         "Machinegun",         20,     5,          20,     FALSE,  2,  DAMAGE_BULLETS
     },
-    {                                                       //EMP guns
+    {   //EMP guns
         "EMP Charge",         0,  0,          0,  FALSE,  10, DAMAGE_EMP
     },
 
-    {                                                       //Space
+    {   //Space
         "lvl 1 Laser Cannon",     50,     0,          50,     FALSE,  3,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 2 Laser Cannon",     75,     0,          60,     FALSE,  4,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 3 Laser Cannon",     100,    0,          70,     FALSE,  5,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 1 Plasma Cannon",    75,     0,          60,     FALSE,  3,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 2 Plasma Cannon",    90,     0,          65,     FALSE,  3,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 3 Plasma Cannon",    110,    0,          75,     FALSE,  4,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 1 Torpedo",      40,     0,          70,     TRUE,   6,  DAMAGE_BLAST
     },
-    {                                                       //Space
+    {   //Space
         "lvl 2 Torpedo",      45,     0,          75,     TRUE,   6,  DAMAGE_BLAST
     },
-    {                                                       //Space
+    {   //Space
         "lvl 3 Torpedo",      60,     0,          80,     TRUE,   7,  DAMAGE_BLAST
     },
-    {                                                       //Space
+    {   //Space
         "lvl 1 Ion Cannon",   90,     0,          75,     FALSE,  4,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 2 Ion Cannon",   110,    0,          85,     FALSE,  4,  DAMAGE_LASER
     },
-    {                                                       //Space
+    {   //Space
         "lvl 3 Ion Cannon",   200,    0,          95,     FALSE,  5,  DAMAGE_LASER
     },
 
-    {                                                       //Psychic Blaster
+    {   //Psychic Blaster
         "Psychic Blast",      100,    0,          100,    FALSE,  16, DAMAGE_PSYCHIC
     },
-    {                                                       //Space
+    {   //Space
         "Ion Blaster",        8000,   0,          100,    FALSE,  5,  DAMAGE_LASER
     },
-    {                                                       //M16
+    {   //M16
         "5.56mm Ammo",        40,     10,             70,     FALSE,  3,  DAMAGE_BULLETS
     },
-    {                                                       //Beanbag Rifle
+    {   //Beanbag Rifle
         "Beanbag",        0,  0,          100,    FALSE,  8,  DAMAGE_BULLETS
     },
-    {                                                       //Desert Eagle
+    {   //Desert Eagle
         ".50 Action Express Ammo",50, 4,          30, FALSE,  6,  DAMAGE_BULLETS
     },
-    {                                                       //G11
+    {   //G11
         "4.7mm Caseless Ammo",    35, 5,          85, FALSE,  4,  DAMAGE_BULLETS
     },
-    {                                                       //XRay van
+    {   //XRay van
         "X-Ray",          0,  0,          0,  FALSE,  0,  -1
     },
-    {                                                       //Bio floater
+    {   //Bio floater
         "Bio Spray",      0,  0,          0,  FALSE,  0,  DAMAGE_ACID
     },
 };
@@ -200,7 +200,7 @@ const struct formula_type formula_table[] =
     { 25000,        0,      5,  OBJ_VNUM_BURN_GRENADE,  250,    "Burn Grenade - 5 Solid Lead, 2 Solid Salt, 5 Gas Mercury." },
     { 0,        4003,       1002,   32599,          350,    "Black Poison - 4 Liquid + 1 Gas Lead, 3 Liquid +2 Gas Mercury." },
     { 1000000,      1202000,    0,  OBJ_VNUM_DIRTY_BOMB,    400,    "Dirty Bomb - 2 Liquid Lead, 2 Liquid Sodium, 1 Liquid Thorium, 1 Solid Thorium."    },
-    {                                                       //End marker
+    {   //End marker
         -1, -1, -1, -1, -1, ""
     },
 };
@@ -227,7 +227,7 @@ const   struct  ansi_type       ansi_table      [MAX_ANSI]              =
     { "blue",            "\033[0;34m",    4,     'B',    7 },
     { "magenta",         "\033[0;35m",    5,     'm',    7 },
     { "cyan",            "\033[0;36m",    6,     'c',    7 },
-    {                                                       /* was 0;33 */
+    {   /* was 0;33 */
         "black",           "\033[0;30m",    7,     'k',    7
     },
     { "yellow",          "\033[1;33m",    8,     'y',    7 },

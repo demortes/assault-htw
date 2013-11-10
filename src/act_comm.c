@@ -50,7 +50,7 @@ extern  char *      quote_table[MAX_QUOTE];
  * Local functions.
  */
 void    talk_channel    args( ( CHAR_DATA *ch, char *argument,
-int channel, const char *verb ) );
+                                int channel, const char *verb ) );
 
 /*
  * Generic channel function.
@@ -119,29 +119,29 @@ void talk_channel( CHAR_DATA *ch, char *argument, int channel, const char *verb 
 
     switch ( channel )
     {
-        default:
-            if ( ( IS_SET(ch->config, CONFIG_ECHAN ) ) && !IS_SET(ch->act, PLR_WIZINVIS ) )
-                sprintf( title, "%s", ch->pcdata->title );
-            sprintf( buf, "%s %s%s%s%s $t@@N", verb, (fake)?"Someone":"$n", (sysdata.pikamod)?"Mon":"", title, gemote ? "" : ":" );
-            act( buf, ch, argument, NULL, TO_CHAR );
-            break;
+    default:
+        if ( ( IS_SET(ch->config, CONFIG_ECHAN ) ) && !IS_SET(ch->act, PLR_WIZINVIS ) )
+            sprintf( title, "%s", ch->pcdata->title );
+        sprintf( buf, "%s %s%s%s%s $t@@N", verb, (fake)?"Someone":"$n", (sysdata.pikamod)?"Mon":"", title, gemote ? "" : ":" );
+        act( buf, ch, argument, NULL, TO_CHAR );
+        break;
 
-        case CHANNEL_CREATOR:
-            sprintf( buf, "@@R(@@e( @@mCREATOR: @@W%s @@g says @@W'@@g$t@@W'@@N", ch->name );
-            act( buf, ch, argument, NULL, TO_CHAR );
-            break;
+    case CHANNEL_CREATOR:
+        sprintf( buf, "@@R(@@e( @@mCREATOR: @@W%s @@g says @@W'@@g$t@@W'@@N", ch->name );
+        act( buf, ch, argument, NULL, TO_CHAR );
+        break;
 
-        case CHANNEL_IMMTALK:
-            sprintf( buf, "@@R(@@e( @@W$n @@gsays @@W'@@g$t@@W'@@N" );
-            act( buf, ch, argument, NULL, TO_CHAR );
-            break;
+    case CHANNEL_IMMTALK:
+        sprintf( buf, "@@R(@@e( @@W$n @@gsays @@W'@@g$t@@W'@@N" );
+        act( buf, ch, argument, NULL, TO_CHAR );
+        break;
 
-        case CHANNEL_ALLIANCE:
-            if ( ( IS_SET(ch->config, CONFIG_ECHAN ) ) && !IS_SET(ch->act, PLR_WIZINVIS ) )
-                sprintf( title, "%s", ch->pcdata->title );
-            sprintf( buf, "%s $n%s%s $t@@N", verb, title, gemote ? "" : ":" );
-            act( buf, ch, argument, NULL, TO_CHAR );
-            break;
+    case CHANNEL_ALLIANCE:
+        if ( ( IS_SET(ch->config, CONFIG_ECHAN ) ) && !IS_SET(ch->act, PLR_WIZINVIS ) )
+            sprintf( title, "%s", ch->pcdata->title );
+        sprintf( buf, "%s $n%s%s $t@@N", verb, title, gemote ? "" : ":" );
+        act( buf, ch, argument, NULL, TO_CHAR );
+        break;
 
     }
     {
@@ -161,17 +161,17 @@ void talk_channel( CHAR_DATA *ch, char *argument, int channel, const char *verb 
             och = vch;
 
             if ( d->connected == CON_PLAYING
-                &&   vch != ch
-                &&  !IS_SET(och->deaf, channel)
-                &&  !IS_SET(och->deaf, CHANNEL_HERMIT) )
+                    &&   vch != ch
+                    &&  !IS_SET(och->deaf, channel)
+                    &&  !IS_SET(och->deaf, CHANNEL_HERMIT) )
             {
 
                 if ( IS_SET(vch->pcdata->pflags,PLR_ASS) )
                     continue;
                 if (
                     ( !str_cmp(och->pcdata->ignore_list[0], ch->name) ||
-                    !str_cmp(och->pcdata->ignore_list[1], ch->name) ||
-                    !str_cmp(och->pcdata->ignore_list[2], ch->name) )   )
+                      !str_cmp(och->pcdata->ignore_list[1], ch->name) ||
+                      !str_cmp(och->pcdata->ignore_list[2], ch->name) )   )
                 {
                     continue;
                 }
@@ -190,25 +190,25 @@ void talk_channel( CHAR_DATA *ch, char *argument, int channel, const char *verb 
                 {
                     switch ( channel )
                     {
-                        default:
-                            sprintf( ansi, "%s", buf );
-                            break;
-                        case CHANNEL_MUSIC:
-                            sprintf( ansi, "%s%s%s", color_string( vch, "music" ),
-                                buf, color_string( vch, "normal" ) );
-                            break;
-                        case CHANNEL_FLAME:
-                            sprintf( ansi, "%s%s%s", color_string( vch, "flame" ),
-                                buf, color_string( vch, "normal" ) );
-                            break;
-                        case CHANNEL_GOSSIP:
-                            sprintf( ansi, "%s%s%s", color_string( vch, "gossip" ),
-                                buf, color_string( vch, "normal" ) );
-                            break;
-                        case CHANNEL_OOC:
-                            sprintf( ansi, "%s%s%s", color_string( vch, "ooc" ),
-                                buf, color_string( vch, "normal" ) );
-                            break;
+                    default:
+                        sprintf( ansi, "%s", buf );
+                        break;
+                    case CHANNEL_MUSIC:
+                        sprintf( ansi, "%s%s%s", color_string( vch, "music" ),
+                                 buf, color_string( vch, "normal" ) );
+                        break;
+                    case CHANNEL_FLAME:
+                        sprintf( ansi, "%s%s%s", color_string( vch, "flame" ),
+                                 buf, color_string( vch, "normal" ) );
+                        break;
+                    case CHANNEL_GOSSIP:
+                        sprintf( ansi, "%s%s%s", color_string( vch, "gossip" ),
+                                 buf, color_string( vch, "normal" ) );
+                        break;
+                    case CHANNEL_OOC:
+                        sprintf( ansi, "%s%s%s", color_string( vch, "ooc" ),
+                                 buf, color_string( vch, "normal" ) );
+                        break;
 
                     }
                     if ( fake && IS_IMMORTAL(vch) && get_trust(vch) >= get_trust(ch) )
@@ -272,14 +272,14 @@ void do_creator( CHAR_DATA *ch, char *argument )
 
 void do_gossip( CHAR_DATA *ch, char *argument )
 {
-    smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_GOSSIP, "@@G[@@rGO@@WSS@@rIP@@G]@@N" );
     return;
 }
 
 void do_music( CHAR_DATA *ch, char *argument )
 {
-    smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_MUSIC, "@@m[@@pMU@@mS@@pIC@@m]@@N" );
     return;
 }
@@ -287,7 +287,7 @@ void do_music( CHAR_DATA *ch, char *argument )
 void do_game( CHAR_DATA *ch, char *argument )
 {
     extern int guess_game;
-	smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_GAME, "@@r[@@eG@@RAM@@eE@@r]@@N" );
     if ( guess_game && is_number(argument) )
     {
@@ -295,7 +295,7 @@ void do_game( CHAR_DATA *ch, char *argument )
         int g = atoi(argument);
         if ( g > 0 && g <= 1000 )
         {
-            for ( wch=first_char;wch;wch=wch->next )
+            for ( wch=first_char; wch; wch=wch->next )
                 if ( wch->pcdata->guess == g )
                     return;
             send_to_char( "Your guess has been recorded.\n\r", ch );
@@ -307,7 +307,7 @@ void do_game( CHAR_DATA *ch, char *argument )
 
 void do_code( CHAR_DATA *ch, char *argument )
 {
-	smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_CODE, "@@R[@@WC@@gO@@dD@@gE@@R]@@N" );
     return;
 }
@@ -324,7 +324,7 @@ void do_newbie( CHAR_DATA *ch, char *argument )
         set_stun(ch,40);
         return;
     }
-	smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_NEWBIE, "@@2@@W[@@1@@yNEWBIE@@2@@W]@@N" );
     return;
 }
@@ -405,14 +405,14 @@ void do_ooc( CHAR_DATA *ch, char *argument )
         do_channels(ch,"ooc");
         return;
     }
-	smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_OOC, "@@d[@@lO@@BO@@lC@@d]@@N" );
     return;
 }
 
 void do_politics( CHAR_DATA *ch, char *argument )
 {
-	smash_swear(argument);
+    //smash_swear(argument);
     talk_channel( ch, argument, CHANNEL_POLITICS, "@@d[@@eP@@RO@@eL@@d]@@N" );
     return;
 }
@@ -435,14 +435,14 @@ void do_osay( CHAR_DATA *ch, char *argument )
     }
 
     sprintf( buf, "You say ooc'ly '%s$T%s'",
-        color_string( ch, "say" ), color_string( ch, "normal" ) );
+             color_string( ch, "say" ), color_string( ch, "normal" ) );
     act( buf, ch, NULL, argument, TO_CHAR );
     for ( ppl = map_ch[ch->x][ch->y][ch->z]; ppl != NULL; ppl = ppl->next_in_room )
     {
         if ( ppl == ch )
             continue;
         sprintf( buf, "$n says ooc'ly '%s$t%s'",
-            color_string( ppl, "say" ), color_string( ppl, "normal" ) );
+                 color_string( ppl, "say" ), color_string( ppl, "normal" ) );
 
         act( buf, ch, argument, ppl, TO_VICT );
     }
@@ -468,7 +468,7 @@ void do_say( CHAR_DATA *ch, char *argument )
     }
 
     sprintf( buf, "@@aYou say, '@@N%s$T%s@@a'@@N",
-        color_string( ch, "say" ), color_string( ch, "normal" ) );
+             color_string( ch, "say" ), color_string( ch, "normal" ) );
     act( buf, ch, NULL, argument, TO_CHAR );
     for ( ppl = map_ch[ch->x][ch->y][ch->z]; ppl != NULL; ppl = ppl->next_in_room )
     {
@@ -477,7 +477,7 @@ void do_say( CHAR_DATA *ch, char *argument )
         if ( ppl->z != ch->z )
             continue;
         sprintf( buf, "@@a$n says, '@@N%s$t%s@@a'@@N",
-            color_string( ppl, "say" ), color_string( ppl, "normal" ) );
+                 color_string( ppl, "say" ), color_string( ppl, "normal" ) );
 
         act( buf, ch, argument, ppl, TO_VICT );
     }
@@ -529,7 +529,7 @@ void do_ignore( CHAR_DATA *ch, char *argument )
         send_to_char( "You cannot ignore immortals!\n\r", ch );
         return;
     }
-    /* 
+    /*
         if (  argument[0] == '\0' )
         {
             send_to_char( "\n@@ySyntax@@g: ignore <victim>\n\n\r", ch );
@@ -562,11 +562,13 @@ void do_ignore( CHAR_DATA *ch, char *argument )
     }
 
     if ( !str_cmp(victim->name,arg[0]) ||
-        !str_cmp(victim->name,arg[1]) ||
-        !str_cmp(victim->name,arg[2]) )
-    {                                                       /* if already on the list, remove them */
+            !str_cmp(victim->name,arg[1]) ||
+            !str_cmp(victim->name,arg[2]) )
+    {   /* if already on the list, remove them */
         i=0;
-        while( str_cmp(victim->name,arg[i]) ){ i++; }
+        while( str_cmp(victim->name,arg[i]) ) {
+            i++;
+        }
         while( i < 2 )
         {
             free_string( ch->pcdata->ignore_list[i] );
@@ -579,7 +581,7 @@ void do_ignore( CHAR_DATA *ch, char *argument )
     else                                                    /* if not on list already */
     {
         if( !( !str_cmp(arg[0],"nobody") || !str_cmp(arg[1],"nobody") ||
-            !str_cmp(arg[2],"nobody") ) )
+                !str_cmp(arg[2],"nobody") ) )
         {
             send_to_char( "Too many names, remove one first.\n\r", ch );
             for ( i = 0; i <3; i++ )
@@ -670,8 +672,8 @@ void do_tell( CHAR_DATA *ch, char *argument )
 
     if (
         ( !str_cmp(victim->pcdata->ignore_list[0], ch->name) ||
-        !str_cmp(victim->pcdata->ignore_list[1], ch->name) ||
-        !str_cmp(victim->pcdata->ignore_list[2], ch->name) )   )
+          !str_cmp(victim->pcdata->ignore_list[1], ch->name) ||
+          !str_cmp(victim->pcdata->ignore_list[2], ch->name) )   )
     {
         sprintf( buf, "%s @@Ris ignoring you!!@@g\n\r", victim->name );
         send_to_char( buf, ch );
@@ -679,7 +681,7 @@ void do_tell( CHAR_DATA *ch, char *argument )
     }
 
     sprintf( buf, "@@rYou tell $N, '@@N%s$t%s@@r'@@N.", color_string( ch, "tell" ),
-        color_string( ch, "normal" ) );
+             color_string( ch, "normal" ) );
     act( buf, ch, argument, victim, TO_CHAR );
 
     if ( victim->desc )
@@ -747,10 +749,10 @@ void do_reply( CHAR_DATA *ch, char *argument )
     }
 
     sprintf( buf, "@@rYou tell $N, '@@N%s$t%s@@r'@@N.", color_string( ch, "tell" ),
-        color_string( ch, "normal" ) );
+             color_string( ch, "normal" ) );
     act( buf, ch, argument, victim, TO_CHAR );
     sprintf( buf, "@@r$n tells you, '@@N%s$t%s@@r'@@N.", color_string( victim, "tell" ),
-        color_string( victim, "normal" ) );
+             color_string( victim, "normal" ) );
     act( buf, ch, argument, victim, TO_VICT );
     victim->reply       = ch;
 
@@ -819,7 +821,7 @@ void do_quote( CHAR_DATA *ch,char *argument )
 {
     send_to_char( quote_table[number_range(1,total_quotes)-1], ch );
     return;
-}	
+}
 
 void do_quit( CHAR_DATA *ch, char *argument )
 {
@@ -873,7 +875,7 @@ void do_quit( CHAR_DATA *ch, char *argument )
                 }
             }
         }
-        for ( bld = ch->first_building;bld;bld = bld->next_owned )
+        for ( bld = ch->first_building; bld; bld = bld->next_owned )
         {
             if ( bld->value[8] != 0 )
             {
@@ -910,9 +912,9 @@ void do_quit( CHAR_DATA *ch, char *argument )
         other_logins_next = other_logins->next;
 
         if (  (other_logins != d )
-            && ( other_logins->character != NULL )
-            && ( other_logins->connected != CON_RECONNECTING )
-            && ( !str_cmp( other_logins->character->name, ch->name ) ) )
+                && ( other_logins->character != NULL )
+                && ( other_logins->connected != CON_RECONNECTING )
+                && ( !str_cmp( other_logins->character->name, ch->name ) ) )
         {
             if ( other_logins->connected == CON_GET_OLD_PASSWORD )
             {
@@ -932,7 +934,7 @@ void do_quit( CHAR_DATA *ch, char *argument )
         VEHICLE_DATA *vhc;
         VEHICLE_DATA *vhc_next;
 
-        for ( obj = first_obj;obj;obj = obj_next )
+        for ( obj = first_obj; obj; obj = obj_next )
         {
             obj_next = obj->next;
             if ( !str_cmp(obj->owner,ch->name) || (obj->in_building && !str_cmp(obj->in_building->owned,ch->name)))
@@ -940,7 +942,7 @@ void do_quit( CHAR_DATA *ch, char *argument )
                     if ( obj->carried_by == NULL && obj->item_type != ITEM_FLAG && obj->item_type != ITEM_BIOTUNNEL )
                         extract_obj(obj);
         }
-        for ( vhc = first_vehicle;vhc;vhc = vhc_next )
+        for ( vhc = first_vehicle; vhc; vhc = vhc_next )
         {
             vhc_next = vhc->next;
             if ( vhc->in_building && !str_cmp(vhc->in_building->owned,ch->name) && ((vhc->in_building->type != BUILDING_SPACE_CENTER && vhc->in_building->type != BUILDING_GARAGE && vhc->in_building->type != BUILDING_AIRFIELD ) || vhc != map_vhc[vhc->x][vhc->y][vhc->z]))
@@ -1051,9 +1053,9 @@ void stop_follower( CHAR_DATA *ch )
 
     if ( can_see( ch->leader, ch ) )
         act( "$n stops following you.",
-            ch, NULL, ch->leader, TO_VICT );
+             ch, NULL, ch->leader, TO_VICT );
     act( "You stop following $N.",
-        ch, NULL, ch->leader, TO_CHAR );
+         ch, NULL, ch->leader, TO_CHAR );
     ch->leader = NULL;
     return;
 }

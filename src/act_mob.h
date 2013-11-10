@@ -69,7 +69,7 @@ void gain_level ( CHAR_DATA *ch );
 int find_spell ( CHAR_DATA *ch, int type );
 void hunt_move args(( CHAR_DATA *mob, sh_int dir ));
 sh_int h_find_dir args(( ROOM_INDEX_DATA *room, ROOM_INDEX_DATA *target,
-int h_flags ));
+                         int h_flags ));
 void mob_group_follow ( CHAR_DATA *ch, CHAR_DATA *target );
 void get_mob_group ( CHAR_DATA *ch, CHAR_DATA *target );
 bool ready_heal_room ( CHAR_DATA *ch );

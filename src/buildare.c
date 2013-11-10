@@ -68,7 +68,7 @@ extern int                     sAllocPerm;
 extern int                     fBootDb;
 
 /* Some build.c functions : */
-void  build_strdup(char * * dest,char * src,bool freesrc,CHAR_DATA * ch);
+void  build_strdup(char ** dest,char * src,bool freesrc,CHAR_DATA * ch);
 char * build_simpstrdup(char *);
 ROOM_INDEX_DATA *  new_room( AREA_DATA * pArea, sh_int vnum, sh_int sector );
 
@@ -79,9 +79,9 @@ int build_canread(AREA_DATA * Area,CHAR_DATA * ch,int showerror)
 
     if (Area->can_read != NULL)
         if (  is_name("all", Area->can_read)
-        || is_name(ch->name, Area->can_read)
-        || (is_name("gods", Area->can_read) && IS_IMMORTAL(ch))
-        )
+                || is_name(ch->name, Area->can_read)
+                || (is_name("gods", Area->can_read) && IS_IMMORTAL(ch))
+           )
             return 1;
 
     if (showerror==AREA_SHOWERROR)
@@ -97,9 +97,9 @@ int build_canwrite(AREA_DATA * Area,CHAR_DATA * ch,int showerror)
 
     if (Area->can_write != NULL)
         if (  is_name("all", Area->can_write)
-        || is_name(ch->name, Area->can_write)
-        || (is_name("gods", Area->can_write) && IS_IMMORTAL(ch))
-        )
+                || is_name(ch->name, Area->can_write)
+                || (is_name("gods", Area->can_write) && IS_IMMORTAL(ch))
+           )
             return 1;
 
     if (showerror==AREA_SHOWERROR)
@@ -277,8 +277,7 @@ void build_setarea( CHAR_DATA *ch, char * argument)
                 pArea->can_write=str_dup(buffer);
             }
         }
-        else
-        if (is_name(argn, pArea->can_write))
+        else if (is_name(argn, pArea->can_write))
         {
             buffer[0]='\0';
 
@@ -365,14 +364,14 @@ void build_findarea( CHAR_DATA *ch, char * argument)
     {
         nMatch++;
         if (  ( fAll || is_name( arg, pArea->name ) )
-            && build_canread(pArea,ch,0) )
+                && build_canread(pArea,ch,0) )
         {
             found = TRUE;
             if (pArea->first_area_room != NULL)
                 pRoomIndex=pArea->first_area_room->data;
             sprintf( buf, "[%5d] %s\n\r",
-                pArea->first_area_room !=NULL ? pRoomIndex->vnum : 0,
-                pArea->name );
+                     pArea->first_area_room !=NULL ? pRoomIndex->vnum : 0,
+                     pArea->name );
             safe_strcat( MSL, buf1, buf );
         }
     }
@@ -415,13 +414,13 @@ void build_showarea( CHAR_DATA *ch, char * argument)
     safe_strcat( MSL, buf, buffer );
 
     sprintf(buffer,"Owner: %s\n\rCan Read: %s\n\rCan Write: %s\n\r",
-        pArea->owner,
-        pArea->can_read,
-        pArea->can_write);
+            pArea->owner,
+            pArea->can_read,
+            pArea->can_write);
     safe_strcat( MSL, buf,buffer);
 
     sprintf(buffer,"Min Vnum: %5d    Max Vnum: %5d\n\r",
-        pArea->min_vnum, pArea->max_vnum );
+            pArea->min_vnum, pArea->max_vnum );
     safe_strcat( MSL, buf,buffer);
 
     send_to_char(buf,ch);
@@ -441,7 +440,7 @@ void build_arealist( CHAR_DATA *ch, char *argument )
     for ( pArea = first_area; pArea != NULL; pArea = pArea->next )
     {
         sprintf( buf, "%12s [%5d to %5d] %s [%s]\n\r", capitalize( pArea->owner ),
-            pArea->min_vnum, pArea->max_vnum, pArea->name, pArea->filename );
+                 pArea->min_vnum, pArea->max_vnum, pArea->name, pArea->filename );
         stop_counter++;
         if (stop_counter > 40 )
         {

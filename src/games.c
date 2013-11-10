@@ -75,7 +75,7 @@ void do_darts( CHAR_DATA *ch, char *argument )
         send_to_char( "You must be in a hunting lodge to play.\n\r", ch );
         return;
     }
-    for ( board = map_obj[ch->x][ch->y];board != NULL; board = board->next_in_room )
+    for ( board = map_obj[ch->x][ch->y]; board != NULL; board = board->next_in_room )
     {
         if ( board->z == bld->z && board->item_type == ITEM_DART_BOARD )
         {
@@ -178,7 +178,7 @@ void do_where ( CHAR_DATA *ch, char *argument )
     }
     if ( ch->z == Z_SPACE && ch->in_vehicle && IS_SET(ch->in_vehicle->flags,VEHICLE_SPACE_SCANNER) )
         world = FALSE;
-    for ( wch = first_char;wch;wch = wch->next )
+    for ( wch = first_char; wch; wch = wch->next )
     {
         if ( !world && !paintball(wch) && !sysdata.killfest )
             continue;
@@ -215,7 +215,7 @@ void do_nukem( CHAR_DATA *ch, char *argument )
     bool in = FALSE;
     bool start = FALSE;
 
-    for ( wch = map_ch[2][2][Z_PAINTBALL];wch;wch = wch->next_in_room )
+    for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
         if ( wch->z != Z_PAINTBALL )
             continue;
@@ -240,7 +240,7 @@ void do_nukem( CHAR_DATA *ch, char *argument )
         }
         sprintf( buf, "%s has left the Nukem Arena.", ch->name );
         info(buf,0);
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             if ( bld->type != BUILDING_HQ )
                 continue;
@@ -302,7 +302,7 @@ void game_interpret( CHAR_DATA *ch, char *argument )
     int cmd;
     bool found;
 
-    /* 
+    /*
      * Strip leading spaces.
      */
     while ( isspace(*argument) )
@@ -331,9 +331,9 @@ void game_interpret( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; game_cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( command[0] == game_cmd_table[cmd].name[0]
-            &&   !str_prefix( command, game_cmd_table[cmd].name )
-            &&   (game_cmd_table[cmd].position == ch->position || game_cmd_table[cmd].position == 0)
-            &&   get_trust(ch) >= game_cmd_table[cmd].level )
+                &&   !str_prefix( command, game_cmd_table[cmd].name )
+                &&   (game_cmd_table[cmd].position == ch->position || game_cmd_table[cmd].position == 0)
+                &&   get_trust(ch) >= game_cmd_table[cmd].level )
         {
             found = TRUE;
             break;
@@ -353,8 +353,8 @@ void game_interpret( CHAR_DATA *ch, char *argument )
         strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX" );
 
     if ( ( IS_SET(ch->act, PLR_LOG) )
-        ||   fLogAll
-        ||  game_cmd_table[cmd].log == LOG_ALWAYS )
+            ||   fLogAll
+            ||  game_cmd_table[cmd].log == LOG_ALWAYS )
     {
         sprintf( log_buf, "Log %s: %s", ch->name, logline );
         log_string( log_buf );
@@ -410,7 +410,7 @@ void do_nuke_start( CHAR_DATA *ch, char *argument)
     bool start = FALSE;
     char buf[MSL];
 
-    for ( wch = map_ch[2][2][Z_PAINTBALL];wch;wch = wch->next_in_room )
+    for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
         if ( wch->z != Z_PAINTBALL )
             continue;
@@ -491,7 +491,7 @@ void nuke_blow(CHAR_DATA *ch)
 
     sprintf(buf,"@@a%s @@dgot @@eNUKEM'd@@d!", ch->name );
     info(buf,0);
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         if ( bld->type != BUILDING_HQ )
             continue;
@@ -507,7 +507,7 @@ void nuke_blow(CHAR_DATA *ch)
         do_look(ch,"");
     }
 
-    for ( wch = map_ch[2][2][Z_PAINTBALL];wch;wch = wch->next_in_room )
+    for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
         if ( wch->z != Z_PAINTBALL )
             continue;
@@ -520,7 +520,7 @@ void nuke_blow(CHAR_DATA *ch)
         sprintf(buf,"@@a%s@@d got everyone @@eNUKEM'd@@d, and is the winner!", last->name );
         last->pcdata->nukemwins++;
         found = FALSE;
-        for ( bld = first_building;bld;bld = bld->next )
+        for ( bld = first_building; bld; bld = bld->next )
         {
             if ( bld->type != BUILDING_HQ )
                 continue;

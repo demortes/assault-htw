@@ -117,14 +117,14 @@ static long dump(void)
              */
 
             if (!str_cmp(p->buf, "<%hhp %mm %vmv> ") ||
-                !str_cmp(p->buf, "$"))
+                    !str_cmp(p->buf, "$"))
                 continue;
 
             fprintf(dumpf, "usage %2d/%2d, caller %s, string %s\n",
-                p->ref,
-                p->usage,
-                p->caller,
-                p->buf);
+                    p->ref,
+                    p->usage,
+                    p->caller,
+                    p->buf);
             count += abs(p->usage - p->ref);
         }
         dump_ptr[0]=dump_ptr[1];
@@ -245,7 +245,7 @@ static void walk_char_data(CHAR_DATA * ch)
     touch(ch->prompt);
     touch(ch->old_prompt);
     touch(ch->last_tell);
-    for ( i = 0;i < 5;i++ )
+    for ( i = 0; i < 5; i++ )
     {
         touch( ch->alias[i]);
         touch( ch->alias_command[i]);
@@ -459,7 +459,7 @@ void walk_disablelist(void)
 void walk_alliances(void)
 {
     int i;
-    for ( i=0;i<MAX_ALLIANCE;i++ )
+    for ( i=0; i<MAX_ALLIANCE; i++ )
     {
         if ( alliance_table[i].name == NULL )
             break;
@@ -472,19 +472,19 @@ void walk_alliances(void)
 void walk_scores(void)
 {
     int i;
-    for ( i=0;i<100;i++ )
+    for ( i=0; i<100; i++ )
     {
         touch( score_table[i].name );
         touch( score_table[i].killedby );
     }
-    for ( i=0;i<30;i++ )
+    for ( i=0; i<30; i++ )
         touch( rank_table[i].name );
 }
 
 void walk_multiplay(void)
 {
     int i;
-    for ( i=0;i<30;i++ )
+    for ( i=0; i<30; i++ )
     {
         touch(multiplay_table[i].name);
         touch(multiplay_table[i].host);
@@ -494,7 +494,7 @@ void walk_multiplay(void)
 void walk_build_table(void)
 {
     int i;
-    for ( i=0;i<MAX_BUILDING;i++ )
+    for ( i=0; i<MAX_BUILDING; i++ )
     {
         touch(build_table[i].name);
         touch(build_table[i].desc);
@@ -506,7 +506,7 @@ void walk_build_table(void)
 void walk_buildings(void)
 {
     BUILDING_DATA *bld;
-    for ( bld = first_building;bld;bld = bld->next )
+    for ( bld = first_building; bld; bld = bld->next )
     {
         touch( bld->owned );
         touch( bld->name );
@@ -517,7 +517,7 @@ void walk_buildings(void)
 void walk_vehicles(void)
 {
     VEHICLE_DATA *vhc;
-    for ( vhc = first_vehicle;vhc;vhc = vhc->next )
+    for ( vhc = first_vehicle; vhc; vhc = vhc->next )
     {
         touch( vhc->name );
         touch( vhc->desc );
@@ -554,7 +554,7 @@ void do_scheck(CHAR_DATA * ch, char *argument)
     walk_web ();
 
     sprintf(buf, "%ld leaks dumped to leaks.dmp\n\r",
-        dump());
+            dump());
     send_to_char(buf, ch);
     disable_timer_abort = FALSE;
 }

@@ -129,7 +129,7 @@ void init_string_space()
 
     ssm_buf_free = ssm_buf_head;
     temp_string_hash = (TempHash **) calloc(sizeof(TempHash *),
-        MAX_KEY_HASH);
+                                            MAX_KEY_HASH);
 }
 
 int defrag_heap()
@@ -224,7 +224,7 @@ char *_str_dup(const char *str, const char *caller)
         if (ptr->usage <= 0)
         {
             bugf("str_dup: invalid string from %s: %20.20s",
-                caller, str);
+                 caller, str);
             ptr->usage=0;                                   /* make it valid again */
         }
 
@@ -234,7 +234,7 @@ char *_str_dup(const char *str, const char *caller)
 
     rlen = len = (int) strlen(str) + 1;
 
-    /* 
+    /*
      * Round up to machine dependant address size.
      * Don't remove this, because when the BufEntry struct is overlaid
      * the struct must be aligned correctly.
@@ -243,7 +243,7 @@ char *_str_dup(const char *str, const char *caller)
     if ((len + HEADER_SIZE) & addrSizeMask)
         len += addrTypeSize - ((len + HEADER_SIZE) & addrSizeMask);
 
-    RETRY:
+RETRY:
     for (ptr = ssm_buf_free; ptr; ptr = ptr->next)
     {
         ssm_recent_loops++;
@@ -346,7 +346,7 @@ void _free_string(char *str, const char *caller)
         else if (ptr->usage < 0)
         {
             bugf("SSM: free_string: multiple free/invalid from %s: %20.20s",
-                caller, (char *)&ptr->buf[0]);
+                 caller, (char *)&ptr->buf[0]);
             return;
         }
 
@@ -371,13 +371,13 @@ void _free_string(char *str, const char *caller)
                     temp_string_hash[ihash] = ptr->next;
                 else
                     for (walk = temp_string_hash[ihash]; walk; walk = walk->next)
-                {
-                    if (walk->next == ptr)
                     {
-                        walk->next = ptr->next;
-                        break;
+                        if (walk->next == ptr)
+                        {
+                            walk->next = ptr->next;
+                            break;
+                        }
                     }
-                }
 
                 free(ptr);
                 break;
@@ -415,46 +415,46 @@ char *_fread_string(FILE * fp, const char *caller)
     {
         switch (*ptr = getc(fp))
         {
-            default:
-                ptr++;
-                break;
+        default:
+            ptr++;
+            break;
 
-            case EOF:
-                bugf("Fread_string: EOF");
-                raise(SIGSEGV);
-                break;
+        case EOF:
+            bugf("Fread_string: EOF");
+            raise(SIGSEGV);
+            break;
 
-            case '\n':
-                ptr++;
-                *ptr++ = '\r';
-                break;
+        case '\n':
+            ptr++;
+            *ptr++ = '\r';
+            break;
 
-            case '\r':
-                break;
+        case '\r':
+            break;
 
-            case '~':
-                *ptr = '\0';
-                if (fBootDb)
-                {
-                    int len = ptr - buf;
+        case '~':
+            *ptr = '\0';
+            if (fBootDb)
+            {
+                int len = ptr - buf;
 
-                    ptr = temp_hash_find(buf, len);
-                    if (ptr)
-                        return _str_dup(ptr, caller);
+                ptr = temp_hash_find(buf, len);
+                if (ptr)
+                    return _str_dup(ptr, caller);
 
-                    ptr = _str_dup(buf, caller);
-                    temp_hash_add(ptr, len);
-                    return ptr;
-                }
-
-                ptr=_str_dup(buf, caller);
-                tail_chain();
+                ptr = _str_dup(buf, caller);
+                temp_hash_add(ptr, len);
                 return ptr;
+            }
+
+            ptr=_str_dup(buf, caller);
+            tail_chain();
+            return ptr;
         }
     }
 }
 
-/* 
+/*
  * This is a modified version of fread_string:
  * It reads till a '\n' or a '\r' instead of a '~' (like fread_string).
  * ROM uses this function to read in the socials.
@@ -479,32 +479,32 @@ char *_fread_string_eol(FILE * fp, const char *caller)
     {
         switch (*ptr = getc(fp))
         {
-            default:
-                ptr++;
-                break;
+        default:
+            ptr++;
+            break;
 
-            case EOF:
-                bugf("Fread_string: EOF");
-                raise(SIGSEGV);
-                break;
+        case EOF:
+            bugf("Fread_string: EOF");
+            raise(SIGSEGV);
+            break;
 
-            case '\n':
-            case '\r':
-                *ptr = '\0';
-                if (fBootDb)
-                {
-                    int len = ptr - buf;
+        case '\n':
+        case '\r':
+            *ptr = '\0';
+            if (fBootDb)
+            {
+                int len = ptr - buf;
 
-                    ptr = temp_hash_find(buf, len);
-                    if (ptr)
-                        return _str_dup(ptr, caller);
+                ptr = temp_hash_find(buf, len);
+                if (ptr)
+                    return _str_dup(ptr, caller);
 
-                    ptr = _str_dup(buf, caller);
-                    temp_hash_add(ptr, len);
-                    return ptr;
-                }
+                ptr = _str_dup(buf, caller);
+                temp_hash_add(ptr, len);
+                return ptr;
+            }
 
-                return _str_dup(buf, caller);
+            return _str_dup(buf, caller);
         }
     }
 }
@@ -534,26 +534,26 @@ void temp_fread_string(FILE * fp, char *buf)
     {
         switch (*ptr = getc(fp))
         {
-            default:
-                ptr++;
-                break;
+        default:
+            ptr++;
+            break;
 
-            case EOF:
-                bugf("Fread_string: EOF");
-                raise(SIGSEGV);
-                break;
+        case EOF:
+            bugf("Fread_string: EOF");
+            raise(SIGSEGV);
+            break;
 
-            case '\n':
-                ptr++;
-                *ptr++ = '\r';
-                break;
+        case '\n':
+            ptr++;
+            *ptr++ = '\r';
+            break;
 
-            case '\r':
-                break;
+        case '\r':
+            break;
 
-            case '~':
-                *ptr = '\0';
-                return;
+        case '~':
+            *ptr = '\0';
+            return;
         }
     }
 }

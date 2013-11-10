@@ -88,7 +88,7 @@ char *                  string_hash             [MAX_KEY_HASH];
 
 AREA_DATA *             area_used[MAX_AREAS];
 AREA_DATA *     area_load;
-/* 
+/*
  * replaced for SSM
  */
 
@@ -187,10 +187,10 @@ void    init_dealer     args( ( void ) );
         previous_bug=1; \
     }
 
-    /*
-     * Big mama top level function.
-     */
-    void boot_db( bool fCopyOver )
+/*
+ * Big mama top level function.
+ */
+void boot_db( bool fCopyOver )
 {
     int a;
 
@@ -198,7 +198,7 @@ void    init_dealer     args( ( void ) );
      * Init some data space stuff.
      */
 
-    #if 0
+#if 0
     {
         if ( ( string_space = calloc( 1, MAX_STRING ) ) == NULL )
         {
@@ -208,7 +208,7 @@ void    init_dealer     args( ( void ) );
         top_string      = string_space;
         fBootDb         = TRUE;
     }
-    #endif
+#endif
 
     init_string_space();
     fBootDb=TRUE;
@@ -229,7 +229,7 @@ void    init_dealer     args( ( void ) );
         long lhour, lday, lmonth;
 
         lhour           = (current_time - 650336715)
-            / (PULSE_TICK / PULSE_PER_SECOND);
+                          / (PULSE_TICK / PULSE_PER_SECOND);
         time_info.hour  = lhour  % 24;
         lday            = lhour  / 24;
         time_info.day   = lday   % 35;
@@ -321,7 +321,7 @@ void    init_dealer     args( ( void ) );
     {
         int i;
         extern OBJ_DATA *quest_obj[MAX_QUEST_ITEMS];
-        for ( i=0;i<MAX_QUEST_ITEMS;i++ )
+        for ( i=0; i<MAX_QUEST_ITEMS; i++ )
             quest_obj[i] = NULL;
         vehicle_weapon = create_object( get_obj_index(OBJ_VNUM_ACID_SPRAY), 0 );
         vehicle_weapon->x = 0;
@@ -412,7 +412,7 @@ void    init_dealer     args( ( void ) );
         log_f( "Loading banned sites." );
         load_bans( );
         log_f( "Loading Relevel Info." );
-	do_loadrelevel( );
+        do_loadrelevel( );
 
         log_f( "Loading imm brands." );
         load_brands( );
@@ -475,34 +475,34 @@ void load_area( FILE *fp )
 
         switch (letter)
         {
-            case 'O':
-                pArea->owner = fread_string(fp);
-                break;
-            case 'Q':
-                area_revision = fread_number(fp);
-                break;
-            case 'R':
-                free_string(pArea->can_read);
-                pArea->can_read  = fread_string(fp);
-                break;
-            case 'W':
-                free_string(pArea->can_write);
-                pArea->can_write = fread_string(fp);
-                break;
-            case 'X':
-                pArea->offset    = fread_number(fp);
-                break;
-            case 'N':
-                pArea->area_num  = fread_number(fp);
-                break;
-            case 'K':
-                free_string(pArea->keyword);
-                pArea->keyword = fread_string(fp);
-                break;
-            case 'V':
-                pArea->min_vnum  = fread_number(fp);
-                pArea->max_vnum  = fread_number(fp);
-                break;
+        case 'O':
+            pArea->owner = fread_string(fp);
+            break;
+        case 'Q':
+            area_revision = fread_number(fp);
+            break;
+        case 'R':
+            free_string(pArea->can_read);
+            pArea->can_read  = fread_string(fp);
+            break;
+        case 'W':
+            free_string(pArea->can_write);
+            pArea->can_write = fread_string(fp);
+            break;
+        case 'X':
+            pArea->offset    = fread_number(fp);
+            break;
+        case 'N':
+            pArea->area_num  = fread_number(fp);
+            break;
+        case 'K':
+            free_string(pArea->keyword);
+            pArea->keyword = fread_string(fp);
+            break;
+        case 'V':
+            pArea->min_vnum  = fread_number(fp);
+            pArea->max_vnum  = fread_number(fp);
+            break;
 
         }
     }
@@ -547,7 +547,7 @@ void load_helps( FILE *fp )
         GET_FREE(pList, build_free);
         pList->data     = pHelp;
         LINK(pList, area_load->first_area_help_text,
-            area_load->last_area_help_text, next, prev);
+             area_load->last_area_help_text, next, prev);
 
         top_help++;
     }
@@ -713,7 +713,7 @@ void load_rooms( FILE *fp )
         GET_FREE(pList, build_free);
         pList->data     = pRoomIndex;
         LINK(pList, area_load->first_area_room, area_load->last_area_room,
-            next, prev);
+             next, prev);
 
         top_room++;
     }
@@ -732,15 +732,15 @@ void load_specials( FILE *fp )
 
         switch ( letter = fread_letter( fp ) )
         {
-            default:
-                bug( "Load_specials: letter '%c' not *, M, or S.", letter );
-                hang( "Loading Specials in db.c" );
+        default:
+            bug( "Load_specials: letter '%c' not *, M, or S.", letter );
+            hang( "Loading Specials in db.c" );
 
-            case 'S':
-                return;
+        case 'S':
+            return;
 
-            case '*':
-                break;
+        case '*':
+            break;
         }
         /* NB. Comments will not be saved when using areasave - MAG. */
         fread_to_eol( fp );
@@ -837,46 +837,46 @@ OBJ_DATA *create_object( OBJ_INDEX_DATA *pObjIndex, int level )
      */
     switch ( obj->item_type )
     {
-        default:
-            bugf( "create_object: vnum %d bad type %d.", pObjIndex->vnum,
-                obj->item_type );
-            break;
-        case ITEM_LIGHT:
-        case ITEM_DRONE:
-        case ITEM_IMPLANT:
-        case ITEM_INSTALLATION:
-        case ITEM_BOARD:
-        case ITEM_MATERIAL:
-        case ITEM_AMMO:
-        case ITEM_WEAPON:
-        case ITEM_BOMB:
-        case ITEM_ARMOR:
-        case ITEM_TELEPORTER:
-        case ITEM_BLUEPRINT:
-        case ITEM_SUIT:
-        case ITEM_MEDPACK:
-        case ITEM_TOKEN:
-        case ITEM_FLAG:
-        case ITEM_DART_BOARD:
-        case ITEM_ELEMENT:
-        case ITEM_CONTAINER:
-        case ITEM_WEAPON_UP:
-        case ITEM_PIECE:
-        case ITEM_COMPUTER:
-        case ITEM_LOCATOR:
-        case ITEM_SKILL_UP:
-        case ITEM_PART:
-        case ITEM_DISK:
-        case ITEM_TRASH:
-        case ITEM_ASTEROID:
-        case ITEM_BACKUP_DISK:
-        case ITEM_VEHICLE_UP:
-        case ITEM_TOOLKIT:
-        case ITEM_SCAFFOLD:
-        case ITEM_ORE:
-        case ITEM_BIOTUNNEL:
-        case ITEM_BATTERY:
-            break;
+    default:
+        bugf( "create_object: vnum %d bad type %d.", pObjIndex->vnum,
+              obj->item_type );
+        break;
+    case ITEM_LIGHT:
+    case ITEM_DRONE:
+    case ITEM_IMPLANT:
+    case ITEM_INSTALLATION:
+    case ITEM_BOARD:
+    case ITEM_MATERIAL:
+    case ITEM_AMMO:
+    case ITEM_WEAPON:
+    case ITEM_BOMB:
+    case ITEM_ARMOR:
+    case ITEM_TELEPORTER:
+    case ITEM_BLUEPRINT:
+    case ITEM_SUIT:
+    case ITEM_MEDPACK:
+    case ITEM_TOKEN:
+    case ITEM_FLAG:
+    case ITEM_DART_BOARD:
+    case ITEM_ELEMENT:
+    case ITEM_CONTAINER:
+    case ITEM_WEAPON_UP:
+    case ITEM_PIECE:
+    case ITEM_COMPUTER:
+    case ITEM_LOCATOR:
+    case ITEM_SKILL_UP:
+    case ITEM_PART:
+    case ITEM_DISK:
+    case ITEM_TRASH:
+    case ITEM_ASTEROID:
+    case ITEM_BACKUP_DISK:
+    case ITEM_VEHICLE_UP:
+    case ITEM_TOOLKIT:
+    case ITEM_SCAFFOLD:
+    case ITEM_ORE:
+    case ITEM_BIOTUNNEL:
+    case ITEM_BATTERY:
+        break;
 
     }
 
@@ -958,12 +958,12 @@ void free_char( CHAR_DATA *ch )
         QUEUE_DATA *q_next;
         PAGER_DATA *p;
         PAGER_DATA *p_next;
-        for ( p=ch->pcdata->pager;p;p=p_next )
+        for ( p=ch->pcdata->pager; p; p=p_next )
         {
             p_next = p->next;
             extract_pager(p);
         }
-        for ( q=ch->pcdata->queue;q;q=q_next )
+        for ( q=ch->pcdata->queue; q; q=q_next )
         {
             q_next = q->next;
             extract_queue(q);
@@ -989,8 +989,8 @@ OBJ_INDEX_DATA *get_obj_index( int vnum )
     OBJ_INDEX_DATA *pObjIndex;
 
     for ( pObjIndex  = obj_index_hash[vnum % MAX_KEY_HASH];
-        pObjIndex != NULL;
-        pObjIndex  = pObjIndex->next )
+            pObjIndex != NULL;
+            pObjIndex  = pObjIndex->next )
     {
         if ( pObjIndex == NULL )
             continue;
@@ -1016,8 +1016,8 @@ ROOM_INDEX_DATA *get_room_index( int vnum )
     ROOM_INDEX_DATA *pRoomIndex;
 
     for ( pRoomIndex  = room_index_hash[vnum % MAX_KEY_HASH];
-        pRoomIndex != NULL;
-        pRoomIndex  = pRoomIndex->next )
+            pRoomIndex != NULL;
+            pRoomIndex  = pRoomIndex->next )
     {
         if ( pRoomIndex->vnum == vnum )
             return pRoomIndex;
@@ -1204,7 +1204,7 @@ char * fsave_to_eol( FILE *fp )
 
     }
     while (a < MAX_INPUT_LENGTH && string[a-1] != '\n' &&
-        string[a-1]!='\r' && string[a-1] != EOF);
+            string[a-1]!='\r' && string[a-1] != EOF);
 
     if (string[a-1]==EOF)
     {
@@ -1332,10 +1332,10 @@ static struct text_data *tdf_free = NULL;
 char *str_dup( const char *str )
 {
     char *str_new;
-    #ifdef STRING_FREELIST
+#ifdef STRING_FREELIST
     sh_int size;
     int len;
-    #endif
+#endif
 
     if ( !str || !*str )
         return &str_empty[0];
@@ -1343,7 +1343,7 @@ char *str_dup( const char *str )
     if ( str >= string_space && str < top_string )
         return (char *) str;
 
-    #ifdef STRING_FREELIST
+#ifdef STRING_FREELIST
     len = strlen(str)+1;
     for ( size = 0; size < MAX_SIZE_LIST; size++ )
         if ( len < sizelist[size] )
@@ -1364,9 +1364,9 @@ char *str_dup( const char *str )
     }
     else
         str_new = getmem( len );
-    #else
+#else
     str_new = getmem( strlen(str) + 1 );
-    #endif
+#endif
     strcpy( str_new, str );
     return str_new;
 }
@@ -1378,17 +1378,17 @@ char *str_dup( const char *str )
  */
 void free_string( char *pstr )
 {
-    #ifdef STRING_FREELIST
+#ifdef STRING_FREELIST
     sh_int size;
     int len;
-    #endif
+#endif
 
     if ( pstr == NULL
-        ||   pstr == &str_empty[0]
-        || ( pstr >= string_space && pstr < top_string ) )
+            ||   pstr == &str_empty[0]
+            || ( pstr >= string_space && pstr < top_string ) )
         return;
 
-    #ifdef STRING_FREELIST
+#ifdef STRING_FREELIST
     len = strlen(pstr)+1;
     for ( size = 0; size < MAX_SIZE_LIST; size++ )
         if ( len < sizelist[size] )
@@ -1410,9 +1410,9 @@ void free_string( char *pstr )
     }
     else
         dispose( pstr, len );
-    #else
+#else
     dispose( pstr, strlen(pstr)+1 );
-    #endif
+#endif
     return;
 }
 #endif
@@ -1428,7 +1428,7 @@ void perm_update( )
     strtime[strlen(strtime)-1] = '\0';
 
     fprintf( po, "%s :: Perms   %5d blocks  of %7d bytes.\n\r",
-        strtime, nAllocPerm, sAllocPerm );
+             strtime, nAllocPerm, sAllocPerm );
     fclose( po );
     return;
 }
@@ -1468,44 +1468,52 @@ void do_memory( CHAR_DATA *ch, char *argument )
         {
             mem_log=TRUE;
             send_to_char("Memory logging is now ON.. remember to turn it off!\n\r",
-                ch);
+                         ch);
             log_f("%s turned on memory logging", ch->name);
             return;
         }
     }
 
-    sprintf( buf, "ExDes      %5d\n\r", top_ed        ); send_to_char( buf, ch );
-    sprintf( buf, "Helps      %5d\n\r", top_help      ); send_to_char( buf, ch );
-    sprintf( buf, "Objs       %5d\n\r", top_obj_index ); send_to_char( buf, ch );
-    sprintf( buf, "Objects:   %5d\n\r", obj_count ); send_to_char( buf, ch );
-    sprintf( buf, "Vehicles:  %5d\n\r", vehicle_count ); send_to_char( buf, ch );
-    sprintf( buf, "Buildings: %ld (%d active)\n\r", building_count,active_building_count ); send_to_char( buf, ch );
-    sprintf( buf, "Rooms:     %5d\n\r", top_room      ); send_to_char( buf, ch );
-    sprintf( buf, "CPU Time:  %5d\n\r", usage_now      ); send_to_char( buf, ch );
+    sprintf( buf, "ExDes      %5d\n\r", top_ed        );
+    send_to_char( buf, ch );
+    sprintf( buf, "Helps      %5d\n\r", top_help      );
+    send_to_char( buf, ch );
+    sprintf( buf, "Objs       %5d\n\r", top_obj_index );
+    send_to_char( buf, ch );
+    sprintf( buf, "Objects:   %5d\n\r", obj_count );
+    send_to_char( buf, ch );
+    sprintf( buf, "Vehicles:  %5d\n\r", vehicle_count );
+    send_to_char( buf, ch );
+    sprintf( buf, "Buildings: %ld (%d active)\n\r", building_count,active_building_count );
+    send_to_char( buf, ch );
+    sprintf( buf, "Rooms:     %5d\n\r", top_room      );
+    send_to_char( buf, ch );
+    sprintf( buf, "CPU Time:  %5d\n\r", usage_now      );
+    send_to_char( buf, ch );
 
-    #if 0
+#if 0
     sprintf( buf, "Strings %5d strings of %7d bytes (max %d).\n\r",
-        nAllocString, sAllocString, MAX_STRING );
-    #endif
+             nAllocString, sAllocString, MAX_STRING );
+#endif
 
     sprintf(buf, "Shared String Info:\n\r");
     send_to_char(buf, ch);
     sprintf(buf, "Strings           %5ld strings of %7ld bytes (max %ld).\n\r",
-        nAllocString, sAllocString, MAX_STRING);
+            nAllocString, sAllocString, MAX_STRING);
     send_to_char(buf, ch);
     sprintf(buf, "Overflow Strings  %5ld strings of %7ld bytes.\n\r",
-        nOverFlowString, sOverFlowString);
+            nOverFlowString, sOverFlowString);
     send_to_char(buf, ch);
     if (Full)
     {
         send_to_char("Shared String Heap is full, increase MAX_STRING.\n\r", ch);
         sprintf(buf, "Overflow high-water-mark is %ld bytes.\n\r",
-            hwOverFlow);
+                hwOverFlow);
         send_to_char(buf, ch);
     }
 
     sprintf( buf, "Perms   %5d blocks  of %7d bytes.\n\r",
-        nAllocPerm, sAllocPerm );
+             nAllocPerm, sAllocPerm );
     send_to_char( buf, ch );
     return;
 }
@@ -1536,8 +1544,12 @@ int number_fuzzy( int number )
 {
     switch ( number_bits( 2 ) )
     {
-        case 0:  number -= 1; break;
-        case 3:  number += 1; break;
+    case 0:
+        number -= 1;
+        break;
+    case 3:
+        number += 1;
+        break;
     }
 
     return UMAX( 1, number );
@@ -1617,7 +1629,7 @@ void init_mm( )
     for ( iState = 2; iState < 55; iState++ )
     {
         piState[iState] = (piState[iState-1] + piState[iState-2])
-            & ((1 << 30) - 1);
+                          & ((1 << 30) - 1);
     }
     return;
 }
@@ -1633,7 +1645,7 @@ int number_mm( void )
     iState1             = piState[-2];
     iState2             = piState[-1];
     iRand               = (piState[iState1] + piState[iState2])
-        & ((1 << 30) - 1);
+                          & ((1 << 30) - 1);
     piState[iState1]    = iRand;
     if ( ++iState1 == 55 )
         iState1 = 0;
@@ -1654,8 +1666,10 @@ int dice( int number, int size )
 
     switch ( size )
     {
-        case 0: return 0;
-        case 1: return number;
+    case 0:
+        return 0;
+    case 1:
+        return number;
     }
 
     for ( idice = 0, sum = 0; idice < number; idice++ )
@@ -1691,7 +1705,7 @@ void append_file( CHAR_DATA *ch, char *file, char *str )
     else
     {
         fprintf( fp, "%15s: %s\n",
-            ch->name, str );
+                 ch->name, str );
         fclose( fp );
     }
 
@@ -1866,7 +1880,7 @@ void insert_area (AREA_DATA *pArea)
 {
     AREA_DATA *aTemp;
 
-    for(aTemp=first_area;aTemp;aTemp=aTemp->next)
+    for(aTemp=first_area; aTemp; aTemp=aTemp->next)
     {
         if (pArea->min_vnum > aTemp->max_vnum)
         {
@@ -1969,13 +1983,13 @@ void read_map_from_file( void )
         fpArea = objectfp;
         sprintf( strArea, "%s", object_file_name );
 
-        for ( z=0;z<Z_MAX;z++ )
+        for ( z=0; z<Z_MAX; z++ )
         {
             if ( z == Z_AIR )
             {
-                for (i=0;i<MAX_MAPS;i++)
+                for (i=0; i<MAX_MAPS; i++)
                 {
-                    for (j=0;j<MAX_MAPS;j++)
+                    for (j=0; j<MAX_MAPS; j++)
                     {
                         map_table.resource[i][j][z] = -1;
                         map_table.type[i][j][z] = SECT_AIR;
@@ -1985,18 +1999,18 @@ void read_map_from_file( void )
             }
             else if ( planet_table[z].system == 0 )
             {
-                for (i=0;i<MAX_MAPS;i++)
+                for (i=0; i<MAX_MAPS; i++)
                 {
-                    for (j=0;j<MAX_MAPS;j++)
+                    for (j=0; j<MAX_MAPS; j++)
                     {
                         map_table.resource[i][j][z] = -1;
                     }
                 }
                 continue;
             }
-            for (i=0;i<MAX_MAPS;i++)
+            for (i=0; i<MAX_MAPS; i++)
             {
-                for (j=0;j<MAX_MAPS;j++)
+                for (j=0; j<MAX_MAPS; j++)
                 {
                     if ( v != -1 )
                         v = fread_number(objectfp);
@@ -2042,7 +2056,7 @@ void load_alliances( void )
         fpArea = objectfp;
         sprintf( strArea, "%s", object_file_name );
 
-        for (i=0;i<MAX_ALLIANCE;i++)
+        for (i=0; i<MAX_ALLIANCE; i++)
         {
             if ( fread_letter( objectfp ) == '#' )
                 break;
@@ -2201,7 +2215,7 @@ void load_vehicles( int mode )
                 ch->in_vehicle = vhc;
                 vhc->driving = ch;
             }
-            for ( i=0;i<POWER_MAX;i++ )
+            for ( i=0; i<POWER_MAX; i++ )
                 vhc->power[i] = fread_number(fp);
             vhc->power[POWER_REPAIR] = 0;
             move_vehicle(vhc,vhc->x,vhc->y,vhc->z);
@@ -2256,15 +2270,15 @@ void load_buildings( void )
             GET_FREE(bld, building_free);
             bld->type = fread_number(fp);
             bld->name = fread_string(fp);
-            for ( i = 0;i<4;i++ )
+            for ( i = 0; i<4; i++ )
                 bld->exit[i] = fread_number(fp);
             bld->maxhp = fread_number(fp);
             bld->hp = fread_number(fp);
             bld->maxshield = fread_number(fp);
             bld->shield = fread_number(fp);
-            for ( i = 0;i<11;i++ )
+            for ( i = 0; i<11; i++ )
                 bld->value[i] = fread_number(fp);
-            for ( i = 0;i<8;i++ )
+            for ( i = 0; i<8; i++ )
                 bld->resources[i] = fread_number(fp);
             bld->owned = fread_string(fp);
             bld->owner = NULL;
@@ -2340,15 +2354,15 @@ void load_buildings_b( int mode )
             GET_FREE(bld, building_free);
             bld->type = fread_number(fp);
             bld->name = fread_string(fp);
-            for ( i = 0;i<4;i++ )
+            for ( i = 0; i<4; i++ )
                 bld->exit[i] = fread_number(fp);
             bld->maxhp = fread_number(fp);
             bld->hp = fread_number(fp);
             bld->maxshield = fread_number(fp);
             bld->shield = fread_number(fp);
-            for ( i = 0;i<11;i++ )
+            for ( i = 0; i<11; i++ )
                 bld->value[i] = fread_number(fp);
-            for ( i = 0;i<8;i++ )
+            for ( i = 0; i<8; i++ )
                 bld->resources[i] = fread_number(fp);
             bld->owned = fread_string(fp);
             bld->owner = NULL;
@@ -2408,7 +2422,7 @@ void load_multiplay( void )
         fpArea = fp;
         sprintf( strArea, "%s", object_file_name );
 
-        for ( i = 0;i<30;i++ )
+        for ( i = 0; i<30; i++ )
         {
             if ( multiplay_table[i].name != NULL)
                 free_string(multiplay_table[i].name);
@@ -2417,7 +2431,7 @@ void load_multiplay( void )
             multiplay_table[i].name = NULL;
             multiplay_table[i].host = NULL;
         }
-        for ( i = 0;i<30;i++ )
+        for ( i = 0; i<30; i++ )
         {
             if ( fread_letter( fpArea ) == '#' )
                 break;
@@ -2463,7 +2477,7 @@ void load_scores( void )
         fpArea = fp;
         sprintf( strArea, "%s", object_file_name );
 
-        for ( i = 0;i<100;i++ )
+        for ( i = 0; i<100; i++ )
         {
             if ( fread_letter( fpArea ) == '#' )
                 break;
@@ -2521,7 +2535,7 @@ void load_ranks( void )
         fpArea = fp;
         sprintf( strArea, "%s", object_file_name );
 
-        for ( i = 0;i<100;i++ )
+        for ( i = 0; i<100; i++ )
         {
             if ( fread_letter( fpArea ) == '#' )
                 break;
@@ -2574,7 +2588,7 @@ VEHICLE_DATA *create_vehicle( int type )
     vhc->vehicle_in = NULL;
     vhc->state = VEHICLE_STATE_NORMAL;
     vhc->power[0] = 0;
-    for ( i=1;i<POWER_MAX;i++ )
+    for ( i=1; i<POWER_MAX; i++ )
         vhc->power[i] = 100;
     vhc->power[POWER_REPAIR] = 0;
 
@@ -2642,11 +2656,11 @@ void load_objects( FILE *fp )
             pObjIndex->wear_flags           = fread_number( fp );
         }
         for ( looper = 0;
-            looper < MAX_OBJECT_VALUES;
-            pObjIndex->value[looper] = fread_number( fp ), looper++ );
+                looper < MAX_OBJECT_VALUES;
+                pObjIndex->value[looper] = fread_number( fp ), looper++ );
 
         if (IS_SET(pObjIndex->extra_flags, ITEM_RARE)
-            && pObjIndex->value[5] == 0)
+                && pObjIndex->value[5] == 0)
             pObjIndex->value[5] = 7;
 
         pObjIndex->weight               = fread_number( fp );
@@ -2684,7 +2698,7 @@ void load_objects( FILE *fp )
         GET_FREE(pList, build_free);
         pList->data     = pObjIndex;
         LINK(pList, area_load->first_area_object, area_load->last_area_object,
-            next, prev);
+             next, prev);
 
         top_obj_index++;
     }
@@ -2701,10 +2715,10 @@ void create_load_list( )
     int act = 0;
     extern int buildings_lists[MAX_BUILDING_TYPES][MAX_POSSIBLE_BUILDING];
 
-    for(i=0;i<=MAX_BUILDING_LEVEL;i++)
+    for(i=0; i<=MAX_BUILDING_LEVEL; i++)
         j[i] = 1;
 
-    for ( i = MIN_LOAD_OBJ;i<=MAX_LOAD_OBJ;i++ )
+    for ( i = MIN_LOAD_OBJ; i<=MAX_LOAD_OBJ; i++ )
     {
         if ( ( pObj = get_obj_index(i) ) == NULL )
             continue;
@@ -2724,22 +2738,22 @@ void create_load_list( )
         load_list[lev][j[lev]].building = pObj->building;
         j[lev]++;
     }
-    for (;i<MAX_BUILDING_LEVEL+1;i++ )
+    for (; i<MAX_BUILDING_LEVEL+1; i++ )
     {
         load_list[i][j[i]].vnum = -1;
         load_list[i][j[i]].rarity = -1;
         load_list[i][j[i]].building = -1;
     }
-    for ( i=0;i<MAX_BUILDING_TYPES;i++ )
+    for ( i=0; i<MAX_BUILDING_TYPES; i++ )
         k[i] = 0;
-    for ( i = 1;i<MAX_BUILDING;i++ )
+    for ( i = 1; i<MAX_BUILDING; i++ )
     {
         act = build_table[i].act;
         buildings_lists[act][k[act]] = i;
         k[act]++;
     }
-    for ( i=0;i<MAX_BUILDING_TYPES;i++ )
-        for ( act = k[i];act < MAX_BUILDING;act++ )
+    for ( i=0; i<MAX_BUILDING_TYPES; i++ )
+        for ( act = k[i]; act < MAX_BUILDING; act++ )
             buildings_lists[i][act] = -1;
     return;
 }
@@ -2768,7 +2782,7 @@ void load_building_t( void )
         sprintf( strArea, "%s", object_file_name );
 
         cur_revision = fread_number(fp);
-        for ( i = 0;i<MAX_POSSIBLE_BUILDING;i++ )
+        for ( i = 0; i<MAX_POSSIBLE_BUILDING; i++ )
         {
             if ( fread_letter( fpArea ) == '#' )
                 break;
@@ -2786,13 +2800,13 @@ void load_building_t( void )
             build_table[i].name = fread_string(fp);
             build_table[i].hp = fread_number(fp);
             build_table[i].shield = fread_number(fp);
-            for ( j=0;j<8;j++ )
+            for ( j=0; j<8; j++ )
                 build_table[i].resources[j] = fread_number(fp);
             build_table[i].requirements = fread_number(fp);
             build_table[i].requirements_l = fread_number(fp);
             build_table[i].desc = fread_string(fp);
             build_table[i].symbol = fread_string(fp);
-            for ( j=0;j<MAX_BUILDON;j++ )
+            for ( j=0; j<MAX_BUILDON; j++ )
                 build_table[i].buildon[j] = fread_number(fp);
             build_table[i].militairy = fread_number(fp);
             build_table[i].rank = fread_number(fp);
@@ -2856,7 +2870,7 @@ void reward_votes( )
             if ( getchar() == EOF )
                 break;
             buf = fread_string(fp);
-            for ( ch = first_char;ch;ch = ch->next )
+            for ( ch = first_char; ch; ch = ch->next )
             {
                 if ( !str_cmp(ch->pcdata->host,buf) )
                 {

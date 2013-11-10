@@ -54,9 +54,9 @@
 /*
  * Directions.
  */
-const char * sDirs[]={ "North", "East ", "South", "West ", "Up   ", "Down " };
+const char * sDirs[]= { "North", "East ", "South", "West ", "Up   ", "Down " };
 const char * cDirs="NESWUD";
-int          RevDirs[]={ 2, 3, 0, 1, 5, 4 };
+int          RevDirs[]= { 2, 3, 0, 1, 5, 4 };
 
 bool    fClanModified = FALSE;                              // For save_clan_table
 
@@ -202,8 +202,8 @@ int     build_numsizes=0;
 /* String function */
 /* moved build_strdup to merc.h - Stephen */
 char * build_simpstrdup(char *);
-void build_editstr(char * * dest, char * src, CHAR_DATA * ch);
-void build_finishedstr( char * orig, char * * dest,CHAR_DATA * ch,bool saved);
+void build_editstr(char ** dest, char * src, CHAR_DATA * ch);
+void build_finishedstr( char * orig, char ** dest,CHAR_DATA * ch,bool saved);
 
 /* Variables declared in db.c, which we need */
 
@@ -286,8 +286,8 @@ void build_interpret( CHAR_DATA *ch, char *argument )
     for ( cmd = 0; build_cmd_table[cmd].name[0] != '\0'; cmd++ )
     {
         if ( command[0] == build_cmd_table[cmd].name[0]
-            &&   !str_prefix( command, build_cmd_table[cmd].name )
-            &&   get_trust(ch) >= build_cmd_table[cmd].level )
+                &&   !str_prefix( command, build_cmd_table[cmd].name )
+                &&   get_trust(ch) >= build_cmd_table[cmd].level )
         {
             found = TRUE;
             break;
@@ -301,8 +301,8 @@ void build_interpret( CHAR_DATA *ch, char *argument )
         strcpy( logline, "XXXXXXXX XXXXXXXX XXXXXXXX" );
 
     if ( ( !IS_NPC(ch) && IS_SET(ch->act, PLR_LOG) )
-        ||   fLogAll
-        ||   build_cmd_table[cmd].log == LOG_ALWAYS )
+            ||   fLogAll
+            ||   build_cmd_table[cmd].log == LOG_ALWAYS )
     {
         sprintf( log_buf, "Log %s: %s", ch->name, logline );
         log_string( log_buf );
@@ -398,11 +398,11 @@ void build_showobj( CHAR_DATA *ch, char *argument )
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "@@WVnum: @@y%d.  @@WType: @@y%s.\n\r",
-        obj->vnum, tab_item_types[ (obj->item_type)-1 ].text );
+             obj->vnum, tab_item_types[ (obj->item_type)-1 ].text );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "@@WShort description: @@y%s.\n\r@@WLong description: @@y%s\n\r",
-        obj->short_descr, obj->description );
+             obj->short_descr, obj->description );
     safe_strcat( MSL, buf1, buf );
 
     /*
@@ -411,12 +411,12 @@ void build_showobj( CHAR_DATA *ch, char *argument )
     */
 
     sprintf( buf, "@@WWear bits: @@y%s\n\r",
-        bit_table_lookup(tab_wear_flags,obj->wear_flags) );
+             bit_table_lookup(tab_wear_flags,obj->wear_flags) );
 
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "@@WExtra bits: @@y%s\n\r",
-        bit_table_lookup(tab_obj_flags,obj->extra_flags) );
+             bit_table_lookup(tab_obj_flags,obj->extra_flags) );
     safe_strcat( MSL, buf1, buf );
 
     sprintf( buf, "@@WWeight: @@y%d.\n\r", obj->weight );
@@ -438,8 +438,8 @@ void build_showobj( CHAR_DATA *ch, char *argument )
     for ( cnt = 0; cnt < MAX_OBJECT_VALUES; cnt++ )
     {
         sprintf( buf, "@@W[Value%-2d: @@y%6d@@W] %s",
-            cnt, obj->value[cnt],
-            rev_table_lookup( tab_value_meanings,  (obj->item_type * MAX_OBJECT_VALUES ) + cnt  ) );
+                 cnt, obj->value[cnt],
+                 rev_table_lookup( tab_value_meanings,  (obj->item_type * MAX_OBJECT_VALUES ) + cnt  ) );
         safe_strcat( MSL, buf1, buf );
         if ( is_name( "ArmorType", rev_table_lookup( tab_value_meanings, ( obj->item_type * MAX_OBJECT_VALUES ) + cnt ) ) )
         {
@@ -501,13 +501,13 @@ void build_showobj( CHAR_DATA *ch, char *argument )
     if (obj->item_type == ITEM_WEAPON && (obj->value[cnt]>= 0 && obj->value[cnt]<MAX_AMMO))
     {
         sprintf( buf, "\n\r@@W%-10s  PDam: %d   BDam: %d   Speed: %d\n\r            Hit %%: %d   Explodes: %d@@g\n\r",
-            clip_table[obj->value[2]].name,
-            clip_table[obj->value[2]].dam+obj->value[7],
-            clip_table[obj->value[2]].builddam+obj->value[8],
-            clip_table[obj->value[2]].speed+obj->value[9],
-            clip_table[obj->value[2]].miss+obj->value[10],
-            clip_table[obj->value[2]].explode
-            );
+                 clip_table[obj->value[2]].name,
+                 clip_table[obj->value[2]].dam+obj->value[7],
+                 clip_table[obj->value[2]].builddam+obj->value[8],
+                 clip_table[obj->value[2]].speed+obj->value[9],
+                 clip_table[obj->value[2]].miss+obj->value[10],
+                 clip_table[obj->value[2]].explode
+               );
         send_to_char(buf,ch);
     }
 
@@ -579,7 +579,7 @@ void build_findobject( CHAR_DATA *ch, char * argument)
         {
             found = TRUE;
             sprintf( buf, "[%5d] %s\n\r",
-                pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+                     pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
             safe_strcat( MSL, buf1, buf );
         }
     }
@@ -704,7 +704,7 @@ void build_setobject( CHAR_DATA *ch, char *argument )
         }
         pObj->extra_flags ^= value;
         sprintf( buf, "New values for @@WExtra bits: @@y%s. \n\r",
-            bit_table_lookup( tab_obj_flags, pObj->extra_flags ) );
+                 bit_table_lookup( tab_obj_flags, pObj->extra_flags ) );
         send_to_char( buf, ch );
         /*
         if (num==1)
@@ -744,7 +744,7 @@ void build_setobject( CHAR_DATA *ch, char *argument )
         }
         pObj->wear_flags ^= value;
         sprintf( buf, "New values for @@WWear bits: @@y%s. @@N\n\r",
-            bit_table_lookup( tab_wear_flags, pObj->wear_flags ) );
+                 bit_table_lookup( tab_wear_flags, pObj->wear_flags ) );
         send_to_char( buf, ch );
         /*
         if (num==1)
@@ -786,7 +786,7 @@ void build_setobject( CHAR_DATA *ch, char *argument )
         if ( !is_number(arg3) )
         {
             int i;
-            for ( i=0;i<MAX_BUILDING;i++ )
+            for ( i=0; i<MAX_BUILDING; i++ )
             {
                 if ( !str_cmp(build_table[i].name,arg3) )
                 {
@@ -945,7 +945,7 @@ void build_addobject( CHAR_DATA *ch, char *argument )
     GET_FREE(pList, build_free);
     pList->data     = pObjIndex;
     LINK(pList, pArea->first_area_object, pArea->last_area_object,
-        next, prev);
+         next, prev);
 
     top_obj_index++;
 
@@ -1026,11 +1026,11 @@ void build_delobject( CHAR_DATA *ch, char *argument )
     for ( pList = pArea->first_area_object; pList; pList = pList->next )
         if ( pList->data == pObjIndex )
             break;
-            {
-                UNLINK(pList, pArea->first_area_object, pArea->last_area_object,
-                    next, prev);
-                PUT_FREE(pList, build_free);
-            }
+    {
+        UNLINK(pList, pArea->first_area_object, pArea->last_area_object,
+               next, prev);
+        PUT_FREE(pList, build_free);
+    }
 
     /* Remove object from vnum hash table */
     {
@@ -1088,7 +1088,7 @@ char * build_simpstrdup( char * buf)
 
 /* spec- rewritten to work correctly with SSM */
 
-void build_strdup( char * * dest, char * src, bool freesrc, CHAR_DATA * ch)
+void build_strdup( char ** dest, char * src, bool freesrc, CHAR_DATA * ch)
 {
     /* Does the same as fread_string plus more, if there is enough memory. */
     FILE *infile;
@@ -1177,33 +1177,33 @@ void build_strdup( char * * dest, char * src, bool freesrc, CHAR_DATA * ch)
     {
         switch (*src)
         {
-            default:
-                *out++=*src++;
-                break;
-            case '\n':
+        default:
+            *out++=*src++;
+            break;
+        case '\n':
+            *out++='\n';
+            *out++='\r';
+            src++;
+            break;
+        case '\r':
+            src++;
+            break;
+        case '\\':
+            switch (*++src)
+            {
+            case 'n':
                 *out++='\n';
+                break;
+            case 'r':
                 *out++='\r';
-                src++;
                 break;
-            case '\r':
-                src++;
+            default:
+                *out++='\\';
+                *out++=*src;
                 break;
-            case '\\':
-                switch (*++src)
-                {
-                    case 'n':
-                        *out++='\n';
-                        break;
-                    case 'r':
-                        *out++='\r';
-                        break;
-                    default:
-                        *out++='\\';
-                        *out++=*src;
-                        break;
-                }
-                if (*src)                                   /* don't overrun here.. */
-                    src++;
+            }
+            if (*src)                                   /* don't overrun here.. */
+                src++;
         }
     }
 
@@ -1211,7 +1211,7 @@ void build_strdup( char * * dest, char * src, bool freesrc, CHAR_DATA * ch)
     *dest=str_dup(buf);
 }
 
-void build_editstr(char * * dest, char * src, CHAR_DATA * ch)
+void build_editstr(char ** dest, char * src, CHAR_DATA * ch)
 {
     /* Starts a character editing. write_start sets *dest to the buffer*/
     char * orig;
@@ -1233,7 +1233,7 @@ void build_editstr(char * * dest, char * src, CHAR_DATA * ch)
     return;
 }
 
-void build_finishedstr( char * orig, char * * dest, CHAR_DATA * ch, bool saved)
+void build_finishedstr( char * orig, char ** dest, CHAR_DATA * ch, bool saved)
 {
     if (!saved)
     {
@@ -1268,7 +1268,7 @@ void build_set_oedit( CHAR_DATA *ch, char *argument )
 
         if ( !str_cmp(arg,"next") )
         {
-            for (i=ch->build_vnum+1;i<32766;i++ )
+            for (i=ch->build_vnum+1; i<32766; i++ )
             {
                 if ( (pObjIndex = get_obj_index(i)) == NULL )
                     continue;
@@ -1284,7 +1284,7 @@ void build_set_oedit( CHAR_DATA *ch, char *argument )
     }
 
     send_to_char( ch->build_vnum == -1 ? "No vnum set.  Use setvnum.\n\r"
-        : "Vnum now set. " , ch );
+                  : "Vnum now set. " , ch );
     return;
 }
 
@@ -1317,16 +1317,16 @@ void build_set_bedit( CHAR_DATA *ch, char *argument )
     }
     else
     {
-        for ( i=0;i<MAX_BUILDING;i++ )
+        for ( i=0; i<MAX_BUILDING; i++ )
             if ( !str_prefix(argument,build_table[i].name) )
-        {
-            ch->build_vnum = i;
-            break;
-        }
+            {
+                ch->build_vnum = i;
+                break;
+            }
     }
 
     send_to_char( ch->build_vnum == -1 ? "No vnum set.  Use setvnum.\n\r"
-        : "Vnum now set. " , ch );
+                  : "Vnum now set. " , ch );
     return;
 }
 
@@ -1380,29 +1380,29 @@ void build_setvnum( CHAR_DATA *ch, char *argument )
 
     switch ( ch->act_build )
     {
-        case ACT_BUILD_OEDIT:
-            if ( ( obj = get_obj_index( vnum ) ) == NULL )
-            {
-                sprintf( buf2, "No object with that vnum exists.  Use addobject first.\n\r" );
-                found = FALSE;
-            }
-            else
-                sprintf( buf2, "Object exists: %s\n\r", obj->short_descr );
-            break;
+    case ACT_BUILD_OEDIT:
+        if ( ( obj = get_obj_index( vnum ) ) == NULL )
+        {
+            sprintf( buf2, "No object with that vnum exists.  Use addobject first.\n\r" );
+            found = FALSE;
+        }
+        else
+            sprintf( buf2, "Object exists: %s\n\r", obj->short_descr );
+        break;
 
-        case ACT_BUILD_BEDIT:
-            if ( vnum < 0 || vnum >= MAX_BUILDING )
-            {
-                sprintf( buf2, "No such building.\n\r" );
-                found = FALSE;
-            }
-            else
-                sprintf( buf2, "Building exists: %s\n\r", build_table[vnum].name );
+    case ACT_BUILD_BEDIT:
+        if ( vnum < 0 || vnum >= MAX_BUILDING )
+        {
+            sprintf( buf2, "No such building.\n\r" );
+            found = FALSE;
+        }
+        else
+            sprintf( buf2, "Building exists: %s\n\r", build_table[vnum].name );
 
-            break;
+        break;
 
-        default:
-            sprintf( buf2, "Please set your editing mode first!!\n\r" );
+    default:
+        sprintf( buf2, "Please set your editing mode first!!\n\r" );
 
     }
 
@@ -1433,31 +1433,31 @@ void build_list( CHAR_DATA *ch, char *argument )
     found = FALSE;
 
     if ( argument[0] == '\0'|| ( ch->act_build == ACT_BUILD_REDIT
-        && is_name( argument, "brief doors resets desc all" ) ) )
+                                 && is_name( argument, "brief doors resets desc all" ) ) )
     {
         switch ( ch->act_build )
         {
-            case ACT_BUILD_NOWT:
-                send_to_char( "Not in any editing mode.  Nothing to show!\n\r", ch );
-                break;
-            case ACT_BUILD_OEDIT:
-                if ( ch->build_vnum == -1 )
-                    send_to_char( "No vnum has been selected!\n\r", ch );
-                else
-                {
-                    sprintf( buf, "%d", ch->build_vnum );
-                    build_showobj( ch, buf );
-                }
-                break;
-            case ACT_BUILD_BEDIT:
-                if ( ch->build_vnum == -1 )
-                    send_to_char( "No vnum has been selected!\n\r", ch );
-                else
-                {
-                    sprintf( buf, "%d", ch->build_vnum );
-                    show_building_info(ch,ch->build_vnum);
-                }
-                break;
+        case ACT_BUILD_NOWT:
+            send_to_char( "Not in any editing mode.  Nothing to show!\n\r", ch );
+            break;
+        case ACT_BUILD_OEDIT:
+            if ( ch->build_vnum == -1 )
+                send_to_char( "No vnum has been selected!\n\r", ch );
+            else
+            {
+                sprintf( buf, "%d", ch->build_vnum );
+                build_showobj( ch, buf );
+            }
+            break;
+        case ACT_BUILD_BEDIT:
+            if ( ch->build_vnum == -1 )
+                send_to_char( "No vnum has been selected!\n\r", ch );
+            else
+            {
+                sprintf( buf, "%d", ch->build_vnum );
+                show_building_info(ch,ch->build_vnum);
+            }
+            break;
         }
         return;
     }
@@ -1475,11 +1475,11 @@ void build_list( CHAR_DATA *ch, char *argument )
         found = TRUE;
         switch ( ch->act_build )
         {
-            case ACT_BUILD_OEDIT:
-                sprintf(buf,"Valid object flags are :\n\r");
-                wide_table_printout(tab_obj_flags,buf+strlen(buf));
-                send_to_char(buf,ch);
-                break;
+        case ACT_BUILD_OEDIT:
+            sprintf(buf,"Valid object flags are :\n\r");
+            wide_table_printout(tab_obj_flags,buf+strlen(buf));
+            send_to_char(buf,ch);
+            break;
         }
     }
 
@@ -1548,14 +1548,14 @@ void build_set( CHAR_DATA *ch, char *argument )
     }
     switch( ch->act_build )
     {
-        case ACT_BUILD_OEDIT:
-            sprintf( buf, "%d %s", ch->build_vnum, argument );
-            build_setobject( ch, buf );
-            break;
-        case ACT_BUILD_BEDIT:
-            sprintf( buf, "%d %s", ch->build_vnum, argument );
-            build_setbuilding( ch, buf );
-            break;
+    case ACT_BUILD_OEDIT:
+        sprintf( buf, "%d %s", ch->build_vnum, argument );
+        build_setobject( ch, buf );
+        break;
+    case ACT_BUILD_BEDIT:
+        sprintf( buf, "%d %s", ch->build_vnum, argument );
+        build_setbuilding( ch, buf );
+        break;
     }
     return;
 }
@@ -1590,7 +1590,7 @@ void build_listvalues( CHAR_DATA *ch, char *argument )
         if ( !str_cmp(rev_table_lookup(tab_value_meanings, value + foo),"Unused" ) )
             continue;
         sprintf( buf, "@@W[Value@@y%d@@W] : @@y%s@@g\n\r",
-            foo, rev_table_lookup(tab_value_meanings, value + foo) );
+                 foo, rev_table_lookup(tab_value_meanings, value + foo) );
         send_to_char( buf, ch );
     }
     return;
@@ -1601,7 +1601,7 @@ void build_listbuildings( CHAR_DATA *ch, char *argument )
     int i;
     char buf[MSL];
 
-    for ( i = 1;i<MAX_BUILDING;i++ )
+    for ( i = 1; i<MAX_BUILDING; i++ )
     {
         sprintf( buf, "%s%d. %s\n\r", build_table[i].disabled?"@@e":"@@W",i, build_table[i].name );
         send_to_char( buf, ch );
@@ -1613,7 +1613,7 @@ int get_dir(char dir)
 {
     char * temp;
     if (   dir=='\0'
-        || (temp=strchr(cDirs,dir))==NULL)
+            || (temp=strchr(cDirs,dir))==NULL)
         return -1;
 
     return temp-cDirs;
@@ -1640,49 +1640,49 @@ void    build_uobjs( CHAR_DATA *ch, char *argument )
         {
             switch( last )
             {
-                case 0:
-                    sprintf( buf, "%d", curvnum );
-                    safe_strcat( MSL, used, buf );
-                    foo = curvnum;
-                    last = 1;
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    if ( foo != curvnum-1 )
-                    {
-                        sprintf( buf, "-%d", curvnum-1 );
-                        safe_strcat( MSL, free, buf );
-                    }
-                    sprintf( buf, " %d", curvnum );
-                    safe_strcat( MSL, used, buf );
-                    foo = curvnum;
-                    last = 1;
+            case 0:
+                sprintf( buf, "%d", curvnum );
+                safe_strcat( MSL, used, buf );
+                foo = curvnum;
+                last = 1;
+                break;
+            case 1:
+                break;
+            case 2:
+                if ( foo != curvnum-1 )
+                {
+                    sprintf( buf, "-%d", curvnum-1 );
+                    safe_strcat( MSL, free, buf );
+                }
+                sprintf( buf, " %d", curvnum );
+                safe_strcat( MSL, used, buf );
+                foo = curvnum;
+                last = 1;
             }
         }
         else
         {
             switch( last )
             {
-                case 0:
-                    sprintf( buf, "%d", curvnum );
-                    safe_strcat( MSL, free, buf );
-                    foo = curvnum;
-                    last = 2;
-                    break;
-                case 1:
-                    if ( foo != curvnum -1 )
-                    {
-                        sprintf( buf, "-%d", curvnum-1 );
-                        safe_strcat( MSL, used, buf );
-                    }
-                    sprintf( buf, " %d", curvnum );
-                    safe_strcat( MSL, free, buf );
-                    last =2;
-                    foo = curvnum;
-                    break;
-                case 2:
-                    break;
+            case 0:
+                sprintf( buf, "%d", curvnum );
+                safe_strcat( MSL, free, buf );
+                foo = curvnum;
+                last = 2;
+                break;
+            case 1:
+                if ( foo != curvnum -1 )
+                {
+                    sprintf( buf, "-%d", curvnum-1 );
+                    safe_strcat( MSL, used, buf );
+                }
+                sprintf( buf, " %d", curvnum );
+                safe_strcat( MSL, free, buf );
+                last =2;
+                foo = curvnum;
+                break;
+            case 2:
+                break;
             }
         }
     }
@@ -1692,44 +1692,44 @@ void    build_uobjs( CHAR_DATA *ch, char *argument )
     {
         switch( last )
         {
-            case 1:
-                if ( foo != ( curvnum-1 ) )
-                    sprintf( buf, "-%d.", curvnum );
-                else
-                    sprintf( buf, " %d.", curvnum );
-                safe_strcat( MSL, used, buf );
-                break;
-            case 2:
-                if ( foo != curvnum -1 )
-                {
-                    sprintf( buf, "-%d.", curvnum-1 );
-                    safe_strcat( MSL, used, buf );
-                }
+        case 1:
+            if ( foo != ( curvnum-1 ) )
+                sprintf( buf, "-%d.", curvnum );
+            else
                 sprintf( buf, " %d.", curvnum );
-                safe_strcat( MSL, free, buf );
-                break;
+            safe_strcat( MSL, used, buf );
+            break;
+        case 2:
+            if ( foo != curvnum -1 )
+            {
+                sprintf( buf, "-%d.", curvnum-1 );
+                safe_strcat( MSL, used, buf );
+            }
+            sprintf( buf, " %d.", curvnum );
+            safe_strcat( MSL, free, buf );
+            break;
         }
     }
     else
     {
         switch( last )
         {
-            case 1:
-                if ( foo != curvnum -1 )
-                {
-                    sprintf( buf, "-%d.", curvnum-1 );
-                    safe_strcat( MSL, used, buf );
-                }
+        case 1:
+            if ( foo != curvnum -1 )
+            {
+                sprintf( buf, "-%d.", curvnum-1 );
+                safe_strcat( MSL, used, buf );
+            }
+            sprintf( buf, " %d.", curvnum );
+            safe_strcat( MSL, free, buf );
+            break;
+        case 2:
+            if ( foo != curvnum -1 )
+                sprintf( buf, "-%d.", curvnum );
+            else
                 sprintf( buf, " %d.", curvnum );
-                safe_strcat( MSL, free, buf );
-                break;
-            case 2:
-                if ( foo != curvnum -1 )
-                    sprintf( buf, "-%d.", curvnum );
-                else
-                    sprintf( buf, " %d.", curvnum );
-                safe_strcat( MSL, free, buf );
-                break;
+            safe_strcat( MSL, free, buf );
+            break;
         }
     }
 
@@ -1793,7 +1793,7 @@ void build_helpedit( CHAR_DATA *ch, char *argument )
 
     for ( pHelp = first_help; pHelp != NULL; pHelp = pHelp->next )
         if ( is_name( arg, pHelp->keyword )
-        && ( ++count == number ) )
+                && ( ++count == number ) )
             break;
 
     if ( pHelp == NULL )
@@ -1861,7 +1861,7 @@ void build_addhelp( CHAR_DATA *ch, char *argument )
     if ( area == NULL )
         area = first_area;
     LINK(pList, area->first_area_help_text,
-        area->last_area_help_text, next, prev);
+         area->last_area_help_text, next, prev);
 
     top_help++;
     send_to_char( "Help added.  Use HELPEDIT <keyword> to edit it.\n\r", ch );
@@ -1890,7 +1890,7 @@ void build_delhelp( CHAR_DATA *ch, char *argument )
 
     for ( pHelp = first_help; pHelp != NULL; pHelp = pHelp->next )
         if ( is_name( arg, pHelp->keyword )
-        && ( ++count == number ) )
+                && ( ++count == number ) )
             break;
 
     if ( pHelp == NULL )
@@ -2016,9 +2016,9 @@ void build_clone( CHAR_DATA *ch, char *argument )
 
     /* Check arguments */
     if (    arg1[0] == '\0'
-        || arg2[0] == '\0'
-        || !is_number( arg2 )
-        || !is_name( arg1, "room obj mob" ) )
+            || arg2[0] == '\0'
+            || !is_number( arg2 )
+            || !is_name( arg1, "room obj mob" ) )
     {
         build_clone( ch, "" );
         return;
@@ -2217,14 +2217,14 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
 
         if ( arg3[0] == '\0' )
         {
-            for ( i=0;i<MAX_BUILDING_TYPES;i++ )
+            for ( i=0; i<MAX_BUILDING_TYPES; i++ )
             {
                 sprintf( buf, "%s\n\r", building_title[i] );
                 send_to_char(buf,ch);
             }
             return;
         }
-        for ( i=0;i<=MAX_BUILDING_TYPES;i++ )
+        for ( i=0; i<=MAX_BUILDING_TYPES; i++ )
         {
             if ( i >= MAX_BUILDING_TYPES )
                 continue;
@@ -2281,7 +2281,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
     }
     else if ( !str_prefix( arg2, "requires" ) )
     {
-        for ( i=0;i<MAX_BUILDING;i++ )
+        for ( i=0; i<MAX_BUILDING; i++ )
         {
             if ( !str_cmp(build_table[i].name,arg3) )
             {
@@ -2304,10 +2304,10 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
         bool ter[SECT_MAX];
         int open = -1;
 
-        for ( num=0;num<SECT_MAX;num++ )
+        for ( num=0; num<SECT_MAX; num++ )
             ter[num] = FALSE;
 
-        for ( i=0;i<SECT_MAX;i++ )
+        for ( i=0; i<SECT_MAX; i++ )
         {
             if ( !str_prefix(arg3,wildmap_table[i].name) )
             {
@@ -2321,7 +2321,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
             return;
         }
         ok = FALSE;
-        for ( num=0;num<MAX_BUILDON;num++ )
+        for ( num=0; num<MAX_BUILDON; num++ )
         {
             if ( (ter[build_table[type].buildon[num]] || build_table[type].buildon[num] < 0 || build_table[type].buildon[num] > SECT_MAX ) && open == -1 )
                 open = num;
@@ -2362,7 +2362,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
             send_to_char( "Change the sector to what new type?\n\r", ch );
             return;
         }
-        for ( i=0;i<SECT_MAX;i++ )
+        for ( i=0; i<SECT_MAX; i++ )
         {
             if ( !str_prefix(arg3,wildmap_table[i].name) && oldsect == -1 )
             {
@@ -2378,9 +2378,9 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
             send_to_char( "One of the sectors you inputted was invalid.\n\r", ch );
             return;
         }
-        for ( type = 1;type < MAX_BUILDING;type++ )
+        for ( type = 1; type < MAX_BUILDING; type++ )
         {
-            for ( num=0;num<5;num++ )
+            for ( num=0; num<5; num++ )
             {
                 if ( build_table[type].buildon[num] == oldsect )
                 {
@@ -2396,7 +2396,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
     else if ( !str_cmp( arg2, "calc_all_hp" ) )
     {
         int hp;
-        for ( type = 1;type < MAX_BUILDING;type++ )
+        for ( type = 1; type < MAX_BUILDING; type++ )
         {
             hp = 0;
             hp += build_table[type].resources[0] * 5;
@@ -2452,9 +2452,9 @@ void build_addbuilding( CHAR_DATA *ch, char *argument )
     build_help_table[i].help = str_dup(" ");
     build_table[i].hp = 1;
     build_table[i].shield = 1;
-    for ( j=0;j<8;j++ )
+    for ( j=0; j<8; j++ )
         build_table[i].resources[j] = 0;
-    for ( j=0;j<MAX_BUILDON;j++ )
+    for ( j=0; j<MAX_BUILDON; j++ )
         build_table[i].buildon[j] = 1;
     build_table[i].requirements = 1;
     build_table[i].requirements_l = 1;

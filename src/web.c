@@ -71,49 +71,49 @@ void add_affiliates( FILE *fp )
 
 void generate_webpage( void )
 {
-/*    FILE * fp;
-    char file_name[MAX_STRING_LENGTH];
-    char buf[MSL];
-    fclose( fpReserve );
-    sprintf( file_name, "%s", STAT_WEB_FILE );
+    /*    FILE * fp;
+        char file_name[MAX_STRING_LENGTH];
+        char buf[MSL];
+        fclose( fpReserve );
+        sprintf( file_name, "%s", STAT_WEB_FILE );
 
-    if ( ( fp = fopen( file_name, "w" ) ) != NULL )
-    {
-        sprintf( buf, "<?php\n" );
-        sprintf( buf+strlen(buf), "$last_killed_in_pit = \"%s\";\n" , web_data.last_killed_in_pit );
-        sprintf( buf+strlen(buf), "$last_kills_in_pit = \"%s\";\n"  , web_data.last_kills_in_pit );
-        sprintf( buf+strlen(buf), "$num_players = %d;\n"        , web_data.num_players );
-        sprintf( buf+strlen(buf), "$tot_players = %d;\n"        , web_data.tot_players );
-        sprintf( buf+strlen(buf), "$highest_rank = \"%s\";\n"       , web_data.highest_ranking_player );
-        sprintf( buf+strlen(buf), "$highest_rank2 = %d;\n"      , web_data.highest_rank );
-        sprintf( buf+strlen(buf), "$newest_player = \"%s\";\n"      , web_data.newest_player );
-        sprintf( buf+strlen(buf), "$num_buildings = %ld;\n"     , building_count );
-        sprintf( buf+strlen(buf), "?>" );
+        if ( ( fp = fopen( file_name, "w" ) ) != NULL )
+        {
+            sprintf( buf, "<?php\n" );
+            sprintf( buf+strlen(buf), "$last_killed_in_pit = \"%s\";\n" , web_data.last_killed_in_pit );
+            sprintf( buf+strlen(buf), "$last_kills_in_pit = \"%s\";\n"  , web_data.last_kills_in_pit );
+            sprintf( buf+strlen(buf), "$num_players = %d;\n"        , web_data.num_players );
+            sprintf( buf+strlen(buf), "$tot_players = %d;\n"        , web_data.tot_players );
+            sprintf( buf+strlen(buf), "$highest_rank = \"%s\";\n"       , web_data.highest_ranking_player );
+            sprintf( buf+strlen(buf), "$highest_rank2 = %d;\n"      , web_data.highest_rank );
+            sprintf( buf+strlen(buf), "$newest_player = \"%s\";\n"      , web_data.newest_player );
+            sprintf( buf+strlen(buf), "$num_buildings = %ld;\n"     , building_count );
+            sprintf( buf+strlen(buf), "?>" );
 
-        fprintf( fp, buf );
-    }
-    fflush( fp );
-    fclose( fp );
+            fprintf( fp, buf );
+        }
+        fflush( fp );
+        fclose( fp );
 
-    fpReserve = fopen( NULL_FILE, "r" ); */
+        fpReserve = fopen( NULL_FILE, "r" ); */
     return;
 }
 
 char *format_web( char * str )
 {
     int i;
-    for ( i=0;str[i] != '\0';i++ )
+    for ( i=0; str[i] != '\0'; i++ )
     {
         if ( i + 8 > strlen(str) )
             break;
         if ( str[i] == '*'
-            && str[i+1] == '*'
-            && str[i+2] == '*'
-            && str[i+3] == '*'
-            && str[i+4] == '*'
-            && str[i+5] == '*'
-            && str[i+6] == '*'
-            && str[i+7] == '*' )
+                && str[i+1] == '*'
+                && str[i+2] == '*'
+                && str[i+3] == '*'
+                && str[i+4] == '*'
+                && str[i+5] == '*'
+                && str[i+6] == '*'
+                && str[i+7] == '*' )
         {
             str[i] = '<';
             str[i+1] = 'b';
