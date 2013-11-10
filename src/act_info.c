@@ -1148,7 +1148,7 @@ void do_who( CHAR_DATA *ch, char *argument )
                          IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
                          IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
                          !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
-                         ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
+                         ( wch->trust >= 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
                          ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
                          (IS_NEWBIE(wch)) ? n_buf :
                          ( str_cmp(wch->pcdata->who_name,"off") ) ? wch->pcdata->who_name : " ",
@@ -1162,7 +1162,7 @@ void do_who( CHAR_DATA *ch, char *argument )
                          IS_SET(wch->act,PLR_WIZINVIS)          ? "@@m(@@p(I@@mN@@pV@@mI@@pS)@@m)@@N" :
                          IS_SET( wch->pcdata->pflags, PFLAG_AFK  )  ? "   AFK" :
                          !wch->fake && wch->desc && wch->desc->connected != CON_PLAYING        ? "DEAD" :
-                         ( wch->trust == 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
+                         ( wch->trust >= 90 ) ? "@@B(@@l(@@aO@@cw@@an@@ce@@ar@@l)@@B)@@N" :
                          ( wch->trust >= LEVEL_IMMORTAL ) ? s_buf :
                          (IS_NEWBIE(wch)) ? n_buf :
                          (IS_SET(wch->pcdata->pflags,PLR_BASIC)) ? "  @@yB@@bA@@yS@@bI@@yC@@N  " :
