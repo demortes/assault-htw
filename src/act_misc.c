@@ -93,6 +93,19 @@ int leads_to( BUILDING_DATA *bld, int dir, int xy )
         return y;
 }
 
+void move_coords( int *x,int *y,int dir )
+{
+	if ( dir == DIR_NORTH )
+		*y=*y+1;
+	else if ( dir == DIR_SOUTH )
+		*y=*y-1;
+	else if ( dir == DIR_EAST )
+		*x=*x+1;
+	else
+		*x=*x-1;
+	return;
+}
+
 int get_loc( char *loc )
 {
     if ( !str_prefix(loc,"Head") )
@@ -1216,8 +1229,8 @@ void do_upgrade( CHAR_DATA *ch, char *argument )
 
 void do_makeexit( CHAR_DATA *ch, char *argument )
 {
-    int dir;
-    BUILDING_DATA *bld;
+    int dir, x, y;
+    BUILDING_DATA *bld, *bld2;
     bool all = FALSE;
     if ( ch->fighttimer > 0 )
     {
@@ -1246,20 +1259,32 @@ void do_makeexit( CHAR_DATA *ch, char *argument )
     }
     if ( all )
     {
-        for ( dir=0; dir<4; dir++ )
+        for (dir=0; dir<4; dir++)
+        {
             bld->exit[dir] = TRUE;
+            x = bld->x; y = bld->y; move_coords(&x, &y, dir);
+            if ((bld2 = map_bld[x][y][ch->z]) != NULL && bld2->owner && bld2->owner == ch)
+                bld2->exit[rev_dir[dir]] = TRUE;
+        }
     }
     else
+    {
         bld->exit[dir] = TRUE;
+        x = bld->x; y = bld->y; move_coords(&x, &y, dir);
+        if ((bld2 = map_bld[x][y][ch->z]) != NULL && bld2->owner && bld2->owner == ch)
+            bld2->exit[rev_dir[dir]] = TRUE;
+    }
+
     send_to_char( "Exit formed.\n\r", ch );
     return;
 }
 
 void do_closeexit( CHAR_DATA *ch, char *argument )
 {
-    int dir;
+    int dir, x, y;
     int exits = 0;
     BUILDING_DATA *bld;
+    BUILDING_DATA *bld2;
     if ( ch->fighttimer > 0 )
     {
         send_to_char( "Not during combat.\n\r", ch );
@@ -1288,6 +1313,26 @@ void do_closeexit( CHAR_DATA *ch, char *argument )
         send_to_char( "You can't lock yourself in!\n\r", ch);
         return;
     }
+
+    x = bld->x; y = bld->y; move_coords(&x, &y, dir);
+    if (( bld2 = map_bld[x][y][ch->z]) != NULL )
+    {
+        int i;
+        exits = 0;
+        for (i = 0; i < 4; i++)
+            if ( bld2->exit[i] && i != rev_dir[dir] )
+                exits++;
+
+        if ( exits == 0 )
+        {
+            send_to_char( "This would cause the building in that direction to become closed off. You must open up at least one more exit there.\n\r", ch );
+                return;
+        }
+	
+        if ( bld2->owner && bld2->owner == ch )
+            bld2->exit[rev_dir[dir]] = FALSE;
+    }
+
     bld->exit[dir] =FALSE;
     send_to_char( "Exit closed.\n\r", ch );
     return;
@@ -1964,13 +2009,13 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     OBJ_DATA *obj2_next;
     bool found = FALSE;
     BUILDING_DATA *bld;
-    bool type[8];
+//    bool type[8];
     int resource[8];
     int i;
 
     for ( i = 0; i<8; i++ )
     {
-        type[i] = FALSE;
+//        type[i] = FALSE;
         resource[i] = 0;
     }
     if ( ( bld = get_char_building(ch) ) == NULL )
@@ -2002,7 +2047,7 @@ void do_chunk( CHAR_DATA *ch, char *argument )
             obj_next = obj->next_in_carry_list;
             if ( obj->item_type != ITEM_MATERIAL || obj->value[0] < 0 || obj->value[0] > 7 )
                 continue;
-            type[obj->value[0]] = TRUE;
+//            type[obj->value[0]] = TRUE;
             resource[obj->value[0]] += obj->value[1];
             found = TRUE;
             extract_obj(obj);
@@ -5156,12 +5201,10 @@ void do_use( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
     char arg[MSL];
-    char *arg2;
     char cmd[MSL];
     char buf[MSL];
     cmd[0] = '\0';
 
-    arg2 = one_argument(argument,arg);
     if ( ( obj = get_obj_carry(ch,arg) ) != NULL )
     {
         if ( obj->item_type == ITEM_AMMO )
