@@ -226,8 +226,14 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                 in_border = TRUE;
             else
                 in_border = FALSE;
-
-            if (in_border)
+            if ( pit && ( x < PIT_BORDER_X || y < PIT_BORDER_Y ) )
+                in_border = FALSE;
+            if ( !pit && ( x > PIT_BORDER_X && y > PIT_BORDER_Y ) && ch->z == Z_PAINTBALL )
+                in_border = FALSE;
+            if ( medal(ch) && ( x > MEDAL_BORDER_X || y > MEDAL_BORDER_Y ) )
+                in_border = FALSE;
+            
+			if (in_border)
             {
                 if ( size == 998 )
                     has_structure[x][y] = FALSE;
@@ -238,17 +244,10 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                 else
                     has_structure[x][y] = TRUE;
             }
-            else
-                has_structure[x][y] = FALSE;
+            //else
+			//	has_structure[x][y] = FALSE;
 
-            if ( pit && ( x < PIT_BORDER_X || y < PIT_BORDER_Y ) )
-                in_border = FALSE;
-            if ( !pit && ( x > PIT_BORDER_X && y > PIT_BORDER_Y ) && ch->z == Z_PAINTBALL )
-                in_border = FALSE;
-            if ( medal(ch) && ( x > MEDAL_BORDER_X || y > MEDAL_BORDER_Y ) )
-                in_border = FALSE;
-
-            if ( has_structure[x][y] )
+            if ( in_border && has_structure[x][y])
             {
                 if ( xray )
                     bld = map_bld[x][y][Z_UNDERGROUND];
@@ -256,7 +255,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                     bld = map_bld[x][y][z];
             }
 
-            if ( ( ch->x == x && ch->y == y && !xray && !has_structure[x][y] && size != 997 && !base && size != 998 ) )
+            if ( in_border && ( ch->x == x && ch->y == y && !xray && !has_structure[x][y] && size != 997 && !base && size != 998 ) )
                 char_to_building(ch,NULL);
 
             if ( ch->x == x && ch->y == y )
@@ -363,7 +362,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                     }
                 }
             }
-            else if ( x > 200 && y > 200 && x < 300 && y < 300 && map_bld[x][y][1] && map_bld[x][y][1]->type == BUILDING_HQ && paintball(ch) )
+            else if ( in_border && x > 200 && y > 200 && x < 300 && y < 300 && map_bld[x][y][1] && map_bld[x][y][1]->type == BUILDING_HQ && paintball(ch) )
             {
                 catbuf[0] = '\0';
                 if ( str_cmp(color,"@@r") )
