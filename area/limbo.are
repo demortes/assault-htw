@@ -2042,17 +2042,8 @@ Laser Aims add +1 to the small turrets' (And small turret upgrades) range.
 
 ~
 0 vote~
-@@gThe voting link for @@cTop Mud Sites@@g is:
-http://www.topmudsites.com/cgi-bin/topmuds/rankem.cgi?id=Assault
-
-@@gThe voting link for @@cThe Mud Connector@@g is:
-http://www.mudconnect.com/cgi-bin/vote_rank.cgi?mud=Assault:+High+Tech+War
- 
-@@gThe voting link for @@cMudDomain@@g is:
-http://www.muddomain.com/scripts/siteranks.php?sid=9
-
-@@N
-
+Vote for us at @@aThe Mud Connector@@n at:
+http://www.mudconnect.com/cgi-bin/adv_search.cgi?Mode=MUD&mud=Assault:+High+Tech+War
 ~
 0 Follow Following~
 Follow                                 
@@ -3598,6 +3589,21 @@ Welcome to Assault: High Tech War!
 @@W      ;;ri.@@e   7Z@@y0aXWHatIsthe     maTRixe8a;@@W    ..;rr;@@N                         
 @@W   rr:@@e   .r2M8M@@y28XXr    2i M r   r7XZ@@eWW@008Z;:i,@@W   :;r@@N                        
 @@W  r@@e   70r :;,@@y    ,,; i7aa  ;ZriX;;,@@e e   ;S  XZZ7;iMS@@W  ,X2@@N                     
+~
+0 cheat sheet~
+@@aCommands@@n:
+Build/Demolish - used to build and demolish buildings
+Paintball - used to transport back home from anywhere you may be on the map
+Map - look outside your base (when inside a building), also used to increase map size (type map 25)
+History - lots of spam in this game, use this to view chat history
+@@n
+@@aBuildings@@n:
+Paradrop - used to go to any coordinates on the map
+Bar - used to help find enemies so you can kill them!
+Mining Lab - best lab to start with, build a marketplace and a refinery for fast quest points and resources
+Turret - surround your base with turrets, or else big bad wolves will come around and blow your house down
+@@n
+Are you a blind user? Type @@econfig blind@@n to enter blind mode.@@n
 ~
 0 $~
 #ROOMS
