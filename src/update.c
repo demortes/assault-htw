@@ -1294,6 +1294,8 @@ void aggr_update( void )
                     act_practice( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_arm )
                     act_arm( wch, wch->c_level );
+		else if ( wch->c_sn == gsn_mark )
+		    act_mark(wch, wch->c_level );
                 else if ( wch->c_sn == gsn_dead )
                 {
                     pdie(wch);
