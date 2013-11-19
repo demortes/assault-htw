@@ -35,9 +35,9 @@
 #define mudnamecolor                "@@aAssault: High Tech War@@N"
 #define mudnamenocolor              "Assault: High Tech War"
 #define UPGRADE_REVISION            16
-#define WEBSITE                     "http://aoc.slayn.net"
-#define admin                       "Grave"
-#define admin_email                 "xithen@gmail.com"
+#define WEBSITE                     "http://assault.demortes.com"
+#define admin                       "Demortes"
+#define admin_email                 "assault@demortes.com"
 /*
  * String and memory management parameters.
  */

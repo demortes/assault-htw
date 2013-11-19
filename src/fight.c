@@ -585,8 +585,8 @@ void pdie(CHAR_DATA *ch)
     {
         //        close_socket( d );
         BUILDING_DATA *bld;
-        bool build = FALSE,fOld;
-        fOld = load_char_obj( d, buf, FALSE );
+        bool build = FALSE;
+        load_char_obj( d, buf, FALSE );
         char bbuf[MSL];
         for ( bld = first_building; bld; bld = bld->next )
         {
@@ -2025,14 +2025,12 @@ void check_armor( OBJ_DATA *obj )
 void set_fighting( CHAR_DATA *ch, CHAR_DATA *victim )
 {
     char sound[MSL];
-    int type;
 
     if ( (victim->z == Z_SPACE && ch->z != Z_SPACE) || (ch->z == Z_SPACE && victim->z != Z_SPACE) )
         return;
     if ( ch->fighttimer == 0 )
     {
-        type = number_range(1,3);
-        sprintf( sound, "FightMusic%d.mid", type );
+        sprintf( sound, "fightmusic.wav");
         if ( IS_SET(ch->config, CONFIG_SOUND) )
             sendsound( ch, sound, 40,0,1,"fightmusic",sound);
         if ( ch != victim && victim->fighttimer == 0 && ( IS_SET(victim->config, CONFIG_SOUND) ))
