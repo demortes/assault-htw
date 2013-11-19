@@ -3605,6 +3605,11 @@ Welcome to Assault: High Tech War!
 @@n
 Are you a blind user? Type @@econfig blind@@n to enter blind mode.@@n
 ~
+0 magma~
+Magma is found underground, typically where there is a volcano directly above
+ground (denoted by lava surrounded by mountains). Magma cannot be walked on,
+but if you happen to tunnel into it... you'll die.
+~
 0 $~
 #ROOMS
 #1
