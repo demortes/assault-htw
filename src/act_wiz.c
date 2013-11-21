@@ -5770,7 +5770,7 @@ void do_multiplayers(CHAR_DATA *ch, char *argument)
 
     if ( !str_prefix(arg,"name") )
         multiplay_table[i].name = str_dup(argument);
-    if ( !str_prefix(arg,"host") )
+    else if ( !str_prefix(arg,"host") )
         multiplay_table[i].host = str_dup(argument);
 
     save_multiplay();
