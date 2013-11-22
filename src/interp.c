@@ -2076,3 +2076,20 @@ void check_queue ( CHAR_DATA * ch )
         check_queue(ch);
     return;
 }
+
+void empty_queue( CHAR_DATA *ch)
+{
+	QUEUE_DATA *q;
+	if(!ch->pcdata->queue)
+	{
+		for(;ch->pcdata->last_queue != NULL;)
+		{
+			q = ch->pcdata->queue;
+			ch->pcdata->queue = q->next;
+			if(q == ch->pcdata->last_queue )
+			        ch->pcdata->last_queue = NULL;
+			extract_queue(q);
+		}
+	}
+}
+
