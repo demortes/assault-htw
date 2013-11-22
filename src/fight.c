@@ -756,7 +756,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
         if ( weapon->value[0] <= 0 )
         {
             if ( IS_SET(ch->config, CONFIG_SOUND))
-                sendsound( ch, "emptychamber", 60, 1, 25, "combat", "emptychamber.wav" );
+                sendsound( ch, "emptychamber.wav", 60, 1, 25, "combat", "emptychamber.wav" );
             send_to_char( "You have no more ammo in that thing!\n\r", ch );
             return;
         }
