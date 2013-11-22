@@ -68,9 +68,6 @@ bool                            fLogAll         = FALSE;
  */
 const   struct  cmd_type        cmd_table       [] =
 {
-     {
-        "--",          do_dashdash,       POS_SNEAKING,    0,  LOG_NORMAL,        C_TYPE_ACTION, C_SHOW_ALWAYS
-    },
     {
         "north",          do_north,       POS_SNEAKING,    0,  LOG_NORMAL,        C_TYPE_ACTION, C_SHOW_ALWAYS
     },

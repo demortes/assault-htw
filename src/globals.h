@@ -328,7 +328,6 @@ DECLARE_DO_FUN( do_set         );
 DECLARE_DO_FUN( do_arm         );
 DECLARE_DO_FUN( do_highscores         );
 DECLARE_DO_FUN( do_highranks );
-DECLARE_DO_FUN( do_dashdash );
 DECLARE_DO_FUN( do_upgrade );
 DECLARE_DO_FUN( do_makeexit );
 DECLARE_DO_FUN( do_blast);

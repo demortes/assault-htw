@@ -1138,11 +1138,6 @@ void act_build( CHAR_DATA *ch, int level )
     return;
 }
 
-void do_dashdash( CHAR_DATA *ch, char *argument)
-{
-
-}
-
 void do_upgrade( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
