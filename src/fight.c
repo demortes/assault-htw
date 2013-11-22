@@ -1,32 +1,32 @@
 /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- ~  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        ~
- ~  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   ~
- ~                                                                         ~
- ~  Merc Diku Mud improvments copyright (C) 1992, 1993 by Michael          ~
- ~  Chastain, Michael Quan, and Mitchell Tse.                              ~
- ~                                                                         ~
- ~  Ack 2.2 improvements copyright (C) 1994 by Stephen Dooley              ~
- ~  ACK!MUD is modified Merc2.0/2.1/2.2 code (c)Stephen Zepp 1998 Ver: 4.3 ~
- ~                                                                         ~
- ~  In order to use any part of this  PA  Diku Mud, you must comply with   ~
- ~  both the original Diku license in 'license.doc' as well the Merc       ~
- ~  license in 'license.txt', and the Ack!Mud license in 'ack_license.txt'.~
- ~  In particular, you may not remove any of these copyright notices.      ~
- ~                                                                         ~
- ~           _______      _____                                            ~
- ~          /  __  /\    / ___ \       222222        PA_MUD by Amnon Kruvi ~
- ~         /______/ /   / /___\ \            2       PA_MUD is modified    ~
- ~        / _______/   / _______ \           2       Ack!Mud, v4.3         ~
- ~       /_/          /_/       \_\        2                               ~
- ~                                      2                                  ~
- ~                                     2222222                             ~
- ~                                                                         ~
- ~                                                                         ~
- ~   Years of work have been invested to create DIKU, Merc, Ack and PA.    ~
- ~   Please show your respect by following the licenses, and issuing       ~
- ~   credits where due.                                                    ~
- ~                                                                         ~
- ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+~  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        ~
+~  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   ~
+~                                                                         ~
+~  Merc Diku Mud improvments copyright (C) 1992, 1993 by Michael          ~
+~  Chastain, Michael Quan, and Mitchell Tse.                              ~
+~                                                                         ~
+~  Ack 2.2 improvements copyright (C) 1994 by Stephen Dooley              ~
+~  ACK!MUD is modified Merc2.0/2.1/2.2 code (c)Stephen Zepp 1998 Ver: 4.3 ~
+~                                                                         ~
+~  In order to use any part of this  PA  Diku Mud, you must comply with   ~
+~  both the original Diku license in 'license.doc' as well the Merc       ~
+~  license in 'license.txt', and the Ack!Mud license in 'ack_license.txt'.~
+~  In particular, you may not remove any of these copyright notices.      ~
+~                                                                         ~
+~           _______      _____                                            ~
+~          /  __  /\    / ___ \       222222        PA_MUD by Amnon Kruvi ~
+~         /______/ /   / /___\ \            2       PA_MUD is modified    ~
+~        / _______/   / _______ \           2       Ack!Mud, v4.3         ~
+~       /_/          /_/       \_\        2                               ~
+~                                      2                                  ~
+~                                     2222222                             ~
+~                                                                         ~
+~                                                                         ~
+~   Years of work have been invested to create DIKU, Merc, Ack and PA.    ~
+~   Please show your respect by following the licenses, and issuing       ~
+~   credits where due.                                                    ~
+~                                                                         ~
+~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 #if defined(macintosh)
 #include <types.h>
@@ -50,6 +50,31 @@ void    disarm          args( ( CHAR_DATA *ch, CHAR_DATA *victim, OBJ_DATA * obj
 void    air_bomb    args( ( CHAR_DATA *ch ) );
 bool    check_group args( ( CHAR_DATA *ch, CHAR_DATA *vch ) );
 bool    no_lag      args( ( CHAR_DATA *ch, CHAR_DATA *vch ) );
+
+char * const wear_name[MAX_WEAR] =
+{
+    "Head",
+    "Eyes",
+    "Face",
+    "Ear",
+    "Ear",
+    "Neck",
+    "Neck",
+    "Shoulders",
+    "Arms",
+    "Wrist",
+    "Wrist",
+    "Hands",
+    "Finger",
+    "Finger",
+    "Left Hand",
+    "Right Hand",
+    "Back",
+    "Waist",
+    "Body",
+    "Legs",
+    "Feet",
+};
 
 /*
  * Inflict damage from a hit.
@@ -135,10 +160,10 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
         return;
     }
     /*    if ( check_group(ch,victim) )
-        {
-        send_to_char( "You cannot attack people in different kill groups.\n\r", ch );
-        return;
-        } */
+          {
+          send_to_char( "You cannot attack people in different kill groups.\n\r", ch );
+          return;
+          } */
 
     if ( dam < 0 )
         dam = 0;
@@ -255,35 +280,35 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
     {
         switch( victim->position )
         {
-        case POS_MORTAL:
-            act( "$n is mortally wounded, and will die soon, if not aided.",
-                 victim, NULL, NULL, TO_ROOM );
-            send_to_char(
-                "You are mortally wounded, and will die soon, if not aided.\n\r",
-                victim );
-            break;
+            case POS_MORTAL:
+                act( "$n is mortally wounded, and will die soon, if not aided.",
+                        victim, NULL, NULL, TO_ROOM );
+                send_to_char(
+                        "You are mortally wounded, and will die soon, if not aided.\n\r",
+                        victim );
+                break;
 
-        case POS_INCAP:
-            act( "$n is incapacitated and will slowly die, if not aided.",
-                 victim, NULL, NULL, TO_ROOM );
-            send_to_char(
-                "You are incapacitated and will slowly die, if not aided.\n\r",
-                victim );
-            break;
+            case POS_INCAP:
+                act( "$n is incapacitated and will slowly die, if not aided.",
+                        victim, NULL, NULL, TO_ROOM );
+                send_to_char(
+                        "You are incapacitated and will slowly die, if not aided.\n\r",
+                        victim );
+                break;
 
-        case POS_DEAD:
+            case POS_DEAD:
 
-            act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
-            send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
-            sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
-            break;
+                act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
+                send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
+                sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
+                break;
 
-        default:
-            if ( dam > victim->max_hit / 4 )
-                send_to_char( "That really did HURT!\n\r", victim );
-            if ( victim->hit < victim->max_hit / 4 )
-                send_to_char( "You sure are BLEEDING!\n\r", victim );
-            break;
+            default:
+                if ( dam > victim->max_hit / 4 )
+                    send_to_char( "That really did HURT!\n\r", victim );
+                if ( victim->hit < victim->max_hit / 4 )
+                    send_to_char( "You sure are BLEEDING!\n\r", victim );
+                break;
         }
     }                                                       /* end of if statement */
 
@@ -469,12 +494,12 @@ void raw_kill( CHAR_DATA *victim, char *argument )
         if ( str_cmp(obj->owner,victim->name) )
             continue;
         /*	if ( obj->bomb_data )
-            {
+                {
                 if ( obj->carried_by )
-                    obj_from_char(obj);
+                obj_from_char(obj);
                 obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
                 continue;
-            } */
+                } */
         extract_obj(obj);
     }
     for ( obj = victim->first_carry; obj; obj = obj_next )
@@ -1383,10 +1408,10 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
     if ( is_neutral(bld->type) || paintball(bld) )
         return;
     /*    	if ( check_group(ch,vch) )
-            {
-            send_to_char( "You cannot attack people in different kill groups.\n\r", ch );
-            return;
-            }*/
+                {
+                send_to_char( "You cannot attack people in different kill groups.\n\r", ch );
+                return;
+                }*/
 
     if ( !neutral && complete(bld) && ch != vch )
     {
@@ -1395,8 +1420,8 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
         if ( bld->type == BUILDING_PORTAL && bld->value[0] == 0 )
             portal = bld->level;
     }
-//    if ( ch != vch && (!neutral && (medal(vch) ) ) )        // || paintball(vch) ) ) )
-//        return;
+    //    if ( ch != vch && (!neutral && (medal(vch) ) ) )        // || paintball(vch) ) ) )
+    //        return;
 
     if ( !neutral )
     {
@@ -1571,15 +1596,15 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     sendsound(vch,"boom",100,1,50,"combat","boom.wav");
             }
             /*        		if ( !neutral && bld->type == BUILDING_HQ && vch && vch != ch )
-                            {
-                                    OBJ_DATA *obj;
+                                {
+                                OBJ_DATA *obj;
 
-                                    obj = create_object(get_obj_index(OBJ_VNUM_FLAG),0);
-                                    move_obj(obj,bld->x,bld->y,bld->z);
-                                    sprintf( buf, "%s's (rank %d) Flag for destroying %s's (rank %d) HQ.", ch->name, get_rank(ch), vch->name, get_rank(vch) );
-                                    free_string(obj->description);
-                                    obj->description = str_dup(buf);
-                            }*/
+                                obj = create_object(get_obj_index(OBJ_VNUM_FLAG),0);
+                                move_obj(obj,bld->x,bld->y,bld->z);
+                                sprintf( buf, "%s's (rank %d) Flag for destroying %s's (rank %d) HQ.", ch->name, get_rank(ch), vch->name, get_rank(vch) );
+                                free_string(obj->description);
+                                obj->description = str_dup(buf);
+                                }*/
             extract_building( bld, TRUE );
             dest = TRUE;
             if ( IS_SET(ch->config, CONFIG_SOUND))
@@ -2168,12 +2193,12 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
             }
 
             sprintf( log_buf, "%s (%d%s%s) killed by %s at %d/%d/%d",
-                     victim->name,
-                     my_get_hours(victim,TRUE),
-                     masskill ? "-MASSKILL" : "",
-                     IS_NEWBIE(victim) ? "-NEWBIE" : "",
-                     ch->name,
-                     victim->x, victim->y, victim->z );
+                    victim->name,
+                    my_get_hours(victim,TRUE),
+                    masskill ? "-MASSKILL" : "",
+                    IS_NEWBIE(victim) ? "-NEWBIE" : "",
+                    ch->name,
+                    victim->x, victim->y, victim->z );
             log_string( log_buf );
             monitor_chan( victim, log_buf, MONITOR_COMBAT );
             if ( IN_PIT(victim) && IN_PIT(ch) )
@@ -2299,7 +2324,7 @@ void set_stun(CHAR_DATA *ch, int time)
 {
     ch->wait += time;
     /*	if ( ch->c_sn != -1 )
-            do_stop(ch,"");
+        do_stop(ch,"");
         ch->c_sn = gsn_stun;
         ch->c_time += time;*/
     return;
@@ -2502,5 +2527,273 @@ void do_gunner_shoot( CHAR_DATA *ch, char *argument )
     }
     damage(ch,victim,dam,DAMAGE_BULLETS);
     set_stun(ch,12);
+    return;
+}
+
+void do_kick( CHAR_DATA *ch, char *argument )
+{
+    CHAR_DATA *victim;
+    char arg[MSL];
+    char buf[MSL];
+    OBJ_DATA *eq;
+    int loc, dam;
+
+    argument = one_argument(argument, arg);
+
+    if ( ch->in_vehicle )
+    {
+        send_to_char( "Sure! You'll just reach out of the vehicle with your super-long leg!...\n\r", ch );
+        return;
+    }
+    if ( paintball(ch) )
+    {
+        send_to_char( "Not during a paintball game!\n\r", ch );
+        return;
+    }
+    if ( ( victim = get_char_room(ch,arg) ) == NULL )
+    {
+        send_to_char( "You can't find your target here.\n\r", ch );
+        return;
+    }
+    if ( victim == ch )
+    {
+        send_to_char( "You're not that flexible.\n\r", ch );
+        return;
+    }
+    if ( victim->in_vehicle )
+    {
+        send_to_char( "That would be hard to do... Your victim being inside a vehicle and all...\n\r", ch );
+        return;
+    }
+
+    if ( ( loc = get_loc(argument) ) == -1 )
+        loc = number_range(1, MAX_WEAR);
+
+    if ( practicing(ch) && ch != victim )
+        do_practice(ch, "");
+    if ( practicing(victim) && ch != victim )
+        do_practice(victim, "");
+
+    dam = number_range(1, 100);
+ 
+    sprintf( buf, "You kick $N in the %s! (%d)", wear_name[loc], dam );
+    act( buf, ch, NULL, victim, TO_CHAR );
+    sprintf( buf, "$n kicks $N in the %s!", wear_name[loc] );
+    act( buf, ch, NULL, victim, TO_NOTVICT );
+    sprintf( buf, "$n kicks you in the %s! (%d)", wear_name[loc], dam );
+    act( buf, ch, NULL, victim, TO_VICT );
+    if ( ( eq = get_eq_char( victim, loc ) ) != NULL )
+    {
+        if ( eq->item_type == ITEM_ARMOR )
+        {
+            if ( (eq->value[0] == -1 || eq->value[0] == -2) && number_percent() < eq->level * 3 )
+            {
+                if ( number_percent() < eq->level )
+                {
+                    act( "The damage is absorbed by $p!", ch, eq, NULL, TO_CHAR );
+                    act( "The damage is absorbed by $p!", ch, eq, NULL, TO_ROOM );
+                    eq->value[1] += dam;
+                    dam = 0;
+                }
+                else
+                {
+                    int absorb;
+                    act( "$p absorbs some of the damage.", ch, eq, NULL, TO_CHAR );
+                    act( "$p absorbs some of the damage.", ch, eq, NULL, TO_ROOM );
+                    absorb= number_range(1,dam - eq->value[1]);
+                    eq->value[1] += absorb;
+                    dam -= absorb;
+                }
+                check_armor(eq);
+            }
+        }
+    }
+
+    if ( loc == WEAR_BODY && number_percent() < dam )
+    {
+        act( "The kick sends you FLYING!", victim, NULL, NULL, TO_CHAR );
+        act( "The kick sends $n FLYING!", victim, NULL, NULL, TO_ROOM );
+        dam += number_range(1, get_rank(ch));
+    }
+
+    damage(ch, victim, dam, DAMAGE_GENERAL);
+
+    if ( loc == WEAR_HEAD && number_percent() < dam )
+    {
+        send_to_char( "You feel dizzy...\n\r", victim );
+        act( "$n looks dizzy...", victim, NULL, NULL, TO_ROOM );
+        WAIT_STATE(victim, number_range(1, 20));
+    }
+
+    tail_chain( );
+    WAIT_STATE(ch, 16);
+    return;
+}
+
+void do_punch( CHAR_DATA *ch, char *argument )
+{
+    CHAR_DATA *victim;
+    char arg[MSL];
+    char buf[MSL];
+    OBJ_DATA *eq;
+    int loc, dam;
+
+    argument = one_argument(argument,arg);
+
+    if ( ch->in_vehicle )
+    {
+        send_to_char( "Sure! You'll just reach out of the vehicle with your super-long arm!...\n\r", ch );
+        return;
+    }
+    if ( paintball(ch) )
+    {
+        send_to_char( "Not during a paintball game!\n\r", ch );
+        return;
+    }
+    if ( ( victim = get_char_room(ch,arg) ) == NULL )
+    {
+        send_to_char( "You can't find your target here.\n\r", ch );
+        return;
+    }
+    if ( victim == ch )
+    {
+        send_to_char( "You're not that flexible.\n\r", ch );
+        return;
+    }
+    if ( victim->in_vehicle )
+    {
+        send_to_char( "That would be hard to do... Your victim being inside a vehicle and all...\n\r", ch );
+        return;
+    }
+
+    loc = WEAR_HEAD;
+
+    if ( ( loc = get_loc(argument) ) == -1 )
+        loc = number_range(1, MAX_WEAR);
+
+    if ( practicing(ch) && ch != victim )
+        do_practice(ch,"");
+    if ( practicing(victim) && ch != victim )
+        do_practice(victim,"");
+
+    dam = number_range(1, 100);
+    
+    sprintf( buf, "You punch $N in the %s! (%d)", wear_name[loc], dam );
+    act( buf, ch, NULL, victim, TO_CHAR );
+    sprintf( buf, "$n punch $N in the %s!", wear_name[loc] );
+    act( buf, ch, NULL, victim, TO_NOTVICT );
+    sprintf( buf, "$n punch you in the %s! (%d)", wear_name[loc], dam );
+    act( buf, ch, NULL, victim, TO_VICT );
+    if ( ( eq = get_eq_char( victim, loc ) ) != NULL )
+    {
+        if ( eq->item_type == ITEM_ARMOR )
+        {
+            if ( (eq->value[0] == -1 || eq->value[0] == -2) && number_percent() < eq->level * 3 )
+            {
+                if ( number_percent() < eq->level )
+                {
+                    act( "The damage is absorbed by $p!", ch, eq, NULL, TO_CHAR );
+                    act( "The damage is absorbed by $p!", ch, eq, NULL, TO_ROOM );
+                    eq->value[1] += dam * 1.5;
+                    dam = 0;
+                }
+                else
+                {
+                    int absorb;
+                    act( "$p absorbs some of the damage.", ch, eq, NULL, TO_CHAR );
+                    act( "$p absorbs some of the damage.", ch, eq, NULL, TO_ROOM );
+                    absorb= number_range(1,dam - eq->value[1]);
+                    eq->value[1] += absorb * 1.5;
+                    dam -= absorb;
+                }
+                check_armor(eq);
+            }
+        }
+    }
+
+    if ( loc == WEAR_BODY && number_percent() < dam )
+    {
+        act( "The punch sends you to your knees!", victim, NULL, NULL, TO_CHAR );
+        act( "The kick sends $n to $E's knees!", victim, NULL, NULL, TO_ROOM );
+        dam += number_range(1, get_rank(ch));
+    }
+
+    damage(ch, victim, dam, DAMAGE_GENERAL);
+    
+    if ( loc == WEAR_HEAD && number_percent() < dam )
+    {
+        send_to_char( "You feel dizzy...\n\r", victim );
+        act( "$n looks dizzy...", victim, NULL, NULL, TO_ROOM );
+        WAIT_STATE(victim, number_range(1, 20));
+    }
+    
+    tail_chain( );
+    WAIT_STATE(ch, 16);
+    return;
+}
+
+void do_hurl( CHAR_DATA *ch, char *argument )
+{
+    CHAR_DATA *victim;
+    char arg[MSL];
+    char buf[MSL];
+    int dam;
+
+    argument = one_argument(argument,arg);
+
+    if ( ch->in_vehicle )
+    {
+        send_to_char( "Sure! You'll just reach out of the vehicle with your super-long arms!...\n\r", ch );
+        return;
+    }
+    if ( paintball(ch) )
+    {
+        send_to_char( "Not during a paintball game!\n\r", ch );
+        return;
+    }
+    if ( ( victim = get_char_room(ch,arg) ) == NULL )
+    {
+        send_to_char( "You can't find your target here.\n\r", ch );
+        return;
+    }
+    if ( victim == ch )
+    {
+        send_to_char( "You're not that flexible.\n\r", ch );
+        return;
+    }
+    if ( victim->in_vehicle )
+    {
+        send_to_char( "That would be hard to do... Your victim being inside a vehicle and all...\n\r", ch );
+        return;
+    }
+    
+    dam = number_range(1, 150);
+    
+    if (dam < 50)
+    {
+        sprintf(buf, "You try to throw $N, but do not succeed.\n\r");
+        
+        sprintf( buf, "You try to hurl $N but miss!" );
+        act( buf, ch, NULL, victim, TO_CHAR );
+        sprintf( buf, "$n tries to hurl $N but misses!" );
+        act( buf, ch, NULL, victim, TO_NOTVICT );
+        sprintf( buf, "$n tries to hurl you but misses!" );
+        act( buf, ch, NULL, victim, TO_VICT );
+        
+        WAIT_STATE(ch, 50);
+        return;
+    }
+
+    sprintf( buf, "You hurl $N across the room! (%d)", dam );
+    act( buf, ch, NULL, victim, TO_CHAR );
+    sprintf( buf, "$n hurls $N across the room!" );
+    act( buf, ch, NULL, victim, TO_NOTVICT );
+    sprintf( buf, "$n hurls you across the room! (%d)", dam );
+    act( buf, ch, NULL, victim, TO_VICT );
+    
+    damage(ch, victim, dam, DAMAGE_BLAST);
+    WAIT_STATE(victim, 100);
+    WAIT_STATE(ch, 80);
+
     return;
 }

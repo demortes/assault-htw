@@ -72,30 +72,6 @@ const struct ability_type ability_table[] =
     { NULL,                   -1,     -1,     -1,     NULL },
 };
 
-char * const wear_name[MAX_WEAR] =
-{
-    "Head",
-    "Eyes",
-    "Face",
-    "Ear",
-    "Ear",
-    "Neck",
-    "Neck",
-    "Shoulders",
-    "Arms",
-    "Wrist",
-    "Wrist",
-    "Hands",
-    "Finger",
-    "Finger",
-    "Left Hand",
-    "Right Hand",
-    "Back",
-    "Waist",
-    "Body",
-    "Legs",
-    "Feet",
-};
 void check_skill( CHAR_DATA *ch, int gsn, int chance, char *name )
 {
     char buf[MSL];
@@ -462,7 +438,7 @@ void act_dig( CHAR_DATA *ch, int level )
             ch->c_time = 0;
             return;
         }
-        if ( ch->z == planet_table[ch->z].terrain == TERRAIN_FOREST )
+        if ( ch->z != Z_SPACE && planet_table[ch->z].terrain == TERRAIN_FOREST )
         {
             if ( (obj = create_material(ITEM_ROCK)) == NULL )
             {
@@ -907,14 +883,11 @@ void do_target( CHAR_DATA *ch, char *argument )
     int time;
     BUILDING_DATA *bld = NULL;
     bool list = FALSE;
-    int btime;
     if ( IN_PIT(ch) )
         mreturn( "Not in the pit.\n\r", ch );
 
     if ( argument[0] == '\0' )
     {
-        //		send_to_char( "Target whom?\n\r", ch );
-        //		return;
         list = TRUE;
     }
 
@@ -1186,6 +1159,7 @@ void act_target (CHAR_DATA *ch, int level )
     return;
 }
 
+/*
 void do_kick( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
@@ -1276,10 +1250,7 @@ void do_kick( CHAR_DATA *ch, char *argument )
         dam += number_range(1,get_rank(ch));
     }
 
-    victim->hit -= dam;
-    update_pos(victim);
-    if ( check_dead(ch,victim) )
-        return;
+    damage(ch, victim, dam, DAMAGE_GENERAL);
 
     if ( loc == WEAR_HEAD && number_percent() < dam )
     {
@@ -1287,8 +1258,6 @@ void do_kick( CHAR_DATA *ch, char *argument )
         act( "$n looks dizzy...", victim, NULL, NULL, TO_ROOM );
         WAIT_STATE(victim,number_range(1,20));
     }
-
-    set_fighting(ch, victim);
 
     tail_chain( );
     WAIT_STATE(ch,16);
@@ -1344,11 +1313,11 @@ void do_punch( CHAR_DATA *ch, char *argument )
         dam = 1;
     if ( dam > 99 )
         dam = 99;
-    sprintf( buf, "You kick $N in the %s!", wear_name[loc] );
+    sprintf( buf, "You punch $N in the %s!", wear_name[loc] );
     act( buf, ch, NULL, victim, TO_CHAR );
-    sprintf( buf, "$n kicks $N in the %s!", wear_name[loc] );
+    sprintf( buf, "$n punch $N in the %s!", wear_name[loc] );
     act( buf, ch, NULL, victim, TO_NOTVICT );
-    sprintf( buf, "$n kicks you in the %s!", wear_name[loc] );
+    sprintf( buf, "$n punch you in the %s!", wear_name[loc] );
     act( buf, ch, NULL, victim, TO_VICT );
     if ( ( eq = get_eq_char( victim, loc ) ) != NULL )
     {
@@ -1377,10 +1346,7 @@ void do_punch( CHAR_DATA *ch, char *argument )
         }
     }
 
-    victim->hit -= dam;
     update_pos(victim);
-    if ( check_dead(ch,victim) )
-        return;
 
     if ( number_percent() < dam )
     {
@@ -1389,12 +1355,10 @@ void do_punch( CHAR_DATA *ch, char *argument )
         WAIT_STATE(victim,number_range(1,20));
     }
 
-    set_fighting(ch, victim);
-
     tail_chain( );
     WAIT_STATE(ch,16);
     return;
-}
+}*/
 
 void do_computer( CHAR_DATA *ch, char *argument )
 {

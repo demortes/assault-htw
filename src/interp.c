@@ -437,7 +437,9 @@ const   struct  cmd_type        cmd_table       [] =
         "hold",           do_wear,        POS_RESTING,     0,  LOG_NORMAL,
         C_TYPE_OBJECT, C_SHOW_ALWAYS
     },
-
+    {   "hurl",             do_hurl,          POS_STANDING,    0,  LOG_NORMAL,
+        C_TYPE_ACTION, C_SHOW_SKILL
+    },
     {
         "ignore",         do_ignore,      POS_DEAD,        0,  LOG_NORMAL,
         C_TYPE_CONFIG, C_SHOW_ALWAYS
@@ -464,9 +466,9 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_OBJECT, C_SHOW_ALWAYS
     },
 
-    //    { "kick",             do_kick,          POS_STANDING,    0,  LOG_NORMAL,
-    //      C_TYPE_ACTION, C_SHOW_SKILL },
-
+    {   "kick",             do_kick,          POS_STANDING,    0,  LOG_NORMAL,
+        C_TYPE_ACTION, C_SHOW_SKILL 
+    },
     {
         "land",       do_land,    POS_STANDING,  0,  LOG_NORMAL,
         C_TYPE_ACTION, C_SHOW_ALWAYS
@@ -607,9 +609,9 @@ const   struct  cmd_type        cmd_table       [] =
         "pubmail",        do_pubmail,     POS_DEAD,        0,  LOG_NORMAL,
         C_TYPE_INFO,    C_SHOW_ALWAYS
     },
-    //    { "punch",		do_punch,	POS_STANDING,	 0,  LOG_NORMAL,
-    //     C_TYPE_ACTION,    C_SHOW_ALWAYS},
-
+    {    "punch",	do_punch,	POS_STANDING,	 0,  LOG_NORMAL,
+         C_TYPE_ACTION,    C_SHOW_ALWAYS
+    },
     {
         "quest",          do_quest,       POS_DEAD,        0,  LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_NEVER
