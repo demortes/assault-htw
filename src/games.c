@@ -1,32 +1,32 @@
 /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
- ~  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        ~
- ~  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   ~
- ~                                                                         ~
- ~  Merc Diku Mud improvments copyright (C) 1992, 1993 by Michael          ~
- ~  Chastain, Michael Quan, and Mitchell Tse.                              ~
- ~                                                                         ~
- ~  Ack 2.2 improvements copyright (C) 1994 by Stephen Dooley              ~
- ~  ACK!MUD is modified Merc2.0/2.1/2.2 code (c)Stephen Zepp 1998 Ver: 4.3 ~
- ~                                                                         ~
- ~  In order to use any part of this  PA  Diku Mud, you must comply with   ~
- ~  both the original Diku license in 'license.doc' as well the Merc       ~
- ~  license in 'license.txt', and the Ack!Mud license in 'ack_license.txt'.~
- ~  In particular, you may not remove any of these copyright notices.      ~
- ~                                                                         ~
- ~           _______      _____                                            ~
- ~          /  __  /\    / ___ \       222222        PA_MUD by Amnon Kruvi ~
- ~         /______/ /   / /___\ \            2       PA_MUD is modified    ~
- ~        / _______/   / _______ \           2       Ack!Mud, v4.3         ~
- ~       /_/          /_/       \_\        2                               ~
- ~                                      2                                  ~
- ~                                     2222222                             ~
- ~                                                                         ~
- ~                                                                         ~
- ~   Years of work have been invested to create DIKU, Merc, Ack and PA.    ~
- ~   Please show your respect by following the licenses, and issuing       ~
- ~   credits where due.                                                    ~
- ~                                                                         ~
- ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+  ~  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        ~
+  ~  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   ~
+  ~                                                                         ~
+  ~  Merc Diku Mud improvments copyright (C) 1992, 1993 by Michael          ~
+  ~  Chastain, Michael Quan, and Mitchell Tse.                              ~
+  ~                                                                         ~
+  ~  Ack 2.2 improvements copyright (C) 1994 by Stephen Dooley              ~
+  ~  ACK!MUD is modified Merc2.0/2.1/2.2 code (c)Stephen Zepp 1998 Ver: 4.3 ~
+  ~                                                                         ~
+  ~  In order to use any part of this  PA  Diku Mud, you must comply with   ~
+  ~  both the original Diku license in 'license.doc' as well the Merc       ~
+  ~  license in 'license.txt', and the Ack!Mud license in 'ack_license.txt'.~
+  ~  In particular, you may not remove any of these copyright notices.      ~
+  ~                                                                         ~
+  ~           _______      _____                                            ~
+  ~          /  __  /\    / ___ \       222222        PA_MUD by Amnon Kruvi ~
+  ~         /______/ /   / /___\ \            2       PA_MUD is modified    ~
+  ~        / _______/   / _______ \           2       Ack!Mud, v4.3         ~
+  ~       /_/          /_/       \_\        2                               ~
+  ~                                      2                                  ~
+  ~                                     2222222                             ~
+  ~                                                                         ~
+  ~                                                                         ~
+  ~   Years of work have been invested to create DIKU, Merc, Ack and PA.    ~
+  ~   Please show your respect by following the licenses, and issuing       ~
+  ~   credits where due.                                                    ~
+  ~                                                                         ~
+  ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 #include <sys/types.h>
 #include <ctype.h>
@@ -167,78 +167,121 @@ void do_where ( CHAR_DATA *ch, char *argument )
     bool world = FALSE;
     char buf[MSL];
     char buf2[MSL];
+    OBJ_DATA *obj;
+    extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
     int range = 25;
-	buf[0] = '\0';
-	buf2[0] = '\0';
-	if ( !paintball(ch) && !sysdata.killfest )
-	{
-		//		send_to_char( "You can only use the command during a paintball game.\n\r", ch );
-		//		return;
-		world = TRUE;
-	}
-	if ( ch->z == Z_SPACE && ch->in_vehicle && IS_SET(ch->in_vehicle->flags,VEHICLE_SPACE_SCANNER) )
-		world = FALSE;
-	if(argument[0] == '\0')
-	{
-		for ( wch = first_char; wch; wch = wch->next )
-		{
-			if ( !world && !paintball(wch) && !sysdata.killfest )
-				continue;
-			if ( world && IS_IMMORTAL(wch) )
-				continue;
-			if ( wch->z != ch->z && !sysdata.killfest )
-				continue;
-			else if ( world && (wch->x + range < ch->x || wch->x - range > ch->x || wch->y + range < ch->y || wch->y - range > ch->y ) )
-			{
-				if ( IS_SET(wch->effect,EFFECT_TRACER) && wch != ch )
-					sprintf( buf2, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
-				continue;
-			}
-			if ( ch->z == Z_UNDERGROUND )
-				sprintf( buf, "@@W%s @@gat @@a?@@g/@@a?@@N\n\r", wch->name );
-			else
-				sprintf( buf, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
-			send_to_char( buf, ch );
-		}
-			if ( buf2[0] != '\0' )
-		{
-			send_to_char( "@@eYou could also trace the following:\n\r", ch );
-			send_to_char(buf2,ch);
-		}
-	} else {
-		if(!strcmp(argument, "hq"))
-			sprintf(argument, "headquarters");
-		int x = 0, y = 0;
-		for(x = ch->x - 25;x <= ch->x + 25;x++)
-			for(y = ch->y - 12;y <= ch->y +12;y++)
-			{	if(x <= 2)
-					x = 3;
-				if(y <= 2)
-					y = 3;
-				if(y > 1000)
-					continue;
-				if(x > 1000)
-					continue;
-				if(map_bld[x][y][ch->z] != NULL && map_bld[x][y][ch->z]->type == BUILDING_DUMMY)
-				{
-					if ( map_bld[x][y][ch->z]->value[0] < 1 || map_bld[x][y][ch->z]->value[0] >= MAX_BUILDING )
+    buf[0] = '\0';
+    buf2[0] = '\0';
+
+    if ( !paintball(ch) && !sysdata.killfest )
+    {
+        world = TRUE;
+    }
+    if ( ch->z == Z_SPACE && ch->in_vehicle && IS_SET(ch->in_vehicle->flags, VEHICLE_SPACE_SCANNER) )
+        world = FALSE;
+    if (argument[0] == '\0')
+    {
+        for ( wch = first_char; wch; wch = wch->next )
+        {
+            if ( !world && !paintball(wch) && !sysdata.killfest )
+                continue;
+            if ( world && IS_IMMORTAL(wch) )
+                continue;
+            if ( wch->z != ch->z && !sysdata.killfest )
+                continue;
+            else if ( world && (wch->x + range < ch->x || wch->x - range > ch->x || wch->y + range < ch->y || wch->y - range > ch->y ) )
+            {
+                if ( IS_SET(wch->effect,EFFECT_TRACER) && wch != ch )
+                    sprintf( buf2, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
+                continue;
+            }
+            if ( ch->z == Z_UNDERGROUND )
+                sprintf( buf, "@@W%s @@gat @@a?@@g/@@a?@@N\n\r", wch->name );
+            else
+                sprintf( buf, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
+            send_to_char( buf, ch );
+        }
+        if ( buf2[0] != '\0' )
+        {
+            send_to_char( "@@eYou could also trace the following:\n\r", ch );
+            send_to_char(buf2,ch);
+        }
+    } else if (!strcmp(argument, "asteroid")) {
+
+        int x, y, xx, yy;
+
+        for (x = ch->x - 10; x <= ch->x + 10; x++)
+        {
+            for (y = ch->y - 10; y <= ch->y + 10; y++)
+            {
+                xx = x; yy = y;
+
+                if (x < 0)
+                    xx += 449;
+                if (x > 449)
+                    xx -= 449;
+
+                if (y < 0)
+                    yy += 449;
+                if (y > 449)
+                    yy -= 449;
+
+                for ( obj = map_obj[xx][yy]; obj != NULL; obj = obj->next_in_room)
+                {
+                    if ( is_name( "asteroid", obj->name ) )
+                    {
+                        sprintf(buf2, "Asteroid at (%d/%d)\r\n", xx, yy);
+                        strcat(buf, buf2);
+                    }
+                }
+            }
+        }
+
+        if (buf[0] == '\0')
+            sprintf(buf, "No asteroids found in the vicinity.\r\n");
+
+        send_to_char( buf, ch );
+
+    } else {
+        if (!strcmp(argument, "hq"))
+            sprintf(argument, "headquarters");
+        int x = 0, y = 0;
+        for (x = ch->x - 25;x <= ch->x + 25;x++)
+        {
+            for (y = ch->y - 12; y <= ch->y + 12; y++)
+            {
+                if (x <= 2)
+                    x = 3;
+                if (y <= 2)
+                    y = 3;
+                if (y > 1000)
+                    continue;
+                if (x > 1000)
+                    continue;
+                if (map_bld[x][y][ch->z] != NULL && map_bld[x][y][ch->z]->type == BUILDING_DUMMY)
+                {
+                    if ( map_bld[x][y][ch->z]->value[0] < 1 || map_bld[x][y][ch->z]->value[0] >= MAX_BUILDING )
                         map_bld[x][y][ch->z]->value[0] = BUILDING_TURRET;
-					if (!str_cmp(build_table[map_bld[x][y][ch->z]->value[0]].name, argument))
-					{
-						sprintf( buf2, "%s at (%d/%d)\r\n", build_table[map_bld[x][y][ch->z]->value[0]].name, x, y );
-						strcat(buf, buf2);
-					}
-				}
-				else if(map_bld[x][y][ch->z] != NULL && !str_cmp(map_bld[x][y][ch->z]->name, argument))
-				{
-					sprintf(buf2, "%s at (%d/%d)\r\n", map_bld[x][y][ch->z]->name, x, y);
-					strcat(buf, buf2);
-				}
-			}	
-			if(buf[0] == '\0')
-				sprintf(buf, "No buildings found with that name.\r\n");
-		send_to_char( buf, ch);
-	}
+                    if (!str_cmp(build_table[map_bld[x][y][ch->z]->value[0]].name, argument))
+                    {
+                        sprintf( buf2, "%s at (%d/%d)\r\n", build_table[map_bld[x][y][ch->z]->value[0]].name, x, y );
+                        strcat(buf, buf2);
+                    }
+                }
+                else if (map_bld[x][y][ch->z] != NULL && !str_cmp(map_bld[x][y][ch->z]->name, argument))
+                {
+                    sprintf(buf2, "%s at (%d/%d)\r\n", map_bld[x][y][ch->z]->name, x, y);
+                    strcat(buf, buf2);
+                }
+            }
+        }
+
+        if (buf[0] == '\0')
+            sprintf(buf, "No buildings found with that name.\r\n");
+
+        send_to_char( buf, ch);
+    }
+
     return;
 }
 
