@@ -3588,6 +3588,16 @@ Magma is found underground, typically where there is a volcano directly above
 ground (denoted by lava surrounded by mountains). Magma cannot be walked on,
 but if you happen to tunnel into it... you'll die.
 ~
+0 blind~
+If you are a blind user, type CONFIG BLIND to enable blind mode.
+ 
+Useful Commands:
+buildings - lists all buildings in the vicinity
+bscan (direction) - scans the direction for buildings, friendly and otherwise
+ 
+Current notes: Space doesn't have blind support yet, so don't try.
+Quests also are very difficult for blind users. This will be updated.
+~
 0 $~
 #ROOMS
 #1

@@ -2062,8 +2062,8 @@ void do_pubmail ( CHAR_DATA *ch, char *argument )
 void do_sound ( CHAR_DATA *ch, char *argument )
 {
     ( IS_SET ( ch->config, CONFIG_SOUND )
-      ? do_config( ch, "+sound" )
-      : do_config( ch, "-sound") );
+      ? do_config( ch, "-sound" )
+      : do_config( ch, "+sound") );
 }
 
 void do_combine ( CHAR_DATA *ch, char *argument )

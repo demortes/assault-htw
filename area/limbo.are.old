@@ -455,7 +455,7 @@ Wear
 New Players                               
 @@g                                                                          
 @@g The full guide can be found on our website:                              
-@@g @@ytinyurl.com/assaultbug                                                     
+@@g @@yassault.demortes.com                                                     
 @@g Under the Guides section.                                                
 @@g                                                                          
 @@g Here is a brief version of what your starting steps should be:           
@@ -855,10 +855,7 @@ Pray
 Welcome New Player                           
 @@g                                                                          
 @@g                                                                          
-@@b          To see what you should do now, please check out either          
-@@y                       http://tinyurl.com/assaultbug                               
-@@b                    (Under the GUIDES Section)                            
-@@b                              Or type:                                    
+@@b          To see what you should do now, please check out           
 @@y                            HELP NEWBIE                                   
 @@g                                                                          
 @@g                                                                          
@@ -1308,7 +1305,7 @@ Generate
 ~
 0 website site web~
 Website                                    
-@@g                         http://tinyurl.com/assaultbug                             
+@@g                         http://assault.demortes.com                             
 @@N
 
 ~
@@ -1463,7 +1460,6 @@ How to Use MCClient
 @@g                                                                          
 @@g                                                                          
 @@g 1) Download the program from the website                                 
-@@g     @@ahttp://assault.slayn.net/mcclient.zip                                
 @@g 2) Unzip all the files to a directory                                    
 @@g 3) Run the executable file                                               
 @@g 4) Set your client to connect to:                                        
@@ -1866,24 +1862,6 @@ Resources
 Intergalactic Pub
 
 ~
-0 Donations~
-Donations                                
-@@g                                                                          
-@@g If you wish to donate, you may:                                          
-@@g                                                                          
-@@g Paypal Donation@@N:                                                         
-@@g                                                                          
-@@g https://www.paypal.com/xclick/business=akruvi%40yahoo.com&item_name=     
-@@g Assault%3A+High+Tech+War&item_number=1&no_note=1&tax=0&currency_         
-@@g code=USD&lc=US                                                           
-@@g                                                                          
-@@g   All money will go towards advertising for the MUD, and if there is     
-@@g enough, a better/dedicated server. Thank you for your interest in        
-@@g helping the development of the game.                                     
-@@g                                                                          
-@@N
-
-~
 0 Radiosilence~
 .      Syntax: Radiosilence
  
@@ -2043,7 +2021,7 @@ Laser Aims add +1 to the small turrets' (And small turret upgrades) range.
 ~
 0 vote~
 Vote for us at @@aThe Mud Connector@@n at:
-http://www.mudconnect.com/cgi-bin/adv_search.cgi?Mode=MUD&mud=Assault:+High+Tech+War
+http://goo.gl/QYFYzU
 ~
 0 Follow Following~
 Follow                                 
@@ -3387,7 +3365,7 @@ Hacking
 @@g  virus.                                                                  
 @@g                                                                          
 @@g A more detailed hacking guide can be found on the website at             
-@@g  http://tinyurl.com/assaultbug                                                    
+@@g  http://assault.demortes.com                                                    
                                                                           
 @@aSee Also:@@y Computer                                                        
 @@N
@@ -3540,7 +3518,7 @@ There are a number of ways to contact the imortal base. Below is a list of
 0 motd~
 Welcome to Assault: High Tech War!
 Please note, this game is currently under development. If you have
-bugs or suggestions, please post them on the tracker at @@ytinyurl.com/assaultbug@@N.
+bugs or suggestions, please post them on the tracker at @@yassault.demortes.com@@N.
  
 If you have not already, please read '@@GHelp Rules@@N' and abide by them.
 ~
@@ -3609,6 +3587,16 @@ Welcome to Assault: High Tech War!
 Magma is found underground, typically where there is a volcano directly above
 ground (denoted by lava surrounded by mountains). Magma cannot be walked on,
 but if you happen to tunnel into it... you'll die.
+~
+0 blind~
+If you are a blind user, type CONFIG BLIND to enable blind mode.
+ 
+Useful Commands:
+buildings - lists all buildings in the vicinity
+bscan (direction) - scans the direction for buildings, friendly and otherwise
+ 
+Current notes: Space doesn't have blind support yet, so don't try.
+Quests also are very difficult for blind users. This will be updated.
 ~
 0 $~
 #ROOMS
