@@ -212,7 +212,17 @@ void do_where ( CHAR_DATA *ch, char *argument )
 		for(x = ch->x - 25;x <= ch->x + 25;x++)
 			for(y = ch->y - 11;y <= ch->y +11;y++)
 			{
-				if(map_bld[x][y][ch->z] != NULL && !str_cmp(map_bld[x][y][ch->z]->name, argument))
+				if(map_bld[x][y][ch->z] != NULL && map_bld[x][y][ch->z]->type == BUILDING_DUMMY)
+				{
+					if ( map_bld[x][y][ch->z]->value[0] < 1 || map_bld[x][y][ch->z]->value[0] >= MAX_BUILDING )
+                        map_bld[x][y][ch->z]->value[0] = BUILDING_TURRET;
+					if (!str_cmp(build_table[map_bld[x][y][ch->z]->value[0]].name, argument))
+					{
+						sprintf( buf2, "%s at (%d/%d)\r\n", build_table[map_bld[x][y][ch->z]->value[0]].name, x, y );
+						strcat(buf, buf2);
+					}
+				}
+				else if(map_bld[x][y][ch->z] != NULL && !str_cmp(map_bld[x][y][ch->z]->name, argument))
 				{
 					sprintf(buf2, "%s at (%d/%d)\r\n", map_bld[x][y][ch->z]->name, x, y);
 					strcat(buf, buf2);
