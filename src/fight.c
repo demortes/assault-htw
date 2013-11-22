@@ -298,10 +298,17 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
 
             case POS_DEAD:
 
+<<<<<<< HEAD
                 act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
                 send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
                 sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
                 break;
+=======
+            act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
+            send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
+            sendsound(ch,"manscream.mp3",40,1,25,"combat","manscream.mp3");
+            break;
+>>>>>>> 7e83f29bce0f852edac2e0261a07727d7a4b2b87
 
             default:
                 if ( dam > victim->max_hit / 4 )
@@ -781,7 +788,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
         if ( weapon->value[0] <= 0 )
         {
             if ( IS_SET(ch->config, CONFIG_SOUND))
-                sendsound( ch, "emptychamber", 60, 1, 25, "combat", "emptychamber.wav" );
+                sendsound( ch, "emptychamber.wav", 60, 1, 25, "combat", "emptychamber.wav" );
             send_to_char( "You have no more ammo in that thing!\n\r", ch );
             return;
         }
@@ -965,15 +972,15 @@ void do_shoot( CHAR_DATA *ch, char *argument )
     if ( IS_SET(ch->config,CONFIG_SOUND) )
     {
         if ( clip_table[weapon->value[2]].type == DAMAGE_BULLETS && range < 5 )
-            sendsound(ch,"shot1",40,1,25,"combat","shot1.wav");
+            sendsound(ch,"shot1.mp3",40,1,25,"combat","shot1.mp3");
         else if ( clip_table[weapon->value[2]].type == DAMAGE_BULLETS && range >= 5 )
-            sendsound(ch,"sniper",40,1,25,"combat","sniper.wav");
+            sendsound(ch,"sniper.mp3",40,1,25,"combat","sniper.mp3");
         else if ( clip_table[weapon->value[2]].type == DAMAGE_BLAST )
-            sendsound(ch,"missile",40,1,25,"combat","missile.wav");
+            sendsound(ch,"missile.mp3",40,1,25,"combat","missile.mp3");
         else if ( clip_table[weapon->value[2]].type == DAMAGE_LASER && dam > 1000 )
-            sendsound(ch,"ioncannon",40,1,25,"combat","ioncannon.wav");
+            sendsound(ch,"ioncannon.mp3",40,1,25,"combat","ioncannon.mp3");
         else if ( clip_table[weapon->value[2]].type == DAMAGE_LASER )
-            sendsound(ch,"laser",40,1,25,"combat","laser.wav");
+            sendsound(ch,"laser.mp3",40,1,25,"combat","laser.mp3");
     }
     if ( ( bld = get_building_range(ch->x, ch->y,x,y,z) ) != NULL  && ( x != ch->x || y != ch->y ) && ch->victim == ch )
     {
@@ -1158,7 +1165,7 @@ void do_load( CHAR_DATA *ch, char *argument )
         weapon->value[0] = clip->value[1];
         clip->value[1] = temp;
         if ( IS_SET(ch->config, CONFIG_SOUND))
-            sendsound(ch,"loadclip",100,1,50,"misc","loadclip.wav");
+            sendsound(ch,"loadclip.mp3",100,1,50,"misc","loadclip.mp3");
         sprintf( buf, "You take out an old %s from %s, and pop %s inside.", ( clip_table[weapon->value[2]].explode ) ? "shell" : "clip", weapon->short_descr, clip->short_descr );
         act( buf, ch, NULL, NULL, TO_CHAR );
         sprintf( buf, "$n takes out an old %s from %s, and pop %s inside.", ( clip_table[weapon->value[2]].explode ) ? "shell" : "clip", weapon->short_descr, clip->short_descr );
@@ -1481,7 +1488,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     if ( vch->z != Z_SPACE && !IN_PIT(vch))
                         set_fighting(ch,vch);
                 if ( IS_SET(ch->config, CONFIG_SOUND))
-                    sendsound(ch,"boom",100,1,50,"combat","boom.wav");
+                    sendsound(ch,"boom.mp3",100,1,50,"combat","boom.mp3");
                 if ( ch->in_building == bld )
                     ch->in_building = NULL;
                 return;
@@ -1502,7 +1509,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     if ( vch->z != Z_SPACE && !IN_PIT(vch))
                         set_fighting(ch,vch);
                 if ( IS_SET(ch->config, CONFIG_SOUND))
-                    sendsound(ch,"boom",100,1,50,"combat","boom.wav");
+                    sendsound(ch,"boom.mp3",100,1,50,"combat","boom.mp3");
                 if ( ch->in_building == bld )
                     ch->in_building = NULL;
                 return;
@@ -1593,7 +1600,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                 sprintf( buf, "%s's (%d%s)%s %s destroyed by %s", bld->owned, my_get_hours(vch,TRUE), (IS_NEWBIE(vch)) ? "-NEWBIE" : "", (vch && vch->security == FALSE)?"(SE)":"", bld->name, ch->name );
                 log_string(buf);
                 if ( IS_SET(vch->config, CONFIG_SOUND) && vch != ch )
-                    sendsound(vch,"boom",100,1,50,"combat","boom.wav");
+                    sendsound(vch,"boom.mp3",100,1,50,"combat","boom.mp3");
             }
             /*        		if ( !neutral && bld->type == BUILDING_HQ && vch && vch != ch )
                                 {
@@ -1608,7 +1615,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
             extract_building( bld, TRUE );
             dest = TRUE;
             if ( IS_SET(ch->config, CONFIG_SOUND))
-                sendsound(ch,"boom",100,1,50,"combat","boom.wav");
+                sendsound(ch,"boom.mp3",100,1,50,"combat","boom.mp3");
 
         }
     }

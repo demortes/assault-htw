@@ -1087,7 +1087,7 @@ void do_teleport (CHAR_DATA *ch, char *argument )
         }
         act( "$n appears out of thin air!", ch, NULL, NULL, TO_ROOM );
         do_look(ch,"");
-        sendsound(ch,"telept",40,1,25,"misc","telept.wav");
+        sendsound(ch,"telept.mp3",40,1,25,"misc","telept.mp3");
         return;
     }
     send_to_char( "Couldn't find a building to teleport to in range.\n\r", ch );

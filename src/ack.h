@@ -1020,6 +1020,7 @@ void    extract_building args( ( BUILDING_DATA *bld, bool msg ) );
 void    extract_vehicle args( ( VEHICLE_DATA *vhc, bool msg ) );
 void    extract_char    args( ( CHAR_DATA *ch, bool fPull ) );
 void    extract_queue   args( ( QUEUE_DATA *q ) );
+void	empty_queue	args( (CHAR_DATA *ch) );
 void    extract_pager   args( ( PAGER_DATA *p ) );
 BUILDING_DATA *    get_char_building   args( ( CHAR_DATA *ch ) );
 BUILDING_DATA *    get_obj_building    args( ( OBJ_DATA *obj ) );
