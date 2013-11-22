@@ -53,27 +53,27 @@ bool    no_lag      args( ( CHAR_DATA *ch, CHAR_DATA *vch ) );
 
 char * const wear_name[MAX_WEAR] =
 {
-    "Head",
-    "Eyes",
-    "Face",
-    "Ear",
-    "Ear",
-    "Neck",
-    "Neck",
-    "Shoulders",
-    "Arms",
-    "Wrist",
-    "Wrist",
-    "Hands",
-    "Finger",
-    "Finger",
-    "Left Hand",
-    "Right Hand",
-    "Back",
-    "Waist",
-    "Body",
-    "Legs",
-    "Feet",
+    "head",
+    "eyes",
+    "face",
+    "ear",
+    "ear",
+    "neck",
+    "neck",
+    "shoulders",
+    "arms",
+    "wrist",
+    "wrist",
+    "hands",
+    "finger",
+    "finger",
+    "left hand",
+    "right hand",
+    "back",
+    "waist",
+    "body",
+    "legs",
+    "feet",
 };
 
 /*
@@ -2566,8 +2566,7 @@ void do_kick( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    if ( ( loc = get_loc(argument) ) == -1 )
-        loc = number_range(1, MAX_WEAR);
+    loc = number_range(1, MAX_WEAR);
 
     if ( practicing(ch) && ch != victim )
         do_practice(ch, "");
@@ -2576,11 +2575,12 @@ void do_kick( CHAR_DATA *ch, char *argument )
 
     dam = number_range(1, 100);
  
-    sprintf( buf, "You kick $N in the %s! (%d)", wear_name[loc], dam );
+    sprintf( buf, "@@rYou land a %skick on $N!@@N @@a(%d)@@N", dam > 50 ? "powerful " : "", dam );
     act( buf, ch, NULL, victim, TO_CHAR );
-    sprintf( buf, "$n kicks $N in the %s!", wear_name[loc] );
+    sprintf( buf, "$n lands a %skick on $N!", dam > 50 ? "powerful " : "");
     act( buf, ch, NULL, victim, TO_NOTVICT );
-    sprintf( buf, "$n kicks you in the %s! (%d)", wear_name[loc], dam );
+    sprintf( buf, "@@e$n lands a %skick on you!@@N @@a(%d)@@N", dam > 50 ? "powerful " : "", dam );
+
     act( buf, ch, NULL, victim, TO_VICT );
     if ( ( eq = get_eq_char( victim, loc ) ) != NULL )
     {
@@ -2609,11 +2609,11 @@ void do_kick( CHAR_DATA *ch, char *argument )
         }
     }
 
-    if ( loc == WEAR_BODY && number_percent() < dam )
+    if ( number_percent() > 90 )
     {
-        act( "The kick sends you FLYING!", victim, NULL, NULL, TO_CHAR );
+        act( "@@eThe kick sends you FLYING!@@N", victim, NULL, NULL, TO_CHAR );
         act( "The kick sends $n FLYING!", victim, NULL, NULL, TO_ROOM );
-        dam += number_range(1, get_rank(ch));
+        dam += number_range(1, 50);
     }
 
     damage(ch, victim, dam, DAMAGE_GENERAL);
@@ -2666,10 +2666,7 @@ void do_punch( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    loc = WEAR_HEAD;
-
-    if ( ( loc = get_loc(argument) ) == -1 )
-        loc = number_range(1, MAX_WEAR);
+    loc = number_range(1, MAX_WEAR);
 
     if ( practicing(ch) && ch != victim )
         do_practice(ch,"");
@@ -2678,11 +2675,11 @@ void do_punch( CHAR_DATA *ch, char *argument )
 
     dam = number_range(1, 100);
     
-    sprintf( buf, "You punch $N in the %s! (%d)", wear_name[loc], dam );
+    sprintf( buf, "@@rYou land a %spunch on $N!@@N @@a(%d)@@N", dam > 50 ? "powerful " : "", dam );
     act( buf, ch, NULL, victim, TO_CHAR );
-    sprintf( buf, "$n punch $N in the %s!", wear_name[loc] );
+    sprintf( buf, "$n lands a %spunch on $N!", dam > 50 ? "powerful " : "");
     act( buf, ch, NULL, victim, TO_NOTVICT );
-    sprintf( buf, "$n punch you in the %s! (%d)", wear_name[loc], dam );
+    sprintf( buf, "@@e$n lands a %spunch on you!@@N @@a(%d)@@N", dam > 50 ? "powerful " : "", dam );
     act( buf, ch, NULL, victim, TO_VICT );
     if ( ( eq = get_eq_char( victim, loc ) ) != NULL )
     {
@@ -2711,11 +2708,11 @@ void do_punch( CHAR_DATA *ch, char *argument )
         }
     }
 
-    if ( loc == WEAR_BODY && number_percent() < dam )
+    if ( number_percent() > 90 )
     {
-        act( "The punch sends you to your knees!", victim, NULL, NULL, TO_CHAR );
-        act( "The kick sends $n to $E's knees!", victim, NULL, NULL, TO_ROOM );
-        dam += number_range(1, get_rank(ch));
+        act( "@@eThe punch sends you to your knees!@@N", victim, NULL, NULL, TO_CHAR );
+        act( "$n doubles over in pain!", victim, NULL, NULL, TO_ROOM );
+        dam += number_range(1, 50);
     }
 
     damage(ch, victim, dam, DAMAGE_GENERAL);
@@ -2784,16 +2781,16 @@ void do_hurl( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    sprintf( buf, "You hurl $N across the room! (%d)", dam );
+    sprintf( buf, "@@rYou hurl $N across the room!@@N @@a(%d)@@N", dam );
     act( buf, ch, NULL, victim, TO_CHAR );
     sprintf( buf, "$n hurls $N across the room!" );
     act( buf, ch, NULL, victim, TO_NOTVICT );
-    sprintf( buf, "$n hurls you across the room! (%d)", dam );
+    sprintf( buf, "@@e$n hurls you across the room!@@N @@a(%d)@@N", dam );
     act( buf, ch, NULL, victim, TO_VICT );
     
     damage(ch, victim, dam, DAMAGE_BLAST);
-    WAIT_STATE(victim, 100);
-    WAIT_STATE(ch, 80);
+    WAIT_STATE(victim, 50);
+    WAIT_STATE(ch, 40);
 
     return;
 }
