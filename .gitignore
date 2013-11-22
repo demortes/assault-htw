@@ -8,7 +8,7 @@ data/*
 src/nohup.out
 src/vgcore.*
 area/players.num
-area/boards/board.1039
+area/boards/*
 nohup.out
 .cproject
 .project
