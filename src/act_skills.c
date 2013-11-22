@@ -1677,7 +1677,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
         ch->bvictim = bld;
         act( "$n pulls out a laptop and begins typing...", ch, NULL, NULL, TO_ROOM );
         send_to_char( "Connecting...\n\r", ch );
-        sendsound(ch,"waitcon",40,1,25,"misc","waitcon.mp3");
+        sendsound(ch,"waitcon.mp3",40,1,25,"misc","waitcon.mp3");
         ch->c_obj = comp;
     }
     else

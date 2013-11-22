@@ -1627,7 +1627,7 @@ void do_heal( CHAR_DATA *ch, char *argument )
         victim->hit += heal;
         if ( victim->hit > victim->max_hit )
             victim->hit = victim->max_hit;
-        sendsound(ch,"energy1",40,1,25,"misc","energy1.mp3");
+        sendsound(ch,"energy1.mp3",40,1,25,"misc","energy1.mp3");
         WAIT_STATE(ch,16);
         return;
     }
@@ -1718,7 +1718,7 @@ void do_heal( CHAR_DATA *ch, char *argument )
         }
         send_to_char( "You inject yourself with the antidote, and feel much better.\n\r", ch );
         ch->disease = 0;
-        sendsound(ch,"energy1",40,1,25,"misc","energy1.mp3");
+        sendsound(ch,"energy1.mp3",40,1,25,"misc","energy1.mp3");
         return;
     }
     else if ( obj->value[1] == 2 )
@@ -1733,7 +1733,7 @@ void do_heal( CHAR_DATA *ch, char *argument )
         damage(ch,ch,heal,DAMAGE_PSYCHIC);
         if ( ex )
             extract_obj(obj);
-        sendsound(ch,"energy1",40,1,25,"misc","energy1.mp3");
+        sendsound(ch,"energy1.mp3",40,1,25,"misc","energy1.mp3");
         return;
     }
     heal = number_range(obj->level*obj->value[0]/2, obj->level*obj->value[0]);
@@ -1742,7 +1742,7 @@ void do_heal( CHAR_DATA *ch, char *argument )
     act( "$n uses $p to heal some injuries.", ch, obj, NULL, TO_ROOM );
     WAIT_STATE(ch,20);
     extract_obj(obj);
-    sendsound(ch,"energy1",40,1,25,"misc","energy1.mp3");
+    sendsound(ch,"energy1.mp3",40,1,25,"misc","energy1.mp3");
     return;
 }
 
