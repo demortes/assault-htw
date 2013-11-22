@@ -167,7 +167,7 @@ void do_where ( CHAR_DATA *ch, char *argument )
     bool world = FALSE;
     char buf[MSL];
     char buf2[MSL];
-    int range = 10;
+    int range = 25;
 	buf[0] = '\0';
 	buf2[0] = '\0';
 	if ( !paintball(ch) && !sysdata.killfest )

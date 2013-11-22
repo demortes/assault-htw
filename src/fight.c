@@ -297,18 +297,10 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
                 break;
 
             case POS_DEAD:
-
-<<<<<<< HEAD
                 act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
                 send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
                 sendsound(ch,"manscream",40,1,25,"combat","manscream.wav");
                 break;
-=======
-            act( "$n @@dis @@2@@aDEAD@@N@@d!!@@N", victim, 0, 0, TO_ROOM );
-            send_to_char( "@@dYou have been @@2@@aKILLED@@N@@d!!@@N\n\r\n\r", victim );
-            sendsound(ch,"manscream.mp3",40,1,25,"combat","manscream.mp3");
-            break;
->>>>>>> 7e83f29bce0f852edac2e0261a07727d7a4b2b87
 
             default:
                 if ( dam > victim->max_hit / 4 )
