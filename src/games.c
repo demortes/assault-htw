@@ -210,8 +210,15 @@ void do_where ( CHAR_DATA *ch, char *argument )
 			sprintf(argument, "headquarters");
 		int x = 0, y = 0;
 		for(x = ch->x - 25;x <= ch->x + 25;x++)
-			for(y = ch->y - 11;y <= ch->y +11;y++)
-			{
+			for(y = ch->y - 12;y <= ch->y +12;y++)
+			{	if(x <= 2)
+					x = 3;
+				if(y <= 2)
+					y = 3;
+				if(y > 1000)
+					continue;
+				if(x > 1000)
+					continue;
 				if(map_bld[x][y][ch->z] != NULL && map_bld[x][y][ch->z]->type == BUILDING_DUMMY)
 				{
 					if ( map_bld[x][y][ch->z]->value[0] < 1 || map_bld[x][y][ch->z]->value[0] >= MAX_BUILDING )
