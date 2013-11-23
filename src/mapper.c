@@ -942,10 +942,10 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 
     }
     sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
-             (b_north[0] != '\0') ? b_north : wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
-             (b_east[0] != '\0')  ? b_east  : wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
-             (b_south[0] != '\0') ? b_south : wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
-             (b_west[0] != '\0')  ? b_west  : wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
+             (b_north[0] != '\0') ? b_north : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
+             (b_east[0] != '\0')  ? b_east  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
+             (b_south[0] != '\0') ? b_south : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
+             (b_west[0] != '\0')  ? b_west  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
 
     x = ch->x;
     y = ch->y;
@@ -992,7 +992,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
         return;
     }
 
-    sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
+    sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
 
     if ( quest )
     {
