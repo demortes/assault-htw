@@ -3630,12 +3630,12 @@ void do_vinstall( CHAR_DATA *ch, char *argument )
         send_to_char( "This is not a vehicle addon.\n\r", ch );
         return;
     }
-    if ( obj->level > ch->pcdata->skill[gsn_engineering] && obj->level <= 10 )
-    {
-        sprintf(buf,"You must have an engineering proficiency of %d to use this.\n\r", obj->level );
-        send_to_char(buf,ch);
-        return;
-    }
+//    if ( obj->level > ch->pcdata->skill[gsn_engineering] && obj->level <= 10 )
+//    {
+//        sprintf(buf,"You must have an engineering proficiency of %d to use this.\n\r", obj->level );
+//        send_to_char(buf,ch);
+//        return;
+//    }
     obj->value[1] += ch->pcdata->skill[gsn_engineering];
     if ( obj->value[0] == 0 )
     {
