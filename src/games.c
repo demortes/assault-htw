@@ -208,6 +208,11 @@ void do_where ( CHAR_DATA *ch, char *argument )
         }
     } else if (!strcmp(argument, "asteroid")) {
 
+        if ( ch->z != Z_SPACE ) {
+            send_to_char( "You need to be in space to look for asteroids.\r\n", ch );
+            return;
+        }
+
         int x, y, xx, yy;
 
         for (x = ch->x - 10; x <= ch->x + 10; x++)
