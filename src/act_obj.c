@@ -79,7 +79,7 @@ void get_obj( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container )
                 send_to_char( "You can't steal from other people until you have played for at least 1 hour.\n\r", ch );
                 return;
             }
-            if ( ( ( vch = get_ch(bld->owned)) == NULL || get_rank(vch) < 2) && !IS_IMMORTAL(ch) && ch != vch && ch->pcdata->alliance!=vch->pcdata->alliance)
+            if ( ( ( vch = get_ch(bld->owned)) != NULL && (get_rank(vch) < 2) && !IS_IMMORTAL(ch) && ch != vch && ch->pcdata->alliance!=vch->pcdata->alliance))
             {
                 //			if ( vch && (vch->pcdata->alliance != -1 && vch->pcdata->alliance == ch->pcdata->alliance ))
                 {
