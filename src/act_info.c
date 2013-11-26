@@ -1134,9 +1134,9 @@ void do_who( CHAR_DATA *ch, char *argument )
             if ( blind )
             {
                 if ( blind_all )
-                    sprintf( buf, "%s %s, %s, Rank %d%s\n\r", wch->pcdata->ranking, wch->name, wch->pcdata->title, rank, IS_NEWBIE(wch)?" (Newbie)":(IS_SET(ch->pcdata->pflags,PLR_BASIC))?"(Basic)":"" );
+                    sprintf( buf, "%s %s, %s - Rank %d%s (%s)\n\r", rankingbuf, wch->name, wch->pcdata->title, rank, IS_NEWBIE(wch)?" (Newbie)":(IS_SET(ch->pcdata->pflags,PLR_BASIC))?"(Basic)":"", 
+			!strcmp(wch->pcdata->who_name, "off")?"NONE":wch->pcdata->who_name );
                 else
-//                    sprintf( buf, "%s %s\n\r",wch->name , IS_NEWBIE(wch)?" (Newbie)" : "");
                     sprintf( buf, "%s %s%s\n\r", rankingbuf, wch->name , IS_NEWBIE(wch)?" (Newbie)" : "");
             }
             else if ( sysdata.kill_groups )
