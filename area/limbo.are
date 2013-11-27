@@ -2573,18 +2573,6 @@ Bombs
 @@N
 
 ~
-0 Bug~
-Bug                                   
-@@g                                                                          
-@@g @@cSyntax: @@abug (description of problem)                                     
-@@g                                                                          
-@@g   This command is used to log bugs and other problems for                
-@@g the immortals to view.                                                   
-                                                                          
-@@R See Also: Typo, Idea, Board                                              
-@@N
-
-~
 0 Building~
 -
                                  Building                                  
@@ -3501,20 +3489,12 @@ There are a number of ways to contact the imortal base. Below is a list of
 options, for each of the immortals.
  
 Grave:
- 
+Batphone - Nah nah nah nah nah nah BATMAN! 
 Demortes:
- 
-Bob:
- 
-Trelane:
-Email - Zalethon@yahoo.com
-MSN   - Zalethon@yahoo.com
-AIM   - Zalethon
-Y!IM  - Zalethon
- 
-Cheesly:
- 
-~
+
+Email - assault@demortes.com
+
+AIM   - Demortes~
 0 motd~
 Welcome to Assault: High Tech War!
 Please note, this game is currently under development. If you have
@@ -3690,12 +3670,12 @@ mp7pdw.jpg~
 L
 50
 #1005
-sten gun~
-@@ca st@@aen g@@cun@@N~
-@@cA st@@aen g@@cun@@N Mk.V is ready for use.~
+stun gun~
+@@ca st@@aun g@@cun@@N~
+@@cA st@@aun g@@cun@@N Mk.V is ready for use.~
 5 0 8421376
 32 32 0 0 1 2 0 -10 3 -2 37 0 0 0 0 1 0 2
-sten.jpg~
+stun.jpg~
 L
 30
 #1006
@@ -6353,5 +6333,14 @@ A huge cuban cigar lies on the floor! What a waste!~
 ~
 L
 1
+#1165
+fire rocket ammo~
+@@Ra @@elarge @@RHE @@eFire-Rocket@@N~
+@@RA @@elarge @@RHigh-ExplosiveE @@eFire-Rocket seeks a launcher@@N.~
+2 0 8388608
+18 5 0 0 0 0 0 0 0 0 0 0 0 0 0 2 1 -1
+~
+L
+50
 #0
 #$

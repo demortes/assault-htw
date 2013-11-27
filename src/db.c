@@ -876,6 +876,7 @@ OBJ_DATA *create_object( OBJ_INDEX_DATA *pObjIndex, int level )
     case ITEM_ORE:
     case ITEM_BIOTUNNEL:
     case ITEM_BATTERY:
+    case ITEM_RECREATIONAL:
         break;
 
     }

@@ -2870,7 +2870,7 @@ void building_update( void )
                         if ( ch->z == 1 )
                             send_to_char( "The ground begins to crack!\n\r", ch );
                         else if ( ch->z == 0 )
-                            send_to_char( "The gound above you begins to crack!\n\r", ch );
+                            send_to_char( "The ground above you begins to crack!\n\r", ch );
                         if ( number_percent() < ( 55 + (bld->level*7) ) && ( !ch->in_vehicle || !AIR_VEHICLE(ch->in_vehicle->type)) && ch->z == 1 )
                         {
                             int x,y;

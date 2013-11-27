@@ -801,6 +801,7 @@
 #define ITEM_ORE             31
 #define ITEM_BIOTUNNEL           32
 #define ITEM_BATTERY             33
+#define ITEM_RECREATIONAL	34
 #define ITEM_TOKEN           35
 #define ITEM_MATERIAL            40
 
