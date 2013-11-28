@@ -2010,10 +2010,10 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     bool found = FALSE;
     BUILDING_DATA *bld;
 //    bool type[8];
-    int resource[8];
+    int resource[9];
     int i;
 
-    for ( i = 0; i<8; i++ )
+    for ( i = 0; i<9; i++ )
     {
 //        type[i] = FALSE;
         resource[i] = 0;
@@ -2045,20 +2045,20 @@ void do_chunk( CHAR_DATA *ch, char *argument )
         for ( obj = ch->first_carry; obj; obj = obj_next )
         {
             obj_next = obj->next_in_carry_list;
-            if ( obj->item_type != ITEM_MATERIAL || obj->value[0] < 0 || obj->value[0] > 7 )
+            if ( obj->item_type != ITEM_MATERIAL || obj->value[0] < -1 || obj->value[0] > 7 )
                 continue;
 //            type[obj->value[0]] = TRUE;
-            resource[obj->value[0]] += obj->value[1];
+            resource[obj->value[0]+1] += obj->value[1];
             found = TRUE;
             extract_obj(obj);
         }
-        for ( i = 0; i<8; i++ )
+        for ( i = 0; i<9; i++ )
         {
             if ( resource[i] <= 0 )
                 continue;
             for ( x = resource[i]; x>0; x -= 20000)
             {
-                obj = create_material(i);
+                obj = create_material(i-1);
                 obj->value[1] = x;
                 if ( obj->value[1] > 20000 )
                     obj->value[1] = 20000;
