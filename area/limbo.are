@@ -3489,12 +3489,12 @@ There are a number of ways to contact the imortal base. Below is a list of
 options, for each of the immortals.
  
 Grave:
-Batphone - Nah nah nah nah nah nah BATMAN! 
+Batphone - Nah nah nah nah nah nah BATMAN! 
 Demortes:
 
-Email - assault@demortes.com
+Email - assault@demortes.com
 
-AIM   - Demortes~
+AIM   - Demortes~
 0 motd~
 Welcome to Assault: High Tech War!
 Please note, this game is currently under development. If you have
@@ -6342,5 +6342,14 @@ fire rocket ammo~
 ~
 L
 50
+#515
+immortal armor~
+@@d[@@WImmortal Armor@@d]@@N~
+@@d[@@WImmortal Armor@@d]@@N~
+9 0 45563608
+-2 0 10000 10000 10000 10000 10000 10000 10000 0 0 0 0 0 0 1 1 -1
+~
+L
+1
 #0
 #$

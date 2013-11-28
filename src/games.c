@@ -185,8 +185,6 @@ void do_where ( CHAR_DATA *ch, char *argument )
         {
             if ( !world && !paintball(wch) && !sysdata.killfest )
                 continue;
-            if ( world && IS_IMMORTAL(wch) )
-                continue;
             if ( wch->z != ch->z && !sysdata.killfest )
                 continue;
             else if ( world && (wch->x + range < ch->x || wch->x - range > ch->x || wch->y + range < ch->y || wch->y - range > ch->y ) )

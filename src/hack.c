@@ -1096,8 +1096,11 @@ void act_mark( CHAR_DATA *ch, int level )
         ch->c_sn = -1;
         return;
     }
-    sprintf( buf, "Air strike arriving in: %d Second(s)!\n\r", level );
-    send_to_char(buf,ch);
+	if(level%5 == 0)
+	{
+    		sprintf( buf, "Air strike arriving in: %d Second(s)!\n\r", level );
+    		send_to_char(buf,ch);
+	}
     ch->c_sn = gsn_mark;
     ch->c_time = 8;
     ch->c_level = level - 1;
