@@ -4287,11 +4287,22 @@ void do_paradrop( CHAR_DATA *ch, char *argument )
     int x,y,z,xx,yy;
     char arg[MSL];
     BUILDING_DATA *bld;
+    CHAR_DATA *victim;
 
-    if ( ( bld = ch->in_building ) == NULL || !complete(bld) || bld->type != BUILDING_PARADROP || str_cmp(bld->owned,ch->name) )
+    if ( ( bld = ch->in_building ) == NULL || !complete(bld) || bld->type != BUILDING_PARADROP || !bld->active )
     {
         send_to_char( "You can only do that in a completed paradrop building.\n\r", ch );
         return;
+    }
+    if ( bld != NULL )
+    {
+        victim = get_ch(bld->owned);
+        // Not character's building, not alliance member's building, belongs to an alliance
+        if (strcmp(bld->owned, ch->name) && ((ch->pcdata->alliance == -1 || ch->pcdata->alliance != victim->pcdata->alliance)) )
+        {
+            send_to_char( "You can only paradrop from your own paradrop building, or one of your allies.\n\r", ch );
+            return;
+        }
     }
     if ( ch->in_vehicle )
     {
