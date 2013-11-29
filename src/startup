@@ -1,4 +1,5 @@
 #!/bin/bash
+rm nohup.out
 SCRIPT_DIR="$PWD"
 cd $SCRIPT_DIR
 # grab the port number
