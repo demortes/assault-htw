@@ -95,8 +95,8 @@ void move_char( CHAR_DATA *ch, int door )
     CHAR_DATA *fch_next;
     char buf[MAX_STRING_LENGTH];
     char move_buf[MAX_STRING_LENGTH];
-    char tmp[MAX_STRING_LENGTH];
-    char door_name_leave[MSL];
+//    char tmp[MAX_STRING_LENGTH];
+//    char door_name_leave[MSL];
     OBJ_DATA *obj;
     BUILDING_DATA *bld = ch->in_building;
     int xx,yy,x,y,z=ch->z;
@@ -105,9 +105,6 @@ void move_char( CHAR_DATA *ch, int door )
 
     buf[0] = '\0';
     move_buf[0] = '\0';
-    door_name_leave[0] = '\0';
-    door_name_leave[0] = '\0';
-    tmp[0] = '\0';
 
     if ( !ch || ch == NULL )
         return;
@@ -1367,11 +1364,11 @@ void do_land( CHAR_DATA *ch, char *argument )
         {
             i = 1;
             sprintf( buf, "@@gYou can land on:\n\r@@a0@@c: Randomly.\n\r" );
-            for ( bld = ch->first_building; bld; bld = bld->next_owned )
+            for ( bld = first_building; bld; bld = bld->next )
             {
-                if ( bld->type == BUILDING_SPACE_CENTER )
+                if ( bld->type == BUILDING_SPACE_CENTER  && get_char_world(ch, bld->owned) && allied(ch, get_char_world(ch, bld->owned)))
                 {
-                    sprintf( buf+strlen(buf), "@@a%d@@c: Space center at %d/%d.\n\r",i,bld->x,bld->y );
+                    sprintf( buf+strlen(buf), "@@a%d@@c: Space center at %d/%d. (%s)\n\r",i,bld->x,bld->y, bld->owned );
                     i++;
                 }
             }
@@ -1395,9 +1392,9 @@ void do_land( CHAR_DATA *ch, char *argument )
         }
         else
         {
-            for ( bld = ch->first_building; bld; bld = bld->next_owned )
+            for ( bld = first_building; bld; bld = bld->next )
             {
-                if ( bld->type == BUILDING_SPACE_CENTER )
+                if ( bld->type == BUILDING_SPACE_CENTER && get_char_world(ch, bld->owned) && allied(ch, get_char_world(ch, bld->owned)))
                 {
                     sel--;
                     if ( sel <=0 )
