@@ -183,6 +183,8 @@ void do_where ( CHAR_DATA *ch, char *argument )
     {
         for ( wch = first_char; wch; wch = wch->next )
         {
+            if ( wch == ch )
+                continue;
             if ( !world && !paintball(wch) && !sysdata.killfest )
                 continue;
             if ( wch->z != ch->z && !sysdata.killfest )
@@ -193,10 +195,31 @@ void do_where ( CHAR_DATA *ch, char *argument )
                     sprintf( buf2, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
                 continue;
             }
+            
+            char *dir = "Here";
+
+            // I'm not sre if there's a better way to do this... -Grave
+            if (wch->x == ch->x && wch->y > ch->y)
+                dir = "North";
+            if (wch->x == ch->x && wch->y < ch->y)
+                dir = "South";
+            if (wch->x > ch->x && wch->y == ch->y)
+                dir = "East";
+            if (wch->x < ch->x && wch->y == ch->y)
+                dir = "West";
+            if (wch->x > ch->x && wch->y > ch->y)
+                dir = "Northeast";
+            if (wch->x < ch->x && wch->y > ch->y)
+                dir = "Northwest";
+            if (wch->x > ch->x && wch->y < ch->y)
+                dir = "Southeast";
+            if (wch->x < ch->x && wch->y < ch->y)
+                dir = "Southwest";
+
             if ( ch->z == Z_UNDERGROUND )
-                sprintf( buf, "@@W%s @@gat @@a?@@g/@@a?@@N\n\r", wch->name );
+                sprintf( buf, "@@W%s @@gat @@a?@@g/@@a?@@N (@@r%s@@N)\n\r", wch->name, dir );
             else
-                sprintf( buf, "@@W%s @@gat @@a%d@@g/@@a%d@@N\n\r", wch->name, wch->x, wch->y );
+                sprintf( buf, "@@W%s @@gat @@a%d@@g/@@a%d@@N (@@r%s@@N)\n\r", wch->name, wch->x, wch->y, dir );
             send_to_char( buf, ch );
         }
         if ( buf2[0] != '\0' )
