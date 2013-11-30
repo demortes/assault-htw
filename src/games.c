@@ -196,25 +196,8 @@ void do_where ( CHAR_DATA *ch, char *argument )
                 continue;
             }
             
-            char *dir = "Here";
-
-            // I'm not sre if there's a better way to do this... -Grave
-            if (wch->x == ch->x && wch->y > ch->y)
-                dir = "North";
-            if (wch->x == ch->x && wch->y < ch->y)
-                dir = "South";
-            if (wch->x > ch->x && wch->y == ch->y)
-                dir = "East";
-            if (wch->x < ch->x && wch->y == ch->y)
-                dir = "West";
-            if (wch->x > ch->x && wch->y > ch->y)
-                dir = "Northeast";
-            if (wch->x < ch->x && wch->y > ch->y)
-                dir = "Northwest";
-            if (wch->x > ch->x && wch->y < ch->y)
-                dir = "Southeast";
-            if (wch->x < ch->x && wch->y < ch->y)
-                dir = "Southwest";
+            char dir[MSL];
+            sprintf(dir, "%s%s", (ch->y < wch->y) ? "North" : (ch->y == wch->y ) ? "" : "South", (ch->x > wch->x) ? "West" :(ch->x == wch->x) ? "" : "East" );
 
             if ( ch->z == Z_UNDERGROUND )
                 sprintf( buf, "@@W%s @@gat @@a?@@g/@@a?@@N (@@r%s@@N)\n\r", wch->name, dir );

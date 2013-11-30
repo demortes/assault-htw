@@ -416,7 +416,7 @@ void do_changes(CHAR_DATA *ch, char *argument)
     send_to_char("@@WNo.  Coder        Date        Change\n\r",ch );
     send_to_char("@@e------------------------------------------------------------------------------@@w\n\r", ch );
 
-    totalpages = 1 + ( totChanges / 10 );
+    totalpages = 1 + ( (totChanges-1) / 10 );
 
     if ( !is_number( arg ) && strcmp(arg, "") )
     {
