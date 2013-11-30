@@ -621,6 +621,11 @@ void pdie(CHAR_DATA *ch)
             }
         }
         write_to_buffer(d, "Your character has died. You will now get to recreate it!\n\r\n\r", 0 );
+	if(ch->z == Z_SPACE)
+	{
+		write_to_buffer(d, "Your character falls to earth.\n\r", 0);
+		ch->z = Z_GROUND;
+	}
         d->connected = CON_GET_RECREATION;
         write_to_buffer( d,"Select one of the following options:\n\r\n\r", 0 );
         write_to_buffer( d,"0. Respawn - From where you last died\n\r", 0 );
