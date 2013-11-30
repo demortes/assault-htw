@@ -3,7 +3,7 @@ if [ -f nohup.out ]; then rm nohup.out; fi
 SCRIPT_DIR="$PWD"
 cd $SCRIPT_DIR
 # grab the port number
-port=4097
+port=6660
 if [ "$1" != "" ]; then port=$1; fi
 
 # set up
