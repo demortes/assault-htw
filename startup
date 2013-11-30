@@ -1,5 +1,5 @@
 #!/bin/bash
-rm nohup.out
+if [ -f nohup.out ]; then rm nohup.out; fi
 SCRIPT_DIR="$PWD"
 cd $SCRIPT_DIR
 # grab the port number
@@ -7,13 +7,13 @@ port=6660
 if [ "$1" != "" ]; then port=$1; fi
 
 # set up
-cd ../reports
+cd ./reports
 if [ -f shutdown.txt ]; then rm -f shutdown.txt; fi
 
 cd ../area
 
 # allow cores
-ulimit -c 5
+ulimit -c unlimited
 # stack limit
 ulimit -s 100000
 
@@ -47,6 +47,8 @@ cd ../reports
 
 cd ../area
   
+  if [ -f core ]; then uuencode core core | mail "$(whoami)" -s "COREDUMP"; fi
+  if [ -f core ]; then rm -rf core; fi
   # sleep, so if we fail on boot we don't get massive looping
-  sleep 20
+  sleep 5
 done
