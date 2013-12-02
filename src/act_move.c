@@ -1366,7 +1366,7 @@ void do_land( CHAR_DATA *ch, char *argument )
             sprintf( buf, "@@gYou can land on:\n\r@@a0@@c: Randomly.\n\r" );
             for ( bld = first_building; bld; bld = bld->next )
             {
-                if ( bld->type == BUILDING_SPACE_CENTER  && get_char_world(ch, bld->owned) && allied(ch, get_char_world(ch, bld->owned)))
+                if ( bld->type == BUILDING_SPACE_CENTER  && get_char_world(ch, bld->owned) && (allied(ch, get_char_world(ch, bld->owned)) || !strcmp(bld->owned, ch->name)))
                 {
                     sprintf( buf+strlen(buf), "@@a%d@@c: Space center at %d/%d. (%s)\n\r",i,bld->x,bld->y, bld->owned );
                     i++;
@@ -1394,7 +1394,7 @@ void do_land( CHAR_DATA *ch, char *argument )
         {
             for ( bld = first_building; bld; bld = bld->next )
             {
-                if ( bld->type == BUILDING_SPACE_CENTER && get_char_world(ch, bld->owned) && allied(ch, get_char_world(ch, bld->owned)))
+                if ( bld->type == BUILDING_SPACE_CENTER && get_char_world(ch, bld->owned) && (allied(ch, get_char_world(ch, bld->owned)) || !strcmp(bld->owned, ch->name)))
                 {
                     sel--;
                     if ( sel <=0 )
