@@ -515,7 +515,7 @@ int main( int argc, char **argv )
     //if (IMC)
     //    imc_startup( FALSE ); // FALSE arg, so the autoconnect setting can govern it.
 
-    sprintf( log_buf, "ACK! MUD is ready on port %d.", port );
+    sprintf( log_buf, "Assault: High Tech War is ready on port %d.", port );
     log_string( log_buf );
     game_loop_unix( control );
 
@@ -1104,7 +1104,7 @@ void new_descriptor( int control )
     BAN_DATA *pban;
     struct sockaddr_in sock;
     int desc;
-    int size;
+    unsigned int size;
 
     size = sizeof(sock);
     getsockname( control, (struct sockaddr *) &sock, &size );
