@@ -370,6 +370,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
                     continue;
                 if ( built[build_table[i].requirements]<build_table[i].requirements_l )
                     continue;
+
                 p[build_table[i].act]++;
 
                 sprintf(buf_x, "%s%s", build_table[i].name,(p[build_table[i].act]==3)?"\n\r":", " );
@@ -1813,7 +1814,11 @@ void do_demolish( CHAR_DATA *ch, char *argument )
                         check_building_destroyed(bld2);
                         extract_building(bld2,TRUE);
                         continue;
-                    }
+                    } else if (bld2->type == BUILDING_ATOM_BOMBER) {
+			check_building_destroyed(bld2);
+			extract_building(bld2, TRUE);
+			continue;
+		    }
                 }
             }
             send_to_char( "Your lab buildings have been demolished. You must wait 20 seconds.\n\r", ch );

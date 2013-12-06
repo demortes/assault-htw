@@ -3540,21 +3540,23 @@ void do_construct( CHAR_DATA *ch, char *argument )
     i = 0;
 
     bld = ch->in_building;
-    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD ) || !complete(bld) )
+    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MOTHERSHIP_COMM) || !complete(bld) )
     {
-        if ( bld && bld->type == BUILDING_SPACE_CENTER )
+        send_to_char( "You must be inside a completed garage, airfield, space center, or mothership comm to do that.\n\r", ch );
+        return;
+    }
+
+        if ( bld && bld->type == BUILDING_SPACE_CENTER && complete(bld))
         {
             construct_space_vessal(ch,argument);
             return;
         }
-        else if ( bld && bld->type == BUILDING_MOTHERSHIP_COMM )
+        else if ( bld && bld->type == BUILDING_MOTHERSHIP_COMM  && complete(bld))
         {
             construct_alien_vessal(ch,argument);
             return;
         }
-        send_to_char( "You must be inside a garage or airfield to do that.\n\r", ch );
-        return;
-    }
+
 
     for ( i =0; i<4; i++ )
         parts[i] = FALSE;

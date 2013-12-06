@@ -134,7 +134,6 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
     int x,y,z=ch->z, looper, maxx,i=0;
     bool warcannon = FALSE;
     bool xray = FALSE;
-    char scan[MSL];
     char color[MSL];
     char outbuf[MSL];
     char catbuf[MSL];
@@ -153,7 +152,6 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
     outbuf[0] = '\0';
     color[0] = '\0';
-    scan[0] = '\0';
     borderbuf[0] = '\0';
 
     if ( IS_SET(ch->config,CONFIG_INVERSE) )
@@ -192,12 +190,12 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
         sbuf[0] = '\0';
         for ( s = 0; s < ch->map; s++ )
         {
-            sprintf( sbuf+strlen(sbuf), makesmall("    ",small) );
+            sprintf( sbuf+strlen(sbuf),"%s", makesmall("    ",small) );
         }
-        if ( ch->z != Z_UNDERGROUND && !IS_SET(ch->pcdata->pflags,PFLAG_HELPING))
-            sprintf( borderbuf, "\n\r%s@@l(@@W%d@@g,@@W%d@@l) @@R[@@e%s@@R]@@N", sbuf, ch->x, ch->y, planet_table[ch->z].name );
+        if ( (ch->z != Z_UNDERGROUND && !IS_SET(ch->pcdata->pflags,PFLAG_HELPING)) || IS_IMMORTAL(ch))
+            sprintf( borderbuf, "\n\r%s@@l(@@W%d@@g/@@W%d@@l) @@R[@@e%s@@R]@@N", sbuf, ch->x, ch->y, planet_table[ch->z].name );
         else
-            sprintf( borderbuf, "\n\r%s@@l(@@W??@@g,@@W??@@l) @@R[@@e%s@@R]@@N", sbuf, planet_table[ch->z].name );
+            sprintf( borderbuf, "\n\r%s@@l(@@W??@@g/@@W??@@l) @@R[@@e%s@@R]@@N", sbuf, planet_table[ch->z].name );
         sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s%s\n\r@@N", sbuf, wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color,  wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
     }
 
@@ -300,7 +298,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
                 if (ch->in_vehicle != NULL && blind_spot(ch,x,y) )
                 {
-                    sprintf(catbuf, makesmall("    ",small));
+                    sprintf(catbuf, "%s", makesmall("    ",small));
                 }
                 else
                 {
@@ -384,7 +382,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
                 if (ch->in_vehicle != NULL && blind_spot(ch,x,y) )
                 {
-                    sprintf(catbuf, makesmall("    ",small));
+                    sprintf(catbuf, "%s", makesmall("    ",small));
                 }
                 else
                 {
@@ -508,7 +506,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
             }
             if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
             {
-                sprintf( catbuf, makesmall("    ",small));
+                sprintf( catbuf, "%s", makesmall("    ",small));
             }
 
             if ( !in_border )
@@ -698,7 +696,6 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                 VEHICLE_DATA *whc;
                 CHAR_DATA *wch;
                 int ppl = 0;
-                bool vehicle = FALSE;
                 bool allied = FALSE;
                 bool imm = FALSE;
                 bool range= FALSE;
@@ -713,8 +710,6 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                         if ( in_range(ch,wch,get_ship_weapon_range(vhc)) )
                             range = TRUE;
                         sprintf( scan+strlen(scan), "Found: %s - %s.\n\r", wch->name,vhc->desc );
-                        if ( wch->in_vehicle )
-                            vehicle = TRUE;
                         if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
                             allied = TRUE;
                         if ( IS_IMMORTAL(wch) )
@@ -735,7 +730,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                     if ( ppl > 0 )
                     {
                         if ( small )
-                            sprintf( catbuf, "%s%s%s@@g",imm?"@@y":allied?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
+                            sprintf( catbuf, "%s%s%s@@g",imm?"@@y":allied == TRUE?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
                         else
                             sprintf( catbuf, "%s<@@y%s%s@@e>@@g", imm?"@@y":allied?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
                         sprintf( color, "@@g" );
@@ -1034,11 +1029,11 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
     if ( size == 999 )
         warcannon = TRUE;
 
-    if ( IS_SET(ch->pcdata->pflags,PFLAG_HELPING) || bld->z == Z_UNDERGROUND &&!IS_IMMORTAL(ch))
-        sprintf( borderbuf, "\n\r        @@l(@@W??@@g,@@W??@@l) @@R[@@e%s@@R]@@N", planet_table[ch->z].name );
+    if ( IS_SET(ch->pcdata->pflags,PFLAG_HELPING) || (bld->z == Z_UNDERGROUND && !IS_IMMORTAL(ch)))
+        sprintf( borderbuf, "\n\r        @@l(@@W??@@g/@@W??@@l) @@R[@@e%s@@R]@@N", planet_table[ch->z].name );
     else
-        sprintf( borderbuf, "\n\r        @@l(@@W%d@@g,@@W%d@@l) @@R[@@e%s@@R]@@N", ch->x, ch->y, planet_table[ch->z].name );
-    sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s%s          Level %d\n\r\n\r@@r[@@GExits:@@d ", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, (bld->maxhp <= build_table[bld->type].hp * 1.5 && upgradable(bld) )?" @@b(@@yU@@b)@@N" : "", bld->level);
+        sprintf( borderbuf, "\n\r        @@l(@@W%d@@g/@@W%d@@l) @@R[@@e%s@@R]@@N", ch->x, ch->y, planet_table[ch->z].name );
+    sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s          Level %d\n\r\n\r@@r[@@GExits:@@d ", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, bld->level);
     if ( ch->desc->mxp )
         strcat( borderbuf, "\e[1z" );
     for ( i=0; i<4; i++ )
