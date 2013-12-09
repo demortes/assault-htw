@@ -1401,7 +1401,7 @@ void do_bscan(CHAR_DATA *ch,char *argument)
         bld=map_bld[xx][yy][ch->z];
         if (bld!=NULL)
         {
-            sprintf(buf,"%s owned by %s: %d.\n\r",bld->name,bld->owned, (dir==DIR_NORTH) || (dir==DIR_SOUTH) ? bld->y : bld->x);
+            sprintf(buf,"%s owned by %s: %d.\n\r",bld->type == BUILDING_DUMMY?build_table[bld->value[0]].name:bld->name,bld->owned, (dir==DIR_NORTH) || (dir==DIR_SOUTH) ? bld->y : bld->x);
             send_to_char(buf,ch);
         }
     }
