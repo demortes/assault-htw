@@ -758,6 +758,10 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_CONFIG, C_SHOW_ALWAYS
     },
     {
+        "split",      do_split,   POS_STANDING,    0,  LOG_NORMAL,
+        C_TYPE_ACTION, C_SHOW_ALWAYS
+    },
+    {
         "spy",            do_spy,         POS_STANDING,    0,  LOG_NORMAL,
         C_TYPE_ACTION, C_SHOW_ALWAYS
     },

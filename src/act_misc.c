@@ -2014,13 +2014,11 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     OBJ_DATA *obj2_next;
     bool found = FALSE;
     BUILDING_DATA *bld;
-//    bool type[8];
     int resource[9];
     int i;
 
     for ( i = 0; i<9; i++ )
     {
-//        type[i] = FALSE;
         resource[i] = 0;
     }
     if ( ( bld = get_char_building(ch) ) == NULL )
@@ -2052,7 +2050,6 @@ void do_chunk( CHAR_DATA *ch, char *argument )
             obj_next = obj->next_in_carry_list;
             if ( obj->item_type != ITEM_MATERIAL || obj->value[0] < -1 || obj->value[0] > 7 )
                 continue;
-//            type[obj->value[0]] = TRUE;
             resource[obj->value[0]+1] += obj->value[1];
             found = TRUE;
             extract_obj(obj);
@@ -2112,6 +2109,87 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     return;
 }
 
+void do_split( CHAR_DATA *ch, char *argument )
+{
+    OBJ_DATA *obj;
+    OBJ_DATA *obj2;
+    BUILDING_DATA *bld;
+    char arg1 [MAX_INPUT_LENGTH];
+    char arg2 [MAX_INPUT_LENGTH];
+    int value;
+
+    if ( ( bld = get_char_building(ch) ) == NULL )
+    {
+        send_to_char( "You must be at a forge!\n\r", ch);
+        return;
+    }
+    if ( bld->type != BUILDING_FORGE )
+    {
+        send_to_char( "You must be in a forge!\n\r", ch);
+        return;
+    }
+    if ( !complete(bld) )
+    {
+        send_to_char( "This forge is not completed yet.\n\r", ch);
+        return;
+    }
+    if ( bld->value[3] < 0 )
+    {
+        send_to_char( "It's corrupted by a virus!\n\r", ch );
+        return;
+    }
+
+    argument = one_argument( argument, arg1 );
+    argument = one_argument( argument, arg2 );
+
+    if ( arg1[0] == '\0' || arg2[0] == '\0' )
+    {
+        send_to_char( "Syntax: split <resource> <value>\n\r", ch );
+        return;
+    }
+
+    if ( ( obj = get_obj_carry(ch, arg1) ) == NULL )
+    {
+        send_to_char( "You do not carry that object.\n\r", ch);
+        return;
+    }
+    if ( obj->item_type != ITEM_MATERIAL )
+    {
+        send_to_char( "You can only split materials.\n\r", ch);
+        return;
+    }
+    if ( !is_number( arg2 ) )
+    {
+        send_to_char( "Value must be numeric.\n\r", ch );
+        return;
+    }
+
+    value = atoi(arg2);
+
+    if ( value >= obj->value[1] )
+    {
+        send_to_char( "You can't split off more than you have.\r\n", ch );
+        return;
+    }
+    if ( ch->carry_number > 100 )
+    {
+        send_to_char( "You can't carry any more items.\n\r", ch );
+        return;
+    }
+
+    obj->value[1] -= value;
+    obj2 = create_material(obj->value[0]);
+    obj2->value[1] = value;
+    obj_to_char(obj2, ch);
+
+    send_to_char( "Materials split!\n\r", ch);
+
+    ch->carry_weight = 0;
+    for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
+        ch->carry_weight += obj->weight;
+    return;
+}
+
 /* void do_repair( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
@@ -2121,8 +2199,6 @@ void do_chunk( CHAR_DATA *ch, char *argument )
     {
         send_to_char( "You do not carry that object.\n\r", ch);
         return;
-    }
-    if ( obj->item_type != ITEM_ARMOR )
     {
         send_to_char( "You can only repair armor.\n\r", ch);
         return;

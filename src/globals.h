@@ -345,6 +345,7 @@ DECLARE_DO_FUN( do_repop );
 DECLARE_DO_FUN( do_closeexit );
 DECLARE_DO_FUN( do_history );
 DECLARE_DO_FUN( do_chunk );
+DECLARE_DO_FUN( do_split );
 DECLARE_DO_FUN( do_pit );
 DECLARE_DO_FUN( do_install );
 DECLARE_DO_FUN( do_winstall );
