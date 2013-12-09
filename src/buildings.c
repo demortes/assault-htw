@@ -743,7 +743,7 @@ void building_update( void )
                         extract_obj(obj);
                     }
                 }
-                if ( silv > 0 && !IS_SET(ch->effect,EFFECT_BARIN))
+                if ( silv > 0 && !IS_SET(ch->effect, EFFECT_BARIN))
                 {
                     p = get_char_cost(bch);
                     if ( silv >= p )
@@ -754,14 +754,14 @@ void building_update( void )
                     }
                     else
                     {
-                        if ( silv - p > 500 )
-                            send_to_char( "The barkeep tells you, 'Wow, you were way off. I won't even look at you for this much silver!'\n\r", ch );
-                        else if ( silv - p > 100 )
-                            send_to_char( "The barkeep tells you, 'I have a wife and seventeen hitmen after you, you think this is enough?'\n\r", ch );
-                        else if ( silv - p > 50 )
-                            send_to_char( "The barkeep tells you, 'You could be a little more charitable next time you try to buy me off.'\n\r", ch );
-                        else if ( silv - p > 0 )
-                            send_to_char( "The barkeep tells you, 'Small change can really make a difference sometimes, especially in cases like this.'\n\r", ch );
+                        if ( silv - p > 5000 )
+                            send_to_char( "The barkeep tells you, 'Wow, you were way off. I won't even look at you for this much silver!'\n\r", bch );
+                        else if ( silv - p > 1000 )
+                            send_to_char( "The barkeep tells you, 'I have a wife and seventeen hitmen after you, you think this is enough?'\n\r", bch );
+                        else if ( silv - p > 500 )
+                            send_to_char( "The barkeep tells you, 'Small change can really make a difference sometimes, especially in cases like this.'\n\r", bch );
+                        else
+                            send_to_char( "The barkeep tells you, 'You could be a little more charitable next time you try to buy me off.'\n\r", bch );
                     }
                 }
                 if ( gold == 0 )
@@ -1428,7 +1428,7 @@ void building_update( void )
                             if ( jam->owner != ch )
                             {
                                 sprintf( buf, "%s's gatherer stealing from %s (%d/%d)", bld->owned, jam->owned, jam->x, jam->y );
-                                log_f(buf);
+                                log_f("%s", buf);
                             }
                             else
                                 send_to_char( "@@yWarning: One of your gatherers is stealing from your warehouse. You must move it out of the gatherer's range.@@N\n\r", ch );
@@ -3841,8 +3841,7 @@ void construct_alien_vessal(CHAR_DATA *ch, char *argument)
 
 void check_alien_hide(OBJ_DATA *obj)
 {
-    int i,x,t;
-    x = obj->level;
+    int i, t;
     t = (obj->value[0]==DAMAGE_BULLETS)?3:(obj->value[0]==DAMAGE_GENERAL)?2:(obj->value[0]==DAMAGE_BLAST)?4:(obj->value[0]==DAMAGE_ACID)?5:(obj->value[0]==DAMAGE_FLAME)?6:(obj->value[0]==DAMAGE_LASER)?7:(obj->value[0]==DAMAGE_SOUND)?8:-1;
     if ( t == -1 )
         return;
