@@ -271,8 +271,8 @@ void show_room_list_to_char( OBJ_DATA *list, CHAR_DATA *ch, bool fShort, bool fS
         sprintf( buf+strlen(buf), "@@l(@@aInside: @@c%s@@l)@@N %s\n\r", (vhc->driving) ? vhc->driving->name : "EMPTY", vhc->desc );
         send_to_char( buf, ch );
     }
-    if ( ch->in_vehicle )
-        return;
+    //if ( ch->in_vehicle )
+    //    return;
     /*
      * Format the list of objects.
      */
@@ -803,18 +803,8 @@ void do_time( CHAR_DATA *ch, char *argument )
 {
     extern char str_boot_time[];
     char buf[MAX_STRING_LENGTH];
-    char *suf;
-    int day;
 
-    day     = time_info.day + 1;
-
-    if ( day > 4 && day <  20 ) suf = "th";
-    else if ( day % 10 ==  1       ) suf = "st";
-    else if ( day % 10 ==  2       ) suf = "nd";
-    else if ( day % 10 ==  3       ) suf = "rd";
-    else                             suf = "th";
-
-    sprintf( buf, "@@cIt is @@a%d @@co'clock @@a%s@@c Game Time.@@N\n\r@@WAssault @@cstarted up at @@a%s@@N\r@@cThe system time is @@a%s@@N\r",
+    sprintf( buf, "@@cIt is @@a%d @@co'clock @@a%s@@c Game Time.@@N\n\r@@WAssault @@cstarted up at @@W%s@@N\r@@cThe system time is @@W%s@@N\r",
              (time_info.hour % 12 == 0) ? 12 : time_info.hour % 12,
              time_info.hour >= 12 ? "pm" : "am",
              str_boot_time,
@@ -832,7 +822,6 @@ void do_time( CHAR_DATA *ch, char *argument )
 void do_help( CHAR_DATA *ch, char *argument )
 {
     HELP_DATA *pHelp;
-    bool building = FALSE;
     bool sep = FALSE;
     char buf[MSL];
     char buf2[MSL];
@@ -856,7 +845,6 @@ void do_help( CHAR_DATA *ch, char *argument )
             if ( !str_cmp(build_table[i].name,argument) || !str_cmp(build_table[i].symbol,argument))
             {
                 show_building_info(ch,i);
-                building = TRUE;
                 return;
             }
         }

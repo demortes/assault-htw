@@ -771,12 +771,12 @@ void ShowSMap( CHAR_DATA *ch, bool small )
     yy = ch->y;
     if ( IS_SET(vhc->flags,VEHICLE_PSI_SCANNER) )
         send_to_char(scan,ch);
-    for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
-    {
-        if ( obj->z != Z_SPACE )
-            continue;
-        sprintf(catbuf+strlen(catbuf),"  %s @@c \n\r",obj->short_descr );
-    }
+//    for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
+//    {
+//        if ( obj->z != Z_SPACE )
+//            continue;
+//        sprintf(catbuf+strlen(catbuf),"  %s @@c \n\r",obj->short_descr );
+//    }
     send_to_char(catbuf,ch);
     return;
 }
