@@ -1573,7 +1573,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 move ( ch, bld->x, bld->y, bld->z );
                 act( "You have gone out of the medal arena!", ch, NULL, NULL, TO_CHAR );
                 act( "$n has gone out of the medal arena!", ch, NULL, NULL, TO_ROOM );
-                ch->medaltimer = 300;
+                ch->medaltimer = 120;
                 do_look(ch,"");
                 return;
             }
