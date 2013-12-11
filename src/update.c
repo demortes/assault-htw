@@ -1096,22 +1096,32 @@ void vehicle_update( void )
             vhc->fuel = URANGE(0,vhc->fuel+number_range(1,3*vhc->in_building->level),vhc->max_fuel);
             vhc->hit = URANGE(0,vhc->hit+number_range(1,3*vhc->in_building->level),vhc->max_hit);
             vhc->ammo = URANGE(0,vhc->ammo+number_range(1,3*vhc->in_building->level),vhc->max_ammo);
+			vhc->timer = 0;
         }
         else if ( vhc->in_building != NULL && vhc->in_building->type == BUILDING_AIRFIELD && AIR_VEHICLE(vhc->type))
         {
             vhc->fuel = URANGE(0,vhc->fuel+number_range(1,3*vhc->in_building->level),vhc->max_fuel);
             vhc->hit = URANGE(0,vhc->hit+number_range(1,3*vhc->in_building->level),vhc->max_hit);
             vhc->ammo = URANGE(0,vhc->ammo+number_range(1,3*vhc->in_building->level),vhc->max_ammo);
+			vhc->timer = 0;
         }
         else if ( vhc->in_building != NULL && vhc->in_building->type == BUILDING_SPACE_CENTER && SPACE_VESSAL(vhc))
         {
             vhc->fuel = URANGE(0,vhc->fuel+number_range(1,3*vhc->in_building->level),vhc->max_fuel);
             vhc->hit = URANGE(0,vhc->hit+number_range(1,3*vhc->in_building->level),vhc->max_hit);
             vhc->ammo = URANGE(0,vhc->ammo+number_range(1,3*vhc->in_building->level),vhc->max_ammo);
+			vhc->timer = 0;
             if ( IS_SET(vhc->flags,VEHICLE_CORROSIVE_A) )
                 REMOVE_BIT(vhc->flags,VEHICLE_CORROSIVE_A);
+        } 
+		else if ( vhc->driving == NULL)
+        {
+            vhc->timer++;
+            if ( vhc->timer >= 100000 )
+                extract_vehicle(vhc,FALSE);
+				continue;
         }
-        if (( vhc->driving != NULL && vhc->driving->class == CLASS_DRIVER ) || IS_SET(vhc->flags,VEHICLE_REGEN) )
+        if ( vhc->driving != NULL && ((vhc->driving->class == CLASS_DRIVER ) || IS_SET(vhc->flags,VEHICLE_REGEN) ))
         {
             int c=13;
             if ( vhc->driving && vhc->driving->class == CLASS_DRIVER )
@@ -1153,12 +1163,6 @@ void vehicle_update( void )
                                     send_to_char(buf,vhc->driving);
                                 }*/
             }
-        }
-        if ( !vhc->driving )
-        {
-            vhc->timer++;
-            if ( vhc->timer >= 100000 )
-                extract_vehicle(vhc,FALSE);
         }
 
         if ( continual_flight(vhc) && ( wch = vhc->driving ) != NULL )
