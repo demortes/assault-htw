@@ -1481,7 +1481,7 @@ void do_teleport_b( CHAR_DATA *ch, char *argument )
         {
             if ( bld2->type == BUILDING_TELEPORTER && !str_cmp(bld2->owned,bld->owned) && bld2 != bld )
             {
-                if ( bld2->z == Z_UNDERGROUND )
+                if ( bld2->z == Z_UNDERGROUND && !IS_IMMORTAL(ch))
                     sprintf( buf, "@@a%d) @@c%s at ?/? on %s  %s\n\r", x, bld2->name, planet_table[bld2->z].name, bld2->value[10] >= 10 ? "@@G(@@rPowered@@G)" : "@@R(@@ePowered Down@@R)" );
                 else
                     sprintf( buf, "@@a%d) @@c%s at %d/%d on %s  %s\n\r", x, bld2->name, bld2->x, bld2->y, planet_table[bld2->z].name, bld2->value[10] >= 10 ? "@@G(@@rPowered@@G)" : "@@R(@@ePowered Down@@R)" );

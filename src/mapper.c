@@ -986,9 +986,10 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
         show_building(ch,IS_SET( ch->config, CONFIG_SMALLMAP)?2:IS_SET(ch->config,CONFIG_TINYMAP)?1:4,ch->map);
         return;
     }
-
-    sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
-
+    if(ch->z != Z_UNDERGROUND)
+    	sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
+    else
+	sprintf( g_buf, "Your location: \?\?/\?\? (Underground)\n\r\n\r");
     if ( quest )
     {
         for ( x = ch->x - ch->map/2; x < ch->x + ch->map/2; x++ )

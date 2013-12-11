@@ -1992,7 +1992,7 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
             i = buf2;
             break;
         case 'C' :
-            if ( ch->z == Z_GROUND || ch->z == Z_NEWBIE || ch->z == Z_AIR )
+            if ( (ch->z == Z_GROUND || ch->z == Z_NEWBIE || ch->z == Z_AIR) || IS_IMMORTAL(ch) )
                 sprintf( buf2, "%d/%d",ch->x,ch->y );
             else
                 sprintf( buf2, "?/?" );

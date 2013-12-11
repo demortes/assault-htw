@@ -376,7 +376,10 @@ void act_sneak( CHAR_DATA *ch, int level )
 void do_dig( CHAR_DATA *ch, char *argument )
 {
     if ( planet_table[ch->z].system == 0 )
+    {
+	send_to_char("You're underground... there's plenty of dirt around you.\n", ch);
         return;
+    }
     if ( ch->in_building )
     {
         if ( ch->in_building->type == BUILDING_TUNNEL )
