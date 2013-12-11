@@ -1573,7 +1573,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 move ( ch, bld->x, bld->y, bld->z );
                 act( "You have gone out of the medal arena!", ch, NULL, NULL, TO_CHAR );
                 act( "$n has gone out of the medal arena!", ch, NULL, NULL, TO_ROOM );
-                ch->medaltimer = 120;
+                ch->medaltimer = (2+ch->medals)<=6?(2+ch->medals) * 60 : 360; 		//If player has 4 medals, put it at 6 horus. Else, 2+# of medals hours until next arena.
                 do_look(ch,"");
                 return;
             }
@@ -1581,7 +1581,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
         move ( ch, PIT_BORDER_X -1, PIT_BORDER_Y - 1, 1 );
         do_look(ch,"");
-        ch->medaltimer = 300;
+        ch->medaltimer = (2+ch->medals)<=6?(2+ch->medals) * 60 : 360;
         save_char_obj(ch);
         return;
     }
