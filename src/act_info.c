@@ -2114,7 +2114,7 @@ void do_prompt( CHAR_DATA *ch, char *argument )
     else if ( !str_cmp(argument,"cool") )
         strcpy( buf, "@@c[%q] @@e[@@r%h@@G/@@r%H@@Ghp @@r%T@@Gft @@y%Q@@Gqp@@e] @@cV: @@a%v@@c/@@a%V@@chp @@a%f@@c/@@a%F@@cmv @@a%m@@c/@@a%M@@cam (%C)@@N " );
     else if ( !str_cmp(argument,"grave") )
-        strcpy( buf, "@@d[@@w(@@e%h@@d/@@R%H@@w HP@@w) @@w(@@l%T@@d/@@B%t @@wTMR@@w) @@w(@@y%Q @@wQP) @@w(@@r%x @@wTNR@@w) @@w(@@a%C @@w%s@@w)@@d]@@N" );
+        strcpy( buf, "@@d[@@w(@@e%h@@d/@@R%H@@w HP@@w) @@w(@@l%T@@d/@@B%t @@wTMR@@w) @@w(@@y%Q @@wQP) @@w(@@r%x @@wEXP@@w) @@w(@@a%C @@w%s@@w)@@d]@@N" );
     else if ( !str_cmp(argument,"pwnage") )
         strcpy( buf, "%s:%C @@d(%E) @@G(QP@@r%Q@@d/@@GXP@@r%x@@G)%c@@d%T @@b(T:@@m%r@@b) @@cHP@@a%h@@d/@@c%H @@d(@@RVH@@e%v@@d/@@R%V VF@@e%f@@d/@@R%F VA@@e%m@@d/@@R%M@@d) %q@@N >%c");
 
