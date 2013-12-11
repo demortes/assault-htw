@@ -2225,34 +2225,32 @@ Stop
 
 ~
 0 proficiencies proficiency~
-Proficiencies                                  
-@@g                                                                          
-@@a Syntax:@@c Proficiencies                                                    
-@@c         Proficiencies add (prof)                                         
-@@c         Proficiencies abilities                                          
-@@g                                                                          
-@@g This command is used to view and/or add to your proficiency skills.      
-@@g Proficiency points are gained by playing for a certain amount of time.   
-@@g Once you reach a certain time point, you will be awarded a point the     
-@@g next time you log on.                                                    
-                                                                          
-@@g You get prof. points on the following play hours:                        
-@@c 3, 10, 50, 100, 150, 200, 250, 300, 400, 600                             
-                                                                          
-@@g The current proficiencies are:                                           
-@@g                                                                          
- Combat@@g - You use your armor better, and have a chance at piercing your   
-@@g            enemies'. Also gets a higher chance of Head Shots.            
- Building@@g -  Reduces building cost by a % paralel to your skill level,    
-@@g            and raises your chance to start with upgraded buildings (With 
-@@g            a high-enough proficiency, you can start at level 5!)         
- Engineering@@g - Spaceships you create have more HP/Fuel/Ammo and longer    
-@@g            combat range, vehicle addons work better, and you work better 
-@@g            in Engineering Mode.                                          
-                                                                          
-@@aSee Also: Engineering, Skills                                             
+@@NProficiencies
 @@N
-
+@@a Syntax: @@cProficiencies                                                    
+@@N         @@cProficiencies add (prof)                                         
+@@N         @@cProficiencies abilities                                          
+@@N
+@@N This command is used to view and/or add to your proficiency skills.      
+@@N Proficiency points are gained by playing for a certain amount of time.   
+@@N Once you reach a certain time point, you will be awarded a point the     
+@@N next time you log on.                                                    
+@@N
+@@N You get prof. points on the following play hours:                        
+@@N @@c0, 2, 10, 50, 100, 150, 200, 250, 300, 400@@N                             
+@@N
+@@N The current proficiencies are:                                           
+@@N
+@@N Combat - You use your armor better, and have a chance at piercing your   
+@@N            enemies'. Also gets a higher chance of Head Shots.            
+@@N Building -  Reduces building cost by a % paralel to your skill level,    
+@@N            and raises your chance to start with upgraded buildings (With 
+@@N            a high-enough proficiency, you can start at level 5!)         
+@@N Engineering - Spaceships you create have more HP/Fuel/Ammo and longer    
+@@N            combat range, vehicle addons work better, and you work better 
+@@N            in Engineering Mode.                                          
+@@N
+@@aSee Also: Engineering, Skills  @@N
 ~
 0 Ansi~
 ANSI Colors                               
