@@ -143,7 +143,7 @@ void do_get( CHAR_DATA *ch, char *argument )
     char victim_name[MSL];
     char actbuf[MSL];
 
-    ROOM_INDEX_DATA *room;
+//    ROOM_INDEX_DATA *room;
     OBJ_DATA *obj;
     OBJ_DATA *obj_next;
     bool found = FALSE;
@@ -175,8 +175,6 @@ void do_get( CHAR_DATA *ch, char *argument )
 
             found = FALSE;
 
-            room = ch->in_room;
-
             parse = one_argument(parse, one_object);
             for ( obj = map_obj[ch->x][ch->y]; obj != NULL; obj = obj_next )
             {
@@ -198,8 +196,6 @@ void do_get( CHAR_DATA *ch, char *argument )
         else if ( !str_prefix( "1 all", object_list ) )
         {   /* 'get all' */
             found = FALSE;
-
-            room = ch->in_room;
 
             if ( get_ok )
                 found = TRUE;
@@ -259,8 +255,6 @@ void do_get( CHAR_DATA *ch, char *argument )
 
                     else
                     {
-                        room = ch->in_room;
-
                         get_obj( ch, obj, NULL );
                         found_one_obj = TRUE;
                     }
@@ -581,7 +575,7 @@ void do_give( CHAR_DATA *ch, char *argument )
     char object_list[MSL];
     char one_object[MSL];
     char object_number[MSL];
-    int tax;
+//    int tax;
     CHAR_DATA *victim;
     OBJ_DATA  *obj;
 
@@ -595,7 +589,6 @@ void do_give( CHAR_DATA *ch, char *argument )
         send_to_char( "You can't trade in paintball - Trade in the real world, where there is real danger.\n\r", ch );
         return;
     }
-    tax = 0;
 
     container_name[0] = '\0';
     pre_parse( argument, victim_name, container_name, object_list );
@@ -1495,7 +1488,7 @@ void do_sacrifice( CHAR_DATA *ch, char *argument )
     {
         char buf[MSL];
         sprintf( buf, "%s junked by %s (Sticky)", obj->short_descr, ch->name );
-        log_f(buf);
+        log_f("%s", buf);
         return;
     }
     extract_obj( obj );
@@ -1560,7 +1553,7 @@ void do_clean(CHAR_DATA *ch, char *argument)
     {
         char buf[MSL];
         sprintf(buf,"%s cleaned a warehouse.\n\r", ch->name );
-        log_f(buf);
+        log_f("%s", buf);
     }
     return;
 }
