@@ -873,11 +873,19 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
                     range=obj->value[4]+1;
             }
 
-            sprintf( p_buf+strlen(p_buf), "%s%s%s%s %d/%d\n\r",
+	    if(ch->z != Z_UNDERGROUND)
+            	sprintf( p_buf+strlen(p_buf), "%s%s%s%s %d/%d\n\r",
                      (in_range(ch,d->character,range)) ? "*" : "",
                      (ch->y < yy)
                      ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" :
-                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "",  xx, yy);
+                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "", xx, yy);
+	    else
+                sprintf( p_buf+strlen(p_buf), "%s%s%s%s \?\?/\?\?\n\r",
+                     (in_range(ch,d->character,range)) ? "*" : "",
+                     (ch->y < yy)
+                     ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" :
+                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "");
+
         }
     }
     if ( ch->z != Z_AIR )
