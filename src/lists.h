@@ -144,7 +144,7 @@ void vehicle_free_destructor( VEHICLE_DATA * vdat );
 #define PUT_FREE(item, freelist) \
     do \
     { \
-        if ( (item)->is_free ) \
+        if ( (item)->is_free == TRUE ) \
         { \
             bug("PUT_FREE: item is ALREADY FREE!  Hanging...", 0); \
             for (;;); \

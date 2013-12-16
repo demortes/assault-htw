@@ -987,7 +987,6 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
     bool found;
     int level;
     int level_top;
-    int objlev;
     bool mailme = FALSE;
     if ( is_name( "mailme", argument ) )
         mailme = TRUE;
@@ -1031,7 +1030,6 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
 
             {
                 found = TRUE;
-                objlev=pObjIndex->level;
 
                 {
                     sprintf( buf, "\n\r(@@aMORTAL@@N) [%3d] [%5d] %s", pObjIndex->level,
@@ -2527,7 +2525,7 @@ void do_force( CHAR_DATA *ch, char *argument )
             return;
         }
 
-        for ( vch = first_char; vch != NULL; vch = vch=vch_next )
+        for ( vch = first_char; vch != NULL; vch=vch_next )
         {
 
             vch_next = vch->next;
@@ -2548,7 +2546,7 @@ void do_force( CHAR_DATA *ch, char *argument )
         CHAR_DATA *vim;
         CHAR_DATA *vim_next;
 
-        for ( vim = first_char; vim != NULL; vim = vim=vim_next )
+        for ( vim = first_char; vim != NULL;vim=vim_next )
         {
 
             vim_next = vim->next;
