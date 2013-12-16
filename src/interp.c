@@ -175,6 +175,10 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_MISC, C_SHOW_ALWAYS
     },
     {
+        "bthere",           do_bthere,        POS_DEAD,        0,  LOG_NORMAL,
+        C_TYPE_MISC, C_SHOW_ALWAYS
+    },
+    {
         "build",          do_a_build,       POS_STANDING,    0,  LOG_NORMAL,
         C_TYPE_ACTION, C_SHOW_ALWAYS
     },

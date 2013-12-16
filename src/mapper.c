@@ -1381,38 +1381,103 @@ void do_scanmap( CHAR_DATA *ch, char *argument )
 void do_bscan(CHAR_DATA *ch,char *argument)
 {
     BUILDING_DATA *bld;
-    int x,xx,y,yy,dir;
+    int x, xx, y, yy, dir;
     char buf[MSL];
-    if (!IS_SET(ch->config,CONFIG_BLIND))
-        mreturn("Huh?",ch);
-    if ( ( dir = parse_direction(ch,argument) ) == -1 || argument[0] == '\0' )
-        mreturn("Bscan in a direction!\n",ch);
-    //go:P
-    x=ch->x,y=ch->y;
+
+    if (!IS_SET(ch->config, CONFIG_BLIND))
+        mreturn("Huh?\r\n",ch);
+    if ( ( dir = parse_direction(ch, argument) ) == -1 || argument[0] == '\0' )
+        mreturn("Bscan <direction>\r\n",ch);
+
+    x = ch->x, y = ch->y;
     while (1)
     {
-        if (dir==DIR_NORTH)
+        if (dir == DIR_NORTH)
             y++;
-        else if (dir==DIR_SOUTH)
+        else if (dir == DIR_SOUTH)
             y--;
-        else               if (dir==DIR_EAST)
+        else if (dir == DIR_EAST)
             x++;
-        else if (dir==DIR_WEST)
+        else if (dir == DIR_WEST)
             x--;
-        if (x<0||x>MAX_MAPS||y<0||y>MAX_MAPS)
+        if (x < 0 || x > MAX_MAPS || y < 0 || y > MAX_MAPS)
             break;
-        if (x>ch->x+ch->map || x<ch->x-ch->map)
+        if (x > ch->x + ch->map || x < ch->x - ch->map)
             break;
-        if (y>ch->y+ch->map||y<ch->y-ch->map)
+        if (y > ch->y + ch->map || y < ch->y - ch->map)
             break;
         xx=x;
         yy=y;
         bld=map_bld[xx][yy][ch->z];
         if (bld!=NULL)
         {
-            sprintf(buf,"%s owned by %s: %d.\n\r",bld->type == BUILDING_DUMMY?build_table[bld->value[0]].name:bld->name,bld->owned, (dir==DIR_NORTH) || (dir==DIR_SOUTH) ? bld->y : bld->x);
+            sprintf(buf,"%s owned by %s: %d.\n\r", bld->type == BUILDING_DUMMY ? build_table[bld->value[0]].name : bld->name,bld->owned, (dir==DIR_NORTH) || (dir==DIR_SOUTH) ? bld->y : bld->x);
             send_to_char(buf,ch);
         }
+    }
+    return;
+}
+
+void do_bthere(CHAR_DATA *ch, char *argument)
+{
+    BUILDING_DATA *bld;
+    int x,xx,y,yy,dir, range = 5;
+    char buf[MSL];
+    char arg1[MAX_INPUT_LENGTH];
+    char arg2[MAX_INPUT_LENGTH];
+    
+    if (!IS_SET(ch->config,CONFIG_BLIND))
+        mreturn("Huh?\r\n", ch);
+
+    argument = one_argument(argument, arg1);
+    argument = one_argument(argument, arg2);
+    
+    if ( ( dir = parse_direction(ch, arg1) ) == -1 || arg1[0] == '\0' )
+        mreturn("Bthere <direction> <range>\n\r", ch);
+
+    if (arg2[0] != '\0' && !is_number(arg2))
+        mreturn("Range must be numeric!\r\n", ch);
+    
+    if (arg2[0] != '\0') 
+    {
+        range = atoi(arg2);
+
+        if (range > ch->map)
+            range = ch->map;
+        else if (range <= 0)
+            range = 1;;
+    }
+
+    x = ch->x, y = ch->y;
+    
+    while (1)
+    {
+        range--;
+        if (dir == DIR_NORTH)
+            y++;
+        else if (dir == DIR_SOUTH)
+            y--;
+        else if (dir == DIR_EAST)
+            x++;
+        else if (dir == DIR_WEST)
+            x--;
+
+        if (range < 0)
+            break;
+
+        if (x < 0 || x > MAX_MAPS || y < 0 || y > MAX_MAPS)
+            break;
+        if (x > ch->x + ch->map || x < ch->x - ch->map)
+            break;
+        if (y > ch->y + ch->map || y < ch->y - ch->map)
+            break;
+
+        xx = x;
+        yy = y;
+        bld=map_bld[xx][yy][ch->z];
+
+        sprintf(buf, "%s\n\r", bld ? "yes" : "no");
+        send_to_char(buf,ch);
     }
     return;
 }

@@ -491,6 +491,7 @@ DECLARE_DO_FUN( do_gpreward );
 DECLARE_DO_FUN( do_bye          );
 DECLARE_DO_FUN( do_pager );
 DECLARE_DO_FUN( do_bscan );
+DECLARE_DO_FUN( do_bthere );
 DECLARE_DO_FUN( do_imminfo );
 DECLARE_DO_FUN( do_changes );
 DECLARE_DO_FUN( do_logs );
