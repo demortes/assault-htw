@@ -3248,7 +3248,7 @@ void display_details_old( CHAR_DATA * viewer, CHAR_DATA *ch )
         sprintf(c_buf,"%d",(ch->desc->compressing==85)?1:2);
     sprintf( buf, "@@g%11s%-29s\n\r", ch->name, ch->pcdata->title );
     sprintf( buf+strlen(buf), "@@dPlay Time: @@c%5d Hours @@a(@@c%d Total@@a) (%sMCCP%s support@@a)@@N\n\r", my_get_hours( ch, FALSE ), my_get_hours( ch, TRUE ), !ch->desc ? "Unknown" : ch->desc->out_compress ? "" : "@@eNO ", c_buf);
-    sprintf( buf+strlen(buf), "@@eHP: @@W%-5d/%-5d      @@aQPs: @@W%d     @@lMedals: @@p%d\n\r", ch->hit, ch->max_hit, ch->quest_points, ch->medals );
+    sprintf( buf+strlen(buf), "@@eHP: @@W%-5d/%-5d @@aQPs: @@W%d @@aGPs: %d   @@lMedals: @@p%d\n\r", ch->hit, ch->max_hit, ch->quest_points,ch->game_points, ch->medals );
     sprintf( buf+strlen(buf), "@@dClass: @@c%s\n\r", class_table[ch->class].name );
     sprintf( buf+strlen(buf), "@@dAlliance: @@c%s\n\r", (ch->pcdata->alliance == -1) ? "None" : alliance_table[ch->pcdata->alliance].name );
     if ( get_trust( ch ) != ch->level )
