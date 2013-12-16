@@ -110,7 +110,7 @@ void move_char( CHAR_DATA *ch, int door )
         return;
     if ( ch->c_sn == gsn_move )
         ch->c_sn = -1;
-    if ( ch->in_vehicle )
+    if ( ch->in_vehicle )					// If you're in a vehicle...
     {
         if ( SPACE_VESSAL(ch->in_vehicle) && z != Z_SPACE )
         {
@@ -122,51 +122,15 @@ void move_char( CHAR_DATA *ch, int door )
             send_to_char( "@@gYou must @@elift@@g up in order to fly the aircraft.@@N\n\r", ch );
             return;
         }
-    }
-    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_MAGMA && number_percent() > 2 )
-    {
-        if ( !ch->in_vehicle )
-            send_to_char( "You didn't manage to escape the magma! You must try again!\n\r", ch );
-        else
-            send_to_char( "The vehicle won't function in this heat! You must try again!\n\r", ch );
-
-        return;
-    }
-    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
-    {
-        move(ch,1,1,0);
-        do_look(ch,"");
-        return;
-    }
-
-    xx = ch->x;
-    yy = ch->y;
-    if ( door < 0 || door > 3 )
-    {
-        bug( "Do_move: bad door %d.", door );
-        return;
-    }
-    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )
-        door = number_range(0,3);
-
-    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )
-    {
-        send_to_char( "You are carrying too much weight!\n\r", ch);
-        return;
-    }
-
-    if ( ch->in_building )
-        from_bld = TRUE;
-    if ( ch->in_vehicle )
-    {
-        if ( continual_flight(ch->in_vehicle) )
+		
+		if ( continual_flight(ch->in_vehicle) )
         {
             ch->c_sn = -1;
             ch->c_level = door;
         }
         else if ( IS_SET(ch->effect,EFFECT_DRUNK) && number_percent() < 33 )
         {
-            send_to_char( "You swirve around in circles.. FUN!\n\r", ch );
+            send_to_char( "You swerve around in circles.. FUN!\n\r", ch );
             return;
         }
         if ( ch->in_vehicle->fuel <= 0 )
@@ -177,27 +141,75 @@ void move_char( CHAR_DATA *ch, int door )
             return;
         }
     }
+    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_MAGMA && number_percent() > 2 )    //If you're in magma
     {
-        BUILDING_DATA *bld;
-        bld = get_char_building(ch);
-        if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) )if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) && ((bld->owner != ch) || (ch->fighttimer > 0))  && !IS_IMMORTAL(ch) )
-            {
-                send_to_char( "You cannot exit this way.\n\r", ch );
-                if ( my_get_hours(ch,TRUE) == 0 )
-                    send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
-                return;
-            }
+        if ( !ch->in_vehicle )
+            send_to_char( "You didn't manage to escape the magma! You must try again!\n\r", ch );
+        else
+            send_to_char( "The vehicle won't function in this heat! You must try again!\n\r", ch );
+
+        return;
+    }
+    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )							// If flagged asshole.
+    {
+        move(ch,1,1,0);
+        do_look(ch,"");
+        return;
     }
 
+    xx = ch->x;
+    yy = ch->y;
+    if ( door < 0 || door > 3 )											//If wrong direction chosen
+    {
+        bug( "Do_move: bad door %d.", door );
+        return;
+    }
+    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )	//If confused
+        door = number_range(0,3);
+
+    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )		//If over burdened...
+    {
+        send_to_char( "You are carrying too much weight!\n\r", ch);
+        return;
+    }
+
+    if ( ch->in_building )												//Currently in a building (before moving)
+        from_bld = TRUE;
+
+	bld = get_char_building(ch);			//BELOW: If in building, exits exist and building is completed... (and owner is not the player, OR fight timer is active) and not immortal
+	if ( bld != NULL && bld->exit[door] == FALSE && complete(bld) && ((bld->owner != ch) || (ch->fighttimer > 0))  && !IS_IMMORTAL(ch) )
+	{
+			send_to_char( "You cannot exit this way.\n\r", ch );
+			if ( my_get_hours(ch,TRUE) == 0 )
+				send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
+			return;
+	}
+
     if ( door == DIR_NORTH )
+	{
         ch->y += movea;
+		if(ch->y >= MAX_MAPS - BORDER_SIZE)
+			ch->y = BORDER_SIZE;			// If we're going north on the border (MAX_MAPS - BORDER_SIZE) we then want it to wrap around to BORDER_SIZE + whatever...
+	}
     else if ( door == DIR_EAST )
+	{
         ch->x += movea;
+		if(ch->x >= MAX_MAPS - BORDER_SIZE)
+			ch->x = BORDER_SIZE;
+	}
     else if ( door == DIR_SOUTH )
+	{
         ch->y -= movea;
-    else if ( door == DIR_WEST )
+		if(ch->y < BORDER_SIZE)
+			ch->y = MAX_MAPS - BORDER_SIZE - 1;
+    }
+	else if ( door == DIR_WEST )
+	{
         ch->x -= movea;
-    else
+		if(ch->x <= BORDER_SIZE)
+			ch->x = MAX_MAPS - BORDER_SIZE - 1;
+	}
+	else
         return;
 
     bld = get_building(ch->x,ch->y,z);
@@ -261,11 +273,11 @@ void move_char( CHAR_DATA *ch, int door )
         {
             if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
                 send_to_char( "You cannot go that way.\n\r", ch );
-            else if ( bld && ch->in_vehicle != NULL )
+	        else if ( bld && ch->in_vehicle != NULL )
                 send_to_char( "You can't enter it while driving!\n\r", ch );
             else if ( bld && bld->protection > 0 )
                 send_to_char( "This building is protected.\n\r", ch );
-            else
+            else if ( bld )
             {
                 sprintf( buf, "You cannot enter %s's property while they are offline.\n\r", bld->owned );
                 send_to_char(buf,ch);
