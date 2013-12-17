@@ -206,7 +206,7 @@ void move_char( CHAR_DATA *ch, int door )
 	else if ( door == DIR_WEST )
 	{
         ch->x -= movea;
-		if(ch->x <= BORDER_SIZE)
+		if(ch->x < BORDER_SIZE)
 			ch->x = MAX_MAPS - BORDER_SIZE - 1;
 	}
 	else
