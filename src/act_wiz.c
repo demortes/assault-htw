@@ -372,7 +372,7 @@ void do_deny( CHAR_DATA *ch, char *argument )
 {
     char arg[MAX_INPUT_LENGTH];
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     one_argument( argument, arg );
     if ( arg[0] == '\0' )
     {
@@ -383,7 +383,7 @@ void do_deny( CHAR_DATA *ch, char *argument )
     if ( ( victim = get_char_world( ch, arg ) ) == NULL )
     {
         {
-            char    buf[MSL];
+            char    buf[MSL] = "\0";
             sprintf( buf, "%s is not online.\n\r", capitalize( arg ) );
             send_to_char( buf, ch );
             return;
@@ -602,7 +602,7 @@ void do_transfer( CHAR_DATA *ch, char *argument )
     {
 
         {
-            char    buf[MSL];
+            char    buf[MSL] = "\0";
             sprintf( buf, "%s is not online.\n\r", capitalize( arg1 ) );
             send_to_char( buf, ch );
             return;
@@ -945,8 +945,8 @@ void do_olmsg( CHAR_DATA *ch, char *argument )
     CHAR_DATA *victim;
     DESCRIPTOR_DATA d;
     bool found;
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
 
     argument = one_argument(argument,arg);
     found = load_char_obj( &d, arg, FALSE );
@@ -979,7 +979,7 @@ void do_ofindlev( CHAR_DATA *ch, char *argument )
     char buf[MAX_STRING_LENGTH];
     char buf1[MAX_STRING_LENGTH];
     char arg[MAX_INPUT_LENGTH];
-    char arg2[MSL];
+    char arg2[MSL] = "\0";
     OBJ_INDEX_DATA *pObjIndex;
     int vnum;
     int nMatch;
@@ -1803,8 +1803,8 @@ void do_ban( CHAR_DATA *ch, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
     char arg[MAX_INPUT_LENGTH];
-    char arg2[MSL];
-    char buf2[MSL];
+    char arg2[MSL] = "\0";
+    char buf2[MSL] = "\0";
 
     BAN_DATA *pban;
     buf[0] = '\0';
@@ -2803,7 +2803,7 @@ void do_wizify( CHAR_DATA *ch, char *argument )
 void do_owhere( CHAR_DATA *ch, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
-    char catbuf[MSL];
+    char catbuf[MSL] = "\0";
     char arg[MAX_INPUT_LENGTH];
     bool found = FALSE;
     OBJ_DATA *obj;
@@ -2863,7 +2863,7 @@ void do_owhere( CHAR_DATA *ch, char *argument )
 void do_owhereflag( CHAR_DATA *ch, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
-    char catbuf[MSL];
+    char catbuf[MSL] = "\0";
     char arg[MAX_INPUT_LENGTH];
     bool found = FALSE;
     OBJ_DATA *obj;
@@ -3482,7 +3482,7 @@ void do_immlog( CHAR_DATA *ch, char *argument )
         if ( ( victim = get_char_world( ch, arg1 ) ) == NULL )
         {
             {
-                char buf[MSL];
+                char buf[MSL] = "\0";
                 sprintf( buf, "%s is not online.\n\r", capitalize( arg1 ) );
                 send_to_char( buf, ch );
                 return;
@@ -4312,7 +4312,7 @@ void do_olist( CHAR_DATA *ch, char *argument )
 {
     int vnum;
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     for ( vnum = ch->in_room->area->min_vnum; vnum < ch->in_room->area->max_vnum; vnum++ )
     {
@@ -4429,7 +4429,7 @@ void do_setwcode( CHAR_DATA *ch, char *argument )
 void do_listbuildings( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool imm = IS_IMMORTAL(ch);
     int i = 0,x=0;
 
@@ -4516,8 +4516,8 @@ void do_killbuilding( CHAR_DATA *ch, char *argument )
 
 void do_bset( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
-    char arg2[MSL];
+    char arg[MSL] = "\0";
+    char arg2[MSL] = "\0";
     BUILDING_DATA *bld;
     BUILDING_DATA *bld_next;
     int i;
@@ -4692,7 +4692,7 @@ void do_vload( CHAR_DATA *ch, char *argument )
 
     if ( argument[0] == '\0' || !is_number(argument) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         for ( i=0; i<MAX_VEHICLE; i++ )
         {
             sprintf( buf, "%d. %s\n\r", i, vehicle_desc[i] );
@@ -5078,7 +5078,7 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
                 int i = bld->level -1;
                 for (; i>0; i-- )
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
 
                     obj = create_object( get_obj_index( OBJ_VNUM_BLUEPRINTS ), 0 );
                     obj->level = URANGE(2, i+1, 5 );
@@ -5105,12 +5105,12 @@ void do_buildingreimburse( CHAR_DATA *ch, char *argument )
 
 void do_oarmortype( CHAR_DATA *ch, char *argument )
 {
-    char buf_all[MSL];
-    char buf_bullet[MSL];
-    char buf_blast[MSL];
-    char buf_acid[MSL];
-    char buf_fire[MSL];
-    char buf_laser[MSL];
+    char buf_all[MSL] = "\0";
+    char buf_bullet[MSL] = "\0";
+    char buf_blast[MSL] = "\0";
+    char buf_acid[MSL] = "\0";
+    char buf_fire[MSL] = "\0";
+    char buf_laser[MSL] = "\0";
     OBJ_INDEX_DATA *obj;
     int i;
 
@@ -5160,9 +5160,9 @@ void do_oarmortype( CHAR_DATA *ch, char *argument )
 
 void do_setalliance( CHAR_DATA *ch, char *argument )
 {
-    char arg1[MSL];
-    char arg2[MSL];
-    char arg3[MSL];
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
+    char arg3[MSL] = "\0";
     int i;
 
     argument = one_argument(argument,arg1);
@@ -5258,7 +5258,7 @@ void do_setalliance( CHAR_DATA *ch, char *argument )
 
 void do_bload( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     BUILDING_DATA *bld;
     int level,type,i;
 
@@ -5351,8 +5351,8 @@ void do_bload( CHAR_DATA *ch, char *argument )
 void do_findalts( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char buf[MSL];
-    char ip2[MSL];
+    char buf[MSL] = "\0";
+    char ip2[MSL] = "\0";
     if ( argument[0] == '\0' )
     {
         send_to_char( "Must provide an IP address or player name.\n\r", ch );
@@ -5398,8 +5398,8 @@ void do_findalts( CHAR_DATA *ch, char *argument )
 
 void do_search( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
 
     argument = one_argument(argument,arg);
     if ( argument[0] == '\0' )
@@ -5431,7 +5431,7 @@ void do_home( CHAR_DATA *ch, char *argument )
     {
 
         {
-            char    buf[MSL];
+            char    buf[MSL] = "\0";
             sprintf( buf, "%s is not online.\n\r", capitalize( argument ) );
             send_to_char( buf, ch );
             return;
@@ -5468,7 +5468,7 @@ void do_home( CHAR_DATA *ch, char *argument )
 
 void do_move( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     BUILDING_DATA *bld;
     BUILDING_DATA *bld2;
     int x,y;
@@ -5552,7 +5552,7 @@ void do_asshole( CHAR_DATA *ch, char *argument )
 
 void do_loadlist( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i,c=0;
     int lev;
     if ( argument[0] == '\0' || !is_number(argument) )
@@ -5581,8 +5581,8 @@ void do_loadlist( CHAR_DATA *ch, char *argument )
 void do_loadfake( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char name[MSL];
-    char buf[MSL];
+    char name[MSL] = "\0";
+    char buf[MSL] = "\0";
     bool found = FALSE;
     DESCRIPTOR_DATA  d;
 
@@ -5645,7 +5645,7 @@ void do_loadfake( CHAR_DATA *ch, char *argument )
 
 void do_queue(CHAR_DATA *ch, char *argument)
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     QUEUE_DATA *q;
     for ( q = ch->pcdata->queue; q; q = q->next )
     {
@@ -5657,7 +5657,7 @@ void do_queue(CHAR_DATA *ch, char *argument)
 
 void do_shell(CHAR_DATA *ch, char *argument)
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( str_cmp(ch->name,admin) )
         return;
     sprintf(buf,"%s",argument);
@@ -5667,8 +5667,8 @@ void do_shell(CHAR_DATA *ch, char *argument)
 
 void do_prize( CHAR_DATA *ch, char *argument)
 {
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
     int level;
     OBJ_DATA *obj;
 
@@ -5717,8 +5717,8 @@ void do_prize( CHAR_DATA *ch, char *argument)
 void do_multiplayers(CHAR_DATA *ch, char *argument)
 {
     int i;
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -5802,7 +5802,7 @@ void do_peek( CHAR_DATA *ch, char *argument )
 void do_peace ( CHAR_DATA *ch, char *argument)
 {
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -5865,7 +5865,7 @@ void do_phase( CHAR_DATA *ch, char *argument )
     int z;
     char arg1[MAX_INPUT_LENGTH];
     argument = one_argument( argument, arg1 );
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if( arg1[0] == '\0' )
     {
@@ -5934,7 +5934,7 @@ void do_vset (CHAR_DATA *ch,char *argument)
 {
     if (!ch->in_vehicle)
         mreturn("Vset in a vehicle dumbass.\n\r",ch);
-    char arg1[MSL],arg2[MSL];
+    char arg1[MSL],arg2[MSL] = "\0";
     argument=one_argument(argument,arg1);
     one_argument(argument,arg2);
     int value=0;
@@ -5986,7 +5986,7 @@ void do_vset (CHAR_DATA *ch,char *argument)
 void do_ammolist(CHAR_DATA *ch,char *argument)
 {
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 //loopy time
     for (i=0; i<MAX_AMMO; i++)
         sprintf(buf+strlen(buf),"%d:%s:%d delay, %d accuracy, %d damage and %d building damage. Explodes: %d\n",i,clip_table[i].name,clip_table[i].speed,clip_table[i].miss,clip_table[i].dam,clip_table[i].builddam,clip_table[i].explode);
@@ -5995,13 +5995,13 @@ void do_ammolist(CHAR_DATA *ch,char *argument)
 
 void do_bomb(CHAR_DATA *ch,char *argument)
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *victim;
     BUILDING_DATA *vbld;
     int range,x,y,xx,yy;
     int players=0,buildings=0;
 //on Grave's request:P
-    char arg1[MSL];
+    char arg1[MSL] = "\0";
     one_argument(argument,arg1);
     if (!is_number(arg1))
         mreturn("No do!\n\r",ch);
@@ -6043,8 +6043,8 @@ void do_bomb(CHAR_DATA *ch,char *argument)
 
 void do_devastate(CHAR_DATA *ch,char *argument)
 {
-    char buf[MSL];
-    char arg1[MSL];
+    char buf[MSL] = "\0";
+    char arg1[MSL] = "\0";
     int devz;
     one_argument(argument,arg1);
     if (!is_number(arg1))
@@ -6086,7 +6086,7 @@ void do_rangen( CHAR_DATA *ch, char *argument )
     char arg1 [MAX_INPUT_LENGTH];
     char arg2 [MAX_INPUT_LENGTH];
     char arg3 [MAX_INPUT_LENGTH];
-    char buf[MAX_STRING_LENGTH], buf2[MSL];
+    char buf[MAX_STRING_LENGTH], buf2[MSL] = "\0";
     int max;
     int min;
     int notice = -1;

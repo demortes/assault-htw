@@ -218,7 +218,7 @@ void spec_up( CHAR_DATA *ch )
     CHAR_DATA *wch;
     int x,y,maxx,range,z=ch->z;
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( IS_SET(ch->config,CONFIG_LARGEMAP) )
         maxx = ch->map;
@@ -493,7 +493,7 @@ void char_update( void )
         }
         /*	if ( my_get_minutes(ch,TRUE) <= 30 && ch->pcdata->deaths == 0 && IS_SET(ch->config,CONFIG_HELPER) )
             {
-                char buf[MSL];
+                char buf[MSL] = "\0";
                 int i = number_range(0,MAX_HELPER*2);
 
                 if ( i < MAX_HELPER )
@@ -595,7 +595,7 @@ void char_update( void )
         else
         {
             int win=0,wtype=0;
-            char gbuf[MSL];
+            char gbuf[MSL] = "\0";
             info("Number Game Results:",0);
             sprintf(gbuf, "Number Chosen: %d",guess_game );
             info(gbuf,0);
@@ -659,7 +659,7 @@ void bomb_update( void )
             send_to_loc("*TICK*", obj->x, obj->y, obj->z );
         if ( obj->carried_by == NULL && obj->in_room && obj->in_room->vnum == ROOM_VNUM_LIMBO && obj->value[0] <= 1 )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             bool ex = FALSE;
             obj_from_room(obj);
             obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
@@ -693,7 +693,7 @@ void obj_update( void )
     OBJ_DATA *obj;
     OBJ_DATA *obj2;
     CHAR_DATA *ch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     obj_count = 0;
     quest_objs = 0;
@@ -865,7 +865,7 @@ void obj_update( void )
             if ( obj->value[0] == 1 && obj->carried_by == NULL )
             {
                 BUILDING_DATA *bld;
-                char buf[MSL];
+                char buf[MSL] = "\0";
 
                 if ( ( bld = get_obj_building(obj) ) == NULL )
                     continue;
@@ -1037,7 +1037,7 @@ void obj_update( void )
         }
         else if ( obj->item_type == ITEM_TOKEN )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             if ( obj->carried_by == NULL || obj->value[0] != 1 )
                 continue;
             obj->carried_by->quest_points += obj->value[1];
@@ -1073,7 +1073,7 @@ void vehicle_update( void )
     VEHICLE_DATA *vhc;
     VEHICLE_DATA *vhc_next;
     extern int vehicle_count;
-    //	char buf[MSL];
+    //	char buf[MSL] = "\0";
     CHAR_DATA *wch;
 
     vehicle_count = 0;
@@ -1552,7 +1552,7 @@ void quest_update( void )
     BUILDING_DATA *bld = first_building;
     int x=0,y=0,z=get_random_planet();
     int i = 0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int type,sect;
     bool protect = TRUE;
 
@@ -1747,7 +1747,7 @@ void explode( OBJ_DATA *obj )
     int dam = 0;
     int x,y,z = obj->z;
     OBJ_DATA *obj_next;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
     ch = get_ch(obj->owner);
@@ -2109,7 +2109,7 @@ bool fast_healing(CHAR_DATA *ch)
 
 void mode_update()
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( sysdata.qpmode > 0 )
     {

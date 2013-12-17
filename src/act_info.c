@@ -110,7 +110,7 @@ char *format_obj_to_char( OBJ_DATA *obj, CHAR_DATA *ch, bool fShort )
 
     if ( obj->item_type == ITEM_MATERIAL && obj->value[1] > 1 )
     {
-        char buf2[MSL];
+        char buf2[MSL] = "\0";
 
         sprintf( buf2, " @@y(@@bCHUNK@@g:@@b%d@@y)@@N", obj->value[1]);
         safe_strcat( MSL, buf, buf2);
@@ -403,7 +403,7 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch, bool truncate)
 
     if ( sysdata.pikamod )
     {
-        char nbuf[MSL];
+        char nbuf[MSL] = "\0";
         sprintf( nbuf, "@@yA Pikachu, looking like @@W%s@@y, is here.@@N", victim->name );
         safe_strcat(MAX_STRING_LENGTH, buf, nbuf );
     }
@@ -561,7 +561,7 @@ void do_look( CHAR_DATA *ch, char *argument )
             send_to_char( "\n\r@@2@@aKILLFEST!@@N mode on! Read help killfest.\n\r", ch  );
         if ( ch->in_vehicle != NULL && !SPACE_VESSAL(ch->in_vehicle) && !IS_SET(ch->config,CONFIG_BLIND) )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             VEHICLE_DATA *vhc;
             sprintf( buf, "\n@@ySTATUS:   @@RHEALTH: @@e%d        @@cFUEL: %s%d@@N        @@dAMMO: @@g%d@@N\n\r", ch->in_vehicle->hit, ( ch->in_vehicle->fuel <= 10 ) ? "@@e@@f" : "@@a", ch->in_vehicle->fuel, ch->in_vehicle->ammo );
             send_to_char( buf, ch );
@@ -724,9 +724,9 @@ void do_score( CHAR_DATA *ch, char *argument )
 
 void display_details( CHAR_DATA * viewer, CHAR_DATA *ch )
 {
-    char buf[MSL];
-    char namebuf[MSL];
-    char mccp_buf[MSL];
+    char buf[MSL] = "\0";
+    char namebuf[MSL] = "\0";
+    char mccp_buf[MSL] = "\0";
     bool mccp = FALSE;
     int hours,minutes;
 
@@ -823,9 +823,9 @@ void do_help( CHAR_DATA *ch, char *argument )
 {
     HELP_DATA *pHelp;
     bool sep = FALSE;
-    char buf[MSL];
-    char buf2[MSL];
-    char buf3[MSL];
+    char buf[MSL] = "\0";
+    char buf2[MSL] = "\0";
+    char buf3[MSL] = "\0";
     buf2[0] = '\0';
     int i = 0;
 
@@ -932,7 +932,7 @@ void do_help( CHAR_DATA *ch, char *argument )
     }
     {
         OBJ_DATA *obj;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         if ( ( obj = get_obj_carry(ch,argument) ) != NULL )
         {
             sprintf( buf, "\n\r@@NIf you're looking for help about %s, you can try to ""identify"" it (Not all objects can be identified)", obj->short_descr );
@@ -946,8 +946,8 @@ void do_help( CHAR_DATA *ch, char *argument )
 void do_helplist( CHAR_DATA *ch, char *argument )
 {
     HELP_DATA *pHelp;
-    char buf[MSL];
-    char buf2[MSL];
+    char buf[MSL] = "\0";
+    char buf2[MSL] = "\0";
 
     if ( argument[0] == '\0' )
         argument = "summary";
@@ -968,7 +968,7 @@ void do_helplist( CHAR_DATA *ch, char *argument )
 void do_who( CHAR_DATA *ch, char *argument )
 {
     //    DESCRIPTOR_DATA *d;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int true_cnt;
     int imm_cnt = 0;
     int hidden_cnt = 0;
@@ -976,10 +976,10 @@ void do_who( CHAR_DATA *ch, char *argument )
     int g_rank=0,rank,type;
     static int max_players;
     extern int max_players_ever;
-    char n_buf[MSL];
-    char s_buf[MSL];
-    char h_buf[MSL];
-    char rankingbuf[MSL];
+    char n_buf[MSL] = "\0";
+    char s_buf[MSL] = "\0";
+    char h_buf[MSL] = "\0";
+    char rankingbuf[MSL] = "\0";
     CHAR_DATA *wch;
     bool blind = FALSE;
     bool blind_all = FALSE;
@@ -990,7 +990,7 @@ void do_who( CHAR_DATA *ch, char *argument )
 
     if ( argument[0] != '\0' )
     {
-        char arg[MSL];
+        char arg[MSL] = "\0";
 
         argument = one_argument(argument,arg);
         if ( !str_cmp(arg,"setmax") && is_number(argument) && IS_IMMORTAL(ch) )
@@ -1478,7 +1478,7 @@ void do_commands( CHAR_DATA *ch, char *argument )
     static struct show_cmds show_table[8];
     char buf[MAX_STRING_LENGTH];
     char buf1[MAX_STRING_LENGTH];
-    char arg1[MSL];
+    char arg1[MSL] = "\0";
     int cmd;
     int col = 0;
     sh_int      show_only = -1;
@@ -1767,7 +1767,7 @@ void do_channels( CHAR_DATA *ch, char *argument )
 void do_config( CHAR_DATA *ch, char *argument )
 {
     char arg[MAX_INPUT_LENGTH];
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool rev = FALSE;
     if ( IS_NPC(ch) )
         return;
@@ -1958,7 +1958,7 @@ void do_config( CHAR_DATA *ch, char *argument )
         }
         else if ( !str_prefix("rows", arg+i ) )
         {
-            char arg1[MSL];
+            char arg1[MSL] = "\0";
             argument = one_argument( argument, arg1 );
             argument = one_argument( argument, arg1 );
             if ( !is_number( arg1 ) )
@@ -1989,7 +1989,7 @@ void do_config( CHAR_DATA *ch, char *argument )
             send_to_char( "@@dEnabled.@@N\n\r", ch );
             if ( bit == CONFIG_FULL_ANSI )
             {
-                char scrollbuf[MSL];
+                char scrollbuf[MSL] = "\0";
                 sprintf( scrollbuf, "%s%s%s%i;%ir%s%i;%iH",
                          CRS_RESET,
                          CRS_CLS,
@@ -2293,7 +2293,7 @@ void do_colist( CHAR_DATA *ch, char *argument )
 void do_highscores( CHAR_DATA *ch, char *argument )
 {
     int i,max,j, leng;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int order[100];
     bool appears[100];
 
@@ -2357,7 +2357,7 @@ void do_highscores( CHAR_DATA *ch, char *argument )
 void do_highranks( CHAR_DATA *ch, char *argument )
 {
     int i,max,j, leng;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int order[30];
     bool appears[30];
 
@@ -2421,7 +2421,7 @@ void do_map( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(argument,"legend") || !str_cmp(argument,"legand"))
     {
         int i;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         for ( i=0; i<SECT_MAX; i++ )
         {
             sprintf( buf, "%s%s @@N- %-20s    @@RHeat: @@e%-3d,  @@dRun Diff.: @@g%-3d,  @@cFuel Cons.: @@a%-3d\n\r",wildmap_table[i].color,(IS_SET(ch->config,CONFIG_SMALLMAP)) ? makesmall(wildmap_table[i].mark,2) : wildmap_table[i].mark, wildmap_table[i].name, wildmap_table[i].heat, wildmap_table[i].speed, wildmap_table[i].fuel  );
@@ -2451,8 +2451,8 @@ void do_map( CHAR_DATA *ch, char *argument )
 
 void do_alias( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
-    char arg2[MSL];
+    char arg[MSL] = "\0";
+    char arg2[MSL] = "\0";
     int i;
 
     argument = one_argument(argument,arg);
@@ -2460,7 +2460,7 @@ void do_alias( CHAR_DATA *ch, char *argument )
 
     if ( arg[0] == '\0' || arg2[0] == '\0' || !is_number(arg) || is_number(arg2) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         for (i=0; i<5; i++)
         {
             if ( str_cmp(ch->alias[i],"") )
@@ -2497,8 +2497,8 @@ void do_alias( CHAR_DATA *ch, char *argument )
 
 void do_quest( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char borderbuf[MSL];
+    char buf[MSL] = "\0";
+    char borderbuf[MSL] = "\0";
     OBJ_DATA *obj;
     int i = 0;
     int x,y,z;
@@ -2613,7 +2613,7 @@ void do_quest( CHAR_DATA *ch, char *argument )
 void do_identify( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int val;
 
     if ( ( obj = get_obj_carry(ch,argument) ) == NULL )
@@ -2897,7 +2897,7 @@ void do_stats( CHAR_DATA *ch, char *argument )
     int armor = 0;
     int resources[8];
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *target;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
@@ -2947,8 +2947,8 @@ void do_stats( CHAR_DATA *ch, char *argument )
 
 void do_skills( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char cbuf[MSL];
+    char buf[MSL] = "\0";
+    char cbuf[MSL] = "\0";
     int i;
 
     sprintf( cbuf, "\n\r@@xProficiencies:@@N\n\r" );
@@ -2979,8 +2979,8 @@ void do_skills( CHAR_DATA *ch, char *argument )
 void do_classes( CHAR_DATA *ch, char *argument )
 {
     int i;
-    char buf[MSL];
-    char buf2[MSL];
+    char buf[MSL] = "\0";
+    char buf2[MSL] = "\0";
     int rank = get_rank(ch);
 
     sprintf( buf, "\n\r@@NClasses available to you:\n\r\n\r" );
@@ -3011,7 +3011,7 @@ void do_status( CHAR_DATA *ch, char *argument )
 
 void r_help( CHAR_DATA *ch, int i )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( s_res_table[i].name == NULL )
         return;
     else if ( s_res_table[i].type == RES_WEAPON )
@@ -3043,10 +3043,10 @@ void r_help( CHAR_DATA *ch, int i )
 
 void do_info( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     int x,y,hp,shield;
     BUILDING_DATA *bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,arg);
     if ( !is_number(arg) || !is_number(argument) )
@@ -3109,7 +3109,7 @@ void do_info( CHAR_DATA *ch, char *argument )
 void do_formulas( CHAR_DATA *ch, char *argument )
 {
     int i,next=-1;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     sprintf( buf, "Formulas you have acquired:\n\r" );
     for ( i=0; formula_table[i].vnum != -1; i++ )
@@ -3153,7 +3153,7 @@ void show_building_info(CHAR_DATA *ch, int i)
 {
     int j;
     bool ter[SECT_MAX];
-    char buf[MSL];
+    char buf[MSL] = "\0";
     extern char *building_title[MAX_BUILDING_TYPES];
 
     if ( i<0 || i >= MAX_BUILDING )
@@ -3207,7 +3207,7 @@ void show_building_info(CHAR_DATA *ch, int i)
 void do_ammo( CHAR_DATA *ch, char *argument)
 {
     OBJ_DATA *weapon;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if (  ( weapon = get_eq_char( ch, WEAR_HOLD_HAND_L ) ) == NULL || weapon->item_type != ITEM_WEAPON )
     {
@@ -3225,7 +3225,7 @@ void do_ammo( CHAR_DATA *ch, char *argument)
 void do_vehicle_status( CHAR_DATA *ch, char *argument )
 {
     VEHICLE_DATA *vhc = ch->in_vehicle;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( !vhc )
     {
@@ -3239,8 +3239,8 @@ void do_vehicle_status( CHAR_DATA *ch, char *argument )
 
 void display_details_old( CHAR_DATA * viewer, CHAR_DATA *ch )
 {
-    char buf[MSL];
-    char c_buf[MSL];
+    char buf[MSL] = "\0";
+    char c_buf[MSL] = "\0";
     int i;
 
     c_buf[0] = '\0';
@@ -3298,7 +3298,7 @@ void do_list( CHAR_DATA *ch, char *argument)
 {
     int i;
     BUILDING_DATA *bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = ch->in_building ) == NULL )
     {
@@ -3325,7 +3325,7 @@ void do_list( CHAR_DATA *ch, char *argument)
 
 void do_rules (CHAR_DATA *ch, char *argument)
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     one_argument(argument,arg);
     if (arg[0]=='\0')
         do_pipe(ch,"tail -n 120 ../information/general");

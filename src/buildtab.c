@@ -697,7 +697,7 @@ unsigned long int multi_table_lookup(const struct lookup_type * table,char * nam
 {
     int a;
     long_int retval;
-    char curname[MSL];
+    char curname[MSL] = "\0";
 
     if (name[0]=='\0')
         return 0;

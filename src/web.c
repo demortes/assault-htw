@@ -73,7 +73,7 @@ void generate_webpage( void )
 {
     /*    FILE * fp;
         char file_name[MAX_STRING_LENGTH];
-        char buf[MSL];
+        char buf[MSL] = "\0";
         fclose( fpReserve );
         sprintf( file_name, "%s", STAT_WEB_FILE );
 

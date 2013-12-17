@@ -56,7 +56,7 @@ void building_update( void )
     CHAR_DATA *bch = NULL;
     CHAR_DATA *ch = NULL;
     bool qb = FALSE;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     extern int active_building_count;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
@@ -177,7 +177,7 @@ void building_update( void )
             {
                 if ( bld->type == BUILDING_VIRUS_ANALYZER && bld->value[0] == 0 && bld->attacker )
                 {
-                    //					char buf[MSL];
+                    //					char buf[MSL] = "\0";
                     int chance=bld->level * 20;
 
                     sprintf( buf,"@@yOne of your Virus Analyzers has come up with the following report:\n\r\n\r@@cThe virus was originated by @@a%s@@c.@@N\n\r", bld->attacker );

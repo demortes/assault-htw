@@ -66,7 +66,7 @@ void do_darts( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     bool bboard = FALSE;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
-    char arg[MSL];
+    char arg[MSL] = "\0";
 
     argument = one_argument(argument,arg);
 
@@ -109,7 +109,7 @@ void do_darts( CHAR_DATA *ch, char *argument )
     {
         int hit;
         int score;
-        char buf[MSL];
+        char buf[MSL] = "\0";
 
         if ( !bboard )
         {
@@ -165,8 +165,8 @@ void do_where ( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *wch;
     bool world = FALSE;
-    char buf[MSL];
-    char buf2[MSL];
+    char buf[MSL] = "\0";
+    char buf2[MSL] = "\0";
     OBJ_DATA *obj;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
     int range = 25;
@@ -196,7 +196,7 @@ void do_where ( CHAR_DATA *ch, char *argument )
                 continue;
             }
             
-            char dir[MSL];
+            char dir[MSL] = "\0";
             sprintf(dir, "%s%s", (ch->y < wch->y) ? "North" : (ch->y == wch->y ) ? "" : "South", (ch->x > wch->x) ? "West" :(ch->x == wch->x) ? "" : "East" );
 
             if ( ch->z == Z_UNDERGROUND )
@@ -298,7 +298,7 @@ void do_nukem( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *wch;
     int p=0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool in = FALSE;
     bool start = FALSE;
 
@@ -495,7 +495,7 @@ void do_nuke_start( CHAR_DATA *ch, char *argument)
     int p = 0;
     bool in = FALSE;
     bool start = FALSE;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
@@ -573,7 +573,7 @@ void nuke_blow(CHAR_DATA *ch)
     CHAR_DATA *last = ch;
     int p = 0;
     BUILDING_DATA * bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool found = FALSE;
 
     sprintf(buf,"@@a%s @@dgot @@eNUKEM'd@@d!", ch->name );

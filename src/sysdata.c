@@ -123,10 +123,10 @@ void save_sysdata( void )
 
 void do_sysdata( CHAR_DATA * ch, char * argument )
 {
-    char  outbuf[MSL];
-    char  catbuf[MSL];
-    char  arg1[MSL];
-    char  arg2[MSL];
+    char  outbuf[MSL] = "\0";
+    char  catbuf[MSL] = "\0";
+    char  arg1[MSL] = "\0";
+    char  arg2[MSL] = "\0";
     extern bool wizlock;
     if ( get_trust( ch ) < MAX_LEVEL )
     {
@@ -277,7 +277,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
             }
             else if ( is_name( arg1, "81 82 83 84 85" ) )
             {
-                char arg3[MSL];
+                char arg3[MSL] = "\0";
                 strcpy( arg3, argument );
                 if (  ( imm_level < 0 )
                         || ( imm_level >= 5 )  )

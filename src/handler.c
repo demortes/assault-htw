@@ -561,7 +561,7 @@ void extract_obj( OBJ_DATA *obj )
         return;
     if (!( obj->is_free == FALSE && ( !obj->next || obj->next->prev == obj ) && ( !obj->prev || obj->prev->next == obj ) ))
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf(buf,"%s - Bad extract: %d/%d/%d, carried by %s.", obj->short_descr,obj->x,obj->y,obj->z,(obj->carried_by)?obj->carried_by->name:"nobody");
         log_f(buf);
         move_obj(obj,0,1,Z_GROUND);
@@ -583,7 +583,7 @@ void extract_obj( OBJ_DATA *obj )
         }
         /*	if ( map_bld[obj->x][obj->y][obj->z] && map_bld[obj->x][obj->y][obj->z]->type == BUILDING_WAREHOUSE )
             {
-                char buf[MSL];
+                char buf[MSL] = "\0";
                 sprintf(buf,"%s extracted from %s's warehouse.\n\r", obj->short_descr, map_bld[obj->x][obj->y][obj->z]->owned );
                 log_f(buf);
             }*/
@@ -633,7 +633,7 @@ void extract_obj( OBJ_DATA *obj )
         BOMB_DATA *bomb = obj->bomb_data;
         if ( ( bomb->next && bomb->next->prev != bomb ) || ( bomb->prev && bomb->prev->next != bomb ) )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             sprintf( buf, "Bad bomb extract (%s)", obj->short_descr);
             log_f(buf);
         }
@@ -783,7 +783,7 @@ CHAR_DATA *get_char_room( CHAR_DATA *ch, char *argument )
     CHAR_DATA *rch;
     int number;
     int count;
-    char names[MSL];
+    char names[MSL] = "\0";
 
     number = number_argument( argument, arg );
     count  = 0;
@@ -1420,7 +1420,7 @@ CHAR_DATA *get_char_loc( int x, int y, int z )
 
 void extract_vehicle( VEHICLE_DATA *vhc, bool msg )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( vhc == NULL )
         return;
     if ( vhc->vehicle_in )
@@ -1604,7 +1604,7 @@ void extract_queue(QUEUE_DATA *q)
 void check_prof(CHAR_DATA *ch)
 {
     int time,ttl,x=0,i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( !ch )
         return;
     time = my_get_hours(ch,TRUE);

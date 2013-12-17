@@ -265,8 +265,8 @@ void do_scommands( CHAR_DATA *ch, char *argument )
 void do_power( CHAR_DATA *ch, char *argument )
 {
     int i,type,amount;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     VEHICLE_DATA *vhc = ch->in_vehicle;
 
     if ( argument[0] == '\0' )
@@ -316,7 +316,7 @@ void do_power( CHAR_DATA *ch, char *argument )
 void do_space_move( CHAR_DATA *ch, char *argument )
 {
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( !ch->in_vehicle || !SPACE_VESSAL(ch->in_vehicle ) )
     {

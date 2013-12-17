@@ -230,8 +230,8 @@ void do_dir( CHAR_DATA *ch, char *argument )
 {
     int i;
     int col = 0;
-    char buf[MSL];
-    char out[MSL];
+    char buf[MSL] = "\0";
+    char out[MSL] = "\0";
     if ( ch->bvictim->password != 0 && ch->bvictim->level > 1 )
     {
         send_to_char( "Not Authorized to view directory tree. Please log on.\n\r", ch );
@@ -340,12 +340,12 @@ void do_crack( CHAR_DATA *ch, char *argument )
 }
 void act_crack( CHAR_DATA *ch, int level )
 {
-    char password[MSL];
+    char password[MSL] = "\0";
     int pdig[5];
     int dig[5];
     int t = 0;
     CHAR_DATA *vch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
 
     if ( check_connection(ch) )
@@ -445,8 +445,8 @@ void act_crack( CHAR_DATA *ch, int level )
 void do_cd( CHAR_DATA *ch, char *argument )
 {
     int dir;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,arg);
     if ( ch->bvictim->password != 0 )
@@ -486,12 +486,12 @@ void do_cd( CHAR_DATA *ch, char *argument )
 
 void do_upload( CHAR_DATA *ch, char *argument )
 {
-    char arg1[MSL];
-    char arg2[MSL];
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
     int dir, vir,x;
     OBJ_DATA *obj;
     bool found = FALSE;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,arg1);
     argument = one_argument(argument,arg2);
@@ -564,8 +564,8 @@ void do_upload( CHAR_DATA *ch, char *argument )
 
 void do_download( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char arg2[MSL];
+    char buf[MSL] = "\0";
+    char arg2[MSL] = "\0";
     int dir;
 
     argument = one_argument(argument,arg2);
@@ -635,7 +635,7 @@ void do_download( CHAR_DATA *ch, char *argument )
 
 void do_hack( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *vch;
 
     if ( ( vch = get_ch(ch->bvictim->owned)) == NULL )
@@ -689,7 +689,7 @@ void do_hack( CHAR_DATA *ch, char *argument )
 
 void act_hack( CHAR_DATA *ch, int level )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *vch;
 
     if ( check_connection(ch) )
@@ -828,7 +828,7 @@ void do_format( CHAR_DATA *ch, char *argument )
 }
 void act_format( CHAR_DATA *ch, int level )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *vch;
 
     if ( check_connection(ch) )
@@ -907,7 +907,7 @@ void do_scandir( CHAR_DATA *ch, char *argument )
 }
 void act_scandir( CHAR_DATA *ch, int level )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *vch;
 
     if ( check_connection(ch) )
@@ -971,7 +971,7 @@ void do_spoof( CHAR_DATA *ch, char *argument )
 }
 void act_spoof( CHAR_DATA *ch, int level )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *vch;
 
     if ( check_connection(ch) )
@@ -1017,7 +1017,7 @@ void do_mark( CHAR_DATA *ch, char *argument )
     send_to_char( "You mark the building for an air strike!\n\r", ch );
     if ( bch )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "@@eYour %s at @@a%d@@c/@@a%d@@e has been targetted for an airstrike!@@N\n\r", ch->bvictim->name, ch->bvictim->x,ch->bvictim->y );
         if ( number_percent() < 50 )
             sprintf( buf+strlen(buf), "@@eIt has originated from @@a%d@@c/@@a%d@@e, by @@a%s@@e.@@N\n\r", ch->x, ch->y, ch->name );
@@ -1027,7 +1027,7 @@ void do_mark( CHAR_DATA *ch, char *argument )
 }
 void act_mark( CHAR_DATA *ch, int level )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( !ch->bvictim )
     {
         ch->c_sn = -1;

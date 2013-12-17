@@ -96,7 +96,7 @@ bool    check_level_use( CHAR_DATA *ch, int level )
 void create_blueprint( BUILDING_DATA *bld )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( CIVILIAN(bld) )
         return;
@@ -121,7 +121,7 @@ void create_blueprint( BUILDING_DATA *bld )
 OBJ_DATA * create_teleporter( BUILDING_DATA *bld, int range )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     obj = create_object( get_obj_index( OBJ_VNUM_TELEPORTER ), 0 );
     obj->level = range;
@@ -144,7 +144,7 @@ OBJ_DATA * create_teleporter( BUILDING_DATA *bld, int range )
 OBJ_DATA * create_locator( int range )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     obj = create_object( get_obj_index( OBJ_VNUM_LOCATOR ), 0 );
     obj->level = range;
@@ -592,7 +592,7 @@ OBJ_DATA *create_element( int type )
 
 void send_warning( CHAR_DATA *ch, BUILDING_DATA *bld, CHAR_DATA *victim )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( ch == victim )
         return;
     if ( victim->in_vehicle && victim->in_vehicle->type == VEHICLE_BOMBER )
@@ -649,7 +649,7 @@ bool defense_building( BUILDING_DATA *bld )
 
 void sendsound( CHAR_DATA *ch, char *file, int V, int I, int P, char *T, char *filename )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( !IS_SET(ch->config,CONFIG_SOUND) )
         return;
     sprintf( buf, "\n\r!!SOUND(%s V=%d L=%d P=%d T=%s U=%s/MSP/%s)", file, V,I,P,T,WEBSITE,filename );
@@ -855,7 +855,7 @@ OBJ_DATA * make_quest_base( int type, int size, int z )
     }
     if ( ox > 0 && oy > 0 )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         obj = create_object(get_obj_index(OBJ_VNUM_SCAFFOLD),0);
         obj->level = 1;
         obj->value[0] = type;
@@ -877,7 +877,7 @@ bool open_scaffold(CHAR_DATA *ch, OBJ_DATA *obj)
 {
     BUILDING_DATA *bld;
     int i,buildings=0,same=0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( !obj || obj->item_type != ITEM_SCAFFOLD || get_building(obj->x,obj->y,obj->z))
         return FALSE;
 

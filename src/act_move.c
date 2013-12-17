@@ -96,7 +96,7 @@ void move_char( CHAR_DATA *ch, int door )
     char buf[MAX_STRING_LENGTH];
     char move_buf[MAX_STRING_LENGTH];
 //    char tmp[MAX_STRING_LENGTH];
-//    char door_name_leave[MSL];
+//    char door_name_leave[MSL] = "\0";
     OBJ_DATA *obj;
     BUILDING_DATA *bld = ch->in_building;
     int xx,yy,x,y,z=ch->z;
@@ -540,7 +540,7 @@ void do_scan( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     BUILDING_DATA *wbld;
     int level,i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = get_char_building(ch) ) == NULL )
     {
@@ -613,7 +613,7 @@ void do_scan( CHAR_DATA *ch, char *argument )
 void do_enter( CHAR_DATA *ch, char *argument )
 {
     VEHICLE_DATA *vhc;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( vhc = get_vehicle_char(ch,argument) ) == NULL )
     {
@@ -724,7 +724,7 @@ void do_enter( CHAR_DATA *ch, char *argument )
 
 void do_exit( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->in_vehicle == NULL )
     {
@@ -829,7 +829,7 @@ void do_exit( CHAR_DATA *ch, char *argument )
 void do_pit( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->fighttimer > 0 )
     {
@@ -895,7 +895,7 @@ void do_paintball( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *gun;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->fighttimer > 0  )
     {
@@ -1018,7 +1018,7 @@ void crash( CHAR_DATA *ch, CHAR_DATA *attacker )
         extract_vehicle(vhc,TRUE);
         if ( ch->hit <= 0 )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
 
             if ( ch != attacker )
                 sprintf( buf, "@@a%s @@Wshot @@a%s@@W down from the sky.@@N", attacker->name, ch->name );
@@ -1336,7 +1336,7 @@ void do_land( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     VEHICLE_DATA * vhc = ch->in_vehicle;
     int x=1,y=1,i,type,sel;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->z == Z_SPACE )
         type = 1;
@@ -1466,7 +1466,7 @@ void do_teleport_b( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     BUILDING_DATA *bld2;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int x = 1;
 
     bld = ch->in_building;
@@ -1535,7 +1535,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     CHAR_DATA *wch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     OBJ_DATA *obj;
     OBJ_DATA *obj_next;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
@@ -1685,8 +1685,8 @@ void do_meda( CHAR_DATA *ch, char *argument )
 
 void do_coords( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     int num,dir,x,y;
     argument = one_argument(argument,arg);
 

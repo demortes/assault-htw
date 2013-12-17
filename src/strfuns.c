@@ -55,12 +55,12 @@
 
 void pre_parse( char * list, char * victimname, char * containername, char * things )
 {
-    char arg1[MSL];
-    char container_name[MSL];
-    char one_object[MSL];
-    char holdbuf[MSL];
-    char victim_name[MSL];
-    char object_list[MSL];
+    char arg1[MSL] = "\0";
+    char container_name[MSL] = "\0";
+    char one_object[MSL] = "\0";
+    char holdbuf[MSL] = "\0";
+    char victim_name[MSL] = "\0";
+    char object_list[MSL] = "\0";
     char * argument = list;
     container_name[0] = '\0';
     victim_name[0] = '\0';
@@ -198,7 +198,7 @@ void safe_strcat(int max_len,char * dest,char * source)
 char * space_pad( const char * str, sh_int final_size )
 {
     sh_int space_pad = my_strlen( str );
-    static char padbuf[MSL];
+    static char padbuf[MSL] = "\0";
 
     sprintf( padbuf, "%s", str );
     for ( ; space_pad != final_size ; space_pad++ )
@@ -762,7 +762,7 @@ char * str_mod( char * mod_string,  char *argument )
     char      *buf2;
     char      *buf3 = NULL;
     char      *word;
-    char        temp[MSL];
+    char        temp[MSL] = "\0";
     int        i = 0;
     bool        multiple = FALSE;
 
@@ -840,7 +840,7 @@ char * str_mod( char * mod_string,  char *argument )
 
 void rand_arg( char *argument, char *output )
 {
-    char  temp[MSL];
+    char  temp[MSL] = "\0";
     sh_int        counter = 0;
     argument = one_argument( argument, temp );
     while ( temp[0] )
@@ -883,7 +883,7 @@ int number_argument( char *argument, char *arg )
 char *one_argument( char *argument, char *arg_first )
 {
     char cEnd;
-    //    char buf[MSL];
+    //    char buf[MSL] = "\0";
 
     if ( argument == NULL )
         return NULL;
@@ -1005,7 +1005,7 @@ char *strip_color(const char *orig, const char *strip)
 bool list_in_list( char * first_list, char * second_list )
 {
     char check_word[MAX_INPUT_LENGTH];
-    char against_word[MSL];
+    char against_word[MSL] = "\0";
     char *      checklist;
     char *      againstlist;
 
@@ -1234,8 +1234,8 @@ char *material_name( int type )
 /* Thanks to FearItself of AvP Mud */
 char *format_to_lines(char *src, int length)
 {
-    static char buf[MSL];
-    char buf2[MSL];
+    static char buf[MSL] = "\0";
+    char buf2[MSL] = "\0";
 
     buf[0] = '\0';
     while (*src)

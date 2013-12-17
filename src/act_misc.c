@@ -172,9 +172,9 @@ char *building_title[MAX_BUILDING_TYPES] =
 {"Core","Superweapons","Defenses","Offensive","Labs","Resources","Other"};
 void do_a_build( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char buf1[MSL];
-    char buf2[MSL];
+    char buf[MSL] = "\0";
+    char buf1[MSL] = "\0";
+    char buf2[MSL] = "\0";
     int i,x,y;
     int rank = get_rank(ch);
     bool found = FALSE;
@@ -299,7 +299,7 @@ void do_a_build( CHAR_DATA *ch, char *argument )
 
     if ( argument[0] == '\0' || here )
     {
-        char s_buf[MSL];
+        char s_buf[MSL] = "\0";
         int sect = map_table.type[ch->x][ch->y][ch->z];
 
         sprintf(s_buf,"\n\r");
@@ -329,14 +329,14 @@ void do_a_build( CHAR_DATA *ch, char *argument )
         send_to_char("\n\r@@WYou have met the requirements for the following structures:\n\r\n\r", ch );
         if ( IS_SET(ch->config,CONFIG_BLIND) )
         {
-            char buf0[MSL];
-            char buf1[MSL];
-            char buf2[MSL];
-            char buf3[MSL];
-            char buf4[MSL];
-            char buf5[MSL];
-            char buf6[MSL];
-            char buf_x[MSL];
+            char buf0[MSL] = "\0";
+            char buf1[MSL] = "\0";
+            char buf2[MSL] = "\0";
+            char buf3[MSL] = "\0";
+            char buf4[MSL] = "\0";
+            char buf5[MSL] = "\0";
+            char buf6[MSL] = "\0";
+            char buf_x[MSL] = "\0";
             bool disp[7];
             sh_int p[7];
 
@@ -526,8 +526,8 @@ comments:
     }
     else if ( !str_cmp(argument, "list") )
     {
-        char u_buf[MSL];
-        char s_buf[MSL];
+        char u_buf[MSL] = "\0";
+        char s_buf[MSL] = "\0";
 
         u_buf[0] = '\0';
         s_buf[0] = '\0';
@@ -586,7 +586,7 @@ comments:
     }
     else if ( !str_cmp(argument, "report") )
     {
-        char ibuf[MSL];
+        char ibuf[MSL] = "\0";
         bool s1=FALSE,s2=FALSE;
 
         sprintf( buf, "@@aCompleted Buildings:\n\r" );
@@ -629,7 +629,7 @@ comments:
     }
     else if ( !str_cmp(argument, "report2") )
     {
-        char ibuf[MSL];
+        char ibuf[MSL] = "\0";
         sprintf( buf, "Completed Buildings:\n\r" );
         sprintf( ibuf, "Incomplete Buildings:\n\r" );
         i = 0;
@@ -863,7 +863,7 @@ comments:
     bld = create_building(i);
     if ( bld == NULL )
     {
-        char buff[MSL];
+        char buff[MSL] = "\0";
         sprintf( buff, "ERROR! %d", i );
         send_to_char( buff, ch );
         return;
@@ -1100,7 +1100,7 @@ void act_build( CHAR_DATA *ch, int level )
     }
     if ( more >= 0 )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         i = more;
         sprintf( buf, "You need more %s to complete the construction.\n\r",  ( i == 0 ) ? "Iron" : ( i == 1 ) ? "Skins" : ( i == 2 ) ? "Copper" : ( i == 3 ) ? "Gold" : ( i == 4 ) ? "Silver" : ( i == 5 ) ? "Rocks" : ( i == 6 ) ? "Sticks" : "Logs" );
         send_to_char(buf,ch);
@@ -1144,7 +1144,7 @@ void do_upgrade( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
     OBJ_DATA *temp = NULL;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool found = FALSE;
 
     if ( ( bld = ch->in_building ) == NULL )
@@ -1390,9 +1390,9 @@ void do_throw( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     int dir=-1,rev=0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *victim=NULL;
     int x,y;
 
@@ -1585,7 +1585,7 @@ void do_heal( CHAR_DATA *ch, char *argument )
     if ( ch->class == CLASS_MEDIC && argument[0] == '\0' )
     {
         CHAR_DATA *victim;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         if ( argument[0] == '\0' )
         {
             victim = ch;
@@ -1758,7 +1758,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     BUILDING_DATA *bld2;
     bool check = TRUE;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     argument = one_argument(argument,arg);
 
     if ( ( bld = get_char_building(ch) ) == NULL )
@@ -1791,7 +1791,7 @@ void do_demolish( CHAR_DATA *ch, char *argument )
     if ( !str_cmp(arg,"all") )
     {
         BUILDING_DATA *bld2_next;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int i;
         int type=0;
 
@@ -2243,7 +2243,7 @@ void do_install( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = get_char_building(ch) ) == NULL )
     {
@@ -2374,7 +2374,7 @@ void do_implant( CHAR_DATA *ch, char *argument )
     }
     if ( argument[0] == '\0' )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         //		send_to_char( "Implant what?\n\r", ch );
         send_to_char( "Implants currently in you:\n\r", ch );
         buf[0] = '\0';
@@ -2474,9 +2474,9 @@ void do_qpspend( CHAR_DATA *ch, char *argument )
     int x,y,i,cost;
     BUILDING_DATA *bld;
     CHAR_DATA *vch;
-    char arg[MSL];
-    char arg2[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char arg2[MSL] = "\0";
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,arg);
     argument = one_argument(argument,arg2);
@@ -2966,7 +2966,7 @@ void do_qpspend( CHAR_DATA *ch, char *argument )
             cost *= 2.5;
         if ( ch->quest_points < cost )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             sprintf( buf, "This costs %d QPs. You only have %d.\n\r", cost, ch->quest_points );
             send_to_char( buf, ch );
             if ( levelor != -1 )
@@ -3050,7 +3050,7 @@ void do_doom( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     CHAR_DATA *vch = NULL;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i = 0;
 
     if ( !ch->in_building )
@@ -3183,7 +3183,7 @@ void do_generate( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -3236,7 +3236,7 @@ void do_generate( CHAR_DATA *ch, char *argument )
 void do_destroy( CHAR_DATA *ch, char *argument )
 {
     VEHICLE_DATA *vhc;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( vhc = ch->in_vehicle ) == NULL )
     {
@@ -3281,7 +3281,7 @@ void do_refine( CHAR_DATA *ch, char *argument )
     }
     if ( !str_cmp(argument,"all") )
     {
-        char name[MSL];
+        char name[MSL] = "\0";
         OBJ_DATA *obj_next;
         for ( obj = ch->first_carry; obj; obj = obj_next )
         {
@@ -3425,7 +3425,7 @@ void sell_item(CHAR_DATA *ch, OBJ_DATA *obj)
 
     if ( IS_SET(obj->extra_flags,ITEM_NODROP) || IS_SET(obj->extra_flags,ITEM_STICKY) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "%s cannot be sold.\n\r", obj->short_descr );
         send_to_char(buf,ch);
         return;
@@ -3434,7 +3434,7 @@ void sell_item(CHAR_DATA *ch, OBJ_DATA *obj)
         send_to_char( "You tried to sell it, but someone stole it from you!\n\r", ch );
     else
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "You sell %s for %d QPs.\n\r", obj->short_descr, x );
         send_to_char( buf, ch );
         sprintf( buf, "$n sells %s for %d QPs.\n\r", obj->short_descr, x );
@@ -3453,8 +3453,8 @@ void sell_item(CHAR_DATA *ch, OBJ_DATA *obj)
 void do_trade( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *obj;
     OBJ_DATA *obj_new;
     int type;
@@ -3534,7 +3534,7 @@ void do_winstall( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     OBJ_DATA *weapon;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( paintball(ch) )
         return;
@@ -3675,7 +3675,7 @@ void do_vinstall( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     VEHICLE_DATA *vhc;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( vhc = ch->in_vehicle ) == NULL )
     {
@@ -3841,8 +3841,8 @@ void act_practice( CHAR_DATA *ch, int level )
 
 void do_connect( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *obj1;
     OBJ_DATA *obj2;
     OBJ_DATA *obj3;
@@ -3905,7 +3905,7 @@ void do_track( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
     CHAR_DATA *wch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = ch->in_building ) == NULL )
     {
@@ -3944,7 +3944,7 @@ void do_track( CHAR_DATA *ch, char *argument )
     {
         if ( obj->item_type == ITEM_COMPUTER && obj->value[3] != 0 )
         {
-            char pbuf[MSL];
+            char pbuf[MSL] = "\0";
             if ( IS_SET(wch->effect,EFFECT_ENCRYPTION) )
             {
                 send_to_char( "You just can't seem to lock on that target...\n\r", ch );
@@ -3962,7 +3962,7 @@ void do_track( CHAR_DATA *ch, char *argument )
 
 void do_spy( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     BUILDING_DATA *bld;
 
     if ( ch->z == Z_NEWBIE )
@@ -4050,7 +4050,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
         int b=0;
         int i;
         BUILDING_DATA *bld2;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int buildings[MAX_BUILDING];
         OBJ_DATA *obj;
 
@@ -4111,7 +4111,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
     {
         CHAR_DATA *wch;
         BUILDING_DATA *bld2;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int x = 0;
 
         if ( ( wch = get_char_world(ch,argument) ) == NULL || wch->z == Z_NEWBIE || IS_NEWBIE(wch) )
@@ -4168,7 +4168,7 @@ void do_torment( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     BUILDING_DATA *bld;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     CHAR_DATA *victim;
     int action;
 
@@ -4219,7 +4219,7 @@ void do_torment( CHAR_DATA *ch, char *argument )
     {
         if ( obj->pIndexData->vnum == 32659 )               //Psicap
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             sprintf( buf, "%s begins to glow!\n\r", obj->short_descr );
             send_to_loc(buf,victim->x,victim->y,victim->z);
             victim = ch;
@@ -4249,7 +4249,7 @@ void do_locate( CHAR_DATA *ch, char *argument )
     int x,y,i,m;
     OBJ_DATA *obj;
     OBJ_DATA *scanner = NULL;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool ex = FALSE;
 
     if ( ch->z == Z_PAINTBALL )
@@ -4366,7 +4366,7 @@ void do_locate( CHAR_DATA *ch, char *argument )
 void do_paradrop( CHAR_DATA *ch, char *argument )
 {
     int x,y,z,xx,yy;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     BUILDING_DATA *bld;
     CHAR_DATA *victim;
 
@@ -4500,7 +4500,7 @@ void act_paradrop( CHAR_DATA *ch, int level )
 
 void do_reset( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( ch->in_building == NULL || str_cmp(ch->name,ch->in_building->owned))
         send_to_char( "You must be in a building to reset its password.\n\r", ch );
     else
@@ -4559,7 +4559,7 @@ void do_sblast(CHAR_DATA *ch, char *argument)
     int range = 7;
     BUILDING_DATA *bld;
     int i = 0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *wch;
     int x,y;
 
@@ -4605,8 +4605,8 @@ void do_psy_message( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld = ch->in_building;
     CHAR_DATA *wch;
     int range,i = 0;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
 
     if ( bld == NULL || bld->type != BUILDING_PSYCHIC_AMPLIFIER )
     {
@@ -4660,9 +4660,9 @@ void do_psy_message( CHAR_DATA *ch, char *argument )
 
 void construct_space_vessal( CHAR_DATA *ch, char *argument )
 {
-    char arg1[MSL];
-    char arg2[MSL];
-    char buf[MSL];
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
+    char buf[MSL] = "\0";
     VEHICLE_DATA *vhc;
     BUILDING_DATA *bld = ch->in_building;
     int i,t,a,w,cost,type=-1;
@@ -4849,7 +4849,7 @@ void act_mine( CHAR_DATA *ch, int level )
     OBJ_DATA *obj = NULL;
     OBJ_DATA *obj2;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i,chance;
 
     for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj->next_in_room )
@@ -4909,8 +4909,8 @@ void do_backup_building( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     int i,f;
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
     BUILDING_DATA *bld;
 
     argument = one_argument(argument,arg);
@@ -4966,9 +4966,9 @@ void do_backup_building( CHAR_DATA *ch, char *argument )
 
 void do_mspend( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char arg1[MSL];
-    char arg2[MSL];
+    char buf[MSL] = "\0";
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
     int cost=0,item=-1;
 
     sprintf( buf, "Syntax: mspend buy <item>\n\r        mspend profreset\n\r" );
@@ -5088,7 +5088,7 @@ void do_mspend( CHAR_DATA *ch, char *argument )
 
 void do_run( CHAR_DATA * ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     int dir, loop;
     argument = one_argument(argument,arg);
     if ( ch->fighttimer > 0 )
@@ -5191,7 +5191,7 @@ void do_blindupdate( CHAR_DATA *ch, char *argument )
 void do_oresearch( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->z != Z_SPACE )
     {
@@ -5225,7 +5225,7 @@ void do_oresearch( CHAR_DATA *ch, char *argument )
 void act_oresearch(CHAR_DATA *ch, int level)
 {
     OBJ_DATA *obj = ch->c_obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i,m=5;
 
     if ( !obj || obj->item_type != ITEM_ORE )
@@ -5292,9 +5292,9 @@ void do_use( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
-    char arg[MSL];
-    char cmd[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char cmd[MSL] = "\0";
+    char buf[MSL] = "\0";
     cmd[0] = '\0';
 
     if ( ( obj = get_obj_carry(ch,arg) ) != NULL )
@@ -5450,9 +5450,9 @@ void do_settunnel( CHAR_DATA *ch, char *argument )
     OBJ_DATA *obj;
     OBJ_DATA *obj2;
     int x,y;
-    char arg[MSL];
-    char arg2[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char arg2[MSL] = "\0";
+    char buf[MSL] = "\0";
     bool found = FALSE;
 
     argument = one_argument(argument,arg);
@@ -5587,7 +5587,7 @@ void send_page(char *from, char *target, char *msg)
 void show_pager(CHAR_DATA *ch)
 {
     PAGER_DATA *p;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i=0;
 
     send_to_char("@@dl=--------------------=------------------=\n\r", ch );

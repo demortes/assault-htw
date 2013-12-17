@@ -118,7 +118,7 @@ void get_obj( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container )
 
     if ( obj->item_type == ITEM_TOKEN && obj->value[0] == 1 )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         ch->quest_points += obj->value[1];
         sprintf( buf, "@@rYou have been rewarded @@W%d @@rquest points!@@N\n\r", obj->value[1] );
         send_to_char( buf, ch );
@@ -136,12 +136,12 @@ void get_obj( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container )
 void do_get( CHAR_DATA *ch, char *argument )
 {
 
-    char container_name[MSL];
-    char object_list[MSL];
-    char one_object[MSL];
-    char object_number[MSL];
-    char victim_name[MSL];
-    char actbuf[MSL];
+    char container_name[MSL] = "\0";
+    char object_list[MSL] = "\0";
+    char one_object[MSL] = "\0";
+    char object_number[MSL] = "\0";
+    char victim_name[MSL] = "\0";
+    char actbuf[MSL] = "\0";
 
 //    ROOM_INDEX_DATA *room;
     OBJ_DATA *obj;
@@ -280,16 +280,16 @@ void do_get( CHAR_DATA *ch, char *argument )
 void do_drop( CHAR_DATA *ch, char *argument )
 {
     char arg[MAX_INPUT_LENGTH];
-    char container_name[MSL];
-    char victim_name[MSL];
-    char object_list[MSL];
+    char container_name[MSL] = "\0";
+    char victim_name[MSL] = "\0";
+    char object_list[MSL] = "\0";
     OBJ_DATA *obj;
     OBJ_DATA *obj_next;
     bool found = FALSE;
-    char object_number[MSL];
-    char one_object[MSL];
+    char object_number[MSL] = "\0";
+    char one_object[MSL] = "\0";
     char * parse;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int objs = 0;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
@@ -402,7 +402,7 @@ void do_drop( CHAR_DATA *ch, char *argument )
 
                 if ( IS_IMMORTAL(ch) && ch->trust < 90 )
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
 
                     sprintf( buf, "%s dropped %s", ch->name, obj->short_descr );
                     log_string(buf);
@@ -489,7 +489,7 @@ void do_drop( CHAR_DATA *ch, char *argument )
                 objs++;
                 if ( IS_IMMORTAL(ch) && ch->trust < 90 )
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
 
                     sprintf( buf, "%s dropped %s", ch->name, obj->short_descr );
                     log_string(buf);
@@ -570,11 +570,11 @@ void do_drop( CHAR_DATA *ch, char *argument )
 
 void do_give( CHAR_DATA *ch, char *argument )
 {
-    char victim_name[MSL];
-    char container_name[MSL];
-    char object_list[MSL];
-    char one_object[MSL];
-    char object_number[MSL];
+    char victim_name[MSL] = "\0";
+    char container_name[MSL] = "\0";
+    char object_list[MSL] = "\0";
+    char one_object[MSL] = "\0";
+    char object_number[MSL] = "\0";
 //    int tax;
     CHAR_DATA *victim;
     OBJ_DATA  *obj;
@@ -675,7 +675,7 @@ void do_give( CHAR_DATA *ch, char *argument )
                 act( "$n gives you $p.", ch, obj, victim, TO_VICT );
                 if ( IS_IMMORTAL(ch) && ch->trust < 90 )
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
 
                     sprintf( buf, "%s gave %s to %s", ch->name, obj->short_descr, victim->name );
                     log_string(buf);
@@ -1241,9 +1241,9 @@ void do_wear( CHAR_DATA *ch, char *argument )
     if ( arg[0] == '\0' )
     {
         sh_int  location;
-        char      outbuf[MSL];
-        char      catbuf[MSL];
-        char    colbuf[MSL],eqbuf[MSL];
+        char      outbuf[MSL] = "\0";
+        char      catbuf[MSL] = "\0";
+        char    colbuf[MSL],eqbuf[MSL] = "\0";
         OBJ_DATA * worn;
         extern char * const where_name [];
 
@@ -1272,9 +1272,9 @@ void do_wear( CHAR_DATA *ch, char *argument )
     else if ( !str_cmp(arg,"status") )
     {
         sh_int  location;
-        char      outbuf[MSL];
-        char      catbuf[MSL];
-        char    colbuf[MSL],eqbuf[MSL];
+        char      outbuf[MSL] = "\0";
+        char      catbuf[MSL] = "\0";
+        char    colbuf[MSL],eqbuf[MSL] = "\0";
         OBJ_DATA * worn;
         extern char * const where_name [];
         int heat;
@@ -1422,7 +1422,7 @@ void do_remove( CHAR_DATA *ch, char *argument )
 void do_sacrifice( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
 
     if ( argument[0] == '\0' )
@@ -1486,7 +1486,7 @@ void do_sacrifice( CHAR_DATA *ch, char *argument )
     act( "$n junks $p.", ch, obj, NULL, TO_ROOM );
     if ( IS_SET(obj->extra_flags,ITEM_STICKY) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "%s junked by %s (Sticky)", obj->short_descr, ch->name );
         log_f("%s", buf);
         return;
@@ -1499,7 +1499,7 @@ void do_swap( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj1;
     OBJ_DATA *obj2;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( paintball(ch) )
     {
@@ -1551,7 +1551,7 @@ void do_clean(CHAR_DATA *ch, char *argument)
     send_to_char( "Room cleaned.\n\r", ch );
     if ( WAREHOUSE(ch->in_building) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf(buf,"%s cleaned a warehouse.\n\r", ch->name );
         log_f("%s", buf);
     }
@@ -1560,7 +1560,7 @@ void do_clean(CHAR_DATA *ch, char *argument)
 
 void do_donate( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     CHAR_DATA *victim;
     OBJ_DATA  *obj;
 

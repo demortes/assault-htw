@@ -55,7 +55,7 @@ void create_map(CHAR_DATA *ch,int type)
 void create_full_map(CHAR_DATA *ch)
 {
     int x,y,i,j,k,m,n,z=ch->z;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     for ( x = 0; x < MAX_MAPS; x++ )
         for ( y = 0; y < MAX_MAPS; y++ )

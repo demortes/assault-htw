@@ -254,7 +254,7 @@ void    write_interpret args( ( CHAR_DATA * ch, char * argument ) )
 
     if (UPPER(argument[0]) == 'T' )
     {
-        char arg[MSL];
+        char arg[MSL] = "\0";
         argument = one_argument(argument,arg);
         do_say(ch,argument);
         return;

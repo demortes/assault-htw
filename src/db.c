@@ -57,7 +57,7 @@ extern  int     _filbuf         args( (FILE *) );
  */
 char                    bug_buf         [2*MAX_INPUT_LENGTH];
 char                    log_buf         [2*MAX_INPUT_LENGTH];
-char                    testerbuf       [MSL];
+char                    testerbuf       [MSL] = "\0";
 KILL_DATA               kill_table      [MAX_LEVEL];
 TIME_INFO_DATA          time_info;
 SYS_DATA_TYPE            sysdata;
@@ -558,8 +558,8 @@ void load_helps( FILE *fp )
 void load_quotes( void )
 {
     FILE *quotefp;
-    char quote_file_name[MSL];
-    char buf[MSL];
+    char quote_file_name[MSL] = "\0";
+    char buf[MSL] = "\0";
     int i;
     extern int total_quotes;
 
@@ -1079,7 +1079,7 @@ int fread_number( FILE *fp )
 
     if ( !isdigit(c) )
     {
-        char error_buf[MSL];
+        char error_buf[MSL] = "\0";
         sprintf( error_buf, "%c", c );
         bug_string( "Fread_number: looking for a digit, found a %s.", error_buf );
         hang( "Error in fread_number" );
@@ -1132,7 +1132,7 @@ long_int fread_long_number( FILE *fp )
 
     if ( !isdigit(c) )
     {
-        char error_buf[MSL];
+        char error_buf[MSL] = "\0";
         sprintf( error_buf, "%c", c );
         bug_string( "Fread_number: looking for a digit, found a %s.", error_buf );
         hang( "Error in fread_number" );
@@ -1720,7 +1720,7 @@ void append_file( CHAR_DATA *ch, char *file, char *str )
  */
 void bugf (char * fmt, ...)
 {
-    char buf [MSL];
+    char buf [MSL] = "\0";
     va_list args;
     va_start (args, fmt);
     vsnprintf (buf, sizeof(buf), fmt, args);

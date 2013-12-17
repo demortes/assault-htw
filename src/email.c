@@ -72,10 +72,10 @@ bool valid_email_addy( char * address )
 void do_email( CHAR_DATA * ch, char * argument )
 {
     /* interface for setting up email addresses */
-    char arg1[MSL];
-    char arg2[MSL];
-    char outbuf[MSL];
-    char catbuf[MSL];
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
+    char outbuf[MSL] = "\0";
+    char catbuf[MSL] = "\0";
     bool valid_email = FALSE;
 
     if ( IS_NPC( ch ) )
@@ -166,7 +166,7 @@ void do_email( CHAR_DATA * ch, char * argument )
 
             if (!found)
             {
-              char    buf[MSL];
+              char    buf[MSL] = "\0";
               sprintf( buf, "No pFile found for '%s'.\n\r", capitalize( arg2 ) );
               send_to_char( buf, ch );
               free_char( d.character );
@@ -218,10 +218,10 @@ void send_email( const char * m_address, const  char * m_subject, const
                  char * mfilename )
 {
     FILE *mailfp;
-    char mailbuf[MSL];
-    char mailfpbuf[MSL];
-    char delbuf[MSL];
-    char dbbuf[MSL];
+    char mailbuf[MSL] = "\0";
+    char mailfpbuf[MSL] = "\0";
+    char delbuf[MSL] = "\0";
+    char dbbuf[MSL] = "\0";
     int forkval;
 
     sprintf( mailbuf, "mail -s \"%s\" %s <%s%s",
@@ -258,7 +258,7 @@ void send_email( const char * m_address, const  char * m_subject, const
 bool save_mail_file( const char * mfilename, char * mtext )
 {
     FILE * mailfp;
-    char mailfpfilename[MSL];
+    char mailfpfilename[MSL] = "\0";
     fclose( fpReserve );
     sprintf( mailfpfilename, "%s%s", MAIL_DIR, mfilename );
     if ( ( mailfp = fopen( mailfpfilename, "w" ) ) == NULL )
@@ -286,12 +286,12 @@ void send_rep_out( CHAR_DATA * ch, char * outbuf, bool mailme, char * msub )
         if (  ( !IS_NPC( ch ) )
                 && (  str_cmp( ch->pcdata->email_address, "not set" ) )  )
         {
-            char mailfilename[MSL];
+            char mailfilename[MSL] = "\0";
             sprintf( mailfilename, "%s.mail",  ch->name );
             saved_mail = save_mail_file(  mailfilename , outbuf );
             if ( saved_mail )
             {
-                char outbuf2[MSL];
+                char outbuf2[MSL] = "\0";
                 sprintf( outbuf2, "Email sent to %s\n\r", ch->pcdata->email_address );
                 send_to_char( outbuf2, ch );
                 send_email( ch->pcdata->email_address, msub,  mailfilename );

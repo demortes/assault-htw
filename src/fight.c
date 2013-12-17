@@ -122,7 +122,7 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
 
     if ( paintball(ch) && paintball(victim) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int x;
 
         if ( dt != DAMAGE_PAINT )
@@ -240,7 +240,7 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
                 chance += (victim->pcdata->skill[gsn_combat] * 10) - (ch->pcdata->skill[gsn_combat]);
                 if ( number_percent() < chance )
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
                     if ( number_percent() < chance )
                     {
                         sprintf( buf, "The damage is absorbed by %s! (%d)\n\r", eq->short_descr,dam );
@@ -574,7 +574,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
 
     if ( get_rank(victim) < rank )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "%s has lost a rank.", victim->name );
         info(buf,1);
         update_ranks(victim);
@@ -590,7 +590,7 @@ void raw_kill( CHAR_DATA *victim, char *argument )
 void pdie(CHAR_DATA *ch)
 {
     DESCRIPTOR_DATA *d;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     CHAR_DATA *victim = ch;
     d = victim->desc;
     sprintf(buf,"%s",victim->name);
@@ -611,7 +611,7 @@ void pdie(CHAR_DATA *ch)
         BUILDING_DATA *bld;
         bool build = FALSE;
         load_char_obj( d, buf, FALSE );
-        char bbuf[MSL];
+        char bbuf[MSL] = "\0";
         for ( bld = first_building; bld; bld = bld->next )
         {
             if ( !str_cmp(bld->owned,ch->name) )
@@ -726,7 +726,7 @@ void do_slay( CHAR_DATA *ch, char *argument )
 void do_shoot( CHAR_DATA *ch, char *argument )
 {
     char *direc;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int x,y,range,accuracy,sect,xx,yy,d,d_next,z=ch->z;
     int dam = 0,dir;
     bool air = FALSE;
@@ -1099,8 +1099,8 @@ void do_shoot( CHAR_DATA *ch, char *argument )
 
 void do_load( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
     OBJ_DATA *weapon;
     OBJ_DATA *clip;
     int temp;
@@ -1228,8 +1228,8 @@ void do_load( CHAR_DATA *ch, char *argument )
 
 void do_set( CHAR_DATA *ch, char *argument )
 {
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     int time;
     OBJ_DATA *bomb;
 
@@ -1386,7 +1386,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
     bool dummy = FALSE;
     bool dest = FALSE;
     int portal = 0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool hack = FALSE;
 
     if ( bld == NULL || ch == NULL )
@@ -1526,7 +1526,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     }
                     else if ( c_ch < MAX_BUILDING / 3 )
                     {
-                        char bbuf[MSL];
+                        char bbuf[MSL] = "\0";
                         sprintf( buf, "You do not gain points if you attack someone while not having a base of your own.\n\r(You have %d of the required %d buildings)", c_ch, MAX_BUILDING/3 );
                         send_to_char(bbuf,ch);
                     }
@@ -1548,7 +1548,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                         {
                             int msg = number_range(1,2);
                             BUILDING_DATA *bld2;
-                            char ibuf[MSL];
+                            char ibuf[MSL] = "\0";
                             if ( msg == 1 )
                                 sprintf( ibuf, "@@a%s@@W turned @@a%s@@W's base into mush.", ch->name, vch->name );
                             else
@@ -1661,8 +1661,8 @@ void do_blast( CHAR_DATA *ch, char *argument )
     BUILDING_DATA *bld = ch->in_building;
     BUILDING_DATA *bld2;
     int x,y;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     bool cannon = FALSE;
     CHAR_DATA *wch;
 
@@ -1754,7 +1754,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
         {
             int bcount = 0;
             int pcount = 0;
-            char buf[MSL];
+            char buf[MSL] = "\0";
 
             ammo = create_object(get_obj_index(OBJ_VNUM_SCUD),0);
             ammo->value[2] += bld->level * 10;
@@ -1910,7 +1910,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
 
 void damage_vehicle( CHAR_DATA *ch, VEHICLE_DATA *vhc, int dam, int dt )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( vhc->in_vehicle )
     {
         damage_vehicle(ch,vhc->in_vehicle,dam,dt );
@@ -2053,7 +2053,7 @@ void check_armor( OBJ_DATA *obj )
 
 void set_fighting( CHAR_DATA *ch, CHAR_DATA *victim )
 {
-    char sound[MSL];
+    char sound[MSL] = "\0";
 
     if ( (victim->z == Z_SPACE && ch->z != Z_SPACE) || (ch->z == Z_SPACE && victim->z != Z_SPACE) )
         return;
@@ -2111,7 +2111,7 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
         }
         if ( ch != victim )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             int rank = get_rank(ch);
             int msg = number_range(1,19);
             bool alli = FALSE;
@@ -2215,7 +2215,7 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
         else
         {
             int msg = number_range(1,4);
-            char buf[MSL];
+            char buf[MSL] = "\0";
             if ( msg == 1 )
                 sprintf( buf, "@@a%s@@W got %sself killed.@@N", ch->name, (ch->sex == 1) ? "him" : "her" );
             else if ( msg == 2 )
@@ -2408,7 +2408,7 @@ bool same_planet(CHAR_DATA *ch, CHAR_DATA *vch )
 void gain_exp(CHAR_DATA *ch, int value)
 {
     int rank = get_rank(ch);
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( value > 150 )
         value = 150;
@@ -2442,7 +2442,7 @@ void gain_exp(CHAR_DATA *ch, int value)
 void do_gunner_shoot( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int dam, chance,range=6;
     BUILDING_DATA *bld = ch->in_building;
 
@@ -2537,8 +2537,8 @@ void do_gunner_shoot( CHAR_DATA *ch, char *argument )
 void do_kick( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *eq;
     int loc, dam;
 
@@ -2637,8 +2637,8 @@ void do_kick( CHAR_DATA *ch, char *argument )
 void do_punch( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *eq;
     int loc, dam;
 
@@ -2736,8 +2736,8 @@ void do_punch( CHAR_DATA *ch, char *argument )
 void do_hurl( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     int dam;
 
     argument = one_argument(argument,arg);

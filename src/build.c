@@ -1096,7 +1096,7 @@ void build_strdup( char ** dest, char * src, bool freesrc, CHAR_DATA * ch)
     char filename[255];
     char *old_destp;
     char *out;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if (src[0]=='$')                                        /* Special functions */
     {
@@ -1258,7 +1258,7 @@ void build_set_oedit( CHAR_DATA *ch, char *argument )
     else
     {
         int i;
-        char arg[MSL];
+        char arg[MSL] = "\0";
         bool fAll = FALSE;
         OBJ_INDEX_DATA *pObjIndex;
         argument = one_argument(argument,arg);
@@ -1599,7 +1599,7 @@ void build_listvalues( CHAR_DATA *ch, char *argument )
 void build_listbuildings( CHAR_DATA *ch, char *argument )
 {
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     for ( i = 1; i<MAX_BUILDING; i++ )
     {
@@ -2213,7 +2213,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
     else if ( !str_prefix( arg2, "type" ) )
     {
         extern char *building_title[MAX_BUILDING_TYPES];
-        char buf[MSL];
+        char buf[MSL] = "\0";
 
         if ( arg3[0] == '\0' )
         {
@@ -2351,7 +2351,7 @@ void build_setbuilding( CHAR_DATA *ch, char *argument )
     }
     else if ( !str_cmp( arg2, "change_all_sectors" ) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int oldsect=-1,newsect=-1;
         int changes = 0;
 

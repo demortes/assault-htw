@@ -168,7 +168,7 @@ void do_chedit( CHAR_DATA *ch, char *argument )
 {
     char arg1[MAX_INPUT_LENGTH];
     char arg2[MAX_INPUT_LENGTH];
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     argument = one_argument( argument, arg1 );
     argument = one_argument( argument, arg2 );
@@ -393,7 +393,7 @@ int num_changes( void )
 void do_changes(CHAR_DATA *ch, char *argument)
 {
     char  arg[MAX_INPUT_LENGTH];
-    char  buf[MSL];
+    char  buf[MSL] = "\0";
     char *test;
     int   today;
     int   i = 0;
@@ -578,7 +578,7 @@ void do_log( CHAR_DATA *ch, char *argument )
 
 void do_logs( CHAR_DATA *ch, char *argument )
 {
-    char bug_buf[MSL], idea_buf[MSL], typo_buf[MSL], bugs_buf[MSL];
+    char bug_buf[MSL], idea_buf[MSL], typo_buf[MSL], bugs_buf[MSL] = "\0";
     char *this_list;
     int i = 0;
     bool validcmd=FALSE;

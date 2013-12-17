@@ -1379,7 +1379,7 @@ void fread_obj( CHAR_DATA *ch, FILE *fp )
 
         if ( !fMatch )
         {
-            char log_buf[MSL];                              //xxxxx
+            char log_buf[MSL] = "\0";                              //xxxxx
             sprintf( log_buf, "PFILE: %s BAD!", ch->name );
             log_f(log_buf);
             monitor_chan( NULL, "Fread_obj: no match.", MONITOR_BAD );
@@ -1495,7 +1495,7 @@ void fread_object( FILE *fp )
     static OBJ_DATA obj_zero;
     OBJ_DATA *obj;
     OBJ_INDEX_DATA*pObj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
     int vnum;
 
@@ -1575,7 +1575,7 @@ void save_map( )
     FILE * fp;
     char objects_file_name[MAX_STRING_LENGTH];
     int i,j,z;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     fclose( fpReserve );
     sprintf( objects_file_name, "%s", MAP_FILE );
 
@@ -1614,7 +1614,7 @@ void save_alliances( )
     FILE * fp;
     char objects_file_name[MAX_STRING_LENGTH];
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     fclose( fpReserve );
     sprintf( objects_file_name, "%s", ALLIANCES_FILE );
 

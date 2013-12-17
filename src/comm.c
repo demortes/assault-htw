@@ -1099,7 +1099,7 @@ void free_desc( DESCRIPTOR_DATA *d )
 void new_descriptor( int control )
 {
     static DESCRIPTOR_DATA d_zero;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     DESCRIPTOR_DATA *dnew;
     BAN_DATA *pban;
     struct sockaddr_in sock;
@@ -1166,7 +1166,7 @@ void new_descriptor( int control )
         {
             if ( !str_prefix( pban->name, buf ) )
             {
-                char msg[MSL];
+                char msg[MSL] = "\0";
                 sprintf( msg, "Denying access to banned site %s", buf );
                 log_string( msg );
                 // MCCP
@@ -1247,7 +1247,7 @@ void init_descriptor (DESCRIPTOR_DATA *dnew, int desc)
 void close_socket( DESCRIPTOR_DATA *dclose )
 {
     CHAR_DATA *ch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( dclose == NULL )
         return;
@@ -1802,7 +1802,7 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
             ch->bvictim = NULL;
             return;
         }
-        char msg[MSL];
+        char msg[MSL] = "\0";
         int j=0;
         if ( ch->c_obj && ch->c_obj->value[8] > 0)
             j = ((1000/ch->c_obj->value[8])*ch->c_obj->value[1])/100;
@@ -1831,13 +1831,13 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
                 ch->position = POS_STANDING;
             return;
         }
-        char msg[MSL];
-        char enemy[MSL];
+        char msg[MSL] = "\0";
+        char enemy[MSL] = "\0";
         sprintf( enemy, " @@N" );
         if ( ch->in_vehicle->state == VEHICLE_STATE_CHARGE )
         {
             int j,i;
-            char charge[MSL];
+            char charge[MSL] = "\0";
             sprintf(charge,"@@r@@i@@y");
             j = (ch->in_vehicle->value[0]/2.5);
             for ( i=0; i<j; i++ )
@@ -1873,7 +1873,7 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
             ch->position = POS_STANDING;
             return;
         }
-        char msg[MSL];
+        char msg[MSL] = "\0";
         sprintf(msg, "Working on: %s > ", ch->in_vehicle->desc );
         write_to_buffer( d, msg, 0 );
         if ( IS_BUSY(ch) )
@@ -2267,7 +2267,7 @@ void show_smenu_to( DESCRIPTOR_DATA *d )
 void show_pmenu_to( DESCRIPTOR_DATA *d )
 {
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     write_to_buffer( d, "\n\r@@W----------------------------------------------------------------------------\n\r|@@g                                                                          @@W|\n\r|@@g There are two playing grids for you to pick from.                        @@W|\n\r|@@g                                                                          @@W|\n\r|@@g If you are new to the game, and would just like to learn how to build    @@W|\n\r|@@g  without any interruptions, select the Newbie grid. However, you will,   @@W|\n\r|@@g  sooner or later, have to reset your character and move on to the normal @@W|\n\r|@@g  playfield.                                                              @@W|\n\r----------------------------------------------------------------------------@@N\n\r\n\r", 0 );
     buf[0] = '\0';
     for ( i=0; planet_table[i].name != NULL; i++ )
@@ -2291,7 +2291,7 @@ void show_cmenu_to( DESCRIPTOR_DATA *d )
 {
     int i;
     CHAR_DATA *ch = d->character;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int rank = get_rank(ch);
 
     write_to_buffer( d, "@@W----------------------------------------------------------------------------\n\r|@@g                                                                          @@W|\n\r|@@g Unlike normal Muds, the classes here are not something you advance in,   @@W|\n\r|@@g  rather they represent certain gameplay bonuses.                         @@W|\n\r|@@g                                                                          @@W|\n\r|@@g The system here is similar to Counter Strike's, meaning you can change   @@W|\n\r|@@g  your class only if you die. As you play and gain ranks in the game,     @@W|\n\r|@@g  more powerful classes will be unlocked for you to pick from.            @@W|\n\r\n\r|@@g                                                                          @@W|\n\r|@@g If you are a new player, it is recommended you pick either the           @@W|\n\r|@@g  Engineering or the Miner classes.                                       @@W|\n\r----------------------------------------------------------------------------@@N\n\r\n\r", 0 );
@@ -2312,7 +2312,7 @@ void show_bmenu_to( DESCRIPTOR_DATA *d )
 {
     int i;
     CHAR_DATA *ch = d->character;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     //   send_to_char( "\n\r\n\r@@cYou have the ability to pick a starting bonus. Just type the name of the item you wish to start with.\n\r\n\r", ch );
     write_to_buffer( d, "@@W----------------------------------------------------------------------------\n\r|@@g                                                                          @@W|\n\r|@@g You may start with one of the items on the list. None of them will       @@W|\n\r|@@g  determine anything in the long run, they are just nice items to have.   @@W|\n\r----------------------------------------------------------------------------@@N\n\r\n\r", 0 );
@@ -2331,7 +2331,7 @@ void show_bmenu_to( DESCRIPTOR_DATA *d )
 void nanny( DESCRIPTOR_DATA *d, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
-    char motdbuf[MSL];
+    char motdbuf[MSL] = "\0";
     char msg[MAX_STRING_LENGTH];
     CHAR_DATA *ch;
     char *pwdnew;
@@ -2347,7 +2347,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 
     {
         char *argument2 = argument;
-        char arg2[MSL];
+        char arg2[MSL] = "\0";
 
         one_argument(argument2,arg2);
         if ( d->connected != CON_GET_NAME && !str_cmp(arg2,"talktoimms") )
@@ -2396,7 +2396,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                     continue;
                 if ( !str_cmp(d->host,wch->pcdata->host) && ( wch->trust < 80))
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
                     sprintf( buf, "%s is already logged on from your IP. No multiplaying!", wch->name );
                     write_to_buffer( d, buf, 0 );
                     log_string( "Connection  refused - Already connected." );
@@ -2417,7 +2417,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                     continue;
                 if ( !str_cmp(d->host,wch->pcdata->host) && ( wch->trust < 80))
                 {
-                    char buf[MSL];
+                    char buf[MSL] = "\0";
                     sprintf( buf, "%s is already logged on from your IP. No multiplaying!", wch->name );
                     write_to_buffer( d, buf, 0 );
                     log_string( "Connection  refused - Already connected." );
@@ -2564,7 +2564,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         {
             BUILDING_DATA *bld;
             bool build = FALSE;
-            char bbuf[MSL];
+            char bbuf[MSL] = "\0";
             for ( bld = first_building; bld; bld = bld->next )
             {
                 if ( !str_cmp(bld->owned,ch->name) )
@@ -2616,7 +2616,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         {
             DL_LIST * brands;
             sh_int numbrands;
-            char msgbuf[MSL];
+            char msgbuf[MSL] = "\0";
             for ( brands = first_brand, numbrands = 0;
                     brands;
                     brands = brands->next, numbrands++ );
@@ -3176,7 +3176,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 
         if ( IS_SET( ch->config, CONFIG_FULL_ANSI ) )
         {
-            char scrollbuf[MSL];
+            char scrollbuf[MSL] = "\0";
             sprintf( scrollbuf, "%s%s%s%i;%ir%s%%i;%iH",
                      CRS_RESET,
                      CRS_CLS,
@@ -3761,7 +3761,7 @@ void act( const char *format, CHAR_DATA *ch, const void *arg1,
 
     char buf[MAX_STRING_LENGTH];
     char fname[MAX_INPUT_LENGTH];
-    char tmp_str[MSL];
+    char tmp_str[MSL] = "\0";
     CHAR_DATA *to;
     CHAR_DATA *to_next;
     CHAR_DATA *vch = (CHAR_DATA *) arg2;
@@ -4283,11 +4283,11 @@ void copyover_recover ()
     DESCRIPTOR_DATA *d;
     FILE *fp;
     char name [100];
-    char host[MSL];
+    char host[MSL] = "\0";
     int desc;
     bool fOld;
     int i = 0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     extern bool disable_timer_abort;
     log_f ("Copyover recovery initiated");
     disable_timer_abort = TRUE;
@@ -4454,7 +4454,7 @@ bool can_multiplay( CHAR_DATA *ch )
 void do_talktodesc( CHAR_DATA *ch, char *argument )
 {
     DESCRIPTOR_DATA *d;
-    char arg[MSL];
+    char arg[MSL] = "\0";
     int i;
 
     argument = one_argument(argument,arg);
@@ -4471,7 +4471,7 @@ void do_talktodesc( CHAR_DATA *ch, char *argument )
         //                if ( i <= 0 )
         if ( d->descriptor == i )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             sprintf( buf, "@@rMessage from the Admin: @@W%s\n\r@@rTo reply, type: talktoimms <message>@@N\n\r", argument );
             // MCCP
             //                        write_to_descriptor( d->descriptor, buf, 0 );
@@ -4489,7 +4489,7 @@ void talktoimms( DESCRIPTOR_DATA *d, char *argument )
 {
     CHAR_DATA *ch;
     int i = 0;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,buf);
     sprintf( buf, "Message from %s: %s", d->character->name, argument );
@@ -4564,7 +4564,7 @@ void do_stop( CHAR_DATA *ch, char *argument )
 /*void do_disconnect( CHAR_DATA *ch, char *argument )
   {
   DESCRIPTOR_DATA *d;
-  char arg[MSL];
+  char arg[MSL] = "\0";
   int i;
 
   argument = one_argument(argument,arg);
@@ -4579,7 +4579,7 @@ void do_stop( CHAR_DATA *ch, char *argument )
   {
   if ( d->descriptor == i )
   {
-  char buf[MSL];
+  char buf[MSL] = "\0";
   if ( argument[0] != '\0' )
   write_to_descriptor( d, argument, 0 );
   close_socket(d);

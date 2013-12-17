@@ -110,7 +110,7 @@ void ShowCMap( CHAR_DATA *ch )
 {
     int x,y,z=ch->z,sect;
     int x1,x2,y1,y2;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     y1 = ch->y - 10;
     x1 = ch->x - 10;
     y2 = ch->y + 10;
@@ -134,10 +134,10 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
     int x,y,z=ch->z, looper, maxx,i=0;
     bool warcannon = FALSE;
     bool xray = FALSE;
-    char color[MSL];
-    char outbuf[MSL];
-    char catbuf[MSL];
-    char borderbuf[MSL];
+    char color[MSL] = "\0";
+    char outbuf[MSL] = "\0";
+    char catbuf[MSL] = "\0";
+    char borderbuf[MSL] = "\0";
     bool has_structure[MAX_MAPS][MAX_MAPS];
     bool in_border = TRUE;
     bool base = FALSE;
@@ -184,7 +184,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
     if ( size < 998 )                                       /* For quest calls */
     {
-        char sbuf[MSL];
+        char sbuf[MSL] = "\0";
         int s;
         borderbuf[0] = '\0';
         sbuf[0] = '\0';
@@ -275,7 +275,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
             else if ( in_border && has_structure[x][y] && bld && (bld->visible || ch == bld->owner || ch->trust >= 85 ) )
             {
                 CHAR_DATA *vch;
-                char ocolor[MSL];
+                char ocolor[MSL] = "\0";
 
                 if ( bld->active && !is_neutral(bld->type) )
                 {
@@ -302,7 +302,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                 }
                 else
                 {
-                    char symbol[MSL];
+                    char symbol[MSL] = "\0";
                     bool mxp = TRUE;
                     def = (!ch->security && bld->owner == ch && defense_building(bld));
                     charr = map_ch[x][y][z] ? TRUE : FALSE;
@@ -378,7 +378,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
                 bool allied = FALSE;
                 bool newbie = FALSE;
                 bool imm = FALSE;
-                char ppl_c[MSL];
+                char ppl_c[MSL] = "\0";
 
                 if (ch->in_vehicle != NULL && blind_spot(ch,x,y) )
                 {
@@ -464,7 +464,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
             }
             else if ( in_border && ( map_vhc[x][y][z] != NULL && size != 998 && size != 997 ) )
             {
-                char mxpbuf[MSL];
+                char mxpbuf[MSL] = "\0";
                 catbuf[0] = '\0';
 
                 if ( ch->desc->mxp && z != Z_UNDERGROUND )
@@ -491,7 +491,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
             }
             else
             {
-                char ocolor[MSL];
+                char ocolor[MSL] = "\0";
                 sprintf( ocolor, "%s", ( !in_border ) ? "@@k" : wildmap_table[map_table.type[x][y][ch->z]].color );
                 catbuf[0] = '\0';
                 if ( str_cmp(color,ocolor) )
@@ -536,7 +536,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
     send_to_char( "\n\r", ch );
     if ( my_get_hours(ch,TRUE) < 2 && !IS_SET(ch->config,CONFIG_NOLEGEND))
     {
-        char tbuf[MSL];
+        char tbuf[MSL] = "\0";
         int j,l=0;
         if ( terrain[SECT_SNOW_BLIZZARD] )
         {
@@ -564,11 +564,11 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 void ShowSMap( CHAR_DATA *ch, bool small )
 {
     int x,y,looper, maxx,i=0,xx,yy,xmaxx,ymaxx;
-    char scan[MSL];
-    char color[MSL];
-    char outbuf[MSL];
-    char catbuf[MSL];
-    char borderbuf[MSL];
+    char scan[MSL] = "\0";
+    char color[MSL] = "\0";
+    char outbuf[MSL] = "\0";
+    char catbuf[MSL] = "\0";
+    char borderbuf[MSL] = "\0";
     OBJ_DATA *obj;
     VEHICLE_DATA *vhc = ch->in_vehicle;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
@@ -699,7 +699,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
                 bool allied = FALSE;
                 bool imm = FALSE;
                 bool range= FALSE;
-                char ppl_c[MSL];
+                char ppl_c[MSL] = "\0";
 
                 {
                     for ( whc = map_vhc[x][y][Z_SPACE]; whc; whc = whc->next_in_room )
@@ -783,7 +783,7 @@ void ShowSMap( CHAR_DATA *ch, bool small )
 
 char *makesmall( char *arg, int size )
 {
-    static char small[MSL];
+    static char small[MSL] = "\0";
     if ( size == 4 )
         return arg;
 
@@ -804,15 +804,15 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 {
     DESCRIPTOR_DATA *d;
     BUILDING_DATA *bld;
-    char b_north[MSL];
-    char b_east[MSL];
-    char b_west[MSL];
-    char b_south[MSL];
-    char p_buf[MSL];
-    char b_buf[MSL];
-    char e_buf[MSL];
-    char w_buf[MSL];
-    char g_buf[MSL];
+    char b_north[MSL] = "\0";
+    char b_east[MSL] = "\0";
+    char b_west[MSL] = "\0";
+    char b_south[MSL] = "\0";
+    char p_buf[MSL] = "\0";
+    char b_buf[MSL] = "\0";
+    char e_buf[MSL] = "\0";
+    char w_buf[MSL] = "\0";
+    char g_buf[MSL] = "\0";
     OBJ_DATA *obj;
     int range=0;
     int x,y,last,maxx;
@@ -1029,8 +1029,8 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 void show_building( CHAR_DATA *ch, sh_int small, int size )
 {
     BUILDING_DATA *bld = ch->in_building;
-    char borderbuf[MSL];
-    char outbuf[MSL];
+    char borderbuf[MSL] = "\0";
+    char outbuf[MSL] = "\0";
     int i,j;
     bool warcannon = FALSE;
     bool msg = FALSE;
@@ -1049,7 +1049,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
     {
         if ( bld->exit[i] )
         {
-            char tempbuf[MSL];
+            char tempbuf[MSL] = "\0";
             strcat (borderbuf, MXPTAG(ch->desc,"Ex"));
             sprintf( tempbuf, "%s", ( i == 0 ) ? "North" : ( i == 1 ) ? "East" : ( i == 2 ) ? "South" : "West" );
             strcat (borderbuf, tempbuf );
@@ -1135,7 +1135,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
         {
             if ( bld->exit[i] )
             {
-                char tempbuf[MSL];
+                char tempbuf[MSL] = "\0";
                 strcat (borderbuf, MXPTAG(ch->desc,"Ex"));
                 sprintf( tempbuf, "%s", ( i == 0 ) ? "North" : ( i == 1 ) ? "East" : ( i == 2 ) ? "South" : "West" );
                 strcat (borderbuf, tempbuf );
@@ -1153,11 +1153,11 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
 
 void ShowSpace( CHAR_DATA *ch )
 {
-    char ss[MSL];
-    char aa[MSL];
-    char ff[MSL];
-    char buf[MSL];
-    char pref[MSL];
+    char ss[MSL] = "\0";
+    char aa[MSL] = "\0";
+    char ff[MSL] = "\0";
+    char buf[MSL] = "\0";
+    char pref[MSL] = "\0";
     VEHICLE_DATA *vhc = ch->in_vehicle;
     int i,j=get_ship_range(vhc);
     pref[0] = '\0';
@@ -1212,7 +1212,7 @@ void ShowSpace( CHAR_DATA *ch )
     else
         sprintf( ff, "  " );
     {
-        char msg[MSL];
+        char msg[MSL] = "\0";
         msg[0] = '\0';
         if ( IS_SET(vhc->flags,VEHICLE_CORROSIVE_A) )
             sprintf( msg, "@@rACID@@c" );
@@ -1244,7 +1244,7 @@ void ShowSpace( CHAR_DATA *ch )
 
 void draw_space( CHAR_DATA *ch )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i;
     int j;
     sprintf( buf, "\n\r" );
@@ -1272,7 +1272,7 @@ void do_buildings( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     int x,y,maxx;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     bool all=FALSE;
 
     if ( !IS_SET(ch->config,CONFIG_BLIND) )
@@ -1317,7 +1317,7 @@ void do_scanmap( CHAR_DATA *ch, char *argument )
 {
     int dir,sect,lsect,count=0;
     int x,y;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( !IS_SET(ch->config,CONFIG_BLIND) )
     {
@@ -1382,7 +1382,7 @@ void do_bscan(CHAR_DATA *ch,char *argument)
 {
     BUILDING_DATA *bld;
     int x, xx, y, yy, dir;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if (!IS_SET(ch->config, CONFIG_BLIND))
         mreturn("Huh?\r\n",ch);
@@ -1422,7 +1422,7 @@ void do_bthere(CHAR_DATA *ch, char *argument)
 {
     BUILDING_DATA *bld;
     int x,xx,y,yy,dir, range = 5;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     char arg1[MAX_INPUT_LENGTH];
     char arg2[MAX_INPUT_LENGTH];
     

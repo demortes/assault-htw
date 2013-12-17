@@ -74,7 +74,7 @@ const struct ability_type ability_table[] =
 
 void check_skill( CHAR_DATA *ch, int gsn, int chance, char *name )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( gsn >= MAX_SKILL )
         return;
     if ( number_percent() < chance && ch->pcdata->skill[gsn] < 100 && ch->pcdata->lastskill <= 0 )
@@ -91,7 +91,7 @@ void do_research (CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->z == Z_SPACE )
     {
@@ -174,7 +174,7 @@ void do_research (CHAR_DATA *ch, char *argument )
 void act_research( CHAR_DATA *ch, int level )
 {
     OBJ_DATA *obj;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) == NULL || obj->item_type != ITEM_BLUEPRINT )
     {
@@ -231,7 +231,7 @@ void  do_repair( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     BUILDING_DATA *bld;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -328,7 +328,7 @@ void do_sneak( CHAR_DATA *ch, char *argument )
 
     if ( argument[0] == '\0' )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "Your sneak skill is at %d%%.\n\r", ch->pcdata->skill[gsn_sneak] );
         send_to_char( buf, ch );
         if ( ch->position == POS_SNEAKING )
@@ -508,8 +508,8 @@ void do_chemistry( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     OBJ_DATA *obj2;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
 
     argument = one_argument(argument,arg);
 
@@ -565,9 +565,9 @@ void do_chemistry( CHAR_DATA *ch, char *argument )
     }
     else if ( !str_prefix(arg,"state") )
     {
-        char arg2[MSL];
-        char desc[MSL];
-        char name[MSL];
+        char arg2[MSL] = "\0";
+        char desc[MSL] = "\0";
+        char name[MSL] = "\0";
         int state = -1;
 
         argument = one_argument(argument,arg2);
@@ -701,7 +701,7 @@ void do_chemistry( CHAR_DATA *ch, char *argument )
     }
     else if ( !str_prefix(arg,"add") )
     {
-        char arg2[MSL];
+        char arg2[MSL] = "\0";
         OBJ_DATA *container;
         int i = 1;
         int x;
@@ -978,7 +978,7 @@ void do_target( CHAR_DATA *ch, char *argument )
 
     if ( list )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         int x,y;
 
         sprintf( buf, "You are able to target the following people:\n\r\n\r" );
@@ -1166,8 +1166,8 @@ void act_target (CHAR_DATA *ch, int level )
 void do_kick( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *eq;
     int loc,dam;
 
@@ -1270,8 +1270,8 @@ void do_kick( CHAR_DATA *ch, char *argument )
 void do_punch( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
     OBJ_DATA *eq;
     int loc,dam;
 
@@ -1366,8 +1366,8 @@ void do_punch( CHAR_DATA *ch, char *argument )
 void do_computer( CHAR_DATA *ch, char *argument )
 {
     BUILDING_DATA *bld;
-    char arg1[MSL];
-    char arg2[MSL];
+    char arg1[MSL] = "\0";
+    char arg2[MSL] = "\0";
 
     argument = one_argument(argument,arg1);
     argument = one_argument(argument,arg2);
@@ -1532,7 +1532,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
         OBJ_DATA *comp = NULL;
         CHAR_DATA *bch;
         CHAR_DATA *bounce = NULL;
-        char arg3[MSL];
+        char arg3[MSL] = "\0";
         bool found = FALSE;
 
         argument = one_argument(argument,arg3);
@@ -1700,7 +1700,7 @@ void act_computer( CHAR_DATA *ch, int level )
     }
     if ( level == 3 || level == 4 )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         if ( ch->bvictim == NULL )
         {
             send_to_char( "Your target was shut down.\n\r", ch );
@@ -1781,7 +1781,7 @@ void act_computer( CHAR_DATA *ch, int level )
             chance *= 2;
         if ( number_percent() < chance )
         {
-            char buf[MSL];
+            char buf[MSL] = "\0";
             if ( ( bch = get_ch(ch->bvictim->owned) ) == NULL )
             {
                 send_to_char( "The mainframe was shut down.\n\r", ch );
@@ -1852,7 +1852,7 @@ void act_computer( CHAR_DATA *ch, int level )
         OBJ_DATA *obj;
         OBJ_DATA *comp = NULL;
         BUILDING_DATA *bld2;
-        char buf[MSL];
+        char buf[MSL] = "\0";
         for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
             if ( obj->item_type == ITEM_COMPUTER )
                 if ( comp == NULL || obj->value[0] > comp->value[0] )
@@ -2039,7 +2039,7 @@ void do_sresearch (CHAR_DATA *ch, char *argument )
     bool found = FALSE;
     bool alien_tech = FALSE;
     int i;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = get_char_building(ch) ) == NULL || bld->type != BUILDING_SPACE_CENTER || str_cmp(bld->owned,ch->name) || !complete(bld) )
     {
@@ -2054,8 +2054,8 @@ void do_sresearch (CHAR_DATA *ch, char *argument )
 
     if ( argument[0] == '\0' )
     {
-        char f_buf[MSL];
-        char c_buf[MSL];
+        char f_buf[MSL] = "\0";
+        char c_buf[MSL] = "\0";
         sprintf( f_buf, "@@cCompleted Research:@@a\n\r" );
         sprintf( c_buf, "@@cResearchable:@@a\n\r" );
         for ( i = 0; s_res_table[i].name != NULL; i++ )
@@ -2137,7 +2137,7 @@ void act_sresearch( CHAR_DATA *ch, int level )
 {
     BUILDING_DATA *bld;
     bool alien_tech = FALSE;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ( bld = get_char_building(ch) ) == NULL || bld->type != BUILDING_SPACE_CENTER || str_cmp(bld->owned,ch->name) || !complete(bld) )
     {
@@ -2178,8 +2178,8 @@ void act_sresearch( CHAR_DATA *ch, int level )
 
 void do_proficiencies(CHAR_DATA *ch, char *argument)
 {
-    char buf[MSL];
-    char arg[MSL];
+    char buf[MSL] = "\0";
+    char arg[MSL] = "\0";
     int i;
 
     if ( argument[0] == '\0' )
@@ -2194,7 +2194,7 @@ void do_proficiencies(CHAR_DATA *ch, char *argument)
     argument = one_argument(argument,arg);
     if ( !str_prefix(arg,"abilities") )
     {
-        char buf2[MSL];
+        char buf2[MSL] = "\0";
         sprintf(buf,"@@d");
         sprintf(buf2,"@@r");
         send_to_char( "\n\rName                Eng Bld Cmb  Desc\n\r----------------------------------------------------------------\n\r", ch );
@@ -2290,7 +2290,7 @@ void act_fix( CHAR_DATA *ch, int level )
 void do_train(CHAR_DATA *ch, char *argument)
 {
     int skill,cost,i,disc;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {

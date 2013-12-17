@@ -38,7 +38,7 @@
 
 void do_alliances( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int i,x=0,j;
     bool all = FALSE;
     bool sort = TRUE;
@@ -94,8 +94,8 @@ void do_alliances( CHAR_DATA *ch, char *argument )
 void do_awhere( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *wch;
-    char buf[MSL];
-    char loc[MSL];
+    char buf[MSL] = "\0";
+    char loc[MSL] = "\0";
 
     if ( ch->pcdata->alliance == -1 )
     {
@@ -124,7 +124,7 @@ void do_awhere( CHAR_DATA *ch, char *argument )
 void do_accept( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -216,7 +216,7 @@ void do_leave( CHAR_DATA *ch, char *argument )
 void do_aban( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( ch->pcdata->alliance == -1 )
     {
@@ -248,7 +248,7 @@ void do_aban( CHAR_DATA *ch, char *argument )
 
 void do_amem( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int alliance;
 
     if ( ch->pcdata->alliance == -1 && !IS_IMMORTAL(ch) )
@@ -284,7 +284,7 @@ char *fgetf( char *s, int n, register FILE *iop )
 
 void do_pipe( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     FILE *fp;
 
 #if defined (unix)
@@ -354,7 +354,7 @@ void do_createalliance(CHAR_DATA *ch, char *argument)
             {
                 if ( alliance_table[i].members == 0)
                 {
-                    char file[MSL];                         /*Erase board data*/
+                    char file[MSL] = "\0";                         /*Erase board data*/
                     BOARD_DATA *board;
                     sprintf( file, "boards/board.%d", OBJ_VNUM_ALLI_BOARD + i );
                     for ( board = first_board; board; board = board->next )

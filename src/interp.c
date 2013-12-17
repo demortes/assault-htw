@@ -1530,7 +1530,7 @@ void interpret( CHAR_DATA *ch, char *argument )
 
     {
         int i;
-        char command2[MSL];
+        char command2[MSL] = "\0";
         command2[0] = '\0';
         for ( i = 0; i<5; i++ )
         {
@@ -1582,7 +1582,7 @@ void interpret( CHAR_DATA *ch, char *argument )
 
     if ( cmd_table[cmd].type != C_TYPE_INFO && cmd_table[cmd].type != C_TYPE_COMM && IS_BUSY(ch) && (cmd_table[cmd].do_fun != do_inventory) )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         if ( ch->c_sn == gsn_dead || ch->c_sn == gsn_warp || ch->c_sn == gsn_paradrop || ch->dead || ch->position == POS_DEAD
            )
         {
@@ -2058,7 +2058,7 @@ void add_to_queue( CHAR_DATA *ch, char *argument )
 void check_queue ( CHAR_DATA * ch )
 {
     QUEUE_DATA *q;
-    char cmd[MSL];;
+    char cmd[MSL] = "\0";;
     if ( !ch->pcdata->queue )
     {
         if (IS_SET(ch->effect,EFFECT_RUNNING) )

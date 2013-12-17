@@ -202,8 +202,8 @@ void do_eng_connect( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *obj;
     int wire1,wire2;
-    char arg[MSL];
-    char buf[MSL];
+    char arg[MSL] = "\0";
+    char buf[MSL] = "\0";
 
     if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) == NULL || obj->item_type != ITEM_TOOLKIT )
     {
@@ -302,7 +302,7 @@ void do_eng_connect( CHAR_DATA *ch, char *argument )
 
 void do_wires( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     OBJ_DATA *obj;
     int i,w;
     if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) == NULL || obj->item_type != ITEM_TOOLKIT )
@@ -419,7 +419,7 @@ void do_engineer( CHAR_DATA *ch, char *argument )
     }
     if ( obj->level > ch->pcdata->skill[gsn_engineering] * 3 )
     {
-        char buf[MSL];
+        char buf[MSL] = "\0";
         sprintf( buf, "At your proficiency level, you can only use level %d toolkits or worse.\n\r", ch->pcdata->skill[gsn_engineering]*3 );
         send_to_char(buf,ch);
         return;
@@ -531,7 +531,7 @@ void act_eng_check( CHAR_DATA *ch, int level )
 {
     OBJ_DATA *obj;
     int i,chance,wire=7;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) == NULL || obj->item_type != ITEM_TOOLKIT )
     {
         send_to_char( "You have lost your toolkit!\n\r", ch );

@@ -59,7 +59,7 @@ void    talk_channel    args( ( CHAR_DATA *ch, char *argument,
 void talk_channel( CHAR_DATA *ch, char *argument, int channel, const char *verb )
 {
     char buf[MAX_STRING_LENGTH];
-    char buf2[MSL];
+    char buf2[MSL] = "\0";
     char title[MAX_STRING_LENGTH];
     DESCRIPTOR_DATA *d;
     char ansi[MAX_STRING_LENGTH];
@@ -331,9 +331,9 @@ void do_newbie( CHAR_DATA *ch, char *argument )
 
 void do_atalk( CHAR_DATA *ch, char *argument )
 {
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int al = -1;
-    char arg[MSL];
+    char arg[MSL] = "\0";
 
     if ( ch->pcdata->alliance == -1 && get_trust(ch) < 84 )
     {
@@ -391,7 +391,7 @@ void do_flame( CHAR_DATA *ch, char *argument )
 
 void do_immtalk( CHAR_DATA *ch, char *argument )
 {
-    char  check[MSL];
+    char  check[MSL] = "\0";
 
     one_argument( argument, check );
     talk_channel( ch, argument, CHANNEL_IMMTALK, "immtalk" );
@@ -715,7 +715,7 @@ void do_tell( CHAR_DATA *ch, char *argument )
 void do_reply( CHAR_DATA *ch, char *argument )
 {
     CHAR_DATA *victim;
-    char buf[MSL];
+    char buf[MSL] = "\0";
 
     if ( argument[0] == '\0' )
     {
@@ -830,7 +830,7 @@ void do_quit( CHAR_DATA *ch, char *argument )
     DESCRIPTOR_DATA *other_logins_next;
     BUILDING_DATA *bld;
     CHAR_DATA *wch;
-    char buf[MSL];
+    char buf[MSL] = "\0";
     int p = 0;
     bool ban = FALSE;
 
@@ -918,7 +918,7 @@ void do_quit( CHAR_DATA *ch, char *argument )
         {
             if ( other_logins->connected == CON_GET_OLD_PASSWORD )
             {
-                char logbuf[MSL];
+                char logbuf[MSL] = "\0";
                 sprintf( logbuf, "CHEATER!!! Possible attempt to utilize eq dup bug, %s", other_logins->character->name );
 
                 log_string( logbuf );
