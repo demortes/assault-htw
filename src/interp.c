@@ -1008,9 +1008,13 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
     {
-        "freeze",         do_freeze,      POS_DEAD,    85,   LOG_ALWAYS,
+        "freeze",         do_freeze,      POS_DEAD,    85,  LOG_ALWAYS,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
+	{
+		"gitpull",		  do_gitpull,     POS_DEAD,    90,	LOG_ALWAYS,
+		C_TYPE_IMM, C_SHOW_ALWAYS
+	},
     {
         "goto",           do_goto,        POS_DEAD,    79,  LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
@@ -1024,11 +1028,11 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
     {
-        "home",           do_home,        POS_DEAD,    85,   LOG_NORMAL,
+        "home",           do_home,        POS_DEAD,    85,  LOG_NORMAL,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
     {
-        "hotreboo",       do_hotreboo,    POS_DEAD,    84,   LOG_ALWAYS,
+        "hotreboo",       do_hotreboo,    POS_DEAD,    84,  LOG_ALWAYS,
         C_TYPE_IMM, C_SHOW_NEVER
     },
     {
