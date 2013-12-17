@@ -3576,6 +3576,28 @@ If you are a blind user, type CONFIG BLIND to enable blind mode.
 Current notes: Space doesn't have blind support yet, so don't try.
 Quests also are very difficult for blind users. This will be updated.
 ~
+0 bscan~
+Bscan <direction>
+ Allows quick identification of buildings in blind mode. Use this command
+whilst attacking bases to get a better idea of the layout, or use it with your
+own buildings for the same purpose.
+~
+0 tscan~
+Tscan <direction>
+ This command is useful for getting quick information on the types of terrain
+in a certain direction. Use this command in blind mode to quickly gage your
+surroundings. Although this does not replace the general look command, it can
+save time when it is (or is not) precious.
+~
+0 bthere~
+Bthere <direction>
+ This command gives you quick information on whether a building is in a
+certain direction or not. This comes in handy if you are inside a base and
+need to know whether or not you can migrate to another building quickly.
+ Bthere <direction> <number>
+ Optionally, you may specify a range to scan in that does not exceed your map
+size.
+~
 0 $~
 #ROOMS
 #1
