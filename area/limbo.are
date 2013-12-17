@@ -3572,9 +3572,10 @@ If you are a blind user, type CONFIG BLIND to enable blind mode.
 Useful Commands:
 buildings - lists all buildings in the vicinity
 bscan (direction) - scans the direction for buildings, friendly and otherwise
+tscan (direction) - scans the direction and displays the terrain types
+bthere (direction (range) - shows you if there is a building in the path of a specified direction
  
-Current notes: Space doesn't have blind support yet, so don't try.
-Quests also are very difficult for blind users. This will be updated.
+Current notes: Quests also are very difficult for blind users. This will be updated.
 ~
 0 $~
 #ROOMS
