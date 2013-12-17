@@ -5898,7 +5898,7 @@ void do_phase( CHAR_DATA *ch, char *argument )
 
 void do_survey(CHAR_DATA *ch,char *argument)
 {
-    char arg[MSL];
+    char arg[MSL] = "\0";
     one_argument(argument,arg);
     int x,y,z;
     int tvals[SECT_MAX];
@@ -5920,7 +5920,7 @@ void do_survey(CHAR_DATA *ch,char *argument)
             tvals[map_table.type[x][y][z]]++;
         }
     }
-    char buf[MSL];
+    char buf[MSL] = "\0";
     for (z=0; z<SECT_MAX; z++)
     {
         if (tvals[z]==0) continue;
