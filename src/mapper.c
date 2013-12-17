@@ -937,10 +937,10 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 
     }
     sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
-             (b_north[0] != '\0') ? b_north : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
-             (b_east[0] != '\0')  ? b_east  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
-             (b_south[0] != '\0') ? b_south : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
-             (b_west[0] != '\0')  ? b_west  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
+             (b_north[0] != '\0') ? b_north : ch->z==Z_SPACE?"Space":INVALID_COORDS(ch->x, ch->y+1)?"Edge":wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
+             (b_east[0] != '\0')  ? b_east  : ch->z==Z_SPACE?"Space":INVALID_COORDS(ch->x+1, ch->y)?"Edge":wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
+             (b_south[0] != '\0') ? b_south : ch->z==Z_SPACE?"Space":INVALID_COORDS(ch->x, ch->y-1)?"Edge":wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
+             (b_west[0] != '\0')  ? b_west  : ch->z==Z_SPACE?"Space":INVALID_COORDS(ch->x-1, ch->y)?"Edge":wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
 
     x = ch->x;
     y = ch->y;
