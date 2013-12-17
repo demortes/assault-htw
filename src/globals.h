@@ -305,6 +305,7 @@ DECLARE_DO_FUN( do_ignore       );
 DECLARE_DO_FUN( do_for      );
 DECLARE_DO_FUN( do_hotreboo   );
 DECLARE_DO_FUN( do_hotreboot      );
+DECLARE_DO_FUN( do_gitpull	);
 DECLARE_DO_FUN( do_olmsg    );
 DECLARE_DO_FUN( do_scheck   );
 DECLARE_DO_FUN( do_immbrand );

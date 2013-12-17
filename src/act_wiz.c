@@ -49,6 +49,8 @@
 #include "email.h"
 #endif
 
+DECLARE_DO_FUN(do_gitpull);
+
 void  purge_room   args( ( CHAR_DATA *, ROOM_INDEX_DATA * ) );
 RELEVEL_DATA * HasRelevel( char * strName )
 {
@@ -299,6 +301,33 @@ void do_relevel( CHAR_DATA * dch, char * arg )
     dch->level = pRelevel->iLevel;
     dch->trust = pRelevel->iLevel;
     return;
+}
+
+void do_gitpull( CHAR_DATA *ch, char *arg)
+{
+	FILE *fp;
+	int status;
+	char buf[MSL] = "\0";
+	char path[] = "/tmp/";
+	/* Open the command for reading. */
+	fp = popen("git pull 2>&1", "r");
+	if (fp == NULL) {
+		strcpy(buf, "Can not run GIT PULL\r\n");
+		send_to_char(buf, ch);	
+		return;
+	}
+  /* Read the output a line at a time - output it. */
+  while (fgets(path, sizeof(path)-1, fp) != NULL) {
+    sprintf(buf, "%s%s", buf, path);
+  }
+  send_to_char(buf, ch);
+  
+  /* close */
+  status = pclose(fp);
+  if(status == -1)
+	send_to_char("GIT PULL failed.\r\n", ch);
+	
+	return;
 }
 
 void do_wizhelp( CHAR_DATA *ch, char *argument )
