@@ -1235,12 +1235,10 @@ char *material_name( int type )
 char *format_to_lines(char *src, int length)
 {
     static char buf[MSL] = "\0";
-    char buf2[MSL] = "\0";
 
     buf[0] = '\0';
     while (*src)
     {
-        //		sprintf( buf2, "%-*.*s", length, length, src );
         sprintf(buf + strlen(buf), "| %-*.*s |\n\r", length, length, src);
         if (strlen(src) < length)
             break;
