@@ -660,7 +660,6 @@ struct  pc_data
     sh_int  skill[MAX_SKILL];
     sh_int  lastskill;
     int     alliance;
-    //    IMC_CHARDATA *imcchardata;
     QUEUE_DATA  * queue;
     QUEUE_DATA  * last_queue;
     int     reimb;
@@ -1122,6 +1121,8 @@ void make_medal_base    args( ( CHAR_DATA *ch ) );
 void create_obj_atch    args( ( CHAR_DATA *ch, int index ) );
 bool blind_spot     args( ( CHAR_DATA *ch, int x, int y ) );
 int get_armor_value args( ( int dt ) );
+void real_coords(int *x,int *y);
+
 /*------*\ 
 ) save.c (
 \*------*/

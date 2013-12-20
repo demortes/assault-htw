@@ -75,11 +75,11 @@
 #define LEVEL_GUIDE                  79
 #define LEVEL_IMMORTAL               80
 #define MAX_QUOTE       200
-#define MAX_MAPS        1000
+#define MAX_MAPS        1500
 #define MIN_LOAD_OBJ        1000
 #define MAX_LOAD_OBJ        1164
 #define MAX_HELPER      13
-#define BORDER_SIZE     3
+#define BORDER_SIZE     0
 
 #define TERRAIN_NONE        0
 #define TERRAIN_BALANCED    1
@@ -559,7 +559,7 @@
  */
 
 #define SECT_NULL                     0
-#define SECT_MAX                   17
+#define SECT_MAX                   18
 
 #define SECT_ROCK           1
 #define SECT_SAND           2
@@ -577,6 +577,7 @@
 #define SECT_UNDERGROUND        14
 #define SECT_ICE            15
 #define SECT_MAGMA          16
+#define SECT_OCEAN			17
 
 /*
  * Equpiment wear locations.

@@ -1006,3 +1006,15 @@ void clear_basic(CHAR_DATA *ch)
     ch->pcdata->deaths = 0;
     return;
 }
+
+void real_coords(int *x,int *y)
+{
+        if ( *x < 0 )
+                *x = MAX_MAPS + *x;
+        if ( *y < 0 )
+                *y = MAX_MAPS + *y;
+        if ( *x >= MAX_MAPS )
+                *x = *x - MAX_MAPS;
+        if ( *y >= MAX_MAPS )
+                *y = *y - MAX_MAPS;
+}
