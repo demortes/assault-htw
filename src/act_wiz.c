@@ -4780,7 +4780,7 @@ void do_backup ( CHAR_DATA *ch, char *argument )
             for ( obj = first_obj;obj;obj = obj_next )
             {
                 obj_next = obj->next;
-                move_obj(obj,0,0,1);
+                move_obj(obj,0,0,4);
                 extract_obj(obj);
             }
             load_sobjects(3);

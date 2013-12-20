@@ -326,7 +326,7 @@ void boot_db( bool fCopyOver )
         vehicle_weapon = create_object( get_obj_index(OBJ_VNUM_ACID_SPRAY), 0 );
         vehicle_weapon->x = 0;
         vehicle_weapon->y = 0;
-        vehicle_weapon->z = Z_GROUND;
+        vehicle_weapon->z = 4;
         UNLINK(vehicle_weapon, first_obj, last_obj, next, prev);
         obj_to_room(vehicle_weapon,get_room_index(ROOM_VNUM_WMAP));
     }
@@ -808,7 +808,7 @@ OBJ_DATA *create_object( OBJ_INDEX_DATA *pObjIndex, int level )
     obj->heat = pObjIndex->heat;
     obj->x = 0;
     obj->y = 0;
-    obj->z = 1;
+    obj->z = 4;
     obj->in_building = NULL;
     if ( obj->item_type == ITEM_BOMB )
         obj->bomb_data = make_bomb(obj);

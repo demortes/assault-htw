@@ -122,7 +122,7 @@ void move_char( CHAR_DATA *ch, int door )
             send_to_char( "@@gYou must @@elift@@g up in order to fly the aircraft.@@N\n\r", ch );
             return;
         }
-		
+
 		if ( continual_flight(ch->in_vehicle) )
         {
             ch->c_sn = -1;
@@ -236,7 +236,7 @@ void move_char( CHAR_DATA *ch, int door )
         }
         if ( ch->in_vehicle != NULL )
         {
-            if ( !bld && map_table.type[ch->x][ch->y][z] == SECT_WATER && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) )
+            if ( !bld && (map_table.type[ch->x][ch->y][z] == SECT_WATER || map_table.type[ch->x][ch->y][z] == SECT_OCEAN) && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) )
             {
                 send_to_char( "You can't drive over water.\n\r", ch );
                 ch->x = xx;
@@ -245,7 +245,7 @@ void move_char( CHAR_DATA *ch, int door )
             }
         }
     }
-    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
+    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL ||map_table.type[ch->x][ch->y][z] == SECT_OCEAN || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
     {
         bool cancel = FALSE;
         if ( ch->in_vehicle && AIR_VEHICLE(ch->in_vehicle->type) )
@@ -273,6 +273,13 @@ void move_char( CHAR_DATA *ch, int door )
         {
             if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
                 send_to_char( "You cannot go that way.\n\r", ch );
+			else if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch) )
+			{
+			//	if ( has_boat(ch) )
+				//	cancel = TRUE;
+				//else
+					send_to_char( "You need some way to cross the water!\n\r", ch );
+			}
 	        else if ( bld && ch->in_vehicle != NULL )
                 send_to_char( "You can't enter it while driving!\n\r", ch );
             else if ( bld && bld->protection > 0 )
@@ -750,6 +757,11 @@ void do_exit( CHAR_DATA *ch, char *argument )
         monitor_chan( ch, buf, MONITOR_GEN_MORT);
         return;
     }
+	if ( map_table.type[ch->x][ch->y][ch->z]==SECT_OCEAN && !IS_IMMORTAL(ch))
+	{
+		send_to_char("And what, walk on water?\n\r", ch );
+		return;
+	}
     if ( SPACE_VESSAL(ch->in_vehicle) && ch->z == Z_SPACE )
     {
         VEHICLE_DATA *vhc = create_vehicle(VEHICLE_SCOUT);
@@ -865,7 +877,15 @@ void do_pit( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, number_range(4,400), number_range(4,400), Z_GROUND );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
+        //move ( ch, number_range(4,400), number_range(4,400), Z_GROUND );
         do_look(ch,"");
         return;
     }
@@ -939,7 +959,14 @@ void do_paintball( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, PIT_BORDER_X -1, PIT_BORDER_Y - 1, Z_GROUND );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
         do_look(ch,"");
         return;
     }
@@ -1591,7 +1618,14 @@ void do_medal( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, PIT_BORDER_X -1, PIT_BORDER_Y - 1, 1 );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
         do_look(ch,"");
         ch->medaltimer = 300;
         save_char_obj(ch);

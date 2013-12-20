@@ -37,7 +37,7 @@
 #include "config.h"
 #include "mapper.h"
 
-int leads_to args( ( BUILDING_DATA *bld, int dir, int xy ) );
+int leads_to( int x,int y,int z,int dir );
 void spell_imprint( int sn, int level, CHAR_DATA *ch, void *vo );
 CHAR_DATA *search_dir_name( CHAR_DATA *ch, char *argument, int direction, int range );
 void game_in_play(CHAR_DATA *ch, char *name);
@@ -75,22 +75,18 @@ bool can_build( int type, int sect, int planet )
     return FALSE;
 }
 
-int leads_to( BUILDING_DATA *bld, int dir, int xy )
+int leads_to( int x,int y,int z,int dir )
 {
-    int x = bld->x;
-    int y = bld->y;
-    if ( dir == DIR_NORTH )
-        y = bld->y + 1;
-    else if ( dir == DIR_SOUTH )
-        y = bld->y - 1;
-    else if ( dir == DIR_EAST )
-        x = bld->x + 1;
-    else if ( dir == DIR_WEST )
-        x = bld->x - 1;
-    if ( xy == 0 )
-        return x;
-    else
-        return y;
+	if ( dir == DIR_NORTH )
+		y++;
+	else if ( dir == DIR_SOUTH )
+		y--;
+	else if ( dir == DIR_EAST )
+		x++;
+	else if ( dir == DIR_WEST )
+		x--;
+	real_coords(&x,&y);
+	return map_table.type[x][y][z];
 }
 
 void move_coords( int *x,int *y,int dir )

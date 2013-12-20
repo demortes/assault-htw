@@ -3283,7 +3283,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         log_f(buf);
 
         //      sprintf( buf, "%d", web_data.num_players+1);
-        //        update_web_data(WEB_DATA_NUM_PLAYERS,buf);
+               // update_web_data(WEB_DATA_NUM_PLAYERS,buf);
         if ( ch->pcdata->deleted )
         {
             sprintf(buf, "%s has recreated back into the game.", ch->name );

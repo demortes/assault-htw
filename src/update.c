@@ -394,7 +394,7 @@ void gain_update( void )
             {
                 int heat=0;
                 heat = ch->heat + wildmap_table[map_table.type[ch->x][ch->y][ch->z]].heat;
-                if ( heat > 15 && !ch->in_vehicle )
+                if ( heat > 15 && !ch->in_vehicle && !IS_IMMORTAL(ch))
                 {
                     if ( my_get_minutes(ch,TRUE) <= 5 )
                     {
@@ -405,7 +405,7 @@ void gain_update( void )
                     damage(ch,ch,number_fuzzy(heat - 15),DAMAGE_ENVIRO);
                     return;
                 }
-                else if ( heat < -15 && !ch->in_vehicle )
+                else if ( heat < -15 && !ch->in_vehicle && !IS_IMMORTAL(ch))
                 {
                     if ( my_get_minutes(ch,TRUE) <= 5 )
                     {
@@ -701,7 +701,7 @@ void obj_update( void )
     {
         obj_next = obj->next;
 
-        if ( (obj->x == 0 || obj->y == 0) && obj->carried_by == NULL )
+        if ( (obj->x == 0 || obj->y == 0) && obj->z == 4 && obj->carried_by == NULL )
             /* New object erase code:
             Objects used to crash sometimes when extracted,
             so I made them extract up updates instead of
@@ -900,7 +900,7 @@ void obj_update( void )
                 else
                     nx--;
 
-                if ( nx >= MAX_MAPS-3 || nx <= BORDER_SIZE || ny >= MAX_MAPS - BORDER_SIZE || ny <= BORDER_SIZE )
+                if ( nx >= MAX_MAPS-BORDER_SIZE || nx <= BORDER_SIZE || ny >= MAX_MAPS - BORDER_SIZE || ny <= BORDER_SIZE )
                 {
                     extract_obj(obj);
                     obj_count--;
@@ -1773,7 +1773,7 @@ void explode( OBJ_DATA *obj )
         {
             obj_next = obj2->next_in_room;
             if ( obj2->item_type == ITEM_BOMB && obj2->z == obj->z && obj2 != obj )
-                move_obj(obj2,0,0,1);
+                extract_obj(obj2);
         }
     }
     if ( IS_SET(ch->effect,EFFECT_BOMBER) )
