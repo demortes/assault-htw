@@ -336,8 +336,7 @@ bool building_can_shoot( BUILDING_DATA *bld, CHAR_DATA *ch, int range )
 
 bool open_bld( BUILDING_DATA *bld )
 {
-    if ( build_table[bld->type].act == BUILDING_OFFENSE
-       )
+    if ( build_table[bld->type].act == BUILDING_OFFENSE)
         return TRUE;
     return FALSE;
 }
@@ -703,7 +702,7 @@ void make_medal_base( CHAR_DATA *ch )
 
     h = URANGE(30,my_get_hours(ch,TRUE),100);
     for ( x=BORDER_SIZE+10; x<MEDAL_BORDER_X; x++ )
-        for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
+        for ( y=BORDER_SIZE+1; y<MEDAL_BORDER_Y; y++ )
         {
             if ( number_percent() < 50 )
                 continue;
@@ -736,8 +735,9 @@ void make_medal_base( CHAR_DATA *ch )
             activate_building(bld,TRUE);
             map_bld[x][y][Z_PAINTBALL] = bld;
         }
-    x = number_range(BORDER_SIZE+18,42);
+    x = number_range(BORDER_SIZE+19,42);
     y = number_range(3,21);
+    printf("Making medal for %s\r\n", ch->name);
     obj = create_object(get_obj_index(OBJ_VNUM_MEDAL),0);
     obj->x = x;
     obj->y = y;

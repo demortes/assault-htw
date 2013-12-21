@@ -56,7 +56,7 @@ const   struct  cmd_type       game_cmd_table   [] =
     { "start",      do_nuke_start,  POS_NUKEM,    0,  LOG_NORMAL },
     { "tell",       do_tell,    0,    0,  LOG_NORMAL },
     { "who",        do_who,     0,    0,  LOG_NORMAL },
-
+    { "goto",		do_goto, 	0,	  80,	LOG_NORMAL},
     { "",               0,              POS_DEAD,        0,  LOG_NORMAL }
 };
 
@@ -302,7 +302,7 @@ void do_nukem( CHAR_DATA *ch, char *argument )
     bool in = FALSE;
     bool start = FALSE;
 
-    for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
+    for ( wch = map_ch[1][0][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
         if ( wch->z != Z_PAINTBALL )
             continue;
@@ -373,7 +373,7 @@ void do_nukem( CHAR_DATA *ch, char *argument )
             send_to_char( "You may not carry any items into the game arena.\n\r", ch );
             return;
         }
-        move(ch,2,2,Z_PAINTBALL);
+        move(ch,1,0,Z_PAINTBALL);
         sprintf( buf, "%s has entered the Nukem Arena. There are %d people inside.", ch->name, p+1 );
         info(buf,0);
         ch->position = POS_NUKEM;

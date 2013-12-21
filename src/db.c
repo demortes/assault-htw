@@ -218,14 +218,11 @@ void boot_db( bool fCopyOver )
     /*
      * Init random number generator.
      */
-    {
         init_mm( );
-    }
 
     /*
      * Set time and weather.
      */
-    {
         long lhour, lday, lmonth;
 
         lhour           = (current_time - 650336715)
@@ -236,27 +233,19 @@ void boot_db( bool fCopyOver )
         lmonth          = lday   / 35;
         time_info.month = lmonth % 17;
         time_info.year  = lmonth / 17;
-    }
 
     /* Clear list of used areas */
     for (a=0; a< MAX_AREAS; a++)
-    {
         area_used[a]=NULL;
-    }
 
     /*
      * Read in all the socials.
      */
-    {
-
         load_social_table( );
-
-    }
 
     /*
      * Read in all the area files.
      */
-    {
         FILE *fpList;
         log_f( "Reading Area Files..." );
 
@@ -316,9 +305,7 @@ void boot_db( bool fCopyOver )
             fpArea = NULL;
         }
         fclose( fpList );
-    }
-
-    {
+        	// Load Acid Spray object at an unreachable room... - Demortes WHY?!
         int i;
         extern OBJ_DATA *quest_obj[MAX_QUEST_ITEMS];
         for ( i=0; i<MAX_QUEST_ITEMS; i++ )
@@ -329,8 +316,8 @@ void boot_db( bool fCopyOver )
         vehicle_weapon->z = 4;
         UNLINK(vehicle_weapon, first_obj, last_obj, next, prev);
         obj_to_room(vehicle_weapon,get_room_index(ROOM_VNUM_WMAP));
-    }
-    {
+
+        //		Init history and guessing game variables.
         extern char *history1;
         extern char *history2;
         extern char *history3;
@@ -374,8 +361,8 @@ void boot_db( bool fCopyOver )
         history9 = str_dup("");
         history10 = str_dup("");
         guess_game = 0;
-    }
-    {
+
+        //Move on individual loading functions.
         fBootDb = FALSE;
         log_f( "Loading web data." );
         load_web_data();
@@ -419,7 +406,8 @@ void boot_db( bool fCopyOver )
         log_f( "Loading System Data." );
         load_sysdata( );
         save_objects(0);
-    }
+
+        //Vehicle handling, depending on Copyover or not
     if (fCopyOver)
     {
         extern bool disable_timer_abort;
@@ -433,7 +421,7 @@ void boot_db( bool fCopyOver )
         load_vehicles(0);
     }
     return;
-}
+} //end dbboot()
 
 /*
  * Snarf an 'area' header line.
@@ -2295,7 +2283,7 @@ void load_buildings( void )
             if ( bld->attacker == NULL )
                 bld->attacker = str_dup("None");
             LINK(bld, first_building, last_building, next, prev);
-            if ( bld->x > 0 && bld->y > 0 )
+            if ( bld->x >= 0 && bld->y >= 0 )
                 map_bld[bld->x][bld->y][bld->z] = bld;
             if ( bld->directories == 0 )
             {
@@ -2379,7 +2367,7 @@ void load_buildings_b( int mode )
             if ( bld->attacker == NULL )
                 bld->attacker = str_dup("None");
             LINK(bld, first_building, last_building, next, prev);
-            if ( bld->x > 0 && bld->y > 0 )
+            if ( bld->x >= 0 && bld->y >= 0 )
                 map_bld[bld->x][bld->y][bld->z] = bld;
             if ( bld->directories == 0 )
             {

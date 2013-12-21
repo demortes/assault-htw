@@ -293,8 +293,8 @@
 #define IMPLANT_METAL_ABS_2     BIT_8
 #define IMPLANT_METAL_ABS_3     BIT_9
 
-#define PIT_BORDER_X            (MAX_MAPS-10)
-#define PIT_BORDER_Y            (MAX_MAPS-10)
+#define PIT_BORDER_X            (MAX_MAPS-9)
+#define PIT_BORDER_Y            (MAX_MAPS-9)
 #define MEDAL_BORDER_X          52
 #define MEDAL_BORDER_Y          22
 

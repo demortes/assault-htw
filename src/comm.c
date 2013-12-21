@@ -413,17 +413,6 @@ int main( int argc, char **argv )
     struct timeval now_time;
     bool fCopyOver = FALSE;                                 /* HOTreboot??? Well is it...is it???? - Flar */
     extern int abort_threshold;
-    /*  Taken out for HOTreboot
-    #if defined(unix)
-    int control;
-    #endif
-     */
-    /*
-     * Memory debugging if needed.
-     */
-    /* #if defined(MALLOC_DEBUG)
-       malloc_debug( 2 );
-    #endif  */
 
     /*
      * Init time.
@@ -512,17 +501,11 @@ int main( int argc, char **argv )
     //    icec_init();
 #endif
 
-    //if (IMC)
-    //    imc_startup( FALSE ); // FALSE arg, so the autoconnect setting can govern it.
-
     sprintf( log_buf, "Assault: High Tech War is ready on port %d.", port );
     log_string( log_buf );
     game_loop_unix( control );
 
     close( control );
-
-    //if (IMC)
-    //  imc_shutdown( FALSE );
 
     /*
      * That's all, folks.

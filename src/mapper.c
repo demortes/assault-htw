@@ -57,7 +57,7 @@ void do_mapper( CHAR_DATA *ch, char *argument )
     return;
   }
 
-  if ( ch->z == Z_PAINTBALL && ch->x == 2 && ch->y == 2 )
+  if ( ch->z == Z_PAINTBALL && ch->x == 1 && ch->y == 0 )
 	return;
   if ( argument[0] != '\0' )
   	size = atoi(argument);
@@ -131,7 +131,6 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 	char w_buf[MSL];
 	char g_buf[MSL];
 	int x,y,last,maxx,xx,yy;
-	int terrain[SECT_MAX];
 	int offline,allied,enemy,yours,total;
 	CHAR_DATA *wch;
 
@@ -149,10 +148,6 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 	b_west[0] = '\0';
 
 	maxx = ch->map / 2;
-
-	if ( quest )
-		for ( x = 0;x < SECT_MAX;x++ )
-			terrain[x] = 0;
 
 	if ( IS_SET(ch->config,CONFIG_LARGEMAP) )
 		maxx = ch->map;
@@ -332,7 +327,6 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
 	char exbuf[MSL];
 	int i,j;
 	bool warcannon = FALSE;
-	bool msg = FALSE;
 
 	if ( size == 999 )
 		warcannon = TRUE;
@@ -557,6 +551,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 	sh_int security = (size==995)?1:(size==994)?2:0;
   	bool inverse = IS_SET(ch->config,CONFIG_INVERSE);
   	bool pit = IN_PIT(ch);
+  	bool inMedal = medal(ch);
 	char linebuf[MSL];
 
 
@@ -586,7 +581,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 		return;
 	}
 
-	if ( !pit && size < 998 ) /* For quest calls */
+	if ( !pit && !inMedal && size < 998 ) /* For quest calls */
 	{
 		char sbuf[MSL];
 		int c = (ch->map * 2)-16;
@@ -606,6 +601,9 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 	if (pit)
 	  	for ( looper = 0; looper < MAX_MAPS-PIT_BORDER_Y-1; looper++ )
     			safe_strcat( MSL, linebuf, catbuf );
+	else if (inMedal)
+		for ( looper = 0; looper < MEDAL_BORDER_Y; looper++ )
+		    	safe_strcat( MSL, linebuf, catbuf );
 	else
 	  	for ( looper = 0; looper < ch->map*2; looper++ )
     			safe_strcat( MSL, linebuf, catbuf );
@@ -622,7 +620,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
   	for (yy = ch->y + maxx; yy >= ch->y - maxx; --yy)
   	{ /* every row */
-		if ( pit && (yy < PIT_BORDER_Y || yy >= MAX_MAPS) )
+		if ( (pit && (yy < PIT_BORDER_Y || yy >= MAX_MAPS)) || (inMedal && (yy > MEDAL_BORDER_Y || yy <= 0)) )
 			continue;
 //    		safe_strcat( MSL, outbuf, "" );
 		strcpy(color,"");
@@ -664,6 +662,8 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 			{
 				continue;
 			}
+			else if (inMedal && (xx > MEDAL_BORDER_X || xx <= 0))
+				continue;
 			else if ( bld && (bld->visible || (bld->owner && allied(ch,bld->owner)) || ch == bld->owner || ch->trust >= 85 ) )
 			{
 				CHAR_DATA *vch;
@@ -913,14 +913,18 @@ void ShowSpace( CHAR_DATA *ch )
     char buf[MSL] = "\0";
     char pref[MSL] = "\0";
     VEHICLE_DATA *vhc = ch->in_vehicle;
-    int i,j=get_ship_range(vhc);
+    int i,j= 0;
     pref[0] = '\0';
+    if(!vhc)
+    {
+    	return;
+    }
     for ( i=0; i<((j*4)-34); i++ )
         sprintf( pref+strlen(pref)," ");
-
+    j = vhc?get_ship_range(vhc):0;
     sprintf(buf, "\n\r" );
     sprintf(buf+strlen(buf),"%s@@c     ------------------------ \n\r", pref );
-    sprintf(buf+strlen(buf),"%s  --/  SCN: %-3d    WPN: %-3d  \\-- \n\r", pref, j, vhc->range );
+    sprintf(buf+strlen(buf),"%s  --/  SCN: %-3d    WPN: %-3d  \\-- \n\r", pref, j, vhc?vhc->range:0 );
     sprintf(buf+strlen(buf),"%s / ______________      @@RSS@@dAA@@aFF@@c_  \\ \n\r", pref  );
 
     if ( vhc->hit > ( vhc->max_hit / 100 ) * 80 )

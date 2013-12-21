@@ -1588,8 +1588,8 @@ void do_medal( CHAR_DATA *ch, char *argument )
     {
         int x,y;
         sprintf( buf, "%s has gone out of the medal arena!", ch->name );
-        for ( x=BORDER_SIZE; x<MEDAL_BORDER_X; x++ )
-            for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
+        for ( x=1; x<MEDAL_BORDER_X; x++ )
+            for ( y=1; y<MEDAL_BORDER_Y; y++ )
                 if ( map_bld[x][y][Z_PAINTBALL] )
                     extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
         for ( obj = ch->first_carry; obj; obj = obj_next )
@@ -1686,7 +1686,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 sprintf( buf, "%s has entered the medal arena!", ch->name );
                 info( buf, 0 );
                 act( "$n has entered the medal arena!", ch, NULL, NULL, TO_ROOM );
-                move(ch,BORDER_SIZE,BORDER_SIZE,Z_PAINTBALL);
+                move(ch,1,1,Z_PAINTBALL);
                 for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj_next )
                 {
                     obj_next = obj->next_in_room;
