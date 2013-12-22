@@ -57,7 +57,7 @@ void do_mapper( CHAR_DATA *ch, char *argument )
     return;
   }
 
-  if ( ch->z == Z_PAINTBALL && ch->x == 1 && ch->y == 0 )
+  if ( NUKEM(ch) )
 	return;
   if ( argument[0] != '\0' )
   	size = atoi(argument);
@@ -132,7 +132,6 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 	char g_buf[MSL];
 	int x,y,last,maxx,xx,yy;
 	int offline,allied,enemy,yours,total;
-	CHAR_DATA *wch;
 
 	offline=0;
 	allied=0;
@@ -160,12 +159,12 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
                                 continue;
 			if ( d->connected != CON_PLAYING )
 				continue;
-                        if ( !can_see(ch,d->character) )
-                                continue;
+            if ( !can_see(ch,d->character) )
+                continue;
 			if ( paintball(ch) && map_bld[d->character->x][d->character->y][1] != NULL && map_bld[d->character->x][d->character->y][1]->type == BUILDING_HQ )
 				continue;
-                        if ( sneak(d->character) )
-                                continue;
+			if ( sneak(d->character) )
+					continue;
 			if ( ch->z != d->character->z )
 				continue;
                         if ( d->character != ch
@@ -173,7 +172,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
                         &&  d->character->x < ch->x + maxx
                         &&  d->character->y > ch->y - maxx
                         &&  d->character->y < ch->y + maxx )
-                                sprintf( p_buf+strlen(p_buf), "%s%s: Player at: %d/%d\n\r", (ch->y < d->character->y) ? "North" : (ch->y == d->character->y ) ? "" : "South", (ch->x > d->character->x) ? "West" : (ch->x == d->character->x) ? "" : "East" , d->character->x, d->character->y );
+                                sprintf( p_buf+strlen(p_buf), "%s%s: %s at: %d/%d\n\r", (ch->y < d->character->y) ? "North" : (ch->y == d->character->y ) ? (ch->x == d->character->x)?"Here":"" : "South", (ch->x > d->character->x) ? "West" : (ch->x == d->character->x) ? "" : "East" , d->character->name, d->character->x, d->character->y );
                 }
 //		if ( ch->z != Z_AIR )
 		{
@@ -184,12 +183,7 @@ void ShowBMap( CHAR_DATA *ch, bool quest )
 				{
 					x = xx;y = yy; real_coords(&x,&y);
 					bld = map_bld[x][y][ch->z];
-					for ( wch = map_ch[x][y][ch->z];wch;wch = wch->next_in_room )
-					{
-						if ( !can_see(ch,wch) || sneak(wch) || wch == ch )
-							continue;
-		                                sprintf( p_buf+strlen(p_buf), "%s%s%s: Player at:  %d/%d\n\r", (ch->y < yy) ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" : "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "",  x, y);
-					}
+
 					if ( !bld || bld == NULL )
 						continue;
 
@@ -327,6 +321,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
 	char exbuf[MSL];
 	int i,j;
 	bool warcannon = FALSE;
+	bool msg = FALSE;
 
 	if ( size == 999 )
 		warcannon = TRUE;
@@ -408,6 +403,19 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
 	send_to_char(borderbuf,ch);
 	borderbuf[0] = '\0';
 	outbuf[0] = '\0';
+    for ( i=0; i<8; i++ )
+    {
+        if ( bld->resources[i] > 0 )
+        {
+            if ( !msg )
+            {
+                send_to_char( "Needed for completion:\n\r", ch );
+                msg = TRUE;
+            }
+            sprintf( outbuf+strlen(outbuf), "%d %s\n\r", bld->resources[i], ( i == 0 ) ? "Iron" : ( i == 1 ) ? "Skins" : ( i == 2 ) ? "Copper" : ( i == 3 ) ? "Gold" : ( i == 4 ) ? "Silver" : ( i == 5 ) ? "Rocks" : ( i == 6 ) ? "Sticks" : "Logs" );
+            //			send_to_char( outbuf, ch );
+        }
+    }
 	if ( bld->type == BUILDING_SCUD_LAUNCHER || bld->type == BUILDING_NUKE_LAUNCHER )
 		sprintf( borderbuf+strlen(borderbuf), "Missile Ready In: %d minutes.\n\r", bld->value[0] / 6);
 	else if ( bld->type == BUILDING_BAR && bld->value[0] > 0 )
@@ -549,13 +557,12 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
   	bool warcannon = (size==999);
   	bool base = (size==996 || size ==995 || size==994);
 	sh_int security = (size==995)?1:(size==994)?2:0;
-  	bool inverse = IS_SET(ch->config,CONFIG_INVERSE);
+  	bool inverse = IS_SET(ch->config,CONFIG_INVERSE)?TRUE:FALSE;
   	bool pit = IN_PIT(ch);
   	bool inMedal = medal(ch);
 	char linebuf[MSL];
 
 
-  	char scan[MSL];
   	char color[MSL];
   	char outbuf[MSL];
   	char catbuf[MSL];
@@ -571,7 +578,6 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 	small = 2;
   	outbuf[0] = '\0';
   	color[0] = '\0';
-  	scan[0] = '\0';
   	borderbuf[0] = '\0';
 
 	if ( map_bld[ch->x][ch->y][ch->z] && warcannon == FALSE && size != 997 && !base && size != 998 )
