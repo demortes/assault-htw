@@ -1448,17 +1448,17 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
        Look for incoming telnet negotiation
      */
 
-    for (p = d->inbuf; *p; p++)
+    for (p = (unsigned char *) d->inbuf; *p; p++)
         if (*p == IAC)
         {
-            if (memcmp (p, do_mxp_str, strlen (do_mxp_str)) == 0)
+            if (memcmp (p, do_mxp_str, strlen ((char *) do_mxp_str)) == 0)
             {
                 turn_on_mxp (d);
                 /* remove string from input buffer */
-                memmove (p, &p [strlen (do_mxp_str)], strlen (&p [strlen (do_mxp_str)]) + 1);
+                memmove (p, &p [strlen ((char *)do_mxp_str)], strlen ((char *)&p [strlen ((char *)do_mxp_str)]) + 1);
                 p--;                                            /* adjust to allow for discarded bytes */
             }                                                   /* end of turning on MXP */
-            else  if (memcmp (p, dont_mxp_str, strlen (dont_mxp_str)) == 0)
+            else  if (memcmp (p, dont_mxp_str, strlen ((char *)dont_mxp_str)) == 0)
             {
                 d->mxp = FALSE;
                 if ( d->character && IS_SET(d->character->config,CONFIG_MXP) )
@@ -1467,7 +1467,7 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
                     save_char_obj(d->character);
                 }
                 /* remove string from input buffer */
-                memmove (p, &p [strlen (dont_mxp_str)], strlen (&p [strlen (dont_mxp_str)]) + 1);
+                memmove (p, &p [strlen ((char *)dont_mxp_str)], strlen ((char *)&p [strlen ((char *)dont_mxp_str)]) + 1);
                 p--;                                            /* adjust to allow for discarded bytes */
             }                                                   /* end of turning off MXP */
 
@@ -1476,7 +1476,7 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
             else            if (!memcmp(p, compress_do, strlen(compress_do)))
             {
                 //                i += strlen(compress_do) - 1;
-                memmove (p, &p [strlen (compress_do)], strlen (&p [strlen (compress_do)]) + 1);
+                memmove (p, &p [strlen ((char *)compress_do)], strlen ((char *)&p [strlen ((char *)compress_do)]) + 1);
                 p--;
                 compressStart(d,TELOPT_COMPRESS);
             }
@@ -1484,21 +1484,21 @@ void read_from_buffer( DESCRIPTOR_DATA *d )
             else if (!memcmp(p, compress2_do, strlen(compress2_do)))
             {
                 //                i += strlen(compress2_do) - 1;
-                memmove (p, &p [strlen (compress2_do)], strlen (&p [strlen (compress2_do)]) + 1);
+                memmove (p, &p [strlen ((char *) compress2_do)], strlen ((char *) &p [strlen ((char *)compress2_do)]) + 1);
                 p--;
                 compressStart(d,TELOPT_COMPRESS2);
             }
             else if (!memcmp(p, compress_dont, strlen(compress_dont)))
             {
                 //                i += strlen(compress_dont) - 1;
-                memmove (p, &p [strlen (compress_dont)], strlen (&p [strlen (compress_dont)]) + 1);
+                memmove (p, &p [strlen ((char *) compress_dont)], strlen ((char *)&p [strlen ((char*) compress_dont)]) + 1);
                 p--;
                 compressEnd(d,TELOPT_COMPRESS);
             }
             else if (!memcmp(p, compress2_dont, strlen(compress2_dont)))
             {
                 //                i += strlen(compress2_dont) - 1;
-                memmove (p, &p [strlen (compress2_dont)], strlen (&p [strlen (compress2_dont)]) + 1);
+                memmove (p, &p [strlen ((char *) compress2_dont)], strlen ((char *)&p [strlen ((char *)compress2_dont)]) + 1);
                 p--;
                 compressEnd(d,TELOPT_COMPRESS2);
                 write_to_buffer( d, compress_will, 0 );
@@ -2081,7 +2081,6 @@ void write_to_buffer( DESCRIPTOR_DATA *d, const char *txt, int length )
 
     convert_mxp_tags (d->mxp, d->outbuf + d->outtop, txt, length + count_mxp_tags(d->mxp,txt,length));
 
-    {
         char c;
         char lookup;
         char *dest;
@@ -2089,10 +2088,6 @@ void write_to_buffer( DESCRIPTOR_DATA *d, const char *txt, int length )
         CHAR_DATA * ch;
         char * colstr;
         int collen,cnt;
-        bool noblack,whitebg;
-
-        noblack = IS_SET(ch->config,CONFIG_NOBLACK);
-        whitebg = IS_SET(ch->config,CONFIG_WHITEBG);
 
         dest=d->outbuf + d->outtop;
 
@@ -2146,7 +2141,7 @@ void write_to_buffer( DESCRIPTOR_DATA *d, const char *txt, int length )
                 if ( ch != NULL && ch->disease > 0 && number_percent() < 20 - ch->disease )
                     cnt = number_range(0,29);
 
-                if ( cnt == 7 && noblack )
+                if ( cnt == 7 && IS_SET(ch->config,CONFIG_NOBLACK) )
                     cnt = 12;
                 if (cnt == MAX_ANSI)
                 {
@@ -2183,7 +2178,7 @@ void write_to_buffer( DESCRIPTOR_DATA *d, const char *txt, int length )
                 length=length+collen;
             }
         }
-    }
+
 
     /* Make sure we have a \0 at the end */
     *(d->outbuf+d->outtop+length)='\0';
@@ -2314,7 +2309,6 @@ void show_bmenu_to( DESCRIPTOR_DATA *d )
 void nanny( DESCRIPTOR_DATA *d, char *argument )
 {
     char buf[MAX_STRING_LENGTH];
-    char motdbuf[MSL];
     char msg[MAX_STRING_LENGTH];
     CHAR_DATA *ch;
     char *pwdnew;
@@ -2426,7 +2420,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         }
         /* telnet negotiation to see if they support MXP */
 
-        write_to_buffer( d, will_mxp_str, 0 );
+        write_to_buffer( d, (char *)will_mxp_str, 0 );
 
         if ( check_reconnect( d, argument, FALSE ) )
         {
@@ -2461,7 +2455,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                     //	      write_to_descriptor( d->descriptor,
                     write_to_descriptor( d,
                                          // End MCCP
-                                         "Your site has been banned from this Mud.  BYE BYE!\n\r", 0 );
+                                         "Your site has been banned from this MUD. Questions? Visit the website.\n\r", 0 );
                     d->connected = CON_QUITTING;
                     close_socket( d );
                     return;
@@ -2541,7 +2535,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
 
         /* telnet negotiation to see if they support MXP */
 
-        write_to_buffer( d, will_mxp_str, 0 );
+        write_to_buffer( d,(char *) will_mxp_str, 0 );
 
         if ( ch->pcdata->dead == TRUE )
         {
@@ -3263,7 +3257,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         //			ch->pcdata->imcchardata->imcperm = IMCPERM_MORT;
 
         sprintf( buf, "%s logged on from IP %s", ch->name, ch->pcdata->host );
-        log_f(buf);
+        log_f("%s", buf);
 
         //      sprintf( buf, "%d", web_data.num_players+1);
                // update_web_data(WEB_DATA_NUM_PLAYERS,buf);
@@ -3344,6 +3338,17 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                 }
             if ( bld == NULL )
                 send_to_char( "No HQ found. Keeping you there.\n\r", ch );
+        } else if(!ch->in_building && map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch))
+        {
+            send_to_char( "You're trapped on water! Sending you to a random location.\r\n", ch );
+            int ranx = number_range(0, MAX_MAPS-1);
+            int rany = number_range(0, MAX_MAPS-1);
+            while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+            {
+            	ranx = number_range(0, MAX_MAPS-1);
+                rany = number_range(0, MAX_MAPS-1);
+            }
+    		move ( ch, ranx, rany, Z_GROUND );
         }
 
         {
@@ -4410,9 +4415,6 @@ void hang ( const char * str )
 }
 
 bool can_multiplay( CHAR_DATA *ch )
-// Load lists of names of people who share an IP address here (If they're on a network
-// or something, or for reason have the same IP... So the multiplay protection will skip
-// them.
 {
     int i;
 
@@ -4543,34 +4545,3 @@ void do_stop( CHAR_DATA *ch, char *argument )
     check_queue(ch);
     return;
 }
-
-/*void do_disconnect( CHAR_DATA *ch, char *argument )
-  {
-  DESCRIPTOR_DATA *d;
-  char arg[MSL];
-  int i;
-
-  argument = one_argument(argument,arg);
-
-  if ( !is_number(arg) )
-  {
-  send_to_char( "Syntax: disconnect <num> <msg?>\n\r", ch );
-  return;
-  }
-  i = atoi(arg);
-  for ( d = first_desc;d;d = d->next )
-  {
-  if ( d->descriptor == i )
-  {
-  char buf[MSL];
-  if ( argument[0] != '\0' )
-  write_to_descriptor( d, argument, 0 );
-  close_socket(d);
-  send_to_char( "Connection Killed.\n\r", ch );
-  return;
-  }
-  }
-  send_to_char( "No desc number found.\n\r", ch );
-  return;
-  }
- */
