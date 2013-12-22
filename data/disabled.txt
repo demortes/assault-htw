@@ -1,4 +1,0 @@
-devastate 90 90 Demortes
-prename 89 89 Trelane
-objclear 90 90 Amnon
-END
