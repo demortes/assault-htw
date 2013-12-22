@@ -245,7 +245,7 @@ void move_char( CHAR_DATA *ch, int door )
             }
         }
     }
-    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL ||map_table.type[ch->x][ch->y][z] == SECT_OCEAN || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
+    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
     {
         bool cancel = FALSE;
         if ( ch->in_vehicle && AIR_VEHICLE(ch->in_vehicle->type) )
@@ -255,16 +255,8 @@ void move_char( CHAR_DATA *ch, int door )
                 z = Z_GROUND;
             x = ch->x;
             y = ch->y;
-            if ( x < BORDER_SIZE )
-                x = BORDER_SIZE;
-            if ( y < BORDER_SIZE )
-                y = BORDER_SIZE;
-            if ( x >= MAX_MAPS - BORDER_SIZE )
-                x = (MAX_MAPS - BORDER_SIZE) - 1;
-            if ( y >= MAX_MAPS - BORDER_SIZE )
-                y = (MAX_MAPS - BORDER_SIZE) - 1;
-            ch->x = xx;
-            ch->y = yy;
+            if(INVALID_COORDS(ch->x, ch->y))
+            	real_coords(&x, &y);
             move(ch,x,y,z);
             crash(ch,ch);
             return;
@@ -273,10 +265,6 @@ void move_char( CHAR_DATA *ch, int door )
         {
             if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
                 send_to_char( "You cannot go that way.\n\r", ch );
-			else if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN )
-			{
-					send_to_char( "You need some way to cross the water!\n\r", ch );
-			}
 	        else if ( bld && ch->in_vehicle != NULL )
                 send_to_char( "You can't enter it while driving!\n\r", ch );
             else if ( bld && bld->protection > 0 )
@@ -293,6 +281,11 @@ void move_char( CHAR_DATA *ch, int door )
             ch->y = yy;
             return;
         }
+    }
+    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch) )
+    {
+    	send_to_char( "You need some way to cross the water!\n\r", ch );
+    	return;
     }
     if ( bld )
     {
