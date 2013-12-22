@@ -3120,7 +3120,7 @@ void do_formulas( CHAR_DATA *ch, char *argument )
                 next = formula_table[i].rank;
             continue;
         }
-        sprintf( buf+strlen(buf), "%s\n\r", formula_table[i].desc );
+        sprintf( buf+strlen(buf), "@@W[@@G%03d@@W] @@N%s@@N\n\r", formula_table[i].rank, formula_table[i].desc );
     }
     sprintf( buf+strlen(buf), "\n\r@@WNext Formula at rank: %d.@@N\n\r", next );
     send_to_char( buf, ch );
