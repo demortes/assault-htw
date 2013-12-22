@@ -4415,6 +4415,9 @@ void hang ( const char * str )
 }
 
 bool can_multiplay( CHAR_DATA *ch )
+// Load lists of names of people who share an IP address here (If they're on a network
+// or something, or for reason have the same IP... So the multiplay protection will skip
+// them.
 {
     int i;
 
