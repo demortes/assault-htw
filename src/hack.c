@@ -301,10 +301,13 @@ void do_crack( CHAR_DATA *ch, char *argument )
     }
     for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
     {
-        if ( obj->item_type != ITEM_DISK || obj->value[0] != 1 || obj->value[1] < version )
+        if ( (obj->item_type != ITEM_DISK || obj->value[0] != 1 || obj->value[1] < version) && (obj->item_type != ITEM_COMPUTER || obj->value[6] < version) )
             continue;
         found = TRUE;
-        version = obj->value[1];
+        if(obj->item_type == ITEM_DISK)
+        	version = obj->value[1];
+        else
+        	version = obj->value[6];
     }
     if ( !found )
     {
@@ -518,10 +521,19 @@ void do_upload( CHAR_DATA *ch, char *argument )
     buf[0] = '\0';
     for ( obj = ch->first_carry; obj; obj = obj->next_in_carry_list )
     {
-        if ( obj->item_type != ITEM_DISK || obj->value[0] != 0 )
+        if ( obj->item_type != ITEM_DISK && obj->item_type != ITEM_COMPUTER)
             continue;
 
-        sprintf( buf+strlen(buf), "Version %d.%d\n\r", obj->value[1] / 10, obj->value[1] % 10 );
+        if (obj->item_type == ITEM_DISK && obj->value[0] != 0)
+        	continue;
+        if (obj->item_type == ITEM_COMPUTER)
+        	if(obj->value[5] == vir)
+        	{
+        		found = TRUE;
+        		break;
+        	}
+        if(obj->item_type != ITEM_COMPUTER)
+        	sprintf( buf+strlen(buf), "Version %d.%d\n\r", obj->value[1] / 10, obj->value[1] % 10 );
         if ( obj->value[1] != vir )
             continue;
         found = TRUE;
@@ -554,7 +566,7 @@ void do_upload( CHAR_DATA *ch, char *argument )
     }
     send_to_char( "Virus upload successful.\n\r", ch );
     ch->bvictim->value[3] = vir*(-1);
-    if ( number_percent() < 20 )
+    if ( number_percent() < 20 && obj->item_type != ITEM_COMPUTER)
     {
         send_to_char( "Your virus disk has fallen apart!\n\r", ch );
         extract_obj(obj);
@@ -676,6 +688,15 @@ void do_hack( CHAR_DATA *ch, char *argument )
     if ( ch->bvictim->type == BUILDING_ARMORY )
     {
         send_to_char( "You begin messing with the armory's definitions.\n\r", ch );
+        ch->c_sn = gsn_hack;
+        ch->c_time = 40 - ch->bvictim->value[8];
+        ch->c_level = 1;
+        send_to_char( "1%\n\r", ch );
+        return;
+    }
+    if ( ch->bvictim->type == BUILDING_DUMMY )
+    {
+        send_to_char( "You begin disabling the dummy.\n\r", ch );
         ch->c_sn = gsn_hack;
         ch->c_time = 40 - ch->bvictim->value[8];
         ch->c_level = 1;
