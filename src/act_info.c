@@ -2800,7 +2800,7 @@ void do_identify( CHAR_DATA *ch, char *argument )
     else if ( obj->item_type == ITEM_COMPUTER )
     {
         sprintf( buf, "Statistics for: %s\n\r", capitalize(obj->short_descr) );
-        sprintf( buf+strlen(buf), "Range: %d\n\rBattery: %d\n\rAntenna: %s\n\r", obj->value[0], obj->value[1], (obj->value[2] != 0)?"YES":"NO" );
+        sprintf( buf+strlen(buf), "Range: %d\n\rBattery: %d\n\rAntenna: %s\n\rSpeed: %d\n\rCrack: %.1f\r\nVirus: %.1f\n\r", obj->value[0], obj->value[1], (obj->value[2] != 0)?"YES":"NO", obj->value[4], (float) obj->value[5]/10, (float) obj->value[6]/10 );
         send_to_char( buf, ch );
     }
     else if ( obj->item_type == ITEM_TOOLKIT )
