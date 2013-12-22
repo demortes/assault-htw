@@ -273,11 +273,8 @@ void move_char( CHAR_DATA *ch, int door )
         {
             if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
                 send_to_char( "You cannot go that way.\n\r", ch );
-			else if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch) )
+			else if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN )
 			{
-			//	if ( has_boat(ch) )
-				//	cancel = TRUE;
-				//else
 					send_to_char( "You need some way to cross the water!\n\r", ch );
 			}
 	        else if ( bld && ch->in_vehicle != NULL )
