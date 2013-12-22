@@ -1598,7 +1598,6 @@ void do_computer( CHAR_DATA *ch, char *argument )
             send_to_char( "You bounce your connection through a hacked computer.\n\r", ch );
         }
         range = comp->value[0];
-
         if ( !IS_BETWEEN(x,comp->carried_by->x-range,comp->carried_by->x+range) || !IS_BETWEEN(y,comp->carried_by->y+range,comp->carried_by->y-range) )
         {
             send_to_char( "Your target is outside the computer's range.\n\r", ch );
