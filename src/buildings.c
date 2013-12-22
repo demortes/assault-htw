@@ -201,7 +201,7 @@ void building_update( void )
                     if ( number_percent() < 33 )
                         REMOVE_BIT(bld->value[1],INST_ANTIVIRUS);
                 }
-                else if ( number_percent() < 30 )
+                else if ( number_percent() < 30 || ch->security == FALSE)
                 {
                     BUILDING_DATA *bld2;
                     bool got = FALSE;
