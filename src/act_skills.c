@@ -343,6 +343,11 @@ void do_sneak( CHAR_DATA *ch, char *argument )
         send_to_char( "Not while in a vehicle.\n\r", ch );
         return;
     }
+    else if (medal(ch))
+    {
+    	send_to_char("Not while in the medal arena.\n\r", ch);
+    	return;
+    }
     else if ( !str_prefix(argument,"north") )
         dir = DIR_NORTH;
     else if ( !str_prefix(argument,"east" ) )
