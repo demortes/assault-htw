@@ -1995,7 +1995,7 @@ void explode( OBJ_DATA *obj )
         }
         for ( x=obj->x-1; x<=obj->x+1; x++ )
             for ( y=obj->y-1; y<=obj->y+1; y++ )
-                if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
+                if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-1 && y <= MAX_MAPS - 1 )
                     for ( vch = map_ch[x][y][obj->z]; vch; vch = vch_next )
                         //		for ( vch = first_char;vch;vch = vch_next )
                     {
@@ -2026,7 +2026,7 @@ void explode( OBJ_DATA *obj )
         {
             for ( x=obj->x-1; x<=obj->x+1; x++ )
                 for ( y=obj->y-1; y<=obj->y+1; y++ )
-                    if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
+                    if ( x >= 0 && y >= 0 && x <= MAX_MAPS-1 && y <= MAX_MAPS-1 )
                     {
                         bld = map_bld[x][y][obj->z];
                         if ( !bld || bld == NULL )
