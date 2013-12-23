@@ -737,7 +737,6 @@ void make_medal_base( CHAR_DATA *ch )
         }
     x = number_range(BORDER_SIZE+19,42);
     y = number_range(3,21);
-    printf("Making medal for %s\r\n", ch->name);
     obj = create_object(get_obj_index(OBJ_VNUM_MEDAL),0);
     obj->x = x;
     obj->y = y;
