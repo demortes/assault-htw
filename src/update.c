@@ -562,7 +562,8 @@ void char_update( void )
         }
 
     }
-    CUREF( ch_next );
+    if(ch_next != NULL)
+    	CUREF( ch_next );
 
     /*
      * Autosave and autoquit.
