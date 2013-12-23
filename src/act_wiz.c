@@ -4148,9 +4148,9 @@ void do_smite (CHAR_DATA * ch, char *argument)
         return;
     }
     victim->hit -= number;
-    sprintf( buf, "@@WA burst of astroids sent by @@c%s @@Wcrashes down on you! @@c(@@a%d@@c)@@N\n\r", ch->name, number );
+    sprintf( buf, "@@WA burst of asteroids sent by @@c%s @@Wcrashes down on you! @@c(@@a%d@@c)@@N\n\r", ch->name, number );
     send_to_char( buf, victim );
-    sprintf( buf, "@@WA burst of astroids sent by %s crashes down on %s@@W!@@N\n\r", ch->name, victim->name );
+    sprintf( buf, "@@WA burst of asteroids sent by %s crashes down on %s@@W!@@N\n\r", ch->name, victim->name );
     act( buf, victim, NULL, NULL, TO_ROOM );
     send_to_char( "@@eDirect hit!\n\r@@N", ch );
     if(victim->hit <=0)
