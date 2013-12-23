@@ -487,11 +487,11 @@ void init_fields() {
 			map_table.resource[x][y][z] = -1;
 		}
 
-	for (x = BORDER_SIZE; x < MEDAL_BORDER_X; x++) {
+	for (x = BORDER_SIZE; x <= MEDAL_BORDER_X; x++) {
 		map_table.type[x][MEDAL_BORDER_Y][z] = SECT_NULL;
 		map_table.type[x][BORDER_SIZE][z] = SECT_NULL;
 	}
-	for (y = BORDER_SIZE; y < MEDAL_BORDER_Y; y++) {
+	for (y = BORDER_SIZE; y <= MEDAL_BORDER_Y; y++) {
 		map_table.type[MEDAL_BORDER_X][y][z] = SECT_NULL;
 		map_table.type[BORDER_SIZE][y][z] = SECT_NULL;
 	}
