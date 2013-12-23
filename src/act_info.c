@@ -555,10 +555,6 @@ void do_look( CHAR_DATA *ch, char *argument )
     {
         /* 'look' or 'look auto' */
 
-        if ( sysdata.pikamod )
-            send_to_char( "\n\r@@yPika Mod @@bO@@yN@@bL@@yI@@bN@@yE@@b!@@N\n\r", ch );
-        if ( sysdata.killfest )
-            send_to_char( "\n\r@@2@@aKILLFEST!@@N mode on! Read help killfest.\n\r", ch  );
         if ( ch->in_vehicle != NULL && !SPACE_VESSAL(ch->in_vehicle) && !IS_SET(ch->config,CONFIG_BLIND) )
         {
             char buf[MSL] = "\0";
