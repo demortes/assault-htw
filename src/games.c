@@ -57,6 +57,7 @@ const   struct  cmd_type       game_cmd_table   [] =
     { "tell",       do_tell,    0,    0,  LOG_NORMAL },
     { "who",        do_who,     0,    0,  LOG_NORMAL },
     { "goto",		do_goto, 	0,	  80,	LOG_NORMAL},
+    { "transfer", 	do_transfer, 0,   80,   LOG_NORMAL},
     { "",               0,              POS_DEAD,        0,  LOG_NORMAL }
 };
 
@@ -497,7 +498,7 @@ void do_nuke_start( CHAR_DATA *ch, char *argument)
     bool start = FALSE;
     char buf[MSL];
 
-    for ( wch = map_ch[2][2][Z_PAINTBALL]; wch; wch = wch->next_in_room )
+    for ( wch = map_ch[1][0][Z_PAINTBALL]; wch; wch = wch->next_in_room )
     {
         if ( wch->z != Z_PAINTBALL )
             continue;
