@@ -17,3 +17,5 @@ core
 .dbconfig
 Doxyfile
 area/player
+player_fst
+data/buildings.fst
