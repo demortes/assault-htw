@@ -38,6 +38,7 @@
 
 extern char * compass_name[];
 extern void do_space_look(CHAR_DATA *ch);
+extern int leads_to( int x,int y,int z,int dir );
 
 int door_marks[4][2] ={ {-1, 0},{ 0, 1},{ 1, 0},{ 0,-1} };
 int offsets[4][2] ={ {-2, 0},{ 0, 2},{ 2, 0},{ 0,-2} };
@@ -58,7 +59,23 @@ void do_mapper( CHAR_DATA *ch, char *argument )
   }
 
   if ( NUKEM(ch) )
+  {
+	  char buf[] = "\r\n\r\n \
+@@N   _..._                  .           __.....__      __  __   ___\r\n \
+@@N .'     '.              .'|       .-''         '.   |  |/  `.'   `.  \r\n \
+@@N.   .-.   .           .'  |      /     .-''\"'-.  `. |   .-.  .-.   ' \r\n \
+@@N|  '   '  |          <    |     /     /________\\   \\|  |  |  |  |  | \r\n \
+@@N|  |   |  |   _    _  |   | ____|                  ||  |  |  |  |  | \r\n \
+@@N|  |   |  |  | '  / | |   | \\ .'\\    .-------------'|  |  |  |  |  | \r\n \
+@@N|  |   |  | .' | .' | |   |/  .  \\    '-.____...---.|  |  |  |  |  | \r\n \
+@@N|  |   |  | /  | /  | |    /\\  \\  `.             .' |__|  |__|  |__| \r\n \
+@@N|  |   |  ||   `'.  | |   |  \\  \\   `''-...... -'                    \r\n \
+@@N|  |   |  |'   .'|  '/'    \\  \\  \\                                   \r\n \
+@@N'--'   '--' `-'  `--''------' '---'                               \r\n";
+	  if(!IS_SET(ch->config, CONFIG_BLIND))
+		  send_to_char(buf, ch);
 	return;
+  }
   if ( argument[0] != '\0' )
   	size = atoi(argument);
   if ( IS_SET( ch->config, CONFIG_BLIND ) )
@@ -416,7 +433,7 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
             //			send_to_char( outbuf, ch );
         }
     }
-	if ( bld->type == BUILDING_SCUD_LAUNCHER || bld->type == BUILDING_NUKE_LAUNCHER )
+	if ( bld->type == BUILDING_SCUD_LAUNCHER || bld->type == BUILDING_NUKE_LAUNCHER || bld->type == BUILDING_ATOM_BOMBER)
 		sprintf( borderbuf+strlen(borderbuf), "Missile Ready In: %d minutes.\n\r", bld->value[0] / 6);
 	else if ( bld->type == BUILDING_BAR && bld->value[0] > 0 )
 		sprintf(borderbuf+strlen(borderbuf), "Bar opens in: %d minutes.\n\r", bld->value[0] / 6 );
@@ -428,6 +445,14 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
 		sprintf( borderbuf+strlen(borderbuf), "Transmission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
 	else if ( bld->type == BUILDING_SPY_QUARTERS )
 		sprintf( borderbuf+strlen(borderbuf), "Spy Mission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_DOOMSDAY_DEVICE )
+		sprintf( borderbuf+strlen(borderbuf), "DOOM Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_ALIEN_PROBE )
+			sprintf( borderbuf+strlen(borderbuf), "Probe Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_INTERGALACTIC_PUB )
+			sprintf( borderbuf+strlen(borderbuf), "Pub Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_TRANSMITTER )
+			sprintf( borderbuf+strlen(borderbuf), "Transmitter Ready In: %d minutes.\n\r", bld->value[0] / 6 );
 	send_to_char( borderbuf, ch );
 	send_to_char( outbuf,ch);
 
@@ -648,7 +673,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 					strcat(color,"@@i");
 				}
 			}
-			else if ((yy < 1 || yy > MEDAL_BORDER_Y || xx < 1 || xx > MEDAL_BORDER_X) && ch->z == Z_PAINTBALL)
+			else if (medal(ch) && (yy < 1 || yy > MEDAL_BORDER_Y || xx < 1 || xx > MEDAL_BORDER_X))
 			{
 				sprintf(catbuf, "@@k++@@a");
 			}
