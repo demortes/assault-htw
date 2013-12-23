@@ -47,8 +47,6 @@ cd ../reports
 
 cd ../area
   
-  if [ -f core ]; then uuencode core core | mail "$(whoami)" -s "COREDUMP"; fi
-  if [ -f core ]; then rm -rf core; fi
   # sleep, so if we fail on boot we don't get massive looping
   sleep 5
 done
