@@ -626,7 +626,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 
   	for (yy = ch->y + maxx; yy >= ch->y - maxx; --yy)
   	{ /* every row */
-		if ( (pit && (yy < PIT_BORDER_Y || yy >= MAX_MAPS)) || (inMedal && (yy > MEDAL_BORDER_Y || yy <= 0)) )
+		if ( pit && (yy < PIT_BORDER_Y || yy >= MAX_MAPS))
 			continue;
 //    		safe_strcat( MSL, outbuf, "" );
 		strcpy(color,"");
@@ -648,6 +648,10 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 					strcat(color,"@@i");
 				}
 			}
+			else if ((yy < 1 || yy > MEDAL_BORDER_Y || xx < 1 || xx > MEDAL_BORDER_X) && ch->z == Z_PAINTBALL)
+			{
+				sprintf(catbuf, "@@k++@@a");
+			}
 			else if ( z == Z_AIR && ((map_bld[x][y][Z_GROUND] && map_bld[x][y][Z_GROUND]->type == BUILDING_AIRFIELD && map_bld[x][y][Z_GROUND]->active)))
 			{
 				sprintf(catbuf,"@@W##@@a");
@@ -668,8 +672,6 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 			{
 				continue;
 			}
-			else if (inMedal && (xx > MEDAL_BORDER_X || xx <= 0))
-				continue;
 			else if ( bld && (bld->visible || (bld->owner && allied(ch,bld->owner)) || ch == bld->owner || ch->trust >= 85 ) )
 			{
 				CHAR_DATA *vch;
