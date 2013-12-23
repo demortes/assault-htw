@@ -716,8 +716,9 @@ comments:
                 send_to_char(buf,ch);
                 return;
             }
-            if ( (i == BUILDING_SCUD_LAUNCHER && (build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_ATOM_BOMBER] ) )
-                    || (i == BUILDING_NUKE_LAUNCHER && (build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_ATOM_BOMBER] ) )
+            if ( (i == BUILDING_SCUD_LAUNCHER && (build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_ATOM_BOMBER] || build[BUILDING_DOOMSDAY_DEVICE]) )
+                    || (i == BUILDING_NUKE_LAUNCHER && (build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_ATOM_BOMBER] || build[BUILDING_DOOMSDAY_DEVICE] ) )
+                    || (i == BUILDING_DOOMSDAY_DEVICE && (build[BUILDING_NUKE_LAUNCHER] || build[BUILDING_SCUD_LAUNCHER] || build[BUILDING_ATOM_BOMBER] || build[BUILDING_DOOMSDAY_DEVICE] ) )
                )
             {
                 send_to_char( "You can only have one superweapon.\n\r", ch );
