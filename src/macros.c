@@ -701,7 +701,7 @@ void make_medal_base( CHAR_DATA *ch )
                 extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
 
     h = URANGE(30,my_get_hours(ch,TRUE),100);
-    for ( x=BORDER_SIZE+10; x<MEDAL_BORDER_X; x++ )
+    for ( x=BORDER_SIZE+11; x<MEDAL_BORDER_X; x++ )
         for ( y=BORDER_SIZE+1; y<MEDAL_BORDER_Y; y++ )
         {
             if ( number_percent() < 50 )
