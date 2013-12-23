@@ -3495,10 +3495,13 @@ There are a number of ways to contact the imortal base. Below is a list of
 AIM   - Demortes~
 0 motd~
 Welcome to Assault: High Tech War!
-Please note, this game is currently under development. If you have
-bugs or suggestions, please post them on the tracker at @@yassault.demortes.com@@N.
+This game is always under development, so pardon our dust please.
+Bugs? Suggestions? Comments? Visit http://assault.demortes.com or email
+assault@demortes.com with your ideas.
  
-If you have not already, please read '@@GHelp Rules@@N' and abide by them.
+ 
+Enjoy the MUD? Vote for us on TMC at http://goo.gl/QYFYzU
+Sight impaired? Typing CONFIG BLIND will allow you enter our assisted mode.
 ~
 1 Statues Statue Spelguru Cylis Demise Wulfston Seryx~
 .   Statues are buildings, available at rank 2, that add special
@@ -3577,6 +3580,15 @@ If you are a blind user, type CONFIG BLIND to enable blind mode.
  
 Current notes: Quests also are very difficult for blind users. This will be updated.
 ~
+0 killfest ~
+In killfest a number of restrictions are removed. Building requirements are
+gone, multiple labs, no resources required. If you can't put up a base in 10
+minutes, you need more practise. The building limit is lowered as well, to
+about a third of the limit. Lastly, kill. If you aren't killing then you
+aren't using killfest to it's fullest potential.
+~
+0 killfest~
+NEW HELP.  DELETE THIS LINE FIRST!~
 0 $~
 #ROOMS
 #1
