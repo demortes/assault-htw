@@ -4719,6 +4719,8 @@ void do_vload( CHAR_DATA *ch, char *argument )
     vhc->hit = 10000;
     vhc->max_hit = 10000;
     vhc->speed = 4;
+    if(vhc->type == VEHICLE_BOAT || vhc->type == VEHICLE_GUNSHIP)
+    	vhc->flags = 1;
     send_to_loc( "A Vehicle appears in the area.\n\r", ch->x, ch->y,ch->z );
     return;
 }

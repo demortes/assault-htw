@@ -3540,7 +3540,7 @@ void do_construct( CHAR_DATA *ch, char *argument )
     i = 0;
 
     bld = ch->in_building;
-    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MOTHERSHIP_COMM) || !complete(bld) )
+    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MOTHERSHIP_COMM && bld->type != BUILDING_SHIPYARD) || !complete(bld) )
     {
         send_to_char( "You must be inside a completed garage, airfield, space center, or mothership comm to do that.\n\r", ch );
         return;
@@ -3554,6 +3554,10 @@ void do_construct( CHAR_DATA *ch, char *argument )
         else if ( bld && bld->type == BUILDING_MOTHERSHIP_COMM  && complete(bld))
         {
             construct_alien_vessal(ch,argument);
+            return;
+        } else if ( bld && bld->type == BUILDING_SHIPYARD && complete(bld))
+        {
+            construct_sailing_vessal(ch,argument);
             return;
         }
 
@@ -3811,6 +3815,46 @@ bool check_missile_defense(OBJ_DATA *obj)
             break;
     }
     return ex;
+}
+
+void construct_sailing_vessal(CHAR_DATA *ch, char *argument)
+{
+	VEHICLE_DATA *vhc;
+	int type;
+	BUILDING_DATA *bld;
+
+	if((bld = map_bld[ch->x][ch->y][ch->z]) == NULL)
+	{
+		send_to_char("You shouldn't be able to see this... contact an immortal.\r\n\r\n", ch);
+		return;
+	}
+
+	if(!str_cmp(argument, "gunship"))
+	{
+		type = VEHICLE_GUNSHIP;
+	} else if (!str_cmp(argument, "boat"))
+	{
+		type = VEHICLE_BOAT;
+	} else
+	{
+		send_to_char("Invalid selection. Pick a gunship or a boat.\r\n", ch);
+		return;
+	}
+
+
+    if ( (vhc = create_vehicle(type)) == NULL )
+        return;
+    move_vehicle(vhc,ch->x,ch->y,ch->z);
+
+    vhc->max_fuel = 500;
+    vhc->fuel = 500;
+    vhc->max_hit = 500;
+    vhc->hit = 500;
+    vhc->max_ammo = 10;
+    vhc->ammo = 10;
+    vhc->ammo_type = 5;
+    vhc->speed = 10;
+    vhc->flags = 1;
 }
 
 void construct_alien_vessal(CHAR_DATA *ch, char *argument)
