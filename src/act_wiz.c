@@ -5935,7 +5935,8 @@ void do_survey(CHAR_DATA *ch,char *argument)
 void do_vset (CHAR_DATA *ch,char *argument)
 {
     if (!ch->in_vehicle)
-        mreturn("Vset in a vehicle dumbass.\n\r",ch);
+        mreturn("Vset inside a vehicle.\n\r",ch);
+
     char arg1[MSL],arg2[MSL];
     argument=one_argument(argument,arg1);
     one_argument(argument,arg2);
@@ -5943,7 +5944,8 @@ void do_vset (CHAR_DATA *ch,char *argument)
     if (is_number(arg2))
         value=atoi(arg2);
     if (arg1[0]=='\0')
-        mreturn("Vset <value> <value>. Name, description and hp come to mind.\n\r",ch);
+        mreturn("Syntax: vset <type> <value>\r\nValid Types:\r\nName, Description, Health, Fuel, Ammotype, Ammo, Restore, Flag\n\r"
+        "Valid Flags: 1 (swim), 2 (float)\r\n",ch);
     if (!str_cmp(arg1,"name"))
     {
         free_string(ch->in_vehicle->name);
@@ -5954,7 +5956,7 @@ void do_vset (CHAR_DATA *ch,char *argument)
         free_string(ch->in_vehicle->desc);
         ch->in_vehicle->desc=str_dup(arg2);
     }
-    else if (!str_cmp(arg1,"hp"))
+    else if (!str_cmp(arg1,"hp") || !str_cmp(arg1,"health"))
     {
         ch->in_vehicle->hit=value;
         ch->in_vehicle->max_hit=value;
@@ -5967,10 +5969,10 @@ void do_vset (CHAR_DATA *ch,char *argument)
     else if (!str_cmp(arg1,"ammotype"))
     {
         if (value>=MAX_AMMO||value<0)
-            mreturn("Nuht-uh.\n\r",ch);
+            mreturn("Invalid ammotype.\n\r",ch);
         ch->in_vehicle->ammo_type=value;
     }
-    if (!str_cmp(arg1,"ammo"))
+    else if (!str_cmp(arg1,"ammo"))
     {
         ch->in_vehicle->ammo=value;
         ch->in_vehicle->max_ammo=value;
@@ -5982,6 +5984,28 @@ void do_vset (CHAR_DATA *ch,char *argument)
         ch->in_vehicle->fuel=ch->in_vehicle->max_fuel;
         send_to_char("Vehicle restored!\n\r",ch);
     }
+    else if (!str_cmp(arg1, "flag") || !str_cmp(arg1, "flags"))
+    {
+        if (value == 1) {
+            if (IS_SET(ch->in_vehicle->flags, VEHICLE_SWIM)) {
+                REMOVE_BIT(ch->in_vehicle->flags, VEHICLE_SWIM);
+                mreturn("Swim disabled.\r\n", ch);
+            } else {
+                SET_BIT(ch->in_vehicle->flags, VEHICLE_SWIM);
+                mreturn("Swim enabled.\r\n", ch);
+            }            
+        } else if (value == 2) {
+            if (IS_SET(ch->in_vehicle->flags, VEHICLE_FLOATS)) {
+                REMOVE_BIT(ch->in_vehicle->flags, VEHICLE_FLOATS);
+                mreturn("Swim disabled.\r\n", ch);
+            } else {
+                SET_BIT(ch->in_vehicle->flags, VEHICLE_FLOATS);
+                mreturn("Swim enabled.\r\n", ch);
+            }            
+        } else
+            mreturn("Not a valid flag\r\n.", ch);
+    }
+
     mreturn("Done.\n\r",ch);
 }
 

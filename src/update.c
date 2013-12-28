@@ -1245,6 +1245,8 @@ void aggr_update( void )
             {
                 if ( wch->c_sn == gsn_build )
                     act_build( wch, wch->c_level );
+                else if ( wch->c_sn == gsn_row )
+                    move_char( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_move )
                     move_char( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_research )

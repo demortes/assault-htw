@@ -154,7 +154,9 @@
 #define VEHICLE_ALIEN_SCOUT     16
 #define VEHICLE_BIO_FLOATER     17
 #define VEHICLE_CREEPER         18
-#define MAX_VEHICLE         19
+#define VEHICLE_BOAT			19
+#define VEHICLE_GUNSHIP			20
+#define MAX_VEHICLE         21
 
 #define VEHICLE_FIRE_RESISTANT      BIT_1
 #define VEHICLE_EXPLOSIVE       BIT_2
@@ -171,6 +173,7 @@
 #define VEHICLE_ALIEN_MAGNET        BIT_13
 #define VEHICLE_TREASURE_BEAM       BIT_14
 #define VEHICLE_SPACE_SCANNER       BIT_15
+#define VEHICLE_SWIM            BIT_16
 
 #define VEHICLE_STATE_NORMAL        0
 #define VEHICLE_STATE_EVADE     1

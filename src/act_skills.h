@@ -44,6 +44,7 @@
 #define gsn_blind_combat 13
 #define gsn_grenades    14
 
+#define gsn_row     910
 #define gsn_move    912
 #define gsn_tunnel  913
 #define gsn_paradrop    914

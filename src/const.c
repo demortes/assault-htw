@@ -389,6 +389,8 @@ char * const vehicle_name [MAX_VEHICLE] =
     "Alien Scout Ship",
     "Bio Floater Vehicle",
     "Creeper Vehicle",
+    "Boat",
+    "Gunship",
 };
 
 char * const vehicle_desc [MAX_VEHICLE] =
@@ -412,4 +414,6 @@ char * const vehicle_desc [MAX_VEHICLE] =
     "An Alien Scout",
     "A Bio-Floater",
     "A Creeper",
+    "An old Boat",
+    "A small Gunship",
 };
