@@ -89,6 +89,16 @@ struct fol_data *fol_free;
 
 */
 
+bool has_boat(CHAR_DATA *ch)
+{
+	if (IS_IMMORTAL(ch) )
+		return TRUE;
+	if ( ch->in_vehicle && (IS_SET(ch->in_vehicle->flags,VEHICLE_SWIM) || IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) ))
+		return TRUE;
+
+	return FALSE;
+}
+
 void move_char( CHAR_DATA *ch, int door )
 {
     CHAR_DATA *fch;
@@ -110,6 +120,23 @@ void move_char( CHAR_DATA *ch, int door )
         return;
     if ( ch->c_sn == gsn_move )
         ch->c_sn = -1;
+        
+    xx = ch->x;
+    yy = ch->y;
+    if ( door < 0 || door > 3 )											//If wrong direction chosen
+    {
+        bug( "Do_move: bad door %d.", door );
+        return;
+    }
+    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )	//If confused
+        door = number_range(0,3);
+
+    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )		//If over burdened...
+    {
+        send_to_char( "You are carrying too much weight!\n\r", ch);
+        return;
+    }        
+        
     if ( ch->in_vehicle )					// If you're in a vehicle...
     {
         if ( SPACE_VESSAL(ch->in_vehicle) && z != Z_SPACE )
@@ -133,13 +160,28 @@ void move_char( CHAR_DATA *ch, int door )
             send_to_char( "You swerve around in circles.. FUN!\n\r", ch );
             return;
         }
+        
+        if ( ch->c_sn == gsn_row )
+		{
+			ch->c_sn = -1;
+			ch->in_vehicle->fuel = 1;
+		}
+        
         if ( ch->in_vehicle->fuel <= 0 )
         {
             send_to_char( "You are out of fuel.\n\r", ch );
             if ( AIR_VEHICLE(ch->in_vehicle->type) )
                 crash(ch,ch);
+            else if ( IS_SET(ch->in_vehicle->flags, VEHICLE_SWIM) )
+            {
+                ch->c_sn = gsn_row;
+                ch->c_level = door;
+                ch->c_time = 15 * PULSE_PER_SECOND;
+                send_to_char( "You begin rowing with your hands!\n\r", ch );
+            }
             return;
         }
+
     }
     if ( map_table.type[ch->x][ch->y][ch->z] == SECT_MAGMA && number_percent() > 2 )    //If you're in magma
     {
@@ -154,22 +196,6 @@ void move_char( CHAR_DATA *ch, int door )
     {
         move(ch,1,1,0);
         do_look(ch,"");
-        return;
-    }
-
-    xx = ch->x;
-    yy = ch->y;
-    if ( door < 0 || door > 3 )											//If wrong direction chosen
-    {
-        bug( "Do_move: bad door %d.", door );
-        return;
-    }
-    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )	//If confused
-        door = number_range(0,3);
-
-    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )		//If over burdened...
-    {
-        send_to_char( "You are carrying too much weight!\n\r", ch);
         return;
     }
 
@@ -234,24 +260,42 @@ void move_char( CHAR_DATA *ch, int door )
             ch->y = yy;
             return;
         }
-        if ( ch->in_vehicle != NULL )
+        if (ch->in_vehicle)
         {
-            if ( !bld && (map_table.type[ch->x][ch->y][z] == SECT_WATER || map_table.type[ch->x][ch->y][z] == SECT_OCEAN) && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) )
+            if ( !bld && (map_table.type[ch->x][ch->y][z] == SECT_WATER || (map_table.type[ch->x][ch->y][z] == SECT_OCEAN && !has_boat(ch))) && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) && !IS_SET(ch->in_vehicle->flags,VEHICLE_SWIM))
             {
                 send_to_char( "You can't drive over water.\n\r", ch );
                 ch->x = xx;
                 ch->y = yy;
                 return;
             }
+            if ( IS_SET(ch->in_vehicle->flags, VEHICLE_SWIM) )
+            {
+                if ( map_table.type[ch->x][ch->y][ch->z] != SECT_OCEAN && map_table.type[ch->x][ch->y][ch->z] != SECT_WATER 
+                  && map_table.type[xx][yy][ch->z] != SECT_OCEAN && map_table.type[xx][yy][ch->z] != SECT_WATER)
+                {
+                    send_to_char( "You cannot take it on land.\n\r", ch );
+                    ch->x = xx; 
+                    ch->y = yy;
+                    return;
+                }
+            }
+            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !has_boat(ch) && !IS_IMMORTAL(ch) )
+            {
+               send_to_char( "You need some way to cross the water!\n\r", ch );
+               ch->x = xx;
+               ch->y = yy;
+               return;
+            }
+        } else if (map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch))
+        {
+        	send_to_char("You can not walk on water...\r\n", ch);
+        	ch->x = xx;
+        	ch->y = yy;
+        	return;
         }
     }
-    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch) )
-    {
-    	send_to_char( "You need some way to cross the water!\n\r", ch );
-    	ch->x = xx;
-    	ch->y = yy;
-    	return;
-    }
+
     if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
     {
         bool cancel = FALSE;
@@ -289,6 +333,7 @@ void move_char( CHAR_DATA *ch, int door )
             return;
         }
     }
+
     if ( bld )
     {
         int reverse = 1;
