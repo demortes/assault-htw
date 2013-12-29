@@ -1042,7 +1042,7 @@ void do_target( CHAR_DATA *ch, char *argument )
     if ( victim->z == Z_AIR && ch->z == Z_GROUND )
         time = 1;
 
-    if ( victim->in_room->vnum == ROOM_VNUM_WMAP && (IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) && (IS_BETWEEN(victim->y,ch->y-range,ch->y+range)))
+    if ( victim->in_room->vnum == ROOM_VNUM_WMAP && in_range_of(ch->x, ch->y, victim->x, victim->y, range))
     {
         if (( IN_PIT(ch) && !IN_PIT(victim) ) || ( !IN_PIT(ch) && IN_PIT(victim) ) )
             return;
@@ -1078,7 +1078,7 @@ void act_target (CHAR_DATA *ch, int level )
     }
     if ( ch->victim == ch )
     {
-        send_to_char( "For some reason, you were targetting yourself!\n\r", ch );
+        send_to_char( "For some reason, you were targeting yourself!\n\r", ch );
         ch->victim = ch;
         return;
     }
@@ -1123,7 +1123,7 @@ void act_target (CHAR_DATA *ch, int level )
             range = 1;
     }
 
-    if ( ch->victim->in_room->vnum != ROOM_VNUM_WMAP || (!IS_BETWEEN(ch->victim->x,ch->x-range,ch->x+range)) || (!IS_BETWEEN(ch->victim->y,ch->y-range,ch->y+range)) )
+    if ( ch->victim->in_room->vnum != ROOM_VNUM_WMAP || !in_range_of(ch->x, ch->y, ch->victim->x, ch->victim->y, range) )
     {
         send_to_char( "Your victim got away!\n\r", ch );
         ch->victim = ch;
@@ -1501,7 +1501,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
             return;
         }
         range = comp->value[0];
-        if ( !IS_BETWEEN(wch->x,comp->carried_by->x-range,comp->carried_by->x+range) || !IS_BETWEEN(wch->y,comp->carried_by->y+range,comp->carried_by->y-range) || wch->z != ch->z )
+        if(!in_range_of(wch->x, wch->y, comp->carried_by->x, comp->carried_by->y, range) || wch->z != ch->z)
         {
             send_to_char( "Your computer doesn't have that range.\n\r", ch );
             return;
@@ -1603,7 +1603,7 @@ void do_computer( CHAR_DATA *ch, char *argument )
             send_to_char( "You bounce your connection through a hacked computer.\n\r", ch );
         }
         range = comp->value[0];
-        if ( !IS_BETWEEN(x,comp->carried_by->x-range,comp->carried_by->x+range) || !IS_BETWEEN(y,comp->carried_by->y+range,comp->carried_by->y-range) )
+        if(!in_range_of(x, y, comp->carried_by->x, comp->carried_by->y, range))
         {
             send_to_char( "Your target is outside the computer's range.\n\r", ch );
             return;

@@ -1073,9 +1073,9 @@ void act_mark( CHAR_DATA *ch, int level )
         {
             for (; y <= ch->bvictim->y + 5; y++ )
             {
-                if ( INVALID_COORDS(x,y) )
-                    continue;
-                if ( ( bld = map_bld[x][y][ch->bvictim->z] ) == NULL || bld->type != BUILDING_MISSILE_DEFENSE || !complete(bld) )
+                int tx = x, ty = y;
+                real_coords(&tx, &ty);
+                if ( ( bld = map_bld[tx][ty][ch->bvictim->z] ) == NULL || bld->type != BUILDING_MISSILE_DEFENSE || !complete(bld) )
                     continue;
                 if ( ( wch = get_ch(bld->owned) ) == NULL )
                     return;

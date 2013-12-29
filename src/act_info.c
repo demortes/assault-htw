@@ -3054,12 +3054,12 @@ void do_info( CHAR_DATA *ch, char *argument )
     }
     x = atoi(arg);
     y = atoi(argument);
-    if ( INVALID_COORDS(x,y) )
+    if ( x >= MAX_MAPS || y >= MAX_MAPS || x < 0 || y < 0 )
     {
         send_to_char( "Invalid coords.\n\r", ch );
         return;
     }
-    if (( !IS_BETWEEN(x,ch->x-ch->map,ch->x+ch->map) || !IS_BETWEEN(y,ch->y-ch->map,ch->y+ch->map)) && !IS_IMMORTAL(ch) )
+    if(!in_range_of(x, y, ch->x, ch->y, ch->map) && !IS_IMMORTAL(ch))
     {
         send_to_char( "You can't see that far.\n\r", ch );
         return;

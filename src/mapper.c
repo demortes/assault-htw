@@ -559,8 +559,6 @@ void do_scanmap( CHAR_DATA *ch, char *argument )
 			if ( x < ch->x - ch->map )
 				break;
 		}
-		if ( INVALID_COORDS(x,y) )
-			break;
 
 		sect = map_table.type[x][y][ch->z];
 		if ( lsect != sect && lsect != -1 )
@@ -730,7 +728,7 @@ void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
 					if ( security == 0 )
 					{
 						sprintf( ocolor, "%s",  ( vch == NULL ) ? "@@d":charr ? "@@J" : def?"@@W" : ( bld->value[9] > 0 ) ? "@@b" : ( IS_LINKDEAD(vch) ) ? "@@o" : ( IS_NEWBIE(vch) ) ? "@@c" : (bld->value[3] != 0) ? "@@m" : ( bld->visible == FALSE ) ? "@@W" : ( bld->hp < bld->maxhp && bld->hp > bld->maxhp / 2 ) ? "@@b" : ( bld->hp < bld->maxhp / 2 ) ? "@@Q" : "@@G" );
-						if ( ch == bld->owner || bld->protection > 0 || ( bld->type == BUILDING_DUMMY && ((IS_BETWEEN(bld->x,ch->x-1,ch->x+1) && IS_BETWEEN(bld->y,ch->y-1,ch->y+1)) || bld->value[5] > 0 ) ) )
+						if ( ch == bld->owner || bld->protection > 0 || (( bld->type == BUILDING_DUMMY && in_range_of(bld->x, bld->y, ch->x, ch->y, 1)) || bld->value[5] > 0 ) )
 							sprintf( ocolor+strlen(ocolor), "@@x");
 						if ( charr && (map_ch[x][y][z]->pcdata->alliance != ch->pcdata->alliance || map_ch[x][y][z]->pcdata->alliance == -1) )
 							enemy = TRUE;

@@ -237,7 +237,7 @@ void spec_up( CHAR_DATA *ch )
             {
                 if ( wch == NULL || wch == ch || wch->z != ch->z )
                     break;
-                sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (IS_BETWEEN(x,ch->x-range,ch->x+range) && IS_BETWEEN(y,ch->y-range,ch->y+range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
+                sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (in_range_of(x, y, ch->x, ch->y, range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
                 send_to_char( buf, ch );
             }
         }

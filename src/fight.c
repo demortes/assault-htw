@@ -908,8 +908,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
             continue;
         if (yy == ch->y && xx == ch->x && argument[0] != '\0' )
             continue;
-        if ( INVALID_COORDS(xx,yy) )
-            break;
+        real_coords(&xx, &yy);
 
         for ( vch = map_ch[xx][yy][z]; vch; vch = vch->next_in_room )
         {
@@ -1072,8 +1071,7 @@ void do_shoot( CHAR_DATA *ch, char *argument )
             if ( ch->victim->in_room->vnum != ROOM_VNUM_WMAP ||
                     (clip_table[weapon->value[2]].speed+weapon->value[9]>=30) ||
                     (ch->z != victim->z)                 ||
-                    (!IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) ||
-                    (!IS_BETWEEN(victim->y,ch->y-range,ch->y+range)) ||
+                    !in_range_of(ch->x, ch->y, victim->x, victim->y, range) ||
                     ((ch->in_building && !open_bld(ch->in_building)) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z)) ||
                     ((ch->victim->in_building && !open_bld(ch->victim->in_building) && (ch->victim->x != ch->x || ch->victim->y != ch->y || ch->victim->z != ch->z))))
             {
@@ -1796,8 +1794,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 for ( xx = x - range; xx < x + range; xx++ )
                     for ( yy = x - range; yy < x + range; yy++ )
                     {
-                        if ( INVALID_COORDS(xx,yy) )
-                            continue;
+                        real_coords(&xx, &yy);
                         if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
                         {
                             bld2->value[9] += bld->level * 100;
@@ -1837,8 +1834,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 for ( xx = x - range; xx < x + range; xx++ )
                     for ( yy = x - range; yy < x + range; yy++ )
                     {
-                        if ( INVALID_COORDS(xx,yy) )
-                            continue;
+                        real_coords(&xx, &yy);
                         if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
                         {
                             bld2->value[9] += bld->level * 100;
@@ -2276,9 +2272,12 @@ void do_boom( CHAR_DATA *ch, char *argument )
         x_n = x + 1;
         for ( y=y2; y<yy; y++ )
         {
-            if ( INVALID_COORDS(x,y) || ( x == bld->x && y == bld->y ) )
+        	int tx = x;
+        	int ty = y;
+        	real_coords(&tx, &ty);
+            if ( tx == bld->x && ty == bld->y )
                 continue;
-            if ( ( bld2 = get_building(x,y,bld->z) ) != NULL )
+            if ( ( bld2 = get_building(tx,ty,bld->z) ) != NULL )
             {
                 if ( ( wch = get_ch(bld2->owned) ) == NULL )
                     continue;
@@ -2291,7 +2290,7 @@ void do_boom( CHAR_DATA *ch, char *argument )
                     dam *= 2;
                 damage_building(ch,bld2,dam);
             }
-            for ( wch = map_ch[x][y][z]; wch; wch = wch_next )
+            for ( wch = map_ch[tx][ty][z]; wch; wch = wch_next )
             {
                 wch_next = wch->next_in_room;
                 if ( wch == ch )

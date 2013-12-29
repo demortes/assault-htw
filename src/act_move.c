@@ -296,7 +296,7 @@ void move_char( CHAR_DATA *ch, int door )
         }
     }
 
-    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SHIPYARD )))
+    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SHIPYARD )))
     {
         bool cancel = FALSE;
         if ( ch->in_vehicle && AIR_VEHICLE(ch->in_vehicle->type) )
@@ -306,15 +306,14 @@ void move_char( CHAR_DATA *ch, int door )
                 z = Z_GROUND;
             x = ch->x;
             y = ch->y;
-            if(INVALID_COORDS(ch->x, ch->y))
-            	real_coords(&x, &y);
+            real_coords(&x, &y);
             move(ch,x,y,z);
             crash(ch,ch);
             return;
         }
         else
         {
-            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
+            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL )
                 send_to_char( "You cannot go that way.\n\r", ch );
 	        else if ( bld && ch->in_vehicle != NULL )
                 send_to_char( "You can't enter it while driving!\n\r", ch );

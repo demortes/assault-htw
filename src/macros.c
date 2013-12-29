@@ -302,16 +302,16 @@ int get_char_cost( CHAR_DATA *ch )
 
 bool IS_BETWEEN(int x,int x1, int x2)
 {
-    if ( x1 > x2 )
-        if ( x >= x2 && x <= x1 )
-            return TRUE;
-    if ( x1 < x2 )
-        if ( x <= x2 && x >= x1 )
-            return TRUE;
-    if ( x1 == x2 )
-        if ( x == x1 )
-            return TRUE;
-    return FALSE;
+        if ( x1 > x2 )
+                if ( x >= x2 && x <= x1 )
+                        return TRUE;
+        if ( x1 < x2 )
+                if ( x <= x2 && x >= x1 )
+                        return TRUE;
+        if ( x1 == x2 )
+                if ( x == x1 )
+                        return TRUE;
+        return FALSE;
 }
 
 bool building_can_shoot( BUILDING_DATA *bld, CHAR_DATA *ch, int range )
@@ -673,7 +673,7 @@ bool in_range( CHAR_DATA *ch, CHAR_DATA *victim, int range )
 {
     if ( !ch || !victim )
         return FALSE;
-    if ( (IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) && (IS_BETWEEN(victim->y,ch->y-range,ch->y+range)))
+    if ( in_range_of(ch->x, ch->y, victim->x, victim->y, range))
         return TRUE;
     else
         return FALSE;
@@ -1016,4 +1016,21 @@ void real_coords(int *x,int *y)
                 *x = *x - MAX_MAPS;
         if ( *y >= MAX_MAPS )
                 *y = *y - MAX_MAPS;
+}
+
+/**
+ * Function that checks to see if something is in range, with a wrap around taken into account.
+ * @param x1 First item's X coord
+ * @param y1 First item's Y coord
+ * @param x2 Second item's X coord
+ * @param y2 Second item's Y coord
+ * @param range Range to check
+ * @return If distance of the two are less than range, TRUE. Else, FALSE.
+ */
+bool in_range_of(int x1, int y1, int x2, int y2, int range)
+{
+	int calcRange = sqrt(pow(UMIN(abs(x1 - x2), MAX_MAPS - abs(x1 - x2)), 2) + pow(UMIN(abs(y1 - y2), MAX_MAPS - abs(y1-y2)), 2));
+	if(calcRange <= range)
+		return TRUE;
+	return FALSE;
 }

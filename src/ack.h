@@ -1122,6 +1122,7 @@ void create_obj_atch    args( ( CHAR_DATA *ch, int index ) );
 bool blind_spot     args( ( CHAR_DATA *ch, int x, int y ) );
 int get_armor_value args( ( int dt ) );
 void real_coords(int *x,int *y);
+bool in_range_of(int x1, int y1, int x2, int y2, int range);
 
 /*------*\ 
 ) save.c (
