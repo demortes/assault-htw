@@ -3502,6 +3502,7 @@ Welcome to Assault: High Tech War!
  
 Enjoy the MUD? Vote for us on TMC at http://goo.gl/QYFYzU
 Sight impaired? Typing CONFIG BLIND will allow you enter our assisted mode.
+@@rKILLFEST is enabled!@@N
 ~
 1 Statues Statue Spelguru Cylis Demise Wulfston Seryx~
 .   Statues are buildings, available at rank 2, that add special
@@ -6068,7 +6069,7 @@ A large 9mm ammo clip lies in the dust.~
 L
 5
 #1158
-556mm magazine ammo~
+556mm rifle magazine ammo~
 a 5.56mm rifle magazine~
 A 5.56mm ammo magazine waits for a weapon to fire from.~
 2 0 8388608
@@ -6359,7 +6360,7 @@ L
 cigar cuban~
 a cuban cigar~
 A huge cuban cigar lies on the floor! What a waste!~
-34 0 8388608
+1 0 8388608
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 -1
 ~
 L
