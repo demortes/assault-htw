@@ -2555,7 +2555,8 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
             //		send_to_char( "You now have the choice of fully recreating your character. If you type \"Yes\", your char will be deleted and recreated from scratch, if you type \"No\", you will keep your old char, in the same status you died in..\n\r\n\r\n\rSelect: ""Yes"" or ""No""", ch );
             send_to_char( "Select one of the following options:\n\r\n\r", ch );
             //		send_to_char( "1. Fully Recreate - Temporerily Disabled to discourage recreations\n\r", ch );
-            send_to_char( "0. Respawn - From where you last died\n\r", ch );
+            if(map_table.type[ch->x][ch->y][ch->z] != SECT_OCEAN)
+            	send_to_char( "0. Respawn - From where you last died\n\r", ch );
             send_to_char( "2. Random - Pick a random location on the map.\n\r", ch );
             if ( build )
             {
@@ -2934,6 +2935,11 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
         case 'n':
         case 'N':
         case '0':
+            if(map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN)
+            {
+                write_to_buffer( d, "You would just drown there. Pick another option.\n\r", 0 );
+                return;
+            }
             write_to_buffer( d, "Keeping old character.\n\r", 0 );
             d->connected = CON_GET_NEW_CLASS;
             show_cmenu_to(d);
@@ -2948,7 +2954,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                 i++;
                 x = number_range(4,MAX_MAPS - 5);
                 y = number_range(4,MAX_MAPS - 5);
-                if ( map_table.type[x][y][ch->z] == SECT_NULL )
+                if ( map_table.type[x][y][ch->z] == SECT_NULL || map_table.type[x][y][ch->z] == SECT_OCEAN )
                     continue;
                 for ( xx = x-10; xx<x+10; xx++ )
                     for ( yy = y-10; yy<y+10; yy++ )

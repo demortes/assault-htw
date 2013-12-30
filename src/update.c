@@ -443,7 +443,7 @@ void char_update( void )
     ch_save     = NULL;
     ch_quit     = NULL;
 
-    CREF( ch_next, CHAR_NEXT );
+    //CREF( ch_next, CHAR_NEXT );
     for ( ch = first_char; ch != NULL; ch = ch_next )
     {
         ch_next = ch->next;

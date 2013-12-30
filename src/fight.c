@@ -628,7 +628,8 @@ void pdie(CHAR_DATA *ch)
 	}
         d->connected = CON_GET_RECREATION;
         write_to_buffer( d,"Select one of the following options:\n\r\n\r", 0 );
-        write_to_buffer( d,"0. Respawn - From where you last died\n\r", 0 );
+        if(map_table.type[ch->x][ch->y][ch->z] != SECT_OCEAN)
+        	write_to_buffer( d,"0. Respawn - From where you last died\n\r", 0 );
         write_to_buffer( d,"2. Random - Pick a random location on the map.\n\r", 0 );
         if ( build )
         {
