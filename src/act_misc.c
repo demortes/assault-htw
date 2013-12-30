@@ -3248,7 +3248,12 @@ void do_destroy( CHAR_DATA *ch, char *argument )
     ch->in_vehicle = NULL;
     /*	if ( ( vhc2 = get_vehicle_from_vehicle(vhc) ) != NULL )
             extract_vehicle(vhc2,FALSE);*/
-
+    if(map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN)
+    {
+        act( "You abandon ship and drown!",ch, NULL, NULL, TO_CHAR );
+        act( "$n abandons ship and drowns!", ch, NULL, NULL, TO_ROOM );
+        damage(ch,ch,9999,-1);
+    }
     sprintf( buf, "%s bursts into flames!\n\r", vhc->desc );
     send_to_loc(buf,vhc->x,vhc->y,vhc->z);
     extract_vehicle(vhc,FALSE);
