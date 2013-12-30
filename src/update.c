@@ -237,7 +237,7 @@ void spec_up( CHAR_DATA *ch )
             {
                 if ( wch == NULL || wch == ch || wch->z != ch->z )
                     break;
-                sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (IS_BETWEEN(x,ch->x-range,ch->x+range) && IS_BETWEEN(y,ch->y-range,ch->y+range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
+                sprintf( buf, "%s%s at %d/%d (%s%s)\n\r", (in_range_of(x, y, ch->x, ch->y, range)) ? "(*) " : "", wch->name, x, y, (ch->y < y) ? "North" : (ch->y == y ) ? "" : "South", (ch->x > x) ? "West" :(ch->x == x) ? "" : "East" );
                 send_to_char( buf, ch );
             }
         }
@@ -394,7 +394,7 @@ void gain_update( void )
             {
                 int heat=0;
                 heat = ch->heat + wildmap_table[map_table.type[ch->x][ch->y][ch->z]].heat;
-                if ( heat > 15 && !ch->in_vehicle )
+                if ( heat > 15 && !ch->in_vehicle && !IS_IMMORTAL(ch))
                 {
                     if ( my_get_minutes(ch,TRUE) <= 5 )
                     {
@@ -405,7 +405,7 @@ void gain_update( void )
                     damage(ch,ch,number_fuzzy(heat - 15),DAMAGE_ENVIRO);
                     return;
                 }
-                else if ( heat < -15 && !ch->in_vehicle )
+                else if ( heat < -15 && !ch->in_vehicle && !IS_IMMORTAL(ch))
                 {
                     if ( my_get_minutes(ch,TRUE) <= 5 )
                     {
@@ -562,7 +562,8 @@ void char_update( void )
         }
 
     }
-    CUREF( ch_next );
+    if(ch_next != NULL)
+    	CUREF( ch_next );
 
     /*
      * Autosave and autoquit.
@@ -701,7 +702,7 @@ void obj_update( void )
     {
         obj_next = obj->next;
 
-        if ( (obj->x == 0 || obj->y == 0) && obj->carried_by == NULL )
+        if ( (obj->x == 0 || obj->y == 0) && obj->z == 4 && obj->carried_by == NULL )
             /* New object erase code:
             Objects used to crash sometimes when extracted,
             so I made them extract up updates instead of
@@ -900,7 +901,7 @@ void obj_update( void )
                 else
                     nx--;
 
-                if ( nx >= MAX_MAPS-3 || nx <= BORDER_SIZE || ny >= MAX_MAPS - BORDER_SIZE || ny <= BORDER_SIZE )
+                if ( nx >= MAX_MAPS-BORDER_SIZE || nx <= BORDER_SIZE || ny >= MAX_MAPS - BORDER_SIZE || ny <= BORDER_SIZE )
                 {
                     extract_obj(obj);
                     obj_count--;
@@ -1248,6 +1249,8 @@ void aggr_update( void )
             {
                 if ( wch->c_sn == gsn_build )
                     act_build( wch, wch->c_level );
+                else if ( wch->c_sn == gsn_row )
+                    move_char( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_move )
                     move_char( wch, wch->c_level );
                 else if ( wch->c_sn == gsn_research )
@@ -1777,7 +1780,7 @@ void explode( OBJ_DATA *obj )
         {
             obj_next = obj2->next_in_room;
             if ( obj2->item_type == ITEM_BOMB && obj2->z == obj->z && obj2 != obj )
-                move_obj(obj2,0,0,1);
+                extract_obj(obj2);
         }
     }
     if ( IS_SET(ch->effect,EFFECT_BOMBER) )
@@ -1999,7 +2002,7 @@ void explode( OBJ_DATA *obj )
         }
         for ( x=obj->x-1; x<=obj->x+1; x++ )
             for ( y=obj->y-1; y<=obj->y+1; y++ )
-                if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
+                if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-1 && y <= MAX_MAPS - 1 )
                     for ( vch = map_ch[x][y][obj->z]; vch; vch = vch_next )
                         //		for ( vch = first_char;vch;vch = vch_next )
                     {
@@ -2030,7 +2033,7 @@ void explode( OBJ_DATA *obj )
         {
             for ( x=obj->x-1; x<=obj->x+1; x++ )
                 for ( y=obj->y-1; y<=obj->y+1; y++ )
-                    if ( x > 1 && y > 1 && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS - BORDER_SIZE )
+                    if ( x >= 0 && y >= 0 && x <= MAX_MAPS-1 && y <= MAX_MAPS-1 )
                     {
                         bld = map_bld[x][y][obj->z];
                         if ( !bld || bld == NULL )

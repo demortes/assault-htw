@@ -302,16 +302,16 @@ int get_char_cost( CHAR_DATA *ch )
 
 bool IS_BETWEEN(int x,int x1, int x2)
 {
-    if ( x1 > x2 )
-        if ( x >= x2 && x <= x1 )
-            return TRUE;
-    if ( x1 < x2 )
-        if ( x <= x2 && x >= x1 )
-            return TRUE;
-    if ( x1 == x2 )
-        if ( x == x1 )
-            return TRUE;
-    return FALSE;
+        if ( x1 > x2 )
+                if ( x >= x2 && x <= x1 )
+                        return TRUE;
+        if ( x1 < x2 )
+                if ( x <= x2 && x >= x1 )
+                        return TRUE;
+        if ( x1 == x2 )
+                if ( x == x1 )
+                        return TRUE;
+        return FALSE;
 }
 
 bool building_can_shoot( BUILDING_DATA *bld, CHAR_DATA *ch, int range )
@@ -336,8 +336,7 @@ bool building_can_shoot( BUILDING_DATA *bld, CHAR_DATA *ch, int range )
 
 bool open_bld( BUILDING_DATA *bld )
 {
-    if ( build_table[bld->type].act == BUILDING_OFFENSE
-       )
+    if ( build_table[bld->type].act == BUILDING_OFFENSE)
         return TRUE;
     return FALSE;
 }
@@ -674,7 +673,7 @@ bool in_range( CHAR_DATA *ch, CHAR_DATA *victim, int range )
 {
     if ( !ch || !victim )
         return FALSE;
-    if ( (IS_BETWEEN(victim->x,ch->x-range,ch->x+range)) && (IS_BETWEEN(victim->y,ch->y-range,ch->y+range)))
+    if ( in_range_of(ch->x, ch->y, victim->x, victim->y, range))
         return TRUE;
     else
         return FALSE;
@@ -702,8 +701,8 @@ void make_medal_base( CHAR_DATA *ch )
                 extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
 
     h = URANGE(30,my_get_hours(ch,TRUE),100);
-    for ( x=BORDER_SIZE+10; x<MEDAL_BORDER_X; x++ )
-        for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
+    for ( x=BORDER_SIZE+11; x<MEDAL_BORDER_X; x++ )
+        for ( y=BORDER_SIZE+1; y<MEDAL_BORDER_Y; y++ )
         {
             if ( number_percent() < 50 )
                 continue;
@@ -736,7 +735,7 @@ void make_medal_base( CHAR_DATA *ch )
             activate_building(bld,TRUE);
             map_bld[x][y][Z_PAINTBALL] = bld;
         }
-    x = number_range(BORDER_SIZE+18,42);
+    x = number_range(BORDER_SIZE+19,42);
     y = number_range(3,21);
     obj = create_object(get_obj_index(OBJ_VNUM_MEDAL),0);
     obj->x = x;
@@ -1005,4 +1004,33 @@ void clear_basic(CHAR_DATA *ch)
     ch->quest_points = 0;
     ch->pcdata->deaths = 0;
     return;
+}
+
+void real_coords(int *x,int *y)
+{
+        if ( *x < 0 )
+                *x = MAX_MAPS + *x;
+        if ( *y < 0 )
+                *y = MAX_MAPS + *y;
+        if ( *x >= MAX_MAPS )
+                *x = *x - MAX_MAPS;
+        if ( *y >= MAX_MAPS )
+                *y = *y - MAX_MAPS;
+}
+
+/**
+ * Function that checks to see if something is in range, with a wrap around taken into account.
+ * @param x1 First item's X coord
+ * @param y1 First item's Y coord
+ * @param x2 Second item's X coord
+ * @param y2 Second item's Y coord
+ * @param range Range to check
+ * @return If distance of the two are less than range, TRUE. Else, FALSE.
+ */
+bool in_range_of(int x1, int y1, int x2, int y2, int range)
+{
+	int calcRange = sqrt(pow(UMIN(abs(x1 - x2), MAX_MAPS - abs(x1 - x2)), 2) + pow(UMIN(abs(y1 - y2), MAX_MAPS - abs(y1-y2)), 2));
+	if(calcRange <= range)
+		return TRUE;
+	return FALSE;
 }

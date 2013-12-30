@@ -75,11 +75,11 @@
 #define LEVEL_GUIDE                  79
 #define LEVEL_IMMORTAL               80
 #define MAX_QUOTE       200
-#define MAX_MAPS        1000
+#define MAX_MAPS        1500
 #define MIN_LOAD_OBJ        1000
 #define MAX_LOAD_OBJ        1164
 #define MAX_HELPER      13
-#define BORDER_SIZE     3
+#define BORDER_SIZE     0
 
 #define TERRAIN_NONE        0
 #define TERRAIN_BALANCED    1
@@ -154,7 +154,9 @@
 #define VEHICLE_ALIEN_SCOUT     16
 #define VEHICLE_BIO_FLOATER     17
 #define VEHICLE_CREEPER         18
-#define MAX_VEHICLE         19
+#define VEHICLE_BOAT			19
+#define VEHICLE_GUNSHIP			20
+#define MAX_VEHICLE         21
 
 #define VEHICLE_FIRE_RESISTANT      BIT_1
 #define VEHICLE_EXPLOSIVE       BIT_2
@@ -171,6 +173,7 @@
 #define VEHICLE_ALIEN_MAGNET        BIT_13
 #define VEHICLE_TREASURE_BEAM       BIT_14
 #define VEHICLE_SPACE_SCANNER       BIT_15
+#define VEHICLE_SWIM            BIT_16
 
 #define VEHICLE_STATE_NORMAL        0
 #define VEHICLE_STATE_EVADE     1
@@ -293,8 +296,8 @@
 #define IMPLANT_METAL_ABS_2     BIT_8
 #define IMPLANT_METAL_ABS_3     BIT_9
 
-#define PIT_BORDER_X            (MAX_MAPS-10)
-#define PIT_BORDER_Y            (MAX_MAPS-10)
+#define PIT_BORDER_X            (MAX_MAPS-9)
+#define PIT_BORDER_Y            (MAX_MAPS-9)
 #define MEDAL_BORDER_X          52
 #define MEDAL_BORDER_Y          22
 
@@ -559,7 +562,7 @@
  */
 
 #define SECT_NULL                     0
-#define SECT_MAX                   17
+#define SECT_MAX                   18
 
 #define SECT_ROCK           1
 #define SECT_SAND           2
@@ -577,6 +580,7 @@
 #define SECT_UNDERGROUND        14
 #define SECT_ICE            15
 #define SECT_MAGMA          16
+#define SECT_OCEAN			17
 
 /*
  * Equpiment wear locations.

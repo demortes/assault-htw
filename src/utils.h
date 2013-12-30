@@ -193,10 +193,9 @@ struct char_ref_type
 #define IS_BUGGED_AREA(x,y) ((x<0))
 #define practicing(ch)      (IS_SET(ch->pcdata->pflags,PFLAG_PRACTICE) && ch->c_sn != gsn_practice )
 #define paintball(ch)       ((ch->z == Z_PAINTBALL && ch->x >= 200 && ch->y >= 200 && ch->x <= 300 && ch->y <= 300))
-#define medal(ch)       ((ch->z == Z_PAINTBALL && ch->x >= 1 && ch->x <= 52 && ch->y >= 1 && ch->y <= 22))
-#define INVALID_COORDS(x,y) (( x < BORDER_SIZE || x > MAX_MAPS-BORDER_SIZE || y < BORDER_SIZE || y > MAX_MAPS-BORDER_SIZE ))
+#define medal(ch)       ((ch->z == Z_PAINTBALL && ch->x >= 0 && ch->x <= 52 && ch->y >= 0 && ch->y <= 22))
 #define COMBAT_LAG(ch)      ((ch->fighttimer > 480))
-#define NUKEM(ch)       ((ch->z == Z_PAINTBALL && ch->x == 2 && ch->y == 2))
+#define NUKEM(ch)       ((ch->z == Z_PAINTBALL && ch->x == 1 && ch->y == 0))
 #define blind_player(ch)    ((IS_SET(ch->config,CONFIG_BLIND)))
 #define allied(ch,vch)      ((ch->pcdata->alliance != -1 && ch->pcdata->alliance == vch->pcdata->alliance))
 /*

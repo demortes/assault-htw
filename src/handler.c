@@ -564,7 +564,7 @@ void extract_obj( OBJ_DATA *obj )
         char buf[MSL] = "\0";
         sprintf(buf,"%s - Bad extract: %d/%d/%d, carried by %s.", obj->short_descr,obj->x,obj->y,obj->z,(obj->carried_by)?obj->carried_by->name:"nobody");
         log_f(buf);
-        move_obj(obj,0,1,Z_GROUND);
+        move_obj(obj,0,1,4);
         return;
     }
     if ( obj->quest_timer > 0 )
@@ -574,22 +574,19 @@ void extract_obj( OBJ_DATA *obj )
             if ( quest_obj[i] == obj )
                 quest_obj[i] = NULL;
     }
-    if ( obj->x != 0 || obj->y != 0 || obj->z != 1 )
+    if ( obj->x != 0 || obj->y != 0 || obj->z != 4 )
     {
         if ( obj->carried_by )
         {
             obj_from_char(obj);
             obj_to_room(obj,get_room_index(ROOM_VNUM_WMAP));
         }
-        /*	if ( map_bld[obj->x][obj->y][obj->z] && map_bld[obj->x][obj->y][obj->z]->type == BUILDING_WAREHOUSE )
-            {
-                char buf[MSL] = "\0";
-                sprintf(buf,"%s extracted from %s's warehouse.\n\r", obj->short_descr, map_bld[obj->x][obj->y][obj->z]->owned );
-                log_f(buf);
-            }*/
         if ( obj->item_type == ITEM_BOMB && obj->value[1] != 0 )
             obj->value[1] = 0;
-        move_obj(obj,0,0,1);
+        obj->x = 0;
+        obj->y = 0;
+        obj->z = 4;		// Recursive call below.... yet it would constantly get caught in this? Stack Overflow - 12/20/2013 Demortes
+        extract_obj(obj);
         return;
     }
     for (ref=obj_ref_list; ref; ref=ref->next)
@@ -612,10 +609,8 @@ void extract_obj( OBJ_DATA *obj )
 
     if  ( obj->carried_by != NULL )
         obj_from_char( obj );
-    else if
-    ( obj->in_room != NULL )
+    else if( obj->in_room != NULL )
         obj_from_room( obj );
-
     {
         extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
         OBJ_DATA *obj2;

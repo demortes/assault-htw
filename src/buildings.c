@@ -104,9 +104,6 @@ void building_update( void )
         if ( bld->value[9] > 0 )
         {
             bld->value[9]--;
-            //			if ( bld->value[9] > 0 && bld->owner && has_ability(bld->owner,5) ) //nuclear containment
-            //				bld->value[9]--;
-
         }
         if ( is_evil(bld) )
             qb = TRUE;
@@ -201,7 +198,7 @@ void building_update( void )
                     if ( number_percent() < 33 )
                         REMOVE_BIT(bld->value[1],INST_ANTIVIRUS);
                 }
-                else if ( number_percent() < 30 )
+                else if ( number_percent() < 30 || ch->security == FALSE)
                 {
                     BUILDING_DATA *bld2;
                     bool got = FALSE;
@@ -210,9 +207,9 @@ void building_update( void )
                     y = bld->y;
                     for ( x = bld->x - range; x < bld->x + range + 1; x++ )
                     {
-                        if ( INVALID_COORDS(x,y) )
-                            continue;
-                        bld2 = map_bld[x][y][z];
+                        int tx = x, ty = y;
+                        real_coords(&tx, &ty);
+                    	bld2 = map_bld[tx][ty][z];
                         if ( bld2 == NULL )
                             continue;
                         if ( number_percent() < 10 - bld->value[3] && bld2->value[4] == 0 )
@@ -237,9 +234,9 @@ void building_update( void )
                     {
                         for ( y = bld->y - range; y < bld->y + range + 1; y++ )
                         {
-                            if ( INVALID_COORDS(x,y) )
-                                continue;
-                            bld2 = map_bld[x][y][z];
+                            int tx = x, ty = y;
+                            real_coords(&tx, &ty);
+                            bld2 = map_bld[tx][ty][z];
                             if ( bld2 == NULL )
                                 continue;
                             if ( number_percent() < 10 - bld->value[3] && bld2->value[4] == 0 )
@@ -3540,7 +3537,7 @@ void do_construct( CHAR_DATA *ch, char *argument )
     i = 0;
 
     bld = ch->in_building;
-    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MOTHERSHIP_COMM) || !complete(bld) )
+    if ( bld == NULL || ( bld->type != BUILDING_GARAGE && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_MOTHERSHIP_COMM && bld->type != BUILDING_SHIPYARD) || !complete(bld) )
     {
         send_to_char( "You must be inside a completed garage, airfield, space center, or mothership comm to do that.\n\r", ch );
         return;
@@ -3554,6 +3551,10 @@ void do_construct( CHAR_DATA *ch, char *argument )
         else if ( bld && bld->type == BUILDING_MOTHERSHIP_COMM  && complete(bld))
         {
             construct_alien_vessal(ch,argument);
+            return;
+        } else if ( bld && bld->type == BUILDING_SHIPYARD && complete(bld))
+        {
+            construct_sailing_vessal(ch,argument);
             return;
         }
 
@@ -3792,10 +3793,10 @@ bool check_missile_defense(OBJ_DATA *obj)
     {
         for ( y=y1; y <= yy; y++ )
         {
-            if ( INVALID_COORDS(x,y) )
-                continue;
+            int tx = x, ty = y;
+            real_coords(&tx, &ty);
 
-            bld = map_bld[x][y][z];
+            bld = map_bld[tx][ty][z];
 
             if ( !bld || bld->type != BUILDING_MISSILE_DEFENSE || !complete(bld) )
                 continue;
@@ -3811,6 +3812,48 @@ bool check_missile_defense(OBJ_DATA *obj)
             break;
     }
     return ex;
+}
+
+void construct_sailing_vessal(CHAR_DATA *ch, char *argument)
+{
+    VEHICLE_DATA *vhc;
+    int type, hit = 500, ammo = 10, speed = 10;
+    BUILDING_DATA *bld;
+
+    if((bld = map_bld[ch->x][ch->y][ch->z]) == NULL) {
+        mreturn("You shouldn't be able to see this... contact an immortal.\r\n\r\n", ch);
+    }
+
+    if (!str_cmp(argument, "gunship")) {
+        type = VEHICLE_GUNSHIP;
+        hit = 2000;
+        ammo = 100;
+        speed = 5;
+    } else if (!str_cmp(argument, "boat")) {
+        type = VEHICLE_BOAT;
+        hit = 500;
+        ammo = 0;
+        speed = 10;
+    } else {
+        mreturn("Invalid selection. Pick a gunship or a boat.\r\n", ch);
+    }
+
+    if ( (vhc = create_vehicle(type)) == NULL )
+        mreturn("Error! Report this to an immortal.\r\n", ch);
+
+    move_vehicle(vhc,ch->x,ch->y,ch->z);
+
+    vhc->max_fuel = 500;
+    vhc->fuel = 500;
+    vhc->max_hit = hit;
+    vhc->hit = hit;
+    vhc->max_ammo = ammo;
+    vhc->ammo = ammo;
+    vhc->ammo_type = 5;
+    vhc->speed = speed;
+    SET_BIT(vhc->flags, VEHICLE_SWIM);
+
+    mreturn("Ship created.\r\n", ch);
 }
 
 void construct_alien_vessal(CHAR_DATA *ch, char *argument)

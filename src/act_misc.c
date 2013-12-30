@@ -37,7 +37,7 @@
 #include "config.h"
 #include "mapper.h"
 
-int leads_to args( ( BUILDING_DATA *bld, int dir, int xy ) );
+int leads_to( int x,int y,int z,int dir );
 void spell_imprint( int sn, int level, CHAR_DATA *ch, void *vo );
 CHAR_DATA *search_dir_name( CHAR_DATA *ch, char *argument, int direction, int range );
 void game_in_play(CHAR_DATA *ch, char *name);
@@ -75,22 +75,18 @@ bool can_build( int type, int sect, int planet )
     return FALSE;
 }
 
-int leads_to( BUILDING_DATA *bld, int dir, int xy )
+int leads_to( int x,int y,int z,int dir )
 {
-    int x = bld->x;
-    int y = bld->y;
-    if ( dir == DIR_NORTH )
-        y = bld->y + 1;
-    else if ( dir == DIR_SOUTH )
-        y = bld->y - 1;
-    else if ( dir == DIR_EAST )
-        x = bld->x + 1;
-    else if ( dir == DIR_WEST )
-        x = bld->x - 1;
-    if ( xy == 0 )
-        return x;
-    else
-        return y;
+	if ( dir == DIR_NORTH )
+		y++;
+	else if ( dir == DIR_SOUTH )
+		y--;
+	else if ( dir == DIR_EAST )
+		x++;
+	else if ( dir == DIR_WEST )
+		x--;
+	real_coords(&x,&y);
+	return map_table.type[x][y][z];
 }
 
 void move_coords( int *x,int *y,int dir )
@@ -2728,7 +2724,7 @@ void do_qpspend( CHAR_DATA *ch, char *argument )
             return;
         }
         if ( !mmove )
-            cost = ( IS_BETWEEN(x,ch->x-100,ch->x+100) && IS_BETWEEN(y,ch->y-100,ch->y+100) ) ? 30 : ( IS_BETWEEN(x,ch->x-300,ch->x+300) && IS_BETWEEN(y,ch->y-300,ch->y+300) ) ? 50 : 70;
+        	cost = in_range_of(x, y, ch->x, ch->y, 100)? 30 : in_range_of(x, y, ch->x, ch->y, 300)? 50 : 70;
         else
         {
             if ( str_cmp(bld->owned,ch->name) || is_neutral(bld->type) )
@@ -4140,7 +4136,7 @@ void do_spy( CHAR_DATA *ch, char *argument )
     {
         int x,y,zz,xx,yy,map;
         argument = one_argument(argument,arg);
-        if ( !is_number(arg) || !is_number(argument) || INVALID_COORDS(atoi(arg),atoi(argument)) )
+        if ( !is_number(arg) || !is_number(argument) || atoi(arg) >= MAX_MAPS || atoi(arg) < 0 || atoi(argument) >= MAX_MAPS || atoi(argument) < 0)
         {
             send_to_char( "Invalid coords.\n\r", ch );
             return;
@@ -4273,9 +4269,9 @@ void do_locate( CHAR_DATA *ch, char *argument )
         y = ch->y + i;
         for ( x = ch->x-i; x < ch->x+i; x++ )
         {
-            if (INVALID_COORDS(x,y) )
-                continue;
-            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
+            int tx = x, ty = y;
+            real_coords(&tx, &ty);
+            for ( obj = map_obj[tx][ty]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4289,9 +4285,9 @@ void do_locate( CHAR_DATA *ch, char *argument )
         y = ch->y - i;
         for ( x = ch->x-i; x < ch->x+i; x++ )
         {
-            if (INVALID_COORDS(x,y) )
-                continue;
-            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
+        	int tx = x, ty = y;
+        	real_coords(&tx, &ty);
+            for ( obj = map_obj[tx][ty]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4305,9 +4301,9 @@ void do_locate( CHAR_DATA *ch, char *argument )
         x = ch->x + i;
         for ( y = ch->y-i; y < ch->y+i; y++ )
         {
-            if (INVALID_COORDS(x,y) )
-                continue;
-            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
+        	int tx = x, ty = y;
+        	real_coords(&tx, &ty);
+            for ( obj = map_obj[tx][ty]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4321,9 +4317,9 @@ void do_locate( CHAR_DATA *ch, char *argument )
         x = ch->x - i;
         for ( y = ch->y-i; y < ch->y+i; y++ )
         {
-            if (INVALID_COORDS(x,y) )
-                continue;
-            for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
+        	int tx = x, ty = y;
+        	real_coords(&tx, &ty);
+        	for ( obj = map_obj[tx][ty]; obj; obj = obj->next_in_room )
             {
                 if ( obj->z == ch->z )
                 {
@@ -4400,11 +4396,7 @@ void do_paradrop( CHAR_DATA *ch, char *argument )
     x = atoi(arg);
     y = atoi(argument);
     z = ch->z;
-    if ( INVALID_COORDS(x,y) )
-    {
-        send_to_char( "Invalid coords.\n\r", ch );
-        return;
-    }
+    real_coords(&x, &y);
     if ( map_bld[x][y][ch->z] != NULL || map_table.type[x][y][ch->z] == SECT_NULL || map_table.type[x][y][ch->z] == SECT_WATER || map_table.type[x][y][ch->z] == SECT_NULL )
     {
         send_to_char( "You can't go to that location.\n\r", ch );
@@ -4412,11 +4404,15 @@ void do_paradrop( CHAR_DATA *ch, char *argument )
     }
     for ( xx=x-3; xx<=x+3; xx++ )
         for ( yy=y-3; yy<=y+3; yy++ )
-            if ( !INVALID_COORDS(x,y) && map_bld[xx][yy][ch->z] != NULL && map_bld[xx][yy][ch->z]->active == FALSE )
+        {
+        	int tx = xx, ty = yy;
+        	real_coords(&tx, &ty);
+            if ( map_bld[tx][ty][ch->z] != NULL && map_bld[tx][ty][ch->z]->active == FALSE )
             {
                 send_to_char( "You can't go to that location.\n\r", ch );
                 return;
             }
+        }
     act( "You jump on board a transport plane and begin the flight.", ch, NULL, NULL, TO_CHAR );
     move(ch,490,490,Z_SPACE);
     ch->x = x;
@@ -4646,7 +4642,7 @@ void do_psy_message( CHAR_DATA *ch, char *argument )
             continue;
         if ( IS_IMMORTAL(wch) || IS_NEWBIE(wch) || ch == wch || !same_planet(ch,wch) )
             continue;
-        if ( wch->in_room->vnum == ROOM_VNUM_WMAP && (IS_BETWEEN(wch->x,ch->x-range,ch->x+range)) && (IS_BETWEEN(wch->y,ch->y-range,ch->y+range)))
+        if ( wch->in_room->vnum == ROOM_VNUM_WMAP && in_range_of(wch->x, wch->y, ch->x, ch->y, range))
         {
             i++;
             send_to_char( "You suddenly feel a strange urge to do something...\n\r", wch );

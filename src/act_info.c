@@ -554,7 +554,6 @@ void do_look( CHAR_DATA *ch, char *argument )
     if ( arg1[0] == '\0' || !str_cmp( arg1, "auto" ) || base )
     {
         /* 'look' or 'look auto' */
-
         if ( ch->in_vehicle != NULL && !SPACE_VESSAL(ch->in_vehicle) && !IS_SET(ch->config,CONFIG_BLIND) )
         {
             char buf[MSL] = "\0";
@@ -2796,7 +2795,7 @@ void do_identify( CHAR_DATA *ch, char *argument )
     else if ( obj->item_type == ITEM_COMPUTER )
     {
         sprintf( buf, "Statistics for: %s\n\r", capitalize(obj->short_descr) );
-        sprintf( buf+strlen(buf), "Range: %d\n\rBattery: %d\n\rAntenna: %s\n\r", obj->value[0], obj->value[1], (obj->value[2] != 0)?"YES":"NO" );
+        sprintf( buf+strlen(buf), "Range: %d\n\rBattery: %d\n\rAntenna: %s\n\rSpeed: %d\n\rCrack: %.1f\r\nVirus: %.1f\n\r", obj->value[0], obj->value[1], (obj->value[2] != 0)?"YES":"NO", obj->value[4], (float) obj->value[5]/10, (float) obj->value[6]/10 );
         send_to_char( buf, ch );
     }
     else if ( obj->item_type == ITEM_TOOLKIT )
@@ -3052,12 +3051,12 @@ void do_info( CHAR_DATA *ch, char *argument )
     }
     x = atoi(arg);
     y = atoi(argument);
-    if ( INVALID_COORDS(x,y) )
+    if ( x >= MAX_MAPS || y >= MAX_MAPS || x < 0 || y < 0 )
     {
         send_to_char( "Invalid coords.\n\r", ch );
         return;
     }
-    if (( !IS_BETWEEN(x,ch->x-ch->map,ch->x+ch->map) || !IS_BETWEEN(y,ch->y-ch->map,ch->y+ch->map)) && !IS_IMMORTAL(ch) )
+    if(!in_range_of(x, y, ch->x, ch->y, ch->map) && !IS_IMMORTAL(ch))
     {
         send_to_char( "You can't see that far.\n\r", ch );
         return;
@@ -3116,7 +3115,7 @@ void do_formulas( CHAR_DATA *ch, char *argument )
                 next = formula_table[i].rank;
             continue;
         }
-        sprintf( buf+strlen(buf), "%s\n\r", formula_table[i].desc );
+        sprintf( buf+strlen(buf), "@@W[@@G%03d@@W] @@N%s@@N\n\r", formula_table[i].rank, formula_table[i].desc );
     }
     sprintf( buf+strlen(buf), "\n\r@@WNext Formula at rank: %d.@@N\n\r", next );
     send_to_char( buf, ch );

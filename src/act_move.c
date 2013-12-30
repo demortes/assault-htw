@@ -89,6 +89,16 @@ struct fol_data *fol_free;
 
 */
 
+bool has_boat(CHAR_DATA *ch)
+{
+	if (IS_IMMORTAL(ch) )
+		return TRUE;
+	if ( ch->in_vehicle && (IS_SET(ch->in_vehicle->flags,VEHICLE_SWIM) || IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) ))
+		return TRUE;
+
+	return FALSE;
+}
+
 void move_char( CHAR_DATA *ch, int door )
 {
     CHAR_DATA *fch;
@@ -110,7 +120,24 @@ void move_char( CHAR_DATA *ch, int door )
         return;
     if ( ch->c_sn == gsn_move )
         ch->c_sn = -1;
-    if ( ch->in_vehicle )
+        
+    xx = ch->x;
+    yy = ch->y;
+    if ( door < 0 || door > 3 )											//If wrong direction chosen
+    {
+        bug( "Do_move: bad door %d.", door );
+        return;
+    }
+    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )	//If confused
+        door = number_range(0,3);
+
+    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )		//If over burdened...
+    {
+        send_to_char( "You are carrying too much weight!\n\r", ch);
+        return;
+    }        
+        
+    if ( ch->in_vehicle )					// If you're in a vehicle...
     {
         if ( SPACE_VESSAL(ch->in_vehicle) && z != Z_SPACE )
         {
@@ -122,8 +149,41 @@ void move_char( CHAR_DATA *ch, int door )
             send_to_char( "@@gYou must @@elift@@g up in order to fly the aircraft.@@N\n\r", ch );
             return;
         }
+
+		if ( continual_flight(ch->in_vehicle) )
+        {
+            ch->c_sn = -1;
+            ch->c_level = door;
+        }
+        else if ( IS_SET(ch->effect,EFFECT_DRUNK) && number_percent() < 33 )
+        {
+            send_to_char( "You swerve around in circles.. FUN!\n\r", ch );
+            return;
+        }
+        
+        if ( ch->c_sn == gsn_row )
+		{
+			ch->c_sn = -1;
+			ch->in_vehicle->fuel = 1;
+		}
+        
+        if ( ch->in_vehicle->fuel <= 0 )
+        {
+            send_to_char( "You are out of fuel.\n\r", ch );
+            if ( AIR_VEHICLE(ch->in_vehicle->type) )
+                crash(ch,ch);
+            else if ( IS_SET(ch->in_vehicle->flags, VEHICLE_SWIM) )
+            {
+                ch->c_sn = gsn_row;
+                ch->c_level = door;
+                ch->c_time = 15 * PULSE_PER_SECOND;
+                send_to_char( "You begin rowing with your hands!\n\r", ch );
+            }
+            return;
+        }
+
     }
-    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_MAGMA && number_percent() > 2 )
+    if ( map_table.type[ch->x][ch->y][ch->z] == SECT_MAGMA && number_percent() > 2 )    //If you're in magma
     {
         if ( !ch->in_vehicle )
             send_to_char( "You didn't manage to escape the magma! You must try again!\n\r", ch );
@@ -132,72 +192,50 @@ void move_char( CHAR_DATA *ch, int door )
 
         return;
     }
-    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
+    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )							// If flagged asshole.
     {
         move(ch,1,1,0);
         do_look(ch,"");
         return;
     }
 
-    xx = ch->x;
-    yy = ch->y;
-    if ( door < 0 || door > 3 )
-    {
-        bug( "Do_move: bad door %d.", door );
-        return;
-    }
-    if ( IS_SET(ch->effect,EFFECT_CONFUSE) && number_percent() < 50 )
-        door = number_range(0,3);
-
-    if ( ch->carry_weight > can_carry_w( ch ) && !ch->in_vehicle )
-    {
-        send_to_char( "You are carrying too much weight!\n\r", ch);
-        return;
-    }
-
-    if ( ch->in_building )
+    if ( ch->in_building )												//Currently in a building (before moving)
         from_bld = TRUE;
-    if ( ch->in_vehicle )
-    {
-        if ( continual_flight(ch->in_vehicle) )
-        {
-            ch->c_sn = -1;
-            ch->c_level = door;
-        }
-        else if ( IS_SET(ch->effect,EFFECT_DRUNK) && number_percent() < 33 )
-        {
-            send_to_char( "You swirve around in circles.. FUN!\n\r", ch );
-            return;
-        }
-        if ( ch->in_vehicle->fuel <= 0 )
-        {
-            send_to_char( "You are out of fuel.\n\r", ch );
-            if ( AIR_VEHICLE(ch->in_vehicle->type) )
-                crash(ch,ch);
-            return;
-        }
-    }
-    {
-        BUILDING_DATA *bld;
-        bld = get_char_building(ch);
-        if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) )if ( bld != NULL && bld && bld->exit[door] == FALSE && complete(bld) && ((bld->owner != ch) || (ch->fighttimer > 0))  && !IS_IMMORTAL(ch) )
-            {
-                send_to_char( "You cannot exit this way.\n\r", ch );
-                if ( my_get_hours(ch,TRUE) == 0 )
-                    send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
-                return;
-            }
-    }
+
+	bld = get_char_building(ch);			//BELOW: If in building, exits exist and building is completed... (and owner is not the player, OR fight timer is active) and not immortal
+	if ( bld != NULL && bld->exit[door] == FALSE && complete(bld) && ((bld->owner != ch) || (ch->fighttimer > 0))  && !IS_IMMORTAL(ch) )
+	{
+			send_to_char( "You cannot exit this way.\n\r", ch );
+			if ( my_get_hours(ch,TRUE) == 0 )
+				send_to_char( "@@WTIP: You can add more exits to buildings using the @@eMAKE@@W command. Example: make east@@N\n\r", ch );
+			return;
+	}
 
     if ( door == DIR_NORTH )
+	{
         ch->y += movea;
+		if(ch->y >= MAX_MAPS - BORDER_SIZE)
+			ch->y = BORDER_SIZE;			// If we're going north on the border (MAX_MAPS - BORDER_SIZE) we then want it to wrap around to BORDER_SIZE + whatever...
+	}
     else if ( door == DIR_EAST )
+	{
         ch->x += movea;
+		if(ch->x >= MAX_MAPS - BORDER_SIZE)
+			ch->x = BORDER_SIZE;
+	}
     else if ( door == DIR_SOUTH )
+	{
         ch->y -= movea;
-    else if ( door == DIR_WEST )
+		if(ch->y < BORDER_SIZE)
+			ch->y = MAX_MAPS - BORDER_SIZE - 1;
+    }
+	else if ( door == DIR_WEST )
+	{
         ch->x -= movea;
-    else
+		if(ch->x < BORDER_SIZE)
+			ch->x = MAX_MAPS - BORDER_SIZE - 1;
+	}
+	else
         return;
 
     bld = get_building(ch->x,ch->y,z);
@@ -222,18 +260,43 @@ void move_char( CHAR_DATA *ch, int door )
             ch->y = yy;
             return;
         }
-        if ( ch->in_vehicle != NULL )
+        if (ch->in_vehicle)
         {
-            if ( !bld && map_table.type[ch->x][ch->y][z] == SECT_WATER && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) )
+            if ( !bld && (map_table.type[ch->x][ch->y][z] == SECT_WATER || (map_table.type[ch->x][ch->y][z] == SECT_OCEAN && !has_boat(ch))) && !AIR_VEHICLE(ch->in_vehicle->type) && !IS_SET(ch->in_vehicle->flags,VEHICLE_FLOATS) && !IS_SET(ch->in_vehicle->flags,VEHICLE_SWIM))
             {
                 send_to_char( "You can't drive over water.\n\r", ch );
                 ch->x = xx;
                 ch->y = yy;
                 return;
             }
+            if ( IS_SET(ch->in_vehicle->flags, VEHICLE_SWIM) )
+            {
+                if ( map_table.type[ch->x][ch->y][ch->z] != SECT_OCEAN && map_table.type[ch->x][ch->y][ch->z] != SECT_WATER 
+                  && map_table.type[xx][yy][ch->z] != SECT_OCEAN && map_table.type[xx][yy][ch->z] != SECT_WATER)
+                {
+                    send_to_char( "You cannot take it on land.\n\r", ch );
+                    ch->x = xx; 
+                    ch->y = yy;
+                    return;
+                }
+            }
+            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !has_boat(ch) && !IS_IMMORTAL(ch) )
+            {
+               send_to_char( "You need some way to cross the water!\n\r", ch );
+               ch->x = xx;
+               ch->y = yy;
+               return;
+            }
+        } else if (map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !IS_IMMORTAL(ch))
+        {
+        	send_to_char("You can not walk on water...\r\n", ch);
+        	ch->x = xx;
+        	ch->y = yy;
+        	return;
         }
     }
-    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD )))
+
+    if ( z != Z_SPACE && (map_table.type[ch->x][ch->y][z] == SECT_NULL || ( bld && !is_neutral(bld->type) && (!bld->active || (bld->protection > 0 && ch->in_building == NULL && str_cmp(bld->owned,ch->name) ) )) || ( bld && ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && !from_bld && bld->type != BUILDING_GARAGE && bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_AIRFIELD && bld->type != BUILDING_SHIPYARD )))
     {
         bool cancel = FALSE;
         if ( ch->in_vehicle && AIR_VEHICLE(ch->in_vehicle->type) )
@@ -243,29 +306,20 @@ void move_char( CHAR_DATA *ch, int door )
                 z = Z_GROUND;
             x = ch->x;
             y = ch->y;
-            if ( x < BORDER_SIZE )
-                x = BORDER_SIZE;
-            if ( y < BORDER_SIZE )
-                y = BORDER_SIZE;
-            if ( x >= MAX_MAPS - BORDER_SIZE )
-                x = (MAX_MAPS - BORDER_SIZE) - 1;
-            if ( y >= MAX_MAPS - BORDER_SIZE )
-                y = (MAX_MAPS - BORDER_SIZE) - 1;
-            ch->x = xx;
-            ch->y = yy;
+            real_coords(&x, &y);
             move(ch,x,y,z);
             crash(ch,ch);
             return;
         }
         else
         {
-            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL || INVALID_COORDS(ch->x,ch->y) )
+            if ( map_table.type[ch->x][ch->y][ch->z] == SECT_NULL )
                 send_to_char( "You cannot go that way.\n\r", ch );
-            else if ( bld && ch->in_vehicle != NULL )
+	        else if ( bld && ch->in_vehicle != NULL )
                 send_to_char( "You can't enter it while driving!\n\r", ch );
             else if ( bld && bld->protection > 0 )
                 send_to_char( "This building is protected.\n\r", ch );
-            else
+            else if ( bld )
             {
                 sprintf( buf, "You cannot enter %s's property while they are offline.\n\r", bld->owned );
                 send_to_char(buf,ch);
@@ -278,6 +332,7 @@ void move_char( CHAR_DATA *ch, int door )
             return;
         }
     }
+
     if ( bld )
     {
         int reverse = 1;
@@ -738,6 +793,11 @@ void do_exit( CHAR_DATA *ch, char *argument )
         monitor_chan( ch, buf, MONITOR_GEN_MORT);
         return;
     }
+	if ( map_table.type[ch->x][ch->y][ch->z]==SECT_OCEAN && !IS_IMMORTAL(ch))
+	{
+		send_to_char("And what, walk on water?\n\r", ch );
+		return;
+	}
     if ( SPACE_VESSAL(ch->in_vehicle) && ch->z == Z_SPACE )
     {
         VEHICLE_DATA *vhc = create_vehicle(VEHICLE_SCOUT);
@@ -853,7 +913,15 @@ void do_pit( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, number_range(4,400), number_range(4,400), Z_GROUND );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
+        //move ( ch, number_range(4,400), number_range(4,400), Z_GROUND );
         do_look(ch,"");
         return;
     }
@@ -927,7 +995,14 @@ void do_paintball( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, PIT_BORDER_X -1, PIT_BORDER_Y - 1, Z_GROUND );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
         do_look(ch,"");
         return;
     }
@@ -1549,8 +1624,8 @@ void do_medal( CHAR_DATA *ch, char *argument )
     {
         int x,y;
         sprintf( buf, "%s has gone out of the medal arena!", ch->name );
-        for ( x=BORDER_SIZE; x<MEDAL_BORDER_X; x++ )
-            for ( y=BORDER_SIZE; y<MEDAL_BORDER_Y; y++ )
+        for ( x=1; x<MEDAL_BORDER_X; x++ )
+            for ( y=1; y<MEDAL_BORDER_Y; y++ )
                 if ( map_bld[x][y][Z_PAINTBALL] )
                     extract_building(map_bld[x][y][Z_PAINTBALL],FALSE);
         for ( obj = ch->first_carry; obj; obj = obj_next )
@@ -1579,7 +1654,14 @@ void do_medal( CHAR_DATA *ch, char *argument )
             }
         }
         send_to_char( "You have no HQ! Setting default coordinates!\n\r", ch );
-        move ( ch, PIT_BORDER_X -1, PIT_BORDER_Y - 1, 1 );
+        int ranx = number_range(0, MAX_MAPS-1);
+        int rany = number_range(0, MAX_MAPS-1);
+        while (map_table.type[ranx][rany][Z_GROUND] == SECT_OCEAN && map_bld[ranx][rany][Z_GROUND] == NULL)
+        {
+        	ranx = number_range(0, MAX_MAPS-1);
+            rany = number_range(0, MAX_MAPS-1);
+        }
+		move ( ch, ranx, rany, Z_GROUND );
         do_look(ch,"");
         ch->medaltimer = (2+ch->medals)<=6?(2+ch->medals) * 60 : 360;
         save_char_obj(ch);
@@ -1640,7 +1722,7 @@ void do_medal( CHAR_DATA *ch, char *argument )
                 sprintf( buf, "%s has entered the medal arena!", ch->name );
                 info( buf, 0 );
                 act( "$n has entered the medal arena!", ch, NULL, NULL, TO_ROOM );
-                move(ch,BORDER_SIZE,BORDER_SIZE,Z_PAINTBALL);
+                move(ch,1,1,Z_PAINTBALL);
                 for ( obj = map_obj[ch->x][ch->y]; obj; obj = obj_next )
                 {
                     obj_next = obj->next_in_room;

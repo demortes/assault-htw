@@ -435,6 +435,7 @@ DECLARE_DO_FUN( do_loadlist );
 DECLARE_DO_FUN( do_sresearch );
 DECLARE_DO_FUN( construct_space_vessal );
 DECLARE_DO_FUN( construct_alien_vessal );
+DECLARE_DO_FUN( construct_sailing_vessal );
 DECLARE_DO_FUN( do_lift );
 DECLARE_DO_FUN( do_land );
 DECLARE_DO_FUN( space_warp );

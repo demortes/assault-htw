@@ -207,222 +207,218 @@ void boot_db(bool fCopyOver) {
 	}
 #endif
 
-	init_string_space();
-	fBootDb = TRUE;
+    init_string_space();
+    fBootDb=TRUE;
 
-	send_to_descrips("Initialising Ack! Mud.  Please Wait....\n\r");
+    send_to_descrips( "Initialising Ack! Mud.  Please Wait....\n\r" );
 
-	/*
-	 * Init random number generator.
-	 */
-	{
-		init_mm();
-	}
+    /*
+     * Init random number generator.
+     */
+        init_mm( );
 
-	/*
-	 * Set time and weather.
-	 */
-	{
-		long lhour, lday, lmonth;
+    /*
+     * Set time and weather.
+     */
+        long lhour, lday, lmonth;
 
-		lhour = (current_time - 650336715) / (PULSE_TICK / PULSE_PER_SECOND);
-		time_info.hour = lhour % 24;
-		lday = lhour / 24;
-		time_info.day = lday % 35;
-		lmonth = lday / 35;
-		time_info.month = lmonth % 17;
-		time_info.year = lmonth / 17;
-	}
+        lhour           = (current_time - 650336715)
+                          / (PULSE_TICK / PULSE_PER_SECOND);
+        time_info.hour  = lhour  % 24;
+        lday            = lhour  / 24;
+        time_info.day   = lday   % 35;
+        lmonth          = lday   / 35;
+        time_info.month = lmonth % 17;
+        time_info.year  = lmonth / 17;
 
-	/* Clear list of used areas */
-	for (a = 0; a < MAX_AREAS; a++) {
-		area_used[a] = NULL;
-	}
+    /* Clear list of used areas */
+    for (a=0; a< MAX_AREAS; a++)
+        area_used[a]=NULL;
 
-	/*
-	 * Read in all the socials.
-	 */
-	{
+    /*
+     * Read in all the socials.
+     */
+        load_social_table( );
 
-		load_social_table();
+    /*
+     * Read in all the area files.
+     */
+        FILE *fpList;
+        log_f( "Reading Area Files..." );
 
-	}
+        if ( ( fpList = fopen( AREA_LIST, "r" ) ) == NULL )
+        {
+            perror( AREA_LIST );
+            log_f( "Unable to open area.lst, aborting bootup." );
+            kill( getpid(), SIGQUIT );
+        }
 
-	/*
-	 * Read in all the area files.
-	 */
-	{
-		FILE *fpList;
-		log_f("Reading Area Files...");
+        for ( ; ; )
+        {
+            strcpy( strArea, fread_word( fpList ) );
+            if ( strArea[0] == '$' )
+                break;
 
-		if ((fpList = fopen( AREA_LIST, "r")) == NULL) {
-			perror( AREA_LIST);
-			log_f("Unable to open area.lst, aborting bootup.");
-			kill(getpid(), SIGQUIT);
-		}
+            if ( strArea[0] == '-' )
+            {
+                fpArea = stdin;
+            }
+            else
+            {
+                if ( ( fpArea = fopen( strArea, "r" ) ) == NULL )
+                {
+                    log_string( strArea );
+                    kill( getpid(), SIGQUIT );
+                }
+            }
 
-		for (;;) {
-			strcpy(strArea, fread_word(fpList));
-			if (strArea[0] == '$')
-				break;
+            for ( ; ; )
+            {
+                char *word;
 
-			if (strArea[0] == '-') {
-				fpArea = stdin;
-			} else {
-				if ((fpArea = fopen(strArea, "r")) == NULL) {
-					log_string(strArea);
-					kill(getpid(), SIGQUIT);
-				}
-			}
+                if ( fread_letter( fpArea ) != '#' )
+                {
+                    bug( "Boot_db: # not found.", 0 );
+                    kill( getpid(), SIGQUIT );
+                }
 
-			for (;;) {
-				char *word;
+                word = fread_word( fpArea );
 
-				if (fread_letter(fpArea) != '#') {
-					bug("Boot_db: # not found.", 0);
-					kill(getpid(), SIGQUIT);
-				}
+                if ( word[0] == '$'               )                 break;
+                else if ( !str_cmp( word, "AREA"     ) ) load_area    (fpArea);
+                else if ( !str_cmp( word, "HELPS"    ) ) load_helps   (fpArea);
+                else if ( !str_cmp( word, "ROOMS"    ) ) load_rooms   (fpArea);
+                else if ( !str_cmp( word, "OBJECTS"  ) ) load_objects (fpArea);
+                else if ( !str_cmp( word, "SPECIALS" ) ) load_specials(fpArea);
+                else
+                {
+                    bug( "Boot_db: bad section name.", 0 );
+                    exit( 1 );
+                }
+            }
 
-				word = fread_word(fpArea);
+            if ( fpArea != stdin )
+                fclose( fpArea );
+            fpArea = NULL;
+        }
+        fclose( fpList );
+        	// Load Acid Spray object at an unreachable room... - Demortes WHY?!
+        int i;
+        extern OBJ_DATA *quest_obj[MAX_QUEST_ITEMS];
+        for ( i=0; i<MAX_QUEST_ITEMS; i++ )
+            quest_obj[i] = NULL;
+        vehicle_weapon = create_object( get_obj_index(OBJ_VNUM_ACID_SPRAY), 0 );
+        vehicle_weapon->x = 0;
+        vehicle_weapon->y = 0;
+        vehicle_weapon->z = 4;
+        UNLINK(vehicle_weapon, first_obj, last_obj, next, prev);
+        obj_to_room(vehicle_weapon,get_room_index(ROOM_VNUM_WMAP));
 
-				if (word[0] == '$')
-					break;
-				else if (!str_cmp(word, "AREA"))
-					load_area(fpArea);
-				else if (!str_cmp(word, "HELPS"))
-					load_helps(fpArea);
-				else if (!str_cmp(word, "ROOMS"))
-					load_rooms(fpArea);
-				else if (!str_cmp(word, "OBJECTS"))
-					load_objects(fpArea);
-				else if (!str_cmp(word, "SPECIALS"))
-					load_specials(fpArea);
-				else {
-					bug("Boot_db: bad section name.", 0);
-					exit(1);
-				}
-			}
+        //		Init history and guessing game variables.
+        extern char *history1;
+        extern char *history2;
+        extern char *history3;
+        extern char *history4;
+        extern char *history5;
+        extern char *history6;
+        extern char *history7;
+        extern char *history8;
+        extern char *history9;
+        extern char *history10;
+        extern int guess_game;
 
-			if (fpArea != stdin)
-				fclose(fpArea);
-			fpArea = NULL;
-		}
-		fclose(fpList);
-	}
+        if ( history1 != NULL )
+            free_string(history1);
+        if ( history2 != NULL )
+            free_string(history2);
+        if ( history3 != NULL )
+            free_string(history3);
+        if ( history4 != NULL )
+            free_string(history4);
+        if ( history5 != NULL )
+            free_string(history5);
+        if ( history6 != NULL )
+            free_string(history6);
+        if ( history7 != NULL )
+            free_string(history7);
+        if ( history8 != NULL )
+            free_string(history8);
+        if ( history9 != NULL )
+            free_string(history9);
+        if ( history10 != NULL )
+            free_string(history10);
+        history1 = str_dup("");
+        history2 = str_dup("");
+        history3 = str_dup("");
+        history4 = str_dup("");
+        history5 = str_dup("");
+        history6 = str_dup("");
+        history7 = str_dup("");
+        history8 = str_dup("");
+        history9 = str_dup("");
+        history10 = str_dup("");
+        guess_game = 0;
 
-	{
-		int i;
-		extern OBJ_DATA *quest_obj[MAX_QUEST_ITEMS];
-		for (i = 0; i < MAX_QUEST_ITEMS; i++)
-			quest_obj[i] = NULL;
-		vehicle_weapon = create_object(get_obj_index(OBJ_VNUM_ACID_SPRAY), 0);
-		vehicle_weapon->x = 0;
-		vehicle_weapon->y = 0;
-		vehicle_weapon->z = Z_GROUND;
-		UNLINK(vehicle_weapon, first_obj, last_obj, next, prev);
-		obj_to_room(vehicle_weapon, get_room_index(ROOM_VNUM_WMAP));
-	}
-	{
-		extern char *history1;
-		extern char *history2;
-		extern char *history3;
-		extern char *history4;
-		extern char *history5;
-		extern char *history6;
-		extern char *history7;
-		extern char *history8;
-		extern char *history9;
-		extern char *history10;
-		extern int guess_game;
+        //Move on individual loading functions.
+        fBootDb = FALSE;
+        log_f( "Loading web data." );
+        load_web_data();
+        log_f( "Loading Building Table...." );
+        load_building_t( );
+        log_f( "Loading Wilderness...." );
+        read_map_from_file( );
+        log_f( "Creating Special Maps...." );
+        create_special_map();
+        log_f( "Loading Buildings...." );
+        load_buildings();
+        log_f( "Loading Objects...." );
+        load_sobjects( 1 );
+        log_f( "Loading High Scores...." );
+        load_scores();
+        load_ranks();
+        log_f( "Loading alliances...." );
+        load_alliances();
+        log_f( "Loading changes." );
+        load_changes();
+        log_f( "Loading logs." );
+        load_logs();
+        log_f( "Creating item load list...." );
+        create_load_list();
+        /* loading of disabled commands - Wyn */
+        log_f( "Loading Disabled Commands..." );
+        load_disabled();
+        log_f( "Loading Multiplay list...." );
+        load_multiplay();
+        log_f( "Loading quotes." );
+        load_quotes( );
+        booting_up = TRUE;
+        booting_up = FALSE;
+        log_f( "Loading banned sites." );
+        load_bans( );
+        log_f( "Loading Relevel Info." );
+        do_loadrelevel( );
 
-		if (history1 != NULL)
-			free_string(history1);
-		if (history2 != NULL)
-			free_string(history2);
-		if (history3 != NULL)
-			free_string(history3);
-		if (history4 != NULL)
-			free_string(history4);
-		if (history5 != NULL)
-			free_string(history5);
-		if (history6 != NULL)
-			free_string(history6);
-		if (history7 != NULL)
-			free_string(history7);
-		if (history8 != NULL)
-			free_string(history8);
-		if (history9 != NULL)
-			free_string(history9);
-		if (history10 != NULL)
-			free_string(history10);
-		history1 = str_dup("");
-		history2 = str_dup("");
-		history3 = str_dup("");
-		history4 = str_dup("");
-		history5 = str_dup("");
-		history6 = str_dup("");
-		history7 = str_dup("");
-		history8 = str_dup("");
-		history9 = str_dup("");
-		history10 = str_dup("");
-		guess_game = 0;
-	}
-	{
-		fBootDb = FALSE;
-		log_f("Loading web data.");
-		load_web_data();
-		log_f("Loading Building Table....");
-		load_building_t();
-		log_f("Loading Wilderness....");
-		read_map_from_file();
-		log_f("Creating Special Maps....");
-		create_special_map();
-		log_f("Loading Buildings....");
-		load_buildings();
-		log_f("Loading Objects....");
-		load_sobjects(1);
-		log_f("Loading High Scores....");
-		load_scores();
-		load_ranks();
-		log_f("Loading alliances....");
-		load_alliances();
-		log_f("Loading changes.");
-		load_changes();
-		log_f("Loading logs.");
-		load_logs();
-		log_f("Creating item load list....");
-		create_load_list();
-		/* loading of disabled commands - Wyn */
-		log_f("Loading Disabled Commands...");
-		load_disabled();
-		log_f("Loading Multiplay list....");
-		load_multiplay();
-		log_f("Loading quotes.");
-		load_quotes();
-		booting_up = TRUE;
-		booting_up = FALSE;
-		log_f("Loading banned sites.");
-		load_bans();
-		log_f("Loading Relevel Info.");
-		do_loadrelevel();
+        log_f( "Loading imm brands." );
+        load_brands( );
+        log_f( "Loading System Data." );
+        load_sysdata( );
+        save_objects(0);
 
-		log_f("Loading imm brands.");
-		load_brands();
-		log_f("Loading System Data.");
-		load_sysdata();
-		save_objects(0);
-	}
-	if (fCopyOver) {
-		extern bool disable_timer_abort;
-		disable_timer_abort = TRUE;
-		copyover_recover();
-		disable_timer_abort = FALSE;
-	} else {
-		log_f("Loading vehicles...");
-		load_vehicles(0);
-	}
-	return;
-}
+        //Vehicle handling, depending on Copyover or not
+    if (fCopyOver)
+    {
+        extern bool disable_timer_abort;
+        disable_timer_abort = TRUE;
+        copyover_recover();
+        disable_timer_abort = FALSE;
+    }
+    else
+    {
+        log_f( "Loading vehicles..." );
+        load_vehicles(0);
+    }
+    return;
+} //end dbboot()
 
 /*
  * Snarf an 'area' header line.
@@ -693,6 +689,8 @@ void load_specials(FILE *fp) {
 		default:
 			bug("Load_specials: letter '%c' not *, M, or S.", letter);
 			hang("Loading Specials in db.c");
+			return;
+			break;
 		case 'S':
 			return;
 		case '*':
@@ -712,131 +710,137 @@ void load_specials(FILE *fp) {
 /*
  * Create an instance of an object.
  */
-OBJ_DATA *create_object(OBJ_INDEX_DATA *pObjIndex, int level) {
-	static OBJ_DATA obj_zero;
-	OBJ_DATA *obj;
-	int looper;
-	int pLevel;
+OBJ_DATA *create_object( OBJ_INDEX_DATA *pObjIndex, int level )
+{
+    static OBJ_DATA obj_zero;
+    OBJ_DATA *obj;
+    int looper;
+    int pLevel;
 
-	/*
-	 if ( level < 1 )
-	 level = 1;
-	 */
+    /*
+    if ( level < 1 )
+      level = 1;
+    */
 
-	if (pObjIndex == NULL) {
-		bug("Create_object: NULL pObjIndex.", 0);
-		pObjIndex = get_obj_index(1);
-		//      hang( "Creating Object in db.c" );
-	}
+    if ( pObjIndex == NULL )
+    {
+        bug( "Create_object: NULL pObjIndex.", 0 );
+        pObjIndex = get_obj_index(1);
+        //      hang( "Creating Object in db.c" );
+    }
 
-	GET_FREE(obj, obj_free);
-	*obj = obj_zero;
-	obj->pIndexData = pObjIndex;
-	obj->in_room = NULL;
+    GET_FREE(obj, obj_free);
+    *obj                = obj_zero;
+    obj->pIndexData     = pObjIndex;
+    obj->in_room        = NULL;
 
-	if (level < 1) {
-		obj->level = pObjIndex->level;
-	} else {
-		obj->level = level;
-	}
+    if (level < 1)
+    {
+        obj->level = pObjIndex->level;
+    }
+    else
+    {
+        obj->level = level;
+    }
 
-	obj->wear_loc = -1;
+    obj->wear_loc       = -1;
 
-	obj->name = str_dup(pObjIndex->name);
-	obj->short_descr = str_dup(pObjIndex->short_descr);
-	obj->description = str_dup(pObjIndex->description);
-	obj->owner = str_dup("Nobody");
-	obj->item_type = pObjIndex->item_type;
-	obj->extra_flags = pObjIndex->extra_flags;
-	obj->wear_flags = pObjIndex->wear_flags;
-	obj->first_in_carry_list = NULL;
-	obj->next_in_carry_list = NULL;
-	obj->prev_in_carry_list = NULL;
-	obj->next = NULL;
-	obj->prev = NULL;
-	obj->attacker = NULL;
-	obj->weight = pObjIndex->weight;
-	obj->heat = pObjIndex->heat;
-	obj->x = 0;
-	obj->y = 0;
-	obj->z = 1;
-	obj->in_building = NULL;
-	if (obj->item_type == ITEM_BOMB)
-		obj->bomb_data = make_bomb(obj);
-	else
-		obj->bomb_data = NULL;
+    obj->name           = str_dup(pObjIndex->name);
+    obj->short_descr    = str_dup(pObjIndex->short_descr);
+    obj->description    = str_dup(pObjIndex->description);
+    obj->owner      = str_dup("Nobody");
+    obj->item_type      = pObjIndex->item_type;
+    obj->extra_flags    = pObjIndex->extra_flags;
+    obj->wear_flags     = pObjIndex->wear_flags;
+    obj->first_in_carry_list = NULL;
+    obj->next_in_carry_list = NULL;
+    obj->prev_in_carry_list = NULL;
+    obj->next = NULL;
+    obj->prev = NULL;
+    obj->attacker = NULL;
+    obj->weight = pObjIndex->weight;
+    obj->heat = pObjIndex->heat;
+    obj->x = 0;
+    obj->y = 0;
+    obj->z = 4;
+    obj->in_building = NULL;
+    if ( obj->item_type == ITEM_BOMB )
+        obj->bomb_data = make_bomb(obj);
+    else
+        obj->bomb_data = NULL;
 
-	obj->quest_map = 0;
-	obj->quest_timer = 0;
-	for (looper = 0; looper < MAX_OBJECT_VALUES; looper++) {
-		obj->value[looper] = pObjIndex->value[looper];
-	}
+    obj->quest_map = 0;
+    obj->quest_timer = 0;
+    for ( looper = 0; looper < MAX_OBJECT_VALUES; looper++ )
+    {
+        obj->value[looper]       = pObjIndex->value[looper];
+    }
 
-	/* Ok now that we have an actual object */
-	{
-		if (obj->level == 1)
-			pLevel = 2;
-		else
-			pLevel = obj->level;
-	}
+    /* Ok now that we have an actual object */
+    {
+        if (obj->level == 1)
+            pLevel = 2;
+        else
+            pLevel = obj->level;
+    }
 
-	if (pLevel < 1)
-		pLevel = 1; /* Should not happen, but make sure it's valid */
+    if (pLevel < 1) pLevel = 1;                             /* Should not happen, but make sure it's valid */
 
-	/*
-	 * Mess with object properties.
-	 */
-	switch (obj->item_type) {
-	default:
-		bugf("create_object: vnum %d bad type %d.", pObjIndex->vnum,
-				obj->item_type);
-		break;
-	case ITEM_LIGHT:
-	case ITEM_DRONE:
-	case ITEM_IMPLANT:
-	case ITEM_INSTALLATION:
-	case ITEM_BOARD:
-	case ITEM_MATERIAL:
-	case ITEM_AMMO:
-	case ITEM_WEAPON:
-	case ITEM_BOMB:
-	case ITEM_ARMOR:
-	case ITEM_TELEPORTER:
-	case ITEM_BLUEPRINT:
-	case ITEM_SUIT:
-	case ITEM_MEDPACK:
-	case ITEM_TOKEN:
-	case ITEM_FLAG:
-	case ITEM_DART_BOARD:
-	case ITEM_ELEMENT:
-	case ITEM_CONTAINER:
-	case ITEM_WEAPON_UP:
-	case ITEM_PIECE:
-	case ITEM_COMPUTER:
-	case ITEM_LOCATOR:
-	case ITEM_SKILL_UP:
-	case ITEM_PART:
-	case ITEM_DISK:
-	case ITEM_TRASH:
-	case ITEM_ASTEROID:
-	case ITEM_BACKUP_DISK:
-	case ITEM_VEHICLE_UP:
-	case ITEM_TOOLKIT:
-	case ITEM_SCAFFOLD:
-	case ITEM_ORE:
-	case ITEM_BIOTUNNEL:
-	case ITEM_BATTERY:
-	case ITEM_RECREATIONAL:
-		break;
+    /*
+     * Mess with object properties.
+     */
+    switch ( obj->item_type )
+    {
+    default:
+        bugf( "create_object: vnum %d bad type %d.", pObjIndex->vnum,
+              obj->item_type );
+        break;
+    case ITEM_LIGHT:
+    case ITEM_DRONE:
+    case ITEM_IMPLANT:
+    case ITEM_INSTALLATION:
+    case ITEM_BOARD:
+    case ITEM_MATERIAL:
+    case ITEM_AMMO:
+    case ITEM_WEAPON:
+    case ITEM_BOMB:
+    case ITEM_ARMOR:
+    case ITEM_TELEPORTER:
+    case ITEM_BLUEPRINT:
+    case ITEM_SUIT:
+    case ITEM_MEDPACK:
+    case ITEM_TOKEN:
+    case ITEM_FLAG:
+    case ITEM_DART_BOARD:
+    case ITEM_ELEMENT:
+    case ITEM_CONTAINER:
+    case ITEM_WEAPON_UP:
+    case ITEM_PIECE:
+    case ITEM_COMPUTER:
+    case ITEM_LOCATOR:
+    case ITEM_SKILL_UP:
+    case ITEM_PART:
+    case ITEM_DISK:
+    case ITEM_TRASH:
+    case ITEM_ASTEROID:
+    case ITEM_BACKUP_DISK:
+    case ITEM_VEHICLE_UP:
+    case ITEM_TOOLKIT:
+    case ITEM_SCAFFOLD:
+    case ITEM_ORE:
+    case ITEM_BIOTUNNEL:
+    case ITEM_BATTERY:
+    case ITEM_RECREATIONAL:
+        break;
 
-	}
+    }
 
-	if (sysdata.killfest && !IS_SET(obj->extra_flags, ITEM_NOSAVE))
-		SET_BIT(obj->extra_flags, ITEM_NOSAVE);
+    if ( sysdata.killfest && !IS_SET(obj->extra_flags,ITEM_NOSAVE) )
+        SET_BIT(obj->extra_flags,ITEM_NOSAVE);
 
-	LINK(obj, first_obj, last_obj, next, prev);
+    LINK(obj, first_obj, last_obj, next, prev);
 
-	return obj;
+    return obj;
 }
 
 BOMB_DATA * make_bomb(OBJ_DATA *obj) {
@@ -2038,163 +2042,176 @@ void load_vehicles(int mode) {
 	fpArea = NULL;
 }
 
-void load_buildings(void) {
-	FILE *fp;
-	char object_file_name[MAX_STRING_LENGTH];
-	char buf[MAX_STRING_LENGTH];
-	int i, x = 0;
-	BUILDING_DATA *bld;
-	building_count = 0;
-	sprintf(object_file_name, "%s", BUILDING_FILE);
+void load_buildings( void )
+{
+    FILE *fp;
+    char object_file_name[MAX_STRING_LENGTH];
+    char buf[MAX_STRING_LENGTH];
+    int i,x=0;
+    BUILDING_DATA *bld;
+    building_count = 0;
+    sprintf( object_file_name, "%s", BUILDING_FILE );
 
-	sprintf(buf, "Loading %s\n\r", object_file_name);
-	log_f(buf);
+    sprintf( buf, "Loading %s\n\r", object_file_name);
+    log_f( buf );
 
-	if ((fp = fopen(object_file_name, "r")) == NULL) {
-		log_f("Load Buildings Table: fopen");
-		perror("failed open of buildings.txt in load_buildings");
-	} else {
-		fpArea = fp;
-		sprintf(strArea, "%s", object_file_name);
+    if ( ( fp = fopen( object_file_name, "r" ) ) == NULL )
+    {
+        log_f( "Load Buildings Table: fopen" );
+        perror( "failed open of buildings.txt in load_buildings" );
+    }
+    else
+    {
+        fpArea = fp;
+        sprintf( strArea, "%s", object_file_name );
 
-		for (;;) {
-			x++;
-			if (x >= 100000)
-				break;
-			if (fread_letter(fpArea) == '#') {
-				/*		char *word;
-				 word = fread_word( fp );
-				 if ( !str_cmp(word,"revision") )
-				 {
-				 revision = fread_number(fp);
-				 } */
-				break;
-			}
-			building_count++;
-			GET_FREE(bld, building_free);
-			bld->type = fread_number(fp);
-			bld->name = fread_string(fp);
-			for (i = 0; i < 4; i++)
-				bld->exit[i] = fread_number(fp);
-			bld->maxhp = fread_number(fp);
-			bld->hp = fread_number(fp);
-			bld->maxshield = fread_number(fp);
-			bld->shield = fread_number(fp);
-			for (i = 0; i < 11; i++)
-				bld->value[i] = fread_number(fp);
-			for (i = 0; i < 8; i++)
-				bld->resources[i] = fread_number(fp);
-			bld->owned = fread_string(fp);
-			bld->owner = NULL;
-			bld->x = fread_number(fp);
-			bld->y = fread_number(fp);
-			bld->z = fread_number(fp);
-			bld->level = fread_number(fp);
-			bld->visible = fread_number(fp);
-			bld->directories = fread_number(fp);
-			bld->real_dir = fread_number(fp);
-			bld->password = fread_number(fp);
-			bld->attacker = fread_string(fp);
-			if (bld->attacker == NULL)
-				bld->attacker = str_dup("None");
-			LINK(bld, first_building, last_building, next, prev);
-			if (bld->x > 0 && bld->y > 0)
-				map_bld[bld->x][bld->y][bld->z] = bld;
-			if (bld->directories == 0) {
-				bld->directories = 2;
-				bld->real_dir = number_range(1, 2);
-				bld->password = number_range(10000, 99999);
-			}
-			bld->value[8] = 0;
-			bld->timer = 0;
-			if (bld->value[0] < 0)
-				bld->value[0] = -1;
-			if (bld->type == BUILDING_ARMORY && bld->value[0] == -1)
-				bld->value[0] = 0;
-			if (bld->z == Z_PAINTBALL || is_evil(bld))
-				activate_building(bld, TRUE);
-		}
+        for ( ; ; )
+        {
+            x++;
+            if ( x >= 100000 )
+                break;
+            if ( fread_letter( fpArea ) == '#' )
+            {
+                /*		char *word;
+                        word = fread_word( fp );
+                        if ( !str_cmp(word,"revision") )
+                        {
+                            revision = fread_number(fp);
+                        } */
+                break;
+            }
+            building_count++;
+            GET_FREE(bld, building_free);
+            bld->type = fread_number(fp);
+            bld->name = fread_string(fp);
+            for ( i = 0; i<4; i++ )
+                bld->exit[i] = fread_number(fp);
+            bld->maxhp = fread_number(fp);
+            bld->hp = fread_number(fp);
+            bld->maxshield = fread_number(fp);
+            bld->shield = fread_number(fp);
+            for ( i = 0; i<11; i++ )
+                bld->value[i] = fread_number(fp);
+            for ( i = 0; i<8; i++ )
+                bld->resources[i] = fread_number(fp);
+            bld->owned = fread_string(fp);
+            bld->owner = NULL;
+            bld->x = fread_number(fp);
+            bld->y = fread_number(fp);
+            bld->z = fread_number(fp);
+            bld->level = fread_number(fp);
+            bld->visible = fread_number(fp);
+            bld->directories = fread_number(fp);
+            bld->real_dir = fread_number(fp);
+            bld->password = fread_number(fp);
+            bld->attacker = fread_string(fp);
+            if ( bld->attacker == NULL )
+                bld->attacker = str_dup("None");
+            LINK(bld, first_building, last_building, next, prev);
+            if ( bld->x >= 0 && bld->y >= 0 )
+                map_bld[bld->x][bld->y][bld->z] = bld;
+            if ( bld->directories == 0 )
+            {
+                bld->directories = 2;
+                bld->real_dir = number_range(1,2);
+                bld->password = number_range(10000,99999);
+            }
+            bld->value[8] = 0;
+            bld->timer = 0;
+            if ( bld->value[0] < 0 )
+                bld->value[0] = -1;
+            if ( bld->type == BUILDING_ARMORY && bld->value[0] == -1 )
+                bld->value[0] = 0;
+            if ( bld->z == Z_PAINTBALL || is_evil(bld) )
+                activate_building(bld,TRUE);
+        }
 
-	}
-	fclose(fp);
-	fpArea = NULL;
+    }
+    fclose( fp );
+    fpArea = NULL;
 }
 
-void load_buildings_b(int mode) {
-	FILE *fp;
-	char object_file_name[MAX_STRING_LENGTH];
-	char buf[MAX_STRING_LENGTH];
-	int i;
-	BUILDING_DATA *bld;
-	building_count = 0;
+void load_buildings_b( int mode )
+{
+    FILE *fp;
+    char object_file_name[MAX_STRING_LENGTH];
+    char buf[MAX_STRING_LENGTH];
+    int i;
+    BUILDING_DATA *bld;
+    building_count = 0;
 
-	if (mode == 0)
-		sprintf(object_file_name, "%s", BUILDING_BACKUP_FILE);
-	else
-		sprintf(object_file_name, "%s", BUILDING_FEST_FILE);
+    if ( mode == 0 )
+        sprintf( object_file_name, "%s", BUILDING_BACKUP_FILE );
+    else
+        sprintf( object_file_name, "%s", BUILDING_FEST_FILE );
 
-	sprintf(buf, "Loading %s\n\r", object_file_name);
-	log_f(buf);
+    sprintf( buf, "Loading %s\n\r", object_file_name);
+    log_f( buf );
 
-	if ((fp = fopen(object_file_name, "r")) == NULL) {
-		log_f("Load Buildings Table: fopen");
-		perror("failed open of buildings.bak in load_buildings_b");
-	} else {
-		fpArea = fp;
-		sprintf(strArea, "%s", object_file_name);
+    if ( ( fp = fopen( object_file_name, "r" ) ) == NULL )
+    {
+        log_f( "Load Buildings Table: fopen" );
+        perror( "failed open of buildings.bak in load_buildings_b" );
+    }
+    else
+    {
+        fpArea = fp;
+        sprintf( strArea, "%s", object_file_name );
 
-		for (;;) {
-			if (fread_letter(fpArea) == '#') {
-				break;
-			}
-			building_count++;
-			GET_FREE(bld, building_free);
-			bld->type = fread_number(fp);
-			bld->name = fread_string(fp);
-			for (i = 0; i < 4; i++)
-				bld->exit[i] = fread_number(fp);
-			bld->maxhp = fread_number(fp);
-			bld->hp = fread_number(fp);
-			bld->maxshield = fread_number(fp);
-			bld->shield = fread_number(fp);
-			for (i = 0; i < 11; i++)
-				bld->value[i] = fread_number(fp);
-			for (i = 0; i < 8; i++)
-				bld->resources[i] = fread_number(fp);
-			bld->owned = fread_string(fp);
-			bld->owner = NULL;
-			bld->x = fread_number(fp);
-			bld->y = fread_number(fp);
-			bld->z = fread_number(fp);
-			bld->level = fread_number(fp);
-			bld->visible = fread_number(fp);
-			bld->directories = fread_number(fp);
-			bld->real_dir = fread_number(fp);
-			bld->password = fread_number(fp);
-			bld->attacker = fread_string(fp);
-			if (bld->attacker == NULL)
-				bld->attacker = str_dup("None");
-			LINK(bld, first_building, last_building, next, prev);
-			if (bld->x > 0 && bld->y > 0)
-				map_bld[bld->x][bld->y][bld->z] = bld;
-			if (bld->directories == 0) {
-				bld->directories = 2;
-				bld->real_dir = number_range(1, 2);
-				bld->password = number_range(10000, 99999);
-			}
-			bld->value[8] = 0;
-			if ((!str_infix(bld->name, "mine")) && bld->value[0] == 0)
-				bld->value[0] = -1;
-			if (bld->type == BUILDING_ARMORY && bld->value[0] == -1)
-				bld->value[0] = 0;
-			if (bld->z == Z_PAINTBALL || is_neutral(bld->type)
-					|| !str_cmp(bld->owned, "Nobody"))
-				activate_building(bld, TRUE);
-		}
+        for ( ; ; )
+        {
+            if ( fread_letter( fpArea ) == '#' )
+            {
+                break;
+            }
+            building_count++;
+            GET_FREE(bld, building_free);
+            bld->type = fread_number(fp);
+            bld->name = fread_string(fp);
+            for ( i = 0; i<4; i++ )
+                bld->exit[i] = fread_number(fp);
+            bld->maxhp = fread_number(fp);
+            bld->hp = fread_number(fp);
+            bld->maxshield = fread_number(fp);
+            bld->shield = fread_number(fp);
+            for ( i = 0; i<11; i++ )
+                bld->value[i] = fread_number(fp);
+            for ( i = 0; i<8; i++ )
+                bld->resources[i] = fread_number(fp);
+            bld->owned = fread_string(fp);
+            bld->owner = NULL;
+            bld->x = fread_number(fp);
+            bld->y = fread_number(fp);
+            bld->z = fread_number(fp);
+            bld->level = fread_number(fp);
+            bld->visible = fread_number(fp);
+            bld->directories = fread_number(fp);
+            bld->real_dir = fread_number(fp);
+            bld->password = fread_number(fp);
+            bld->attacker = fread_string(fp);
+            if ( bld->attacker == NULL )
+                bld->attacker = str_dup("None");
+            LINK(bld, first_building, last_building, next, prev);
+            if ( bld->x >= 0 && bld->y >= 0 )
+                map_bld[bld->x][bld->y][bld->z] = bld;
+            if ( bld->directories == 0 )
+            {
+                bld->directories = 2;
+                bld->real_dir = number_range(1,2);
+                bld->password = number_range(10000,99999);
+            }
+            bld->value[8] = 0;
+            if ( (!str_infix(bld->name,"mine")) && bld->value[0] == 0 )
+                bld->value[0] = -1;
+            if ( bld->type == BUILDING_ARMORY && bld->value[0] == -1 )
+                bld->value[0] = 0;
+            if ( bld->z == Z_PAINTBALL || is_neutral(bld->type) || !str_cmp(bld->owned,"Nobody") )
+                activate_building(bld,TRUE);
+        }
 
-	}
-	fclose(fp);
-	fpArea = NULL;
+    }
+    fclose( fp );
+    fpArea = NULL;
 }
 
 void load_multiplay(void) {

@@ -28,6 +28,7 @@
  ~                                                                         ~
  ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
+
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -36,1069 +37,389 @@
 #include "mapper.h"
 
 extern char * compass_name[];
+extern void do_space_look(CHAR_DATA *ch);
+extern int leads_to( int x,int y,int z,int dir );
 
-int door_marks[4][2] =
-{
-    {
-        -1, 0
-    }
-    ,
-    {
-        0, 1
-    }
-    ,
-    {
-        1, 0
-    }
-    ,
-    {
-        0,-1
-    }
-};
-int offsets[4][2] =
-{
-    {
-        -2, 0
-    }
-    ,
-    {
-        0, 2
-    }
-    ,
-    {
-        2, 0
-    }
-    ,
-    {
-        0,-2
-    }
-};
+int door_marks[4][2] ={ {-1, 0},{ 0, 1},{ 1, 0},{ 0,-1} };
+int offsets[4][2] ={ {-2, 0},{ 0, 2},{ 2, 0},{ 0,-2} };
 
-#define SECT_HERE   SECT_MAX
-#define SECT_UNSEEN ( SECT_MAX + 1 )
-#define SECT_BLOCKED    ( SECT_UNSEEN + 1 )
-#define SECT_TOP    ( SECT_BLOCKED + 1 )
+#define SECT_HERE	SECT_MAX
+#define SECT_UNSEEN	( SECT_MAX + 1 )
+#define SECT_BLOCKED	( SECT_UNSEEN + 1 )
+#define SECT_TOP	( SECT_BLOCKED + 1 )
+
 
 void do_mapper( CHAR_DATA *ch, char *argument )
 {
-    int size = 0;
-    if ( ch->z == Z_PAINTBALL && ch->x == 2 && ch->y == 2 )
-        return;
-    if ( argument[0] != '\0' )
-        size = atoi(argument);
-    if ( IS_SET( ch->config, CONFIG_BLIND ) )
-    {
-        ShowBMap( ch, FALSE );
-        return;
-    }
-    if ( ch->z == Z_SPACE || IS_SET( ch->config, CONFIG_BLIND ) )
-    {
-        ShowSMap( ch, IS_SET(ch->config,CONFIG_SMALLMAP) );
-        return;
-    }
-    if ( IS_SET( ch->config, CONFIG_CLIENT) )
-    {
-        ShowCMap( ch );
-        return;
-    }
-    ShowWMap( ch, IS_SET( ch->config, CONFIG_SMALLMAP)?2:IS_SET(ch->config,CONFIG_TINYMAP)?1:4, size );
+  int size = 0;
+  if ( ch->z == Z_SPACE )
+  {
+	  ShowSpace(ch);
     return;
+  }
+
+  if ( NUKEM(ch) )
+  {
+	  char buf[] = "\r\n\r\n \
+@@N   _..._                  .           __.....__      __  __   ___\r\n \
+@@N .'     '.              .'|       .-''         '.   |  |/  `.'   `.  \r\n \
+@@N.   .-.   .           .'  |      /     .-''\"'-.  `. |   .-.  .-.   ' \r\n \
+@@N|  '   '  |          <    |     /     /________\\   \\|  |  |  |  |  | \r\n \
+@@N|  |   |  |   _    _  |   | ____|                  ||  |  |  |  |  | \r\n \
+@@N|  |   |  |  | '  / | |   | \\ .'\\    .-------------'|  |  |  |  |  | \r\n \
+@@N|  |   |  | .' | .' | |   |/  .  \\    '-.____...---.|  |  |  |  |  | \r\n \
+@@N|  |   |  | /  | /  | |    /\\  \\  `.             .' |__|  |__|  |__| \r\n \
+@@N|  |   |  ||   `'.  | |   |  \\  \\   `''-...... -'                    \r\n \
+@@N|  |   |  |'   .'|  '/'    \\  \\  \\                                   \r\n \
+@@N'--'   '--' `-'  `--''------' '---'                               \r\n";
+	  if(!IS_SET(ch->config, CONFIG_BLIND))
+		  send_to_char(buf, ch);
+	return;
+  }
+  if ( argument[0] != '\0' )
+  	size = atoi(argument);
+  if ( IS_SET( ch->config, CONFIG_BLIND ) )
+  {
+	ShowBMap( ch, FALSE );
+	return;
+  }
+  if ( IS_SET( ch->config, CONFIG_CLIENT) )
+  {
+	ShowCMap( ch );
+	return;
+  }
+  ShowWMap( ch, IS_SET( ch->config, CONFIG_SMALLMAP)?2:IS_SET(ch->config,CONFIG_TINYMAP)?1:4, size );
+  return;
 
 }
-
 void ShowCMap( CHAR_DATA *ch )
 {
-    int x,y,z=ch->z,sect;
-    int x1,x2,y1,y2;
-    char buf[MSL] = "\0";
-    y1 = ch->y - 10;
-    x1 = ch->x - 10;
-    y2 = ch->y + 10;
-    x2 = ch->x + 10;
-    send_to_char( "\e[9z", ch );
-    for ( x=x1; x<=x2; x++ )
-    {
-        for ( y=y1; y<=y2; y++ )
-        {
-            sect = map_table.type[x][y][z];
-            sprintf ( buf, "%s%d", (sect < 10)?"0":"",sect );
-            send_to_char(buf,ch);
-        }
-    }
-    send_to_char( "\e[9z", ch );
-    return;
-}
-
-void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
-{
-    int x,y,z=ch->z, looper, maxx,i=0;
-    bool warcannon = FALSE;
-    bool xray = FALSE;
-    char color[MSL] = "\0";
-    char outbuf[MSL] = "\0";
-    char catbuf[MSL] = "\0";
-    char borderbuf[MSL] = "\0";
-    bool has_structure[MAX_MAPS][MAX_MAPS];
-    bool in_border = TRUE;
-    bool base = FALSE;
-    bool charr = FALSE;
-    bool def = FALSE;
-    bool pit = FALSE;
-    BUILDING_DATA *bld = first_building;
-    bool enemy = FALSE;
-    bool inverse = FALSE;
-
-    bool terrain[SECT_MAX]= {FALSE};
-
-    outbuf[0] = '\0';
-    color[0] = '\0';
-    borderbuf[0] = '\0';
-
-    if ( IS_SET(ch->config,CONFIG_INVERSE) )
-        inverse = TRUE;
-    if ( medal(ch) )
-    {
-        send_to_char( "You must find the spot where A Medal Lies Here , pick it up, and leave the medal arena.\n\r", ch );
-    }
-    if ( IN_PIT(ch) )
-    {
-        pit = TRUE;
-    }
-    maxx = ch->map / 2;
-    if ( IS_SET(ch->config,CONFIG_LARGEMAP) && size != 998 && size != 997 )
-        maxx = ch->map;
-
-    if ( size == 996 )
-        base = TRUE;
-    if ( size == 999 )
-        warcannon = TRUE;
-
-    if ( map_bld[ch->x][ch->y][ch->z] && warcannon == FALSE && size != 997 && !base && size != 998 )
-    {
-        char_to_building(ch,map_bld[ch->x][ch->y][ch->z]);
-        show_building(ch,small,size);
-        return;
-    }
-    if ( ch->in_vehicle && ch->in_vehicle->type == VEHICLE_XRAY && z == Z_GROUND )
-        xray = TRUE;
-
-    if ( size < 998 )                                       /* For quest calls */
-    {
-        char sbuf[MSL] = "\0";
-        int s;
-        borderbuf[0] = '\0';
-        sbuf[0] = '\0';
-        for ( s = 0; s < ch->map; s++ )
-        {
-            sprintf( sbuf+strlen(sbuf),"%s", makesmall("    ",small) );
-        }
-        if ( (ch->z != Z_UNDERGROUND && !IS_SET(ch->pcdata->pflags,PFLAG_HELPING)) || IS_IMMORTAL(ch))
-            sprintf( borderbuf, "\n\r%s@@l(@@W%d@@g/@@W%d@@l) @@R[@@e%s@@R]@@N", sbuf, ch->x, ch->y, planet_table[ch->z].name );
-        else
-            sprintf( borderbuf, "\n\r%s@@l(@@W??@@g/@@W??@@l) @@R[@@e%s@@R]@@N", sbuf, planet_table[ch->z].name );
-        sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s%s\n\r@@N", sbuf, wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color,  wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
-    }
-
-    sprintf( outbuf, "%s", "\n\r" );
-    sprintf( borderbuf+strlen(borderbuf), "%s", "@@a*@@c-" );
-
-    sprintf( catbuf, "%s", makesmall("----",small) );
-
-    for ( looper = 0; looper <= ch->map*2; looper++ )
-    {
-        safe_strcat( MSL, borderbuf, catbuf );
-    }
-    safe_strcat( MSL, borderbuf, "-@@a*@@N" );
-    send_to_char( "\n\r", ch );
-    /* this is the top line of the map itself, currently not part of the mapstring */
-    send_to_char( borderbuf, ch );
-
-    for (y = ch->y + maxx; y >= ch->y - maxx; --y)
-    {   /* every row */
-        safe_strcat( MSL, outbuf, "@@c| " );
-        sprintf( color, "@@c" );
-        for (x = ch->x - ch->map; x <= ch->x + ch->map; ++x)
-        {   /* every column */
-
-            if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-BORDER_SIZE && y <= MAX_MAPS-BORDER_SIZE )
-                in_border = TRUE;
-            else
-                in_border = FALSE;
-            if ( pit && ( x < PIT_BORDER_X || y < PIT_BORDER_Y ) )
-                in_border = FALSE;
-            if ( !pit && ( x > PIT_BORDER_X && y > PIT_BORDER_Y ) && ch->z == Z_PAINTBALL )
-                in_border = FALSE;
-            if ( medal(ch) && ( x > MEDAL_BORDER_X || y > MEDAL_BORDER_Y ) )
-                in_border = FALSE;
-            
-			if (in_border)
-            {
-                if ( size == 998 )
-                    has_structure[x][y] = FALSE;
-                else if ( xray )
-                    has_structure[x][y] = map_bld[x][y][Z_UNDERGROUND]?TRUE:FALSE;
-                else if ( map_bld[x][y][z] == NULL )
-                    has_structure[x][y] = FALSE;
-                else
-                    has_structure[x][y] = TRUE;
-            }
-            //else
-			//	has_structure[x][y] = FALSE;
-
-            if ( in_border && has_structure[x][y])
-            {
-                if ( xray )
-                    bld = map_bld[x][y][Z_UNDERGROUND];
-                else
-                    bld = map_bld[x][y][z];
-            }
-
-            if ( in_border && ( ch->x == x && ch->y == y && !xray && !has_structure[x][y] && size != 997 && !base && size != 998 ) )
-                char_to_building(ch,NULL);
-
-            if ( ch->x == x && ch->y == y )
-            {
-                sprintf( catbuf, "@@y%s", makesmall(" ** ",small) );
-                if ( x < BORDER_SIZE || y < BORDER_SIZE )
-                {
-                    strcat(catbuf,"@@k");
-                    sprintf( color, "@@k" );
-                }
-                else
-                    sprintf( color, "@@y" );
-                if (inverse)
-                {
-                    strcat(catbuf,"@@i");
-                    strcat(color,"@@i");
-                }
-            }
-            else if ( in_border && has_structure[x][y] && bld && (bld->visible || ch == bld->owner || ch->trust >= 85 ) )
-            {
-                CHAR_DATA *vch;
-                char ocolor[MSL] = "\0";
-
-                if ( bld->active && !is_neutral(bld->type) )
-                {
-                    if ( bld->owner )
-                    {
-                        vch = bld->owner;
-                    }
-                    else
-                    {
-                        if ( str_cmp(bld->owned,ch->name) && !is_evil(bld) )
-                            vch = get_ch(bld->owned);
-                        else
-                            vch = ch;
-                    }
-                    if ( vch == NULL )
-                        activate_building(bld,FALSE);
-                }
-                else
-                    vch = NULL;
-
-                if (ch->in_vehicle != NULL && blind_spot(ch,x,y) )
-                {
-                    sprintf(catbuf, "%s", makesmall("    ",small));
-                }
-                else
-                {
-                    char symbol[MSL] = "\0";
-                    bool mxp = TRUE;
-                    def = (!ch->security && bld->owner == ch && defense_building(bld));
-                    charr = map_ch[x][y][z] ? TRUE : FALSE;
-                    sprintf( ocolor, "%s", charr ? "@@J" : (bld->type ==BUILDING_ZAP)?"@@b":def?"@@W":( is_neutral(bld->type) ) ? "@@o" : ( vch == NULL ) ? "@@d" : ( bld->value[9] > 0 ) ? "@@b" : ( IS_LINKDEAD(vch) ) ? "@@o" : ( IS_NEWBIE(vch) ) ? "@@c" : (bld->value[3] != 0) ? "@@m" : ( bld->visible == FALSE ) ? "@@W" : ( bld->hp < bld->maxhp && bld->hp > bld->maxhp / 2 ) ? "@@b" : ( bld->hp < bld->maxhp / 2 ) ? "@@Q" : "@@G" );
-                    if ( ch == bld->owner || bld->protection > 0 || ( bld->type == BUILDING_DUMMY && ((IS_BETWEEN(bld->x,ch->x-1,ch->x+1) && IS_BETWEEN(bld->y,ch->y-1,ch->y+1)) || bld->value[5] > 0 ) ) )
-                        sprintf( ocolor+strlen(ocolor), "@@x");
-                    //			else
-                    //				sprintf( ocolor+strlen(ocolor), "%s", ocolor);
-
-                    if ( inverse )
-                        strcat(ocolor,"@@i");
-                    if ( charr && (map_ch[x][y][z]->pcdata->alliance != ch->pcdata->alliance || map_ch[x][y][z]->pcdata->alliance == -1) )
-                        enemy = TRUE;
-
-                    catbuf[0] = '\0';
-                    if ( str_cmp(color,ocolor) )
-                    {
-                        sprintf( color, "%s", ocolor );
-                        sprintf( catbuf, "%s", color );
-                    }
-                    if ( vch && vch->kill_group > ch->kill_group && sysdata.kill_groups )
-                    {
-                        sprintf( symbol, "%s", makesmall( "????",small) );
-                        strcat( catbuf, ocolor);
-                        sprintf( ocolor, "%s", symbol );
-                        strcat( catbuf, ocolor );
-                    }
-                    else
-                    {
-                        if ( bld->z == Z_UNDERGROUND )
-                            mxp = FALSE;
-                        if ( bld->type != BUILDING_DUMMY )
-                            sprintf( symbol, "%s", makesmall(build_table[bld->type].symbol,small));
-                        else
-                            sprintf( symbol, "%s", makesmall(build_table[bld->value[0]].symbol,small));
-
-                        if ( mxp )
-                        {
-                            if ( ch->desc->mxp )
-                                strcat( catbuf, "\e[1z" );
-                            if ( bld->type == BUILDING_DUMMY )
-                            {
-                                if ( bld->value[0] < 1 || bld->value[0] >= MAX_BUILDING )
-                                    bld->value[0] = BUILDING_TURRET;
-                                sprintf( ocolor, MXPTAG(ch->desc,"Bl x=%d y=%d owner=%s name='%s'"), bld->x, bld->y, bld->owned, build_table[bld->value[0]].name );
-                            }
-                            else
-                                sprintf( ocolor, MXPTAG(ch->desc,"Bl x=%d y=%d owner=%s name='%s'"), bld->x, bld->y, bld->owned, bld->name );
-                        }
-                        strcat( catbuf, ocolor);
-                        sprintf( ocolor, "%s", symbol );
-                        strcat( catbuf, ocolor );
-                        if ( mxp )
-                            strcat( catbuf, MXPTAG(ch->desc,"/Bl"));
-                    }
-                }
-            }
-            else if ( in_border && x > 200 && y > 200 && x < 300 && y < 300 && map_bld[x][y][1] && map_bld[x][y][1]->type == BUILDING_HQ && paintball(ch) )
-            {
-                catbuf[0] = '\0';
-                if ( str_cmp(color,"@@r") )
-                {
-                    sprintf( color, "@@r" );
-                    strcat( catbuf, "@@r" );
-                }
-                strcat( catbuf, makesmall("{{}}",small) );
-            }
-            else if ( in_border && ( map_ch[x][y][z] != NULL || IS_SET(ch->effect,EFFECT_VISION) ) && size != 998 && size != 997 )
-            {
-                CHAR_DATA *wch;
-                int ppl = 0;
-                bool vehicle = FALSE;
-                bool allied = FALSE;
-                bool newbie = FALSE;
-                bool imm = FALSE;
-                char ppl_c[MSL] = "\0";
-
-                if (ch->in_vehicle != NULL && blind_spot(ch,x,y) )
-                {
-                    sprintf(catbuf, "%s", makesmall("    ",small));
-                }
-                else
-                {
-                    for ( wch = map_ch[x][y][z]; wch; wch = wch->next_in_room )
-                    {
-                        if ( !can_see(ch,wch) )
-                            continue;
-                        ppl++;
-                        if ( wch->in_vehicle )
-                            vehicle = TRUE;
-                        if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
-                            allied = TRUE;
-                        else if ( IS_NEWBIE(wch) )
-                            newbie = TRUE;
-                        else if ( IS_IMMORTAL(wch) )
-                            imm = TRUE;
-                        else if ( enemy == FALSE )
-                            enemy = TRUE;
-                        if ( ppl == 1 && wch->class == CLASS_PROJECTOR && !wch->next_in_room )
-                            ppl += 2;
-                    }
-                    if ( ppl > 9 )
-                        ppl = 9;
-
-                    if ( IS_SET(ch->effect,EFFECT_VISION) && ppl == 0 && number_percent() < 5 )
-                        ppl++;
-
-                    if ( INVALID_COORDS(x,y) )
-                        ppl = 0;
-
-                    sprintf( ppl_c, "%d", ppl );
-                    if ( ppl <= 0 )
-                    {
-                        sprintf( color, "%s", ( !in_border ) ? "@@k" : ( !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
-                        if (inverse) strcat(color,"@@i");
-                        sprintf( catbuf, "%s%s", color,  ( ch->in_vehicle != NULL && blind_spot(ch,x,y)) ? makesmall("    ",small) : (!in_border) ? makesmall("++++",small) : makesmall(wildmap_table[map_table.type[x][y][ch->z]].mark,small) );
-                        if ( terrain[map_table.type[x][y][ch->z]] == FALSE ) terrain[map_table.type[x][y][ch->z]] = TRUE;
-                        while ( x + 1 <= ch->x + ch->map && in_border && map_table.type[x][y][ch->z] != SECT_NULL )
-                        {
-                            if ( !map_ch[x+1][y][z] && !map_vhc[x+1][y][z] && !map_bld[x][y][z] && map_table.type[x+1][y][ch->z] == map_table.type[x][y][ch->z] )
-                            {
-                                sprintf( catbuf+strlen(catbuf), "%s",  ( ch->in_vehicle != NULL && blind_spot(ch,x,y)) ? makesmall("    ",small) : (!in_border) ? makesmall("++++",small) : makesmall(wildmap_table[map_table.type[x][y][ch->z]].mark,small) );
-                                x = x + 1;
-                            }
-                            else
-                            {
-                                //						sprintf( color, "%s", ( !in_border ) ? "@@k" : ( !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
-                                break;
-                            }
-                        }
-                        sprintf( color, "%s", ( !in_border ) ? "@@k" : (
-                                     !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
-                    }
-                    else
-                    {
-                        if ( vehicle )
-                        {
-                            if ( small == 1 )
-                                sprintf( catbuf, "%s%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e", ppl_c );
-                            if ( small == 2 )
-                                sprintf( catbuf, "%s[%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "]" : ppl_c );
-                            if ( small == 4 )
-                                sprintf( catbuf, "%s<@@y[%s@@e>@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "]" : ppl_c );
-                        }
-                        else
-                        {
-                            if ( small == 1 )
-                                sprintf( catbuf, "%s*@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e" );
-                            if ( small == 2 )
-                                sprintf( catbuf, "%s*%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "*" : ppl_c );
-                            if ( small == 4 )
-                                sprintf( catbuf, "%s<@@y*%s%s>@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "*" : ppl_c,imm?"@@y":allied?"@@r":"@@e" );
-
-                        }
-                        sprintf( color, "@@N" );
-                    }
-                    if (inverse) strcat(color,"@@i");
-                }
-            }
-            else if ( in_border && ( map_vhc[x][y][z] != NULL && size != 998 && size != 997 ) )
-            {
-                char mxpbuf[MSL] = "\0";
-                catbuf[0] = '\0';
-
-                if ( ch->desc->mxp && z != Z_UNDERGROUND )
-                {
-                    strcat( catbuf, "\e[1z" );
-                    sprintf( mxpbuf, MXPTAG(ch->desc,"Bl x=%d y=%d owner='Empty' name='%s'"), x,y,map_vhc[x][y][z]->desc );
-                    strcat( catbuf, mxpbuf );
-                }
-                if ( str_cmp(color,"@@d") )
-                {
-                    strcat( catbuf, "@@d" );
-                    sprintf( color, "@@d" );
-                }
-                if (inverse) strcat(color,"@@i");
-                if ( small == 1 )
-                    sprintf( catbuf+strlen(catbuf), "[" );
-                if ( small == 2 )
-                    sprintf( catbuf+strlen(catbuf), "[]" );
-                if ( small == 4 )
-                    sprintf( catbuf+strlen(catbuf), "[[]]" );
-                if ( ch->desc->mxp && z != Z_UNDERGROUND )
-                    strcat( catbuf, MXPTAG(ch->desc,"/Bl"));
-                strcat(catbuf,color);
-            }
-            else
-            {
-                char ocolor[MSL] = "\0";
-                sprintf( ocolor, "%s", ( !in_border ) ? "@@k" : wildmap_table[map_table.type[x][y][ch->z]].color );
-                catbuf[0] = '\0';
-                if ( str_cmp(color,ocolor) )
-                {
-                    sprintf( color, "%s", ocolor );
-                    if (inverse) strcat(color,"@@i");
-                    sprintf( catbuf, "%s", color );
-                }
-                sprintf( catbuf+strlen(catbuf), "%s", ( ch->in_vehicle != NULL && ch->in_vehicle->type != VEHICLE_MECH && blind_spot(ch,x,y)) ? makesmall("    ",small) : (!in_border) ? makesmall("++++" ,small): makesmall(wildmap_table[map_table.type[x][y][ch->z]].mark,small) );
-                if ( terrain[map_table.type[x][y][ch->z]] == FALSE ) terrain[map_table.type[x][y][ch->z]] = TRUE;
-
-            }
-            if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
-            {
-                sprintf( catbuf, "%s", makesmall("    ",small));
-            }
-
-            if ( !in_border )
-                sprintf( color, "@@k" );
-            safe_strcat( MSL, outbuf, catbuf  );
-
-            i++;
-            if ( i >= 10 )
-            {
-                i = 0;
-                send_to_char( outbuf, ch );
-                outbuf[0] = '\0';
-            }
-        }
-        safe_strcat( MSL, outbuf, " @@c|\n\r" );
-    }
-    /* this is the contents of the map */
-    send_to_char( outbuf, ch );
-    /* this is the bottom line of the map */
-    sprintf( borderbuf, "%s", "@@a*@@c-" );
-    sprintf( catbuf, "%s", makesmall("----",small) );
-    for ( looper = 0; looper <= ch->map*2; looper++ )
-        safe_strcat( MSL, borderbuf, catbuf );
-
-    safe_strcat( MSL, borderbuf, "-@@a*@@N" );
-    send_to_char( borderbuf, ch );
-    send_to_char( "\n\r", ch );
-    if ( my_get_hours(ch,TRUE) < 2 && !IS_SET(ch->config,CONFIG_NOLEGEND))
-    {
-        char tbuf[MSL] = "\0";
-        int j,l=0;
-        if ( terrain[SECT_SNOW_BLIZZARD] )
-        {
-            terrain[SECT_SNOW_BLIZZARD] = FALSE;
-            terrain[SECT_SNOW] = TRUE;
-        }
-        sprintf( tbuf, "@@WLegend:  " );
-        for ( j=0; j<SECT_MAX; j++ )
-        {
-            if ( !terrain[j] )
-                continue;
-            sprintf( tbuf+strlen(tbuf), "%s%s %-11s ", wildmap_table[j].color, wildmap_table[j].mark, wildmap_table[j].name );
-            l++;
-            if ( l%4 == 0 )
-                sprintf(tbuf+strlen(tbuf), "\n\r         " );
-        }
-        sprintf(tbuf+strlen(tbuf), "\n\r\n\r@@WItems:@@N\n\r" );
-        send_to_char(tbuf,ch);
-    }
-    if ( enemy && ch->fighttimer < 480 && !IS_IMMORTAL(ch) && ch->z != Z_PAINTBALL )
-        ch->fighttimer = 480;
-    return;
-}
-
-void ShowSMap( CHAR_DATA *ch, bool small )
-{
-    int x,y,looper, maxx,i=0,xx,yy,xmaxx,ymaxx;
-    char scan[MSL] = "\0";
-    char color[MSL] = "\0";
-    char outbuf[MSL] = "\0";
-    char catbuf[MSL] = "\0";
-    char borderbuf[MSL] = "\0";
-    OBJ_DATA *obj;
-    VEHICLE_DATA *vhc = ch->in_vehicle;
-    extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
-    int col;
-    outbuf[0] = '\0';
-    color[0] = '\0';
-    scan[0] = '\0';
-    borderbuf[0] = '\0';
-
-    if ( !vhc )
-        return;
-
-    maxx = get_ship_range(vhc);
-    ShowSpace(ch);
-    sprintf( outbuf, "\n\r" );
-    sprintf( borderbuf, "@@d+@@g-" );
-
-    if ( small )
-        sprintf( catbuf, "%s", "--" );
-    else
-        sprintf( catbuf, "%s", "----" );
-
-    for ( looper = 0; looper <= maxx*2; looper++ )
-        safe_strcat( MSL, borderbuf, catbuf );
-
-    safe_strcat( MSL, borderbuf, "-@@d+@@N" );
-    send_to_char( "\n\r", ch );
-    send_to_char( borderbuf, ch );
-
-    xmaxx = maxx;
-    ymaxx = maxx;
-
-    for (yy = ch->y + ymaxx; yy >= ch->y - ymaxx; --yy)
-        //  for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
-    {   /* every row */
-        if ( yy < 0 )
-            y = SPACE_SIZE + 1 + yy;
-        else if ( yy >= SPACE_SIZE )
-            y = yy - SPACE_SIZE;
-        else
-            y = yy;
-
-        safe_strcat( MSL, outbuf, "@@g| " );
-        sprintf( color, "@@g" );
-        for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
-            //    for (yy = ch->y - ymaxx; yy <= ch->y + ymaxx; ++yy)
-        {   /* every column */
-
-            if ( xx < 0 )
-                x = SPACE_SIZE + 1 + xx;
-            else if ( xx >= SPACE_SIZE )
-                x = xx - SPACE_SIZE;
-            else
-                x = xx;
-
-            if ( ( ( ( xx - (ch->x - xmaxx)) + (yy - (ch->y - ymaxx)) ) <= 3 )
-                    ||   ( ( ( (ch->x + xmaxx) - xx) + ((ch->y + ymaxx))-yy ) <= 3 )
-                    ||   ( ( ( (ch->x + xmaxx) - xx) + (yy - (ch->y - ymaxx)) ) <= 3 )
-                    ||   ( ( ( xx - (ch->x - xmaxx)) + ((ch->y + ymaxx))-yy ) <= 3 ) )
-            {
-                if ( small )
-                {
-                    safe_strcat( MSL, outbuf, "++" );
-                }
-                else
-                {
-                    safe_strcat( MSL, outbuf, "++++" );
-                }
-                continue;
-            }
-
-            if ( x == ch->x && y == ch->y )
-            {
-                safe_strcat( MSL, outbuf, "@@y**@@g" );
-                if ( x < BORDER_SIZE || y < BORDER_SIZE )
-                    strcat(outbuf,"@@d");
-                continue;
-            }
-
-            col = -1;
-            if ( number_percent() < 2 )
-                col = number_range(1,4);
-            if ( small )
-                sprintf( catbuf, "%s ", (col==1)?"@@y*@@g":(col==2)?"@@cx@@g":(col==3)?"@@a+@@g":" " );
-            else
-                sprintf( catbuf, " %s  ", (col==1)?"@@y*@@g":(col==2)?"@@cx@@g":(col==3)?"@@a+@@g":" " );
-
-            if ( map_obj[x][y] )
-            {
-                int ppl = 0;
-                int type = -1,ttype = -1;
-
-                for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
-                {
-                    ppl++;
-                    type = obj->pIndexData->vnum-799;
-                    if ( ttype != type && ttype != 0 )
-                    {
-                        if ( ttype == -1 )
-                            ttype = type;
-                        else
-                            ttype = 0;
-                    }
-                }
-
-                if ( ppl > 0 )
-                {
-                    if ( IS_SET(vhc->flags,VEHICLE_OBJ_SENSORS) )
-                    {
-                        sprintf(catbuf,"@@%s",(ttype==1)?"d":(ttype==2)?"p":(ttype==0)?"W":"d");
-                    }
-                    else
-                    {
-                        sprintf(catbuf,"@@m");
-                    }
-                    if ( small )
-                        sprintf( catbuf+strlen(catbuf), "()@@g" );
-                    else
-                        sprintf( catbuf+strlen(catbuf), "(())@@g" );
-                    sprintf( color, "@@g" );
-                }
-            }
-            if ( ( map_vhc[x][y] || IS_SET(ch->effect,EFFECT_VISION) ) )
-            {
-                VEHICLE_DATA *whc;
-                CHAR_DATA *wch;
-                int ppl = 0;
-                bool allied = FALSE;
-                bool imm = FALSE;
-                bool range= FALSE;
-                char ppl_c[MSL] = "\0";
-
-                {
-                    for ( whc = map_vhc[x][y][Z_SPACE]; whc; whc = whc->next_in_room )
-                    {
-                        ppl++;
-                        if ( ( wch = whc->driving ) == NULL )
-                            continue;
-                        if ( in_range(ch,wch,get_ship_weapon_range(vhc)) )
-                            range = TRUE;
-                        sprintf( scan+strlen(scan), "Found: %s - %s.\n\r", wch->name,vhc->desc );
-                        if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
-                            allied = TRUE;
-                        if ( IS_IMMORTAL(wch) )
-                            imm = TRUE;
-                        if ( ppl == 1 && wch->class == CLASS_PROJECTOR && !wch->next_in_room )
-                            ppl += 2;
-                    }
-                    if ( ppl > 9 )
-                        ppl = 9;
-
-                    if ( IS_SET(ch->effect,EFFECT_VISION) && ppl == 0 && number_percent() < 5 )
-                        ppl++;
-
-                    if ( INVALID_COORDS(x,y) )
-                        ppl = 0;
-
-                    sprintf( ppl_c, "%d", ppl );
-                    if ( ppl > 0 )
-                    {
-                        if ( small )
-                            sprintf( catbuf, "%s%s%s@@g",imm?"@@y":allied == TRUE?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
-                        else
-                            sprintf( catbuf, "%s<@@y%s%s@@e>@@g", imm?"@@y":allied?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
-                        sprintf( color, "@@g" );
-                    }
-                }
-            }
-            if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
-            {
-                if ( small )
-                    sprintf( catbuf, "  ");
-                else
-                    sprintf( catbuf, "    ");
-            }
-            safe_strcat( MSL, outbuf, catbuf  );
-        }
-        safe_strcat( MSL, outbuf, " @@g|\n\r" );
-        i++;
-        if ( i >= 5 )
-        {
-            i = 0;
-            send_to_char( outbuf, ch );
-            outbuf[0] = '\0';
-        }
-    }
-    send_to_char( outbuf, ch );
-    sprintf( borderbuf, "%s", "@@d+@@g-" );
-    if ( small )
-        sprintf( catbuf, "%s", "--" );
-    else
-        sprintf( catbuf, "%s", "----" );
-    for ( looper = 0; looper <= maxx*2; looper++ )
-        safe_strcat( MSL, borderbuf, catbuf );
-    safe_strcat( MSL, borderbuf, "-@@d+@@N" );
-    send_to_char( borderbuf, ch );
-    send_to_char( "\n\r", ch );
-    catbuf[0] = '\0';
-    xx = ch->x;
-    yy = ch->y;
-    if ( IS_SET(vhc->flags,VEHICLE_PSI_SCANNER) )
-        send_to_char(scan,ch);
-//    for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
-//    {
-//        if ( obj->z != Z_SPACE )
-//            continue;
-//        sprintf(catbuf+strlen(catbuf),"  %s @@c \n\r",obj->short_descr );
-//    }
-    send_to_char(catbuf,ch);
-    return;
-}
-
-char *makesmall( char *arg, int size )
-{
-    static char small[MSL] = "\0";
-    if ( size == 4 )
-        return arg;
-
-    small[0] = arg[1];
-    if ( size == 2 )
-    {
-        small[1] = arg[2];
-        small[2] = '\0';
-    }
-    if ( size == 1 )
-    {
-        small[1] = '\0';
-    }
-    return (small);
+	int x,y,z=ch->z,sect,xx,yy,y1,y2,x1,x2;
+	char buf[MSL];
+	CHAR_DATA *wch;
+	BUILDING_DATA *bld;
+	y1 = ch->y - 8;
+	x1 = ch->x - 8;
+	y2 = ch->y + 8;
+	x2 = ch->x + 8;
+	send_to_char( "\2", ch );
+	for ( x=x1;x<x2;x++ )
+	{
+		for ( y=y1;y<y2;y++ )
+		{
+			xx = x; yy = y;
+			real_coords(&xx,&yy);
+			sect = map_table.type[xx][yy][z];
+			if ((bld=map_bld[xx][yy][ch->z]) != NULL)
+				sprintf(buf,"%d",(bld->type == BUILDING_DUMMY)?bld->value[0]+100:100+bld->type);
+			else
+				sprintf	( buf, "0%s%d", (sect < 10)?"0":"",sect );
+			if ( (xx != ch->x || yy != ch->y) )
+			{
+				for ( wch = map_ch[xx][yy][ch->z];wch;wch = wch->next_in_room )
+				{
+					if ( !can_see(ch,wch) ) continue;
+					sprintf(buf+strlen(buf), "P0%d",allied(ch,wch)?1:IS_IMMORTAL(wch)?2:0);
+					break;
+				}
+				if ( map_vhc[xx][yy][ch->z] )
+				{
+					sprintf(buf+strlen(buf), "V%2d",map_vhc[xx][yy][ch->z]->type);
+				}
+			}
+			send_to_char(buf,ch);
+		}
+	}
+	send_to_char("\1", ch );
+	return;
 }
 
 void ShowBMap( CHAR_DATA *ch, bool quest )
 {
-    DESCRIPTOR_DATA *d;
-    BUILDING_DATA *bld;
-    char b_north[MSL] = "\0";
-    char b_east[MSL] = "\0";
-    char b_west[MSL] = "\0";
-    char b_south[MSL] = "\0";
-    char p_buf[MSL] = "\0";
-    char b_buf[MSL] = "\0";
-    char e_buf[MSL] = "\0";
-    char w_buf[MSL] = "\0";
-    char g_buf[MSL] = "\0";
-    OBJ_DATA *obj;
-    int range=0;
-    int x,y,last,maxx;
-    int xx,yy;
-    int terrain[SECT_MAX];
-    int offline,allied,enemy,yours,total;
+	DESCRIPTOR_DATA *d;
+	BUILDING_DATA *bld;
+	char b_north[MSL];
+	char b_east[MSL];
+	char b_west[MSL];
+	char b_south[MSL];
+	char p_buf[MSL];
+	char b_buf[MSL];
+	char e_buf[MSL];
+	char w_buf[MSL];
+	char g_buf[MSL];
+	int x,y,last,maxx,xx,yy;
+	int offline,allied,enemy,yours,total;
 
-    offline=0;
-    allied=0;
-    enemy=0;
-    yours=0;
-    total=0;
+	offline=0;
+	allied=0;
+	enemy=0;
+	yours=0;
+	total=0;
 
-    p_buf[0] = '\0';
-    b_buf[0] = '\0';
-    b_north[0] = '\0';
-    b_south[0] = '\0';
-    b_east[0] = '\0';
-    b_west[0] = '\0';
+	p_buf[0] = '\0';
+	b_buf[0] = '\0';
+	b_north[0] = '\0';
+	b_south[0] = '\0';
+	b_east[0] = '\0';
+	b_west[0] = '\0';
 
-    maxx = ch->map / 2;
+	maxx = ch->map / 2;
 
-    if ( quest )
-        for ( x = 0; x < SECT_MAX; x++ )
-            terrain[x] = 0;
+	if ( IS_SET(ch->config,CONFIG_LARGEMAP) )
+		maxx = ch->map;
 
-    if ( IS_SET(ch->config,CONFIG_LARGEMAP) )
-        maxx = ch->map;
+		char_to_building(ch,NULL);
 
-    char_to_building(ch,NULL);
-
-    for ( d = first_desc; d != NULL; d = d->next )
-    {
-        if ( d->character == NULL )
-            continue;
-        if ( d->connected != CON_PLAYING )
-            continue;
-        if ( !can_see(ch,d->character) )
-            continue;
-        if ( paintball(ch) && map_bld[d->character->x][d->character->y][1] != NULL && map_bld[d->character->x][d->character->y][1]->type == BUILDING_HQ )
-            continue;
-        if ( sneak(d->character) )
-            continue;
-        if ( ch->z != d->character->z )
-            continue;
-
-        if ( d->character != ch
-                &&  d->character->x > ch->x - maxx
-                &&  d->character->x < ch->x + maxx
-                &&  d->character->y > ch->y - maxx
-                &&  d->character->y < ch->y + maxx )
-        {
-            xx=d->character->x;
-            yy=d->character->y;
-            if ( ( obj = get_eq_char(ch,WEAR_HOLD_HAND_L) ) != NULL )
-            {
-                if (obj->item_type==ITEM_WEAPON)
-                    range=obj->value[4]+1;
-            }
-
-	    if(ch->z != Z_UNDERGROUND)
-            	sprintf( p_buf+strlen(p_buf), "%s%s%s%s %d/%d\n\r",
-                     (in_range(ch,d->character,range)) ? "*" : "",
-                     (ch->y < yy)
-                     ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" :
-                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "", xx, yy);
-	    else
-                sprintf( p_buf+strlen(p_buf), "%s%s%s%s \?\?/\?\?\n\r",
-                     (in_range(ch,d->character,range)) ? "*" : "",
-                     (ch->y < yy)
-                     ? "North" : (ch->y == yy ) ? "" : "South", (ch->x > xx) ? "West" : (ch->x == xx) ? "" :
-                     "East", (ch->x == xx) && (ch->y == yy) ? "Here" : "");
-
-        }
-    }
-    if ( ch->z != Z_AIR )
-    {
-
-        for (x = ch->x - maxx; x <= ch->x + maxx; ++x)
-        {
-            for (y = ch->y - ch->map; y <= ch->y + ch->map; ++y)
-            {
-                if ( INVALID_COORDS(x,y) )
-                    continue;
-                bld = map_bld[x][y][ch->z];
-                if ( !bld || bld == NULL )
-                    continue;
-
-                if ( bld->visible || bld->owner == ch )
+                for ( d = first_desc; d != NULL; d = d->next )
                 {
-                    if ( bld->x == ch->x && bld->y == ch->y )
-                    {
-                        char_to_building(ch,bld);
-                        continue;
-                    }
-                    if ( bld->x + 1 == ch->x && bld->y == ch->y )
-                        sprintf( b_west, "%s", bld->name );
-                    if ( bld->x - 1 == ch->x && bld->y == ch->y )
-                        sprintf( b_east, "%s", bld->name );
-                    if ( bld->x == ch->x && bld->y + 1 == ch->y )
-                        sprintf( b_south, "%s", bld->name );
-                    if ( bld->x == ch->x && bld->y - 1 == ch->y )
-                        sprintf( b_north, "%s", bld->name );
-                    //						sprintf( b_buf+strlen(b_buf), "Building: %s, owned by %s, at %d/%d (%s%s)\n\r", bld->name, bld->owned, bld->x, bld->y, (ch->y < bld->y) ? "North" : (ch->y == bld->y) ? "" : "South", (ch->x > bld->x) ? "West" : (ch->x == bld->x) ? "" : "East" );
-
-                    if ( !bld->owner )
-                        offline++;
-                    else if ( bld->owner == ch )
-                        yours++;
-                    else if ( bld->owner->pcdata->alliance != -1 && bld->owner->pcdata->alliance == ch->pcdata->alliance )
-                        allied++;
-                    else
-                        enemy++;
-                    total++;
+                        if ( d->character == NULL )
+                                continue;
+			if ( d->connected != CON_PLAYING )
+				continue;
+            if ( !can_see(ch,d->character) )
+                continue;
+			if ( paintball(ch) && map_bld[d->character->x][d->character->y][1] != NULL && map_bld[d->character->x][d->character->y][1]->type == BUILDING_HQ )
+				continue;
+			if ( sneak(d->character) )
+					continue;
+			if ( ch->z != d->character->z )
+				continue;
+                        if ( d->character != ch
+                        &&  d->character->x > ch->x - maxx
+                        &&  d->character->x < ch->x + maxx
+                        &&  d->character->y > ch->y - maxx
+                        &&  d->character->y < ch->y + maxx )
+                                sprintf( p_buf+strlen(p_buf), "%s%s: %s at: %d/%d\n\r", (ch->y < d->character->y) ? "North" : (ch->y == d->character->y ) ? (ch->x == d->character->x)?"Here":"" : "South", (ch->x > d->character->x) ? "West" : (ch->x == d->character->x) ? "" : "East" , d->character->name, d->character->x, d->character->y );
                 }
-            }
-        }
-    }
-    if ( total > 0 )
-    {
-        if ( yours > 0 )
-            sprintf( b_buf+strlen(b_buf), "%d Yours\n\r", yours );
-        if ( allied > 0 )
-            sprintf( b_buf+strlen(b_buf), "%d Allied\n\r", allied );
-        if ( enemy > 0 )
-            sprintf( b_buf+strlen(b_buf), "%d Enemy\n\r", enemy );
-        if ( offline > 0 )
-            sprintf( b_buf+strlen(b_buf), "%d Offline\n\r", offline );
-        sprintf( b_buf+strlen(b_buf), "%d Total\n\r", total );
+//		if ( ch->z != Z_AIR )
+		{
 
-    }
-    sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
-             (b_north[0] != '\0') ? b_north : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
-             (b_east[0] != '\0')  ? b_east  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
-             (b_south[0] != '\0') ? b_south : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
-             (b_west[0] != '\0')  ? b_west  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
+  			for (xx = ch->x - maxx; xx <= ch->x + maxx; ++xx)
+  			{
+    				for (yy = ch->y - ch->map; yy <= ch->y + ch->map; ++yy)
+				{
+					x = xx;y = yy; real_coords(&x,&y);
+					bld = map_bld[x][y][ch->z];
 
-    x = ch->x;
-    y = ch->y;
-    last = map_table.type[x][y][ch->z];
-    for ( y = ch->y; y < MAX_MAPS -2; y++ )
-    {
-        if ( map_table.type[x][y][ch->z] != last )
-        {
-            sprintf( w_buf, "Far north (%d): %s\n\r", y-ch->y, wildmap_table[map_table.type[x][y][ch->z]].name );
-            break;
-        }
-    }
-    y = ch->y;
-    for ( x = ch->x; x < MAX_MAPS-2; x++ )
-    {
-        if ( map_table.type[x][y][ch->z] != last )
-        {
-            sprintf( w_buf+strlen(w_buf), "Far East (%d): %s\n\r", x - ch->x, wildmap_table[map_table.type[x][y][ch->z]].name );
-            break;
-        }
-    }
-    x = ch->x;
-    for ( y = ch->y; y > 2; y-- )
-    {
-        if ( map_table.type[x][y][ch->z] != last )
-        {
-            sprintf( w_buf+strlen(w_buf), "Far South (%d): %s\n\r", ch->y-y, wildmap_table[map_table.type[x][y][ch->z]].name );
-            break;
-        }
-    }
-    y = ch->y;
-    for ( x = ch->x; x > 2; x-- )
-    {
-        if ( map_table.type[x][y][ch->z] != last )
-        {
-            sprintf( w_buf+strlen(w_buf), "Far West (%d): %s\n\r", ch->x-x, wildmap_table[map_table.type[x][y][ch->z]].name );
-            break;
-        }
-    }
+					if ( !bld || bld == NULL )
+						continue;
 
-    if ( ch->in_building )
-    {
-        show_building(ch,IS_SET( ch->config, CONFIG_SMALLMAP)?2:IS_SET(ch->config,CONFIG_TINYMAP)?1:4,ch->map);
-        return;
-    }
-    if(ch->z != Z_UNDERGROUND)
-    	sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
-    else
-	sprintf( g_buf, "Your location: \?\?/\?\? (Underground)\n\r\n\r");
-    if ( quest )
-    {
-        for ( x = ch->x - ch->map/2; x < ch->x + ch->map/2; x++ )
-            for ( y = ch->y - ch->map/2; y < ch->y + ch->map/2; y++ )
-                terrain[map_table.type[x][y][1]]++;
+					if ( bld->visible || bld->owner == ch )
+					{
+						if ( bld->x == ch->x && bld->y == ch->y && !quest )
+						{
+							char_to_building(ch,bld);
+							continue;
+						}
+						if ( bld->x + 1 == ch->x && bld->y == ch->y )
+							sprintf( b_west, "%s", bld->name );
+						if ( bld->x - 1 == ch->x && bld->y == ch->y )
+							sprintf( b_east, "%s", bld->name );
+						if ( bld->x == ch->x && bld->y + 1 == ch->y )
+							sprintf( b_south, "%s", bld->name );
+						if ( bld->x == ch->x && bld->y - 1 == ch->y )
+							sprintf( b_north, "%s", bld->name );
+//						sprintf( b_buf+strlen(b_buf), "Building: %s, owned by %s, at %d/%d (%s%s)\n\r", bld->name, bld->owned, bld->x, bld->y, (ch->y < bld->y) ? "North" : (ch->y == bld->y) ? "" : "South", (ch->x > bld->x) ? "West" : (ch->x == bld->x) ? "" : "East" );
 
-        sprintf( b_buf, "\n\rBasic map description:\n\r\n\r" );
-        for ( x = 0; x < SECT_MAX; x++ )
-            if ( terrain[x] > 0 )
-                sprintf( b_buf+strlen(b_buf), "%d %s sectors.\n\r", terrain[x], wildmap_table[x].name );
-    }
-    if ( ch->z == Z_AIR )
-    {
-        sprintf( g_buf, "%d/%d\n\r", ch->x,ch->y);
-        send_to_char( g_buf, ch );
-    }
-    else if ( !quest )
-    {
-        send_to_char( g_buf, ch );
-        send_to_char( w_buf, ch );
-        send_to_char( e_buf, ch );
-        send_to_char( b_buf, ch );
-    }
-    if ( !quest )
-        send_to_char( p_buf, ch );
-    return;
+
+						if ( !bld->owner )
+							offline++;
+						else if ( bld->owner == ch )
+							yours++;
+						else if ( bld->owner->pcdata->alliance != -1 && bld->owner->pcdata->alliance == ch->pcdata->alliance )
+							allied++;
+						else
+							enemy++;
+						total++;
+					}
+				}
+			}
+		}
+		if ( total > 0 )
+		{
+			sprintf( b_buf, "Buildings:\n\r" );
+			if ( yours > 0 )
+				sprintf( b_buf+strlen(b_buf), "%d Yours\n\r", yours );
+			if ( allied > 0 )
+				sprintf( b_buf+strlen(b_buf), "%d Allied\n\r", allied );
+			if ( enemy > 0 )
+				sprintf( b_buf+strlen(b_buf), "%d Enemy\n\r", enemy );
+			if ( offline > 0 )
+				sprintf( b_buf+strlen(b_buf), "%d Offline\n\r", offline );
+			sprintf( b_buf+strlen(b_buf), "%d Total\n\r", total );
+
+		}
+		sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
+		(b_north[0] != '\0') ? b_north : wildmap_table[leads_to(ch->x,ch->y,ch->z,DIR_NORTH)].name,
+		(b_east[0] != '\0')  ? b_east  : wildmap_table[leads_to(ch->x,ch->y,ch->z,DIR_EAST)].name,
+		(b_south[0] != '\0') ? b_south : wildmap_table[leads_to(ch->x,ch->y,ch->z,DIR_SOUTH)].name,
+		(b_west[0] != '\0')  ? b_west  : wildmap_table[leads_to(ch->x,ch->y,ch->z,DIR_WEST)].name );
+
+		x = ch->x;
+		y = ch->y;
+		last = map_table.type[x][y][ch->z];
+		for ( y = ch->y;y < MAX_MAPS;y++ )
+		{
+			if ( map_table.type[x][y][ch->z] != last )
+			{
+				sprintf( w_buf, "Far north (%d): %s\n\r", y-ch->y, wildmap_table[map_table.type[x][y][ch->z]].name );
+				break;
+			}
+		}
+		y = ch->y;
+		for ( x = ch->x;x < MAX_MAPS;x++ )
+		{
+			if ( map_table.type[x][y][ch->z] != last )
+			{
+				sprintf( w_buf+strlen(w_buf), "Far East (%d): %s\n\r", x - ch->x, wildmap_table[map_table.type[x][y][ch->z]].name );
+				break;
+			}
+		}
+		x = ch->x;
+		for ( y = ch->y;y>0;y-- )
+		{
+			if ( map_table.type[x][y][ch->z] != last )
+			{
+				sprintf( w_buf+strlen(w_buf), "Far South (%d): %s\n\r", ch->y-y, wildmap_table[map_table.type[x][y][ch->z]].name );
+				break;
+			}
+		}
+		y = ch->y;
+		for ( x = ch->x;x > 0;x-- )
+		{
+			if ( map_table.type[x][y][ch->z] != last )
+			{
+				sprintf( w_buf+strlen(w_buf), "Far West (%d): %s\n\r", ch->x-x, wildmap_table[map_table.type[x][y][ch->z]].name );
+				break;
+			}
+		}
+
+
+	if ( ch->in_building && !quest )
+	{
+		show_building(ch,IS_SET( ch->config, CONFIG_SMALLMAP)?2:IS_SET(ch->config,CONFIG_TINYMAP)?1:4,ch->map);
+		return;
+	}
+
+	sprintf( g_buf, "Your location: %d/%d (%s)\n\r\n\r", ch->x, ch->y, wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
+
+/*	if ( quest )
+	{
+		for ( x = ch->x - ch->map/2;x < ch->x + ch->map/2;x++ )
+			for ( y = ch->y - ch->map/2;y < ch->y + ch->map/2;y++ )
+				terrain[map_table.type[x][y][1]]++;
+
+		sprintf( b_buf, "\n\rBasic map description:\n\r\n\r" );
+		for ( x = 0;x < SECT_MAX;x++ )
+			if ( terrain[x] > 0 )
+				sprintf( b_buf+strlen(b_buf), "%d %s sectors.\n\r", terrain[x], wildmap_table[x].name );
+	}*/
+	if ( ch->z == Z_AIR )
+	{
+		sprintf( g_buf, "%d/%d\n\r", ch->x,ch->y);
+		send_to_char( g_buf, ch );
+	}
+//	else if ( !quest )
+	{
+		send_to_char( g_buf, ch );
+		send_to_char( w_buf, ch );
+		send_to_char( e_buf, ch );
+		send_to_char( b_buf, ch );
+	}
+//	if ( !quest )
+		send_to_char( p_buf, ch );
+	return;
 }
-
 void show_building( CHAR_DATA *ch, sh_int small, int size )
 {
-    BUILDING_DATA *bld = ch->in_building;
-    char borderbuf[MSL] = "\0";
-    char outbuf[MSL] = "\0";
-    int i,j;
-    bool warcannon = FALSE;
-    bool msg = FALSE;
+	BUILDING_DATA *bld = ch->in_building;
+	char borderbuf[MSL];
+	char outbuf[MSL];
+	char exbuf[MSL];
+	int i,j;
+	bool warcannon = FALSE;
+	bool msg = FALSE;
 
-    if ( size == 999 )
-        warcannon = TRUE;
+	if ( size == 999 )
+		warcannon = TRUE;
 
-    if ( IS_SET(ch->pcdata->pflags,PFLAG_HELPING) || (bld->z == Z_UNDERGROUND && !IS_IMMORTAL(ch)))
-        sprintf( borderbuf, "\n\r        @@l(@@W??@@g/@@W??@@l) @@R[@@e%s@@R]@@N", planet_table[ch->z].name );
-    else
-        sprintf( borderbuf, "\n\r        @@l(@@W%d@@g/@@W%d@@l) @@R[@@e%s@@R]@@N", ch->x, ch->y, planet_table[ch->z].name );
-    sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s          Level %d\n\r\n\r@@r[@@GExits:@@d ", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, bld->level);
-    if ( ch->desc->mxp )
-        strcat( borderbuf, "\e[1z" );
-    for ( i=0; i<4; i++ )
-    {
-        if ( bld->exit[i] )
-        {
-            char tempbuf[MSL] = "\0";
-            strcat (borderbuf, MXPTAG(ch->desc,"Ex"));
-            sprintf( tempbuf, "%s", ( i == 0 ) ? "North" : ( i == 1 ) ? "East" : ( i == 2 ) ? "South" : "West" );
-            strcat (borderbuf, tempbuf );
-            strcat (borderbuf, MXPTAG(ch->desc,"/Ex"));
-            strcat (borderbuf, " ");
-        }
-    }
-    sprintf( borderbuf+strlen(borderbuf), " @@r]@@N\n\r" );
-    if ( (bld->type == BUILDING_WAR_CANNON || bld->type == BUILDING_SNIPER_TOWER || GUNNER(bld) ) && warcannon == FALSE )
-    {
-        int mapsize;
-        mapsize = ch->map;
-        ch->map = 10;
-        send_to_char( borderbuf, ch );
-        ShowWMap(ch,small,999);
-        ch->map = mapsize;
-    }
-    else
-    {
-        if ( !IS_SET(ch->config,CONFIG_BRIEF) )
-            sprintf( outbuf, "%s\n\r\n\r", build_table[bld->type].desc );
-        else
-            outbuf[0] = '\0';
-        send_to_char(borderbuf,ch);
-        send_to_char(outbuf,ch);
-    }
-    sprintf(borderbuf, "\n\r ");
-    if ( !IS_SET(ch->config,CONFIG_BLIND) && bld->maxhp > 0 )
-    {
-        j = ((10000 / bld->maxhp) * bld->hp) / 1000;
-        for ( i=0; i<j; i++ )
-            sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
-    }
-    sprintf( borderbuf+strlen(borderbuf), " %d HP\n\r", bld->hp );
-    send_to_char( borderbuf, ch );
-    sprintf(borderbuf, " ");
-    if ( !IS_SET(ch->config,CONFIG_BLIND) )
-    {
-        if ( bld->shield > 0 )
-            j = ((10000 / bld->maxshield) * bld->shield) / 1000;
-        else
-            j = 0;
-        for ( i=0; i<j; i++ )
-            sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
-    }
-    sprintf( borderbuf+strlen(borderbuf), " %d SHIELD@@N\n\r", bld->shield );
-    send_to_char(borderbuf,ch);
-    borderbuf[0] = '\0';
-    outbuf[0] = '\0';
+	if ( IS_SET(ch->config,CONFIG_BLIND) )
+	{
+		if ( IS_SET(ch->pcdata->pflags,PFLAG_HELPING) )
+			sprintf( borderbuf, "\n\rUnknown, %s", planet_table[ch->z].name );
+		else
+			sprintf( borderbuf, "\n\r%d,%d, %s", ch->x, ch->y, planet_table[ch->z].name );
+		sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s          Level %d\n\r\n\r", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, bld->level);
+	}
+	else
+	{
+		if ( IS_SET(ch->pcdata->pflags,PFLAG_HELPING) )
+			sprintf( borderbuf, "\n\r        @@l(@@W??@@g,@@W??@@l) @@R[@@e%s@@R]@@N", planet_table[ch->z].name );
+		else
+			sprintf( borderbuf, "\n\r        @@l(@@W%d@@g,@@W%d@@l) @@R[@@e%s@@R]@@N", ch->x, ch->y, planet_table[ch->z].name );
+		sprintf( borderbuf+strlen(borderbuf), "\n\r%s%s          Level %d\n\r\n\r", wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, bld->name, bld->level);
+	}
+
+	sprintf(exbuf,"%sExits:@@d ",IS_SET(ch->config,CONFIG_BLIND)?"":"@@r[@@G ");
+	if ( ch->desc->mxp )
+		strcat( exbuf, "\e[1z" );
+	for ( i=0;i<4;i++ )
+	{
+		if ( bld->exit[i] )
+		{
+			char tempbuf[MSL];
+			strcat (exbuf, MXPTAG(ch->desc,"Ex"));
+			sprintf( tempbuf, "%s", ( i == 0 ) ? "North" : ( i == 1 ) ? "East" : ( i == 2 ) ? "South" : "West" );
+			strcat (exbuf, tempbuf );
+			strcat (exbuf, MXPTAG(ch->desc,"/Ex"));
+			strcat (exbuf," ");
+		}
+	}
+	if ( !IS_SET(ch->config,CONFIG_BLIND) )
+		strcat (exbuf, "@@r]@@N");
+	sprintf( borderbuf+strlen(borderbuf), "%s\n\r",exbuf );
+	if (  open_bld(bld) && warcannon == FALSE )
+	{
+		int mapsize;
+		mapsize = ch->map;
+		ch->map = 10;
+		send_to_char( borderbuf, ch );
+		if ( !IS_SET(ch->config,CONFIG_BLIND) )
+			ShowWMap(ch,small,999);
+		ch->map = mapsize;
+	}
+	else
+	{
+		if ( !IS_SET(ch->config,CONFIG_BRIEF) )
+			sprintf( outbuf, "%s\n\r\n\r", build_table[bld->type].desc );
+		else
+			outbuf[0] = '\0';
+		send_to_char(borderbuf,ch);
+		send_to_char(outbuf,ch);
+	}
+	sprintf(borderbuf, "\n\r ");
+	if ( !IS_SET(ch->config,CONFIG_BLIND) && bld->maxhp > 0 )
+	{
+		j = ((10000 / bld->maxhp) * bld->hp) / 1000;
+		for ( i=0;i<j;i++ )
+			sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
+	}
+	sprintf( borderbuf+strlen(borderbuf), " %d HP\n\r", bld->hp );
+	send_to_char( borderbuf, ch );
+	sprintf(borderbuf, " ");
+	if ( !IS_SET(ch->config,CONFIG_BLIND) )
+	{
+		if ( bld->shield > 0 )
+			j = ((10000 / bld->maxshield) * bld->shield) / 1000;
+		else
+			j = 0;
+		for ( i=0;i<j;i++ )
+			sprintf( borderbuf+strlen(borderbuf), "%s>", ( i < 3 ) ? "@@e" : ( i < 6 ) ? "@@y" : "@@r" );
+	}
+	sprintf( borderbuf+strlen(borderbuf), " %d SHIELD@@N\n\r", bld->shield );
+	send_to_char(borderbuf,ch);
+	borderbuf[0] = '\0';
+	outbuf[0] = '\0';
     for ( i=0; i<8; i++ )
     {
         if ( bld->resources[i] > 0 )
@@ -1112,45 +433,509 @@ void show_building( CHAR_DATA *ch, sh_int small, int size )
             //			send_to_char( outbuf, ch );
         }
     }
+	if ( bld->type == BUILDING_SCUD_LAUNCHER || bld->type == BUILDING_NUKE_LAUNCHER || bld->type == BUILDING_ATOM_BOMBER)
+		sprintf( borderbuf+strlen(borderbuf), "Missile Ready In: %d minutes.\n\r", bld->value[0] / 6);
+	else if ( bld->type == BUILDING_BAR && bld->value[0] > 0 )
+		sprintf(borderbuf+strlen(borderbuf), "Bar opens in: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_BANK )
+		sprintf(borderbuf+strlen(borderbuf), "Next Interest gain in: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_HACKPORT )
+		sprintf( borderbuf+strlen(borderbuf), "Backdoor Ready In: %d minutes (%d ticks).\n\r", bld->value[0] / 6, bld->value[0] );
+	else if ( bld->type == BUILDING_SPY_SATELLITE || bld->type == BUILDING_PSYCHIC_TORMENTOR || bld->type == BUILDING_SHOCKWAVE )
+		sprintf( borderbuf+strlen(borderbuf), "Transmission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_SPY_QUARTERS )
+		sprintf( borderbuf+strlen(borderbuf), "Spy Mission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_DOOMSDAY_DEVICE )
+		sprintf( borderbuf+strlen(borderbuf), "DOOM Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_ALIEN_PROBE )
+			sprintf( borderbuf+strlen(borderbuf), "Probe Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_INTERGALACTIC_PUB )
+			sprintf( borderbuf+strlen(borderbuf), "Pub Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	else if ( bld->type == BUILDING_TRANSMITTER )
+			sprintf( borderbuf+strlen(borderbuf), "Transmitter Ready In: %d minutes.\n\r", bld->value[0] / 6 );
+	send_to_char( borderbuf, ch );
+	send_to_char( outbuf,ch);
 
-    if ( bld->type == BUILDING_SCUD_LAUNCHER || bld->type == BUILDING_NUKE_LAUNCHER || bld->type == BUILDING_ATOM_BOMBER )
-        sprintf( borderbuf+strlen(borderbuf), "Missile Ready In: %d minutes.\n\r", bld->value[0] / 6);
-    else if ( bld->type == BUILDING_DOOMSDAY_DEVICE )
-        sprintf( borderbuf+strlen(borderbuf), "SARS Ready In: %d minutes.\n\r", bld->value[0] / 6 );
-    else if ( bld->type == BUILDING_HACKPORT )
-        sprintf( borderbuf+strlen(borderbuf), "Backdoor Ready In: %d minutes.\n\r", bld->value[0] / 6 );
-    else if ( bld->type == BUILDING_ALIEN_PROBE || bld->type == BUILDING_SPY_SATELLITE || bld->type == BUILDING_PSYCHIC_TORMENTOR || bld->type == BUILDING_TRANSMITTER || bld->type == BUILDING_SHOCKWAVE )
-        sprintf( borderbuf+strlen(borderbuf), "Transmission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
-    else if ( bld->type == BUILDING_SPY_QUARTERS || bld->type == BUILDING_INTERGALACTIC_PUB )
-        sprintf( borderbuf+strlen(borderbuf), "Spy Mission Ready In: %d minutes.\n\r", bld->value[0] / 6 );
-    send_to_char( borderbuf, ch );
-    send_to_char( outbuf,ch);
-
-    if ( IS_SET(ch->config, CONFIG_EXITS ) )
-    {
-        sprintf( borderbuf, "\n@@r[@@GExits:@@d @@N" );
-        if ( ch->desc->mxp )
-            strcat( borderbuf, "\e[1z" );
-        for ( i=0; i<4; i++ )
-        {
-            if ( bld->exit[i] )
-            {
-                char tempbuf[MSL] = "\0";
-                strcat (borderbuf, MXPTAG(ch->desc,"Ex"));
-                sprintf( tempbuf, "%s", ( i == 0 ) ? "North" : ( i == 1 ) ? "East" : ( i == 2 ) ? "South" : "West" );
-                strcat (borderbuf, tempbuf );
-                strcat (borderbuf, MXPTAG(ch->desc,"/Ex"));
-                strcat (borderbuf, " ");
-            }
-        }
-        strcat(borderbuf,"]");
-        send_to_char( borderbuf, ch );
-    }
-    sprintf( outbuf, "\nOwned by %s.\n\r", bld->owned );
-    send_to_char( outbuf, ch );
-    return;
+	if ( IS_SET(ch->config, CONFIG_EXITS )  )
+	{
+		send_to_char( exbuf, ch );
+	}
+	sprintf( outbuf, "\n\rOwned by %s.\n\r", bld->owned );
+	send_to_char( outbuf, ch );
+	return;
 }
 
+void do_buildings( CHAR_DATA *ch, char *argument )
+{
+	BUILDING_DATA *bld;
+	int x,y,maxx,xx,yy,i=0;
+	char buf[MSL];
+	bool all=FALSE;
+
+	if ( !IS_SET(ch->config,CONFIG_BLIND) )
+	{
+		send_to_char("Huh?\n\r", ch );
+		return;
+	}
+	maxx = ch->map / 2;
+
+	if ( argument[0] == '\0' )
+		all = TRUE;
+	buf[0] = '\0';
+
+ 	for (xx = ch->x - maxx; xx <= ch->x + maxx;xx++)
+ 	{
+		for (yy = ch->y - ch->map; yy <= ch->y + ch->map; yy++)
+		{
+			x = xx;y = yy; real_coords(&x,&y);
+			bld = map_bld[x][y][ch->z];
+			if ( !bld || bld == NULL )
+				continue;
+
+			if ( !all && (str_prefix(argument,bld->owned) && str_cmp(argument,bld->name) ) )
+				continue;
+			if ( bld->visible == FALSE && (!bld->owner || (!allied(ch,bld->owner) && bld->owner != ch) ) )
+				continue;
+
+			sprintf(buf+strlen(buf), "%s: ", bld->owned );
+			sprintf( buf+strlen(buf), "%s, at %d/%d (%s%s)\n\r", (bld->type == BUILDING_DUMMY && bld->value[0] > 0 && bld->value[0] < MAX_BUILDING)? build_table[bld->value[0]].name:bld->name, bld->x, bld->y, (ch->y < bld->y) ? "North" : (ch->y == bld->y) ? "" : "South", (ch->x > bld->x) ? "West" : (ch->x == bld->x) ? "" : "East" );
+			if ( ++i > 100 )
+			{
+				sprintf(buf+strlen(buf),"There are over 100 buildings here, can't display them all.\n\r" );
+				break;
+			}
+		}
+		if ( i > 100 ) break;
+	}
+	send_to_char(buf,ch);
+	return;
+}
+void do_scanmap( CHAR_DATA *ch, char *argument )
+{
+	int dir,sect,lsect,count=0;
+	int x,y;
+	char buf[MSL];
+
+	if ( !IS_SET(ch->config,CONFIG_BLIND) )
+	{
+		send_to_char( "Huh?\n\r", ch );
+		return;
+	}
+	if ( ( dir = parse_direction(ch,argument) ) == -1 || argument[0] == '\0' )
+	{
+		send_to_char( "Valid directions are North, East, South and West\n\r", ch );
+		return;
+	}
+
+	x = ch->x;
+	y = ch->y;
+	lsect = -1;
+	sect = -1;
+	buf[0] = '\0';
+	while ( TRUE )
+	{
+		lsect = sect;
+		if ( dir == DIR_NORTH )
+		{
+			y++;
+			if ( y > ch->y + ch->map )
+				break;
+		}
+		else if ( dir == DIR_SOUTH )
+		{
+			y--;
+			if ( y < ch->y - ch->map )
+				break;
+		}
+		else if ( dir == DIR_EAST )
+		{
+			x++;
+			if ( x > ch->x + ch->map )
+				break;
+		}
+		else if ( dir == DIR_WEST )
+		{
+			x--;
+			if ( x < ch->x - ch->map )
+				break;
+		}
+
+		sect = map_table.type[x][y][ch->z];
+		if ( lsect != sect && lsect != -1 )
+		{
+			sprintf( buf+strlen(buf), "%d %s terrain, ", count, wildmap_table[lsect].name );
+			count = 0;
+		}
+		count++;
+	}
+	sprintf( buf+strlen(buf), "%d %s terrain.\n\r", count, wildmap_table[lsect].name );
+	send_to_char(buf,ch);
+	return;
+}
+
+void ShowWMap( CHAR_DATA *ch, sh_int small, int size )
+{
+  	int x,y,z=ch->z,i=0,xx,yy,looper;
+  	int maxx = ( IS_SET(ch->config,CONFIG_LARGEMAP) && size != 995 && size != 994 && size != 998 && size != 997 )?ch->map:ch->map/2;
+  	bool warcannon = (size==999);
+  	bool base = (size==996 || size ==995 || size==994);
+	sh_int security = (size==995)?1:(size==994)?2:0;
+  	bool inverse = IS_SET(ch->config,CONFIG_INVERSE)?TRUE:FALSE;
+  	bool pit = IN_PIT(ch);
+  	bool inMedal = medal(ch);
+	char linebuf[MSL];
+
+
+  	char color[MSL];
+  	char outbuf[MSL];
+  	char catbuf[MSL];
+  	char borderbuf[MSL];
+  	bool charr = FALSE;
+  	bool def = FALSE;
+  	BUILDING_DATA *bld = first_building;
+  	bool enemy = FALSE;
+	bool ft=FALSE;
+
+  	bool terrain[SECT_MAX]={FALSE};
+
+	small = 2;
+  	outbuf[0] = '\0';
+  	color[0] = '\0';
+  	borderbuf[0] = '\0';
+
+	if ( map_bld[ch->x][ch->y][ch->z] && warcannon == FALSE && size != 997 && !base && size != 998 )
+	{
+		char_to_building(ch,map_bld[ch->x][ch->y][ch->z]);
+		show_building(ch,small,size);
+		return;
+	}
+
+	if ( !pit && !inMedal && size < 998 ) /* For quest calls */
+	{
+		char sbuf[MSL];
+		int c = (ch->map * 2)-16;
+		sbuf[0] = '\0';
+		sprintf(borderbuf,"\n\r");
+		if ( !IS_SET(ch->pcdata->pflags,PFLAG_HELPING))
+			sprintf( sbuf, "  @@cLocation: @@a%3d@@g/@@a%-*d @@g| @@cTerrain: %s%s", ch->x, c,ch->y,wildmap_table[map_table.type[ch->x][ch->y][ch->z]].color, wildmap_table[map_table.type[ch->x][ch->y][ch->z]].name );
+		else
+			sprintf( sbuf, "@@l(@@g??@@g,@@g??@@l) @@R[@@e%s@@R]@@N",  planet_table[ch->z].name );
+		strcat(borderbuf,sbuf);
+		strcat(borderbuf,"\n\r");
+	}
+
+  	sprintf( linebuf, "%s", "@@W+@@o" );
+  	sprintf( catbuf, "--" );
+
+	if (pit)
+	  	for ( looper = 0; looper < MAX_MAPS-PIT_BORDER_Y-1; looper++ )
+    			safe_strcat( MSL, linebuf, catbuf );
+	else if (inMedal)
+		for ( looper = 0; looper < MEDAL_BORDER_Y; looper++ )
+		    	safe_strcat( MSL, linebuf, catbuf );
+	else
+	  	for ( looper = 0; looper < ch->map*2; looper++ )
+    			safe_strcat( MSL, linebuf, catbuf );
+
+  	safe_strcat( MSL, linebuf, "@@W+@@N" );
+  	send_to_char( "\n\r", ch );
+	if ( !warcannon )
+	send_to_char( linebuf,ch );
+  	send_to_char( borderbuf, ch );
+	send_to_char( linebuf, ch );
+  	sprintf( outbuf, "%s", "\n\r" );
+	i=0;
+	catbuf[0]='\0';
+
+  	for (yy = ch->y + maxx; yy >= ch->y - maxx; --yy)
+  	{ /* every row */
+		if ( pit && (yy < PIT_BORDER_Y || yy >= MAX_MAPS))
+			continue;
+//    		safe_strcat( MSL, outbuf, "" );
+		strcpy(color,"");
+//    		sprintf( color, "" );
+    		for (xx = ch->x - ch->map; xx <= ch->x + ch->map; ++xx)
+    		{ /* every column */
+
+			x = xx; y = yy;
+			real_coords(&x,&y);
+
+			bld = map_bld[x][y][z];
+			if ( ch->x == x && ch->y == y && security == 0 )
+			{
+				sprintf( catbuf, "@@y**");
+				sprintf( color, "@@y" );
+				if (inverse)
+				{
+					strcat(catbuf,"@@i");
+					strcat(color,"@@i");
+				}
+			}
+			else if (medal(ch) && (yy < 1 || yy > MEDAL_BORDER_Y || xx < 1 || xx > MEDAL_BORDER_X))
+			{
+				sprintf(catbuf, "@@k++@@a");
+			}
+			else if ( z == Z_AIR && ((map_bld[x][y][Z_GROUND] && map_bld[x][y][Z_GROUND]->type == BUILDING_AIRFIELD && map_bld[x][y][Z_GROUND]->active)))
+			{
+				sprintf(catbuf,"@@W##@@a");
+			}
+                        else if ( z == Z_AIR && map_table.type[x][y][Z_GROUND] == SECT_MOUNTAIN)
+			{
+				sprintf(catbuf, "@@b~/@@a");
+			}
+			else if ( z == Z_SPACE && map_bld[x][y][Z_GROUND] && map_bld[x][y][Z_GROUND]->type == BUILDING_SPACE_CENTER)
+			{
+				sprintf(catbuf, "@@dSP");
+			}
+			else if ( z == Z_UNDERGROUND &&  map_bld[x][y][Z_GROUND] && map_bld[x][y][Z_GROUND]->type == BUILDING_TUNNEL)
+			{
+				sprintf(catbuf, "@@bTN");
+			}
+			else if ( pit && (xx<PIT_BORDER_X || xx >= MAX_MAPS ) )
+			{
+				continue;
+			}
+			else if ( bld && (bld->visible || (bld->owner && allied(ch,bld->owner)) || ch == bld->owner || ch->trust >= 85 ) )
+			{
+				CHAR_DATA *vch;
+				char ocolor[MSL];
+
+				if ( bld->active )
+				{
+					if ( (vch = bld->owner) == NULL )
+					{
+						if ( str_cmp(bld->owned,ch->name) && !is_evil(bld) )
+							vch = get_ch(bld->owned);
+						else
+							vch = ch;
+					}
+					if ( vch == NULL )
+						activate_building(bld,FALSE);
+				}
+				else
+					vch = NULL;
+
+ 				if (blind_spot(ch,xx,yy) )
+				{
+					sprintf(catbuf, "  ");
+				}
+				else
+				{
+					char symbol[MSL];
+					bool mxp = TRUE;
+					def = ((!ch->security && bld->owner == ch && defense_building(bld)));
+					charr = map_ch[x][y][z] ? TRUE : FALSE;
+					if ( security == 0 )
+					{
+						sprintf( ocolor, "%s",  ( vch == NULL ) ? "@@d":charr ? "@@J" : def?"@@W" : ( bld->value[9] > 0 ) ? "@@b" : ( IS_LINKDEAD(vch) ) ? "@@o" : ( IS_NEWBIE(vch) ) ? "@@c" : (bld->value[3] != 0) ? "@@m" : ( bld->visible == FALSE ) ? "@@W" : ( bld->hp < bld->maxhp && bld->hp > bld->maxhp / 2 ) ? "@@b" : ( bld->hp < bld->maxhp / 2 ) ? "@@Q" : "@@G" );
+						if ( ch == bld->owner || bld->protection > 0 || (( bld->type == BUILDING_DUMMY && in_range_of(bld->x, bld->y, ch->x, ch->y, 1)) || bld->value[5] > 0 ) )
+							sprintf( ocolor+strlen(ocolor), "@@x");
+						if ( charr && (map_ch[x][y][z]->pcdata->alliance != ch->pcdata->alliance || map_ch[x][y][z]->pcdata->alliance == -1) )
+							enemy = TRUE;
+					}
+					else if ( security == 2 )
+						sprintf(ocolor,"%s",(build_table[bld->type].act != BUILDING_DEFENSE)?"@@d":bld->value[6]<=3?"@@g":bld->value[6]<=6?"@@b":bld->value[6] <=9?"@@R":"@@e");
+
+					if ( inverse )
+						strcat(ocolor,"@@i");
+
+					catbuf[0] = '\0';
+					if ( str_cmp(color,ocolor) )
+					{
+						sprintf( color, "%s", ocolor );
+						sprintf( catbuf, "%s", color );
+					}
+
+					if ( security == 2 && build_table[bld->type].act == BUILDING_DEFENSE && bld->owner && bld->owner == ch )
+					{
+						sprintf( symbol,"%*d",small,bld->value[6]);
+					}
+					else
+					{
+						if ( bld->type != BUILDING_DUMMY )
+							sprintf( symbol, "%s", build_table[bld->type].symbol);
+						else
+							sprintf( symbol, "%s", build_table[bld->value[0]].symbol);
+					}
+					if ( mxp )
+					{
+						if ( ch->desc->mxp )
+							strcat( catbuf, "\e[1z" );
+						if ( bld->type == BUILDING_DUMMY )
+						{
+							if ( bld->value[0] < 1 || bld->value[0] >= MAX_BUILDING )
+								bld->value[0] = BUILDING_TURRET;
+							sprintf( ocolor, MXPTAG(ch->desc,"Bl x=%d y=%d owner=%s name='%s'"), bld->x, bld->y, bld->owned, build_table[bld->value[0]].name );
+						}
+						else
+							sprintf( ocolor, MXPTAG(ch->desc,"Bl x=%d y=%d owner=%s name='%s'"), bld->x, bld->y, bld->owned, bld->name );
+					}
+					strcat( catbuf, ocolor);
+					sprintf( ocolor, "%s", symbol );
+					strcat( catbuf, ocolor );
+					if ( mxp )
+						strcat( catbuf, MXPTAG(ch->desc,"/Bl"));
+				}
+			}
+			else if ( ( map_ch[x][y][z] != NULL || IS_SET(ch->effect,EFFECT_VISION) ) && size != 998 && size != 997 )
+			{
+				CHAR_DATA *wch;
+				bool vehicle = FALSE;
+				bool allied = FALSE;
+				bool newbie = FALSE;
+				bool imm = FALSE;
+				int ppl = 0;
+				char ppl_c[MSL];
+
+ 				if (blind_spot(ch,xx,yy) )
+				{
+					sprintf(catbuf,"  ");
+				}
+				else
+				{
+					for ( wch = map_ch[x][y][z];wch;wch = wch->next_in_room )
+					{
+						if ( !can_see(ch,wch) )
+							continue;
+						ppl++;
+						if ( wch->in_vehicle )
+							vehicle = TRUE;
+						if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
+							allied = TRUE;
+						else if ( IS_NEWBIE(wch) )
+							newbie = TRUE;
+						else if ( IS_IMMORTAL(wch) )
+							imm = TRUE;
+						else if ( enemy == FALSE && wch != ch)
+						{
+							enemy = TRUE;
+						}
+					}
+					if ( ppl > 9 )
+						ppl = 9;
+					if ( IS_SET(ch->effect,EFFECT_VISION) && ppl == 0 && number_percent() < 5 )
+						ppl++;
+
+					sprintf( ppl_c, "%d", ppl );
+					if ( ppl <= 0 )
+					{
+						sprintf( color, "%s", ( !str_cmp(wildmap_table[map_table.type[x][y][ch->z]].color, color) ) ? "" : wildmap_table[map_table.type[x][y][ch->z]].color );
+						if (inverse) strcat(color,"@@i");
+						sprintf(catbuf,"%s%s",color,wildmap_table[map_table.type[xx][yy][ch->z]].mark);
+					}
+					else
+					{
+						if ( vehicle )
+						{
+							if ( small == 1 )
+								sprintf( catbuf, "%s%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e", ppl_c );
+							if ( small == 2 )
+								sprintf( catbuf, "%s[%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "]" : ppl_c );
+							if ( small == 4 )
+								sprintf( catbuf, "%s<@@y[%s@@e>@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "]" : ppl_c );
+						}
+						else
+						{
+							if ( small == 1 )
+								sprintf( catbuf, "%s*@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e" );
+							if ( small == 2 )
+								sprintf( catbuf, "%s*%s@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "*" : ppl_c );
+							if ( small == 4 )
+								sprintf( catbuf, "%s<@@y*%s%s>@@N", imm?"@@y":newbie?"@@a":allied?"@@r":"@@e",(ppl==1) ? "*" : ppl_c,imm?"@@y":allied?"@@r":"@@e" );
+						}
+						sprintf( color, "@@N" );
+					}
+					if (inverse) strcat(color,"@@i");
+				}
+			}
+			else if ( ( map_vhc[x][y][z] != NULL && size != 998 && size != 997 ) )
+			{
+				char mxpbuf[MSL];
+				catbuf[0] = '\0';
+
+				if ( ch->desc->mxp )
+				{
+					strcat( catbuf, "\e[1z" );
+					sprintf( mxpbuf, MXPTAG(ch->desc,"Bl x=%d y=%d owner='Empty' name='%s'"), x,y,map_vhc[x][y][z]->desc );
+					strcat( catbuf, mxpbuf );
+				}
+				if ( str_cmp(color,"@@d") )
+				{
+					strcat( catbuf, "@@d" );
+					sprintf( color, "@@d" );
+				}
+				if (inverse) strcat(color,"@@i");
+				sprintf( catbuf+strlen(catbuf), "[]" );
+				if ( ch->desc->mxp )
+					strcat( catbuf, MXPTAG(ch->desc,"/Bl"));
+				strcat(catbuf,color);
+			}
+			else
+			{
+				char ocolor[MSL];
+				sprintf( ocolor, "%s", wildmap_table[map_table.type[x][y][ch->z]].color );
+				catbuf[0] = '\0';
+				if ( str_cmp(color,ocolor) )
+				{
+					sprintf( color, "%s", ocolor );
+					if (inverse) strcat(color,"@@i");
+					sprintf( catbuf, "%s", color );
+				}
+		        	sprintf( catbuf+strlen(catbuf), "%s", ( blind_spot(ch,xx,yy)) ? "  " : wildmap_table[map_table.type[x][y][ch->z]].mark );
+				if ( terrain[map_table.type[x][y][ch->z]] == FALSE ) terrain[map_table.type[x][y][ch->z]] = TRUE;
+
+			}
+			if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
+			{
+				sprintf( catbuf,"  ");
+			}
+
+		        safe_strcat( MSL, outbuf, catbuf  );
+		    	i++;
+		    	if ( i >= 10 )
+		    	{
+				i = 0;
+		    		send_to_char( outbuf, ch );
+		    		outbuf[0] = '\0';
+		    	}
+		}
+    		safe_strcat( MSL, outbuf, "\n\r" );
+  	}
+
+
+  /* this is the contents of the map */
+  send_to_char( outbuf, ch );
+  /* this is the bottom line of the map */
+  send_to_char( linebuf, ch );
+  send_to_char( "\n\r", ch );
+  if ( my_get_hours(ch,TRUE) < 2 && !IS_SET(ch->config,CONFIG_NOLEGEND))
+  {
+	char tbuf[MSL];
+	int j,l=0;
+	if ( terrain[SECT_SNOW_BLIZZARD] )
+	{
+		terrain[SECT_SNOW_BLIZZARD] = FALSE;
+		terrain[SECT_SNOW] = TRUE;
+	}
+	sprintf( tbuf, "@@WLegend:  " );
+	for ( j=0;j<SECT_MAX;j++ )
+	{
+		if ( !terrain[j] )
+			continue;
+		sprintf( tbuf+strlen(tbuf), "%s%s %-11s ", wildmap_table[j].color, wildmap_table[j].mark, wildmap_table[j].name );
+		l++;
+		if ( l%4 == 0 )
+			sprintf(tbuf+strlen(tbuf), "\n\r         " );
+	}
+	sprintf(tbuf+strlen(tbuf), "\n\r\n\r@@WItems:@@N\n\r" );
+	send_to_char(tbuf,ch);
+  }
+  x = 480;
+  if ( enemy && ft ) x *= 1.3;
+  if ( enemy && ch->fighttimer < x && !IS_IMMORTAL(ch) && ch->z != Z_PAINTBALL )
+	ch->fighttimer = x;
+  return;
+}
 void ShowSpace( CHAR_DATA *ch )
 {
     char ss[MSL] = "\0";
@@ -1159,14 +944,18 @@ void ShowSpace( CHAR_DATA *ch )
     char buf[MSL] = "\0";
     char pref[MSL] = "\0";
     VEHICLE_DATA *vhc = ch->in_vehicle;
-    int i,j=get_ship_range(vhc);
+    int i,j= 0;
     pref[0] = '\0';
+    if(!vhc)
+    {
+    	return;
+    }
     for ( i=0; i<((j*4)-34); i++ )
         sprintf( pref+strlen(pref)," ");
-
+    j = vhc?get_ship_range(vhc):0;
     sprintf(buf, "\n\r" );
     sprintf(buf+strlen(buf),"%s@@c     ------------------------ \n\r", pref );
-    sprintf(buf+strlen(buf),"%s  --/  SCN: %-3d    WPN: %-3d  \\-- \n\r", pref, j, vhc->range );
+    sprintf(buf+strlen(buf),"%s  --/  SCN: %-3d    WPN: %-3d  \\-- \n\r", pref, j, vhc?vhc->range:0 );
     sprintf(buf+strlen(buf),"%s / ______________      @@RSS@@dAA@@aFF@@c_  \\ \n\r", pref  );
 
     if ( vhc->hit > ( vhc->max_hit / 100 ) * 80 )
@@ -1268,115 +1057,16 @@ void draw_space( CHAR_DATA *ch )
     return;
 }
 
-void do_buildings( CHAR_DATA *ch, char *argument )
+void do_bscan(CHAR_DATA *ch,char *argument)
 {
     BUILDING_DATA *bld;
-    int x,y,maxx;
-    char buf[MSL] = "\0";
-    bool all=FALSE;
-
-    if ( !IS_SET(ch->config,CONFIG_BLIND) )
-    {
-        send_to_char("Huh?\n\r", ch );
-        return;
-    }
-    maxx = ch->map / 2;
-
-    if ( argument[0] == '\0' )
-        all = TRUE;
-    buf[0] = '\0';
-
-    for (x = ch->x - maxx; x <= ch->x + maxx; ++x)
-    {
-        for (y = ch->y - ch->map; y <= ch->y + ch->map; ++y)
-        {
-            if ( INVALID_COORDS(x,y) )
-                continue;
-            bld = map_bld[x][y][ch->z];
-            if ( !bld || bld == NULL )
-                continue;
-
-            if ( !all && (str_prefix(argument,bld->owned) && str_cmp(argument,bld->name) ) )
-                continue;
-
-            if ( bld->visible || bld->owner == ch )
-            {
-                //				if ( all )
-                sprintf(buf+strlen(buf), "%s: ", bld->owned );
-                if ( bld->type == BUILDING_ZAP )
-                    continue;
-                sprintf( buf+strlen(buf), "%s, at %d/%d (%s%s)\n\r", (bld->type == BUILDING_DUMMY && bld->value[0] > 0 && bld->value[0] < MAX_BUILDING)? build_table[bld->value[0]].name:bld->name, bld->x, bld->y, (ch->y < bld->y) ? "North" : (ch->y == bld->y) ? "" : "South", (ch->x > bld->x) ? "West" : (ch->x == bld->x) ? "" : "East" );
-            }
-        }
-    }
-    send_to_char(buf,ch);
-    return;
-}
-
-void do_scanmap( CHAR_DATA *ch, char *argument )
-{
-    int dir,sect,lsect,count=0;
-    int x,y;
+    int x, xx, y, yy, dir;
     char buf[MSL] = "\0";
 
-    if ( !IS_SET(ch->config,CONFIG_BLIND) )
-    {
-        send_to_char( "Huh?\n\r", ch );
-        return;
-    }
-    if ( ( dir = parse_direction(ch,argument) ) == -1 || argument[0] == '\0' )
-    {
-        send_to_char( "Valid directions are North, East, South and West\n\r", ch );
-        return;
-    }
-
-    x = ch->x;
-    y = ch->y;
-    lsect = -1;
-    sect = -1;
-    buf[0] = '\0';
-    while ( TRUE )
-    {
-        lsect = sect;
-        if ( dir == DIR_NORTH )
-        {
-            y++;
-            if ( y > ch->y + ch->map )
-                break;
-        }
-        else if ( dir == DIR_SOUTH )
-        {
-            y--;
-            if ( y < ch->y - ch->map )
-                break;
-        }
-        else if ( dir == DIR_EAST )
-        {
-            x++;
-            if ( x > ch->x + ch->map )
-                break;
-        }
-        else if ( dir == DIR_WEST )
-        {
-            x--;
-            if ( x < ch->x - ch->map )
-                break;
-        }
-        if ( INVALID_COORDS(x,y) )
-            break;
-
-        sect = map_table.type[x][y][ch->z];
-        if ( lsect != sect && lsect != -1 )
-        {
-            sprintf( buf+strlen(buf), "%d %s terrain, ", count, wildmap_table[lsect].name );
-            count = 0;
-        }
-        count++;
-    }
-    sprintf( buf+strlen(buf), "%d %s terrain.\n\r", count, wildmap_table[lsect].name );
-    send_to_char(buf,ch);
-    return;
-}
+    if (!IS_SET(ch->config, CONFIG_BLIND))
+        mreturn("Huh?\r\n",ch);
+    if ( ( dir = parse_direction(ch, argument) ) == -1 || argument[0] == '\0' )
+        mreturn("Bscan <direction>\r\n",ch);
 
 void do_bscan(CHAR_DATA *ch,char *argument)
 {
@@ -1480,4 +1170,22 @@ void do_bthere(CHAR_DATA *ch, char *argument)
         send_to_char(buf,ch);
     }
     return;
+}
+char *makesmall( char *arg, int size )
+{
+    static char small[MSL] = "\0";
+    if ( size == 4 )
+        size = 2;
+
+    small[0] = arg[1];
+    if ( size == 2 )
+    {
+        small[1] = arg[2];
+        small[2] = '\0';
+    }
+    if ( size == 1 )
+    {
+        small[1] = '\0';
+    }
+    return (small);
 }

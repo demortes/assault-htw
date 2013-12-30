@@ -285,23 +285,24 @@ const struct wildmap_type wildmap_table[SECT_MAX] =
 {
     //  Color  Symbol   ID    Name   		Heat	Speed	Fuel
 
-    { "@@k", "++++", "00", "Wall",        0,  0,  0   },
-    { "@@d", "_-_-", "01", "Rock",        0,  -4,     1   },
-    { "@@y", "._._", "02", "Sand",        6,  4,  3   },
-    { "@@b", ".--.", "03", "Hills",       -2,     2,  3   },
-    { "@@b", "_~~_", "04", "Mountain",        -3,     4,  4   },
-    { "@@l", "~~~~", "05", "Water",       -4,     1,  0   },
-    { "@@W", "~~~~", "06", "Snow",        -6,     2,  2   },
-    { "@@r", "....", "07", "Field",       1,  -4,     1   },
-    { "@@G", "^^^^", "08", "Forest",      1,  2,  1   },
-    { "@@e", "~o~~", "09", "Lava",        20,     2,  6   },
-    { "@@d", "^v^v", "10", "Burned Ground",   0,  0,  1   },
-    { "@@W", "~~~~", "11", "Snow - Blizzard",     -20,    3,  4   },
-    { "@@d", "~~~~", "12", "Ash",         5,  0,  2   },
-    { "@@a", "----", "13", "Air",         0,  1,  0   },
-    { "@@b", "....", "14", "Underground",     0,  0,  3   },
-    { "@@a", "~~~~", "15", "Ice",         -10,    10,     0   },
-    { "@@e", "~oo~", "16", "Magma",       150,    0,  0   },
+    { "@@k", "++", "00", "Wall",        0,  0,  0   },
+    { "@@d", "_-", "01", "Rock",        0,  -4,     1   },
+    { "@@y", "._", "02", "Sand",        6,  4,  3   },
+    { "@@b", "--", "03", "Hills",       -2,     2,  3   },
+    { "@@b", "~\\", "04", "Mountain",        -3,     4,  4   },
+    { "@@l", "~~", "05", "Water",       -4,     1,  0   },
+    { "@@W", "~~", "06", "Snow",        -6,     2,  2   },
+    { "@@r", "..", "07", "Field",       1,  -4,     1   },
+    { "@@G", "^^", "08", "Forest",      1,  2,  1   },
+    { "@@e", "~~", "09", "Lava",        20,     2,  6   },
+    { "@@d", "^v", "10", "Burned Ground",   0,  0,  1   },
+    { "@@W", "~~", "11", "Snow - Blizzard",     -20,    3,  4   },
+    { "@@d", "~~", "12", "Ash",         5,  0,  2   },
+    { "@@a", "--", "13", "Air",         0,  1,  0   },
+    { "@@b", "..", "14", "Underground",     0,  0,  3   },
+    { "@@a", "~~", "15", "Ice",         -10,    10,     0   },
+    { "@@e", "o~", "16", "Magma",       150,    0,  0   },
+    { "@@J", "oo", "17", "Ocean", 		0, 	    4, 	    1 	},
 };
 
 char * const helper  [MAX_HELPER] =
@@ -388,6 +389,8 @@ char * const vehicle_name [MAX_VEHICLE] =
     "Alien Scout Ship",
     "Bio Floater Vehicle",
     "Creeper Vehicle",
+    "Boat",
+    "Gunship",
 };
 
 char * const vehicle_desc [MAX_VEHICLE] =
@@ -411,4 +414,6 @@ char * const vehicle_desc [MAX_VEHICLE] =
     "An Alien Scout",
     "A Bio-Floater",
     "A Creeper",
+    "An old Boat",
+    "A small Gunship",
 };
