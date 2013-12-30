@@ -104,9 +104,6 @@ void building_update( void )
         if ( bld->value[9] > 0 )
         {
             bld->value[9]--;
-            //			if ( bld->value[9] > 0 && bld->owner && has_ability(bld->owner,5) ) //nuclear containment
-            //				bld->value[9]--;
-
         }
         if ( is_evil(bld) )
             qb = TRUE;
