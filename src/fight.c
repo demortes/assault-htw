@@ -1728,7 +1728,7 @@ void do_blast( CHAR_DATA *ch, char *argument )
     }
     if ( cannon )
     {
-        if ( x - 10 > ch->x || x + 10 < ch->x || y - 10 > ch->y || y + 10 < ch->y )
+        if ( !in_range_of(ch->x, ch->y, x, y, 10) )
         {
             send_to_char( "That's too far. You can only shoot in a 10X10 radius.\n\r", ch );
             return;
