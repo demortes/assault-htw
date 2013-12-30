@@ -651,7 +651,7 @@ void sendsound( CHAR_DATA *ch, char *file, int V, int I, int P, char *T, char *f
     char buf[MSL] = "\0";
     if ( !IS_SET(ch->config,CONFIG_SOUND) )
         return;
-    sprintf( buf, "\n\r!!SOUND(%s V=%d L=%d P=%d T=%s U=%s/MSP/%s)", file, V,I,P,T,WEBSITE,filename );
+    sprintf( buf, "\n\r!!SOUND(%s V=%d L=%d P=%d T=%s U=%s/%s)", file, V,I,P,T,WEBSITESOUND,filename );
     send_to_char(buf,ch);
     return;
 }
