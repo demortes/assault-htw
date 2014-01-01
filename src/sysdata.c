@@ -232,7 +232,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
                 save_buildings();
                 save_objects(0);
                 save_vehicles(0);
-                do_pipe(NULL, "mv -f player player.afst;")
+                do_pipe(NULL, "mv -f player player.afst");
                 do_pipe(NULL,"mv -f ../player_fst player");
                 do_hotreboot(NULL,"nosave");
             }
