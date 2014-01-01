@@ -4737,7 +4737,6 @@ void do_vload( CHAR_DATA *ch, char *argument )
     vhc = create_vehicle(i);
     vhc->scanner = 10;
     vhc->range = 5;
-    move_vehicle(vhc,ch->x,ch->y,ch->z);
     vhc->fuel = 10000;
     vhc->max_fuel = 10000;
     vhc->ammo = 10000;
@@ -4748,6 +4747,7 @@ void do_vload( CHAR_DATA *ch, char *argument )
     vhc->speed = 4;
     if(vhc->type == VEHICLE_BOAT || vhc->type == VEHICLE_GUNSHIP)
     	vhc->flags = 1;
+    move_vehicle(vhc,ch->x,ch->y,ch->z);
     send_to_loc( "A Vehicle appears in the area.\n\r", ch->x, ch->y,ch->z );
     return;
 }
