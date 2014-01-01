@@ -561,6 +561,13 @@ void char_update( void )
             damage( ch, ch, number_range(5, 10), TYPE_UNDEFINED );
         }
 
+        if(map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !has_boat(ch) && !IS_IMMORTAL(ch))
+        {
+        	act( "$n tries to stay above water... but fails.", ch, NULL, NULL, TO_ROOM );
+        	send_to_char( "You try to stay above water, but fail.", ch);
+        	damage(ch, ch, 30000, TYPE_UNDEFINED );
+        }
+
     }
     if(ch_next != NULL)
     	CUREF( ch_next );
@@ -2002,8 +2009,10 @@ void explode( OBJ_DATA *obj )
         }
         for ( x=obj->x-1; x<=obj->x+1; x++ )
             for ( y=obj->y-1; y<=obj->y+1; y++ )
-                if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-1 && y <= MAX_MAPS - 1 )
-                    for ( vch = map_ch[x][y][obj->z]; vch; vch = vch_next )
+            {
+            	int tx = x, ty = y;
+            	real_coords(&tx, &ty);
+            	for ( vch = map_ch[tx][ty][obj->z]; vch; vch = vch_next )
                         //		for ( vch = first_char;vch;vch = vch_next )
                     {
                         vch_next = vch->next_in_room;
@@ -2029,6 +2038,7 @@ void explode( OBJ_DATA *obj )
 
                         damage( ch, vch, dam,DAMAGE_BLAST );
                     }
+            }
         if ( obj->z != Z_SPACE )
         {
             for ( x=obj->x-1; x<=obj->x+1; x++ )
