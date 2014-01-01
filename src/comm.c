@@ -2954,7 +2954,7 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                 i++;
                 x = number_range(4,MAX_MAPS - 5);
                 y = number_range(4,MAX_MAPS - 5);
-                if ( map_table.type[x][y][ch->z] == SECT_NULL || map_table.type[x][y][ch->z] == SECT_OCEAN )
+                if ( map_table.type[x][y][ch->z] == SECT_NULL || (map_table.type[x][y][ch->z] == SECT_OCEAN && !has_boat(ch)))
                     continue;
                 for ( xx = x-10; xx<x+10; xx++ )
                     for ( yy = y-10; yy<y+10; yy++ )
@@ -4145,7 +4145,7 @@ void do_hotreboot (CHAR_DATA *ch, char * argument)
     else
         sysdata.silent_reboot = FALSE;
 
-    if ( !crash )
+    if ( !crash && !nosave )
     {
         save_sysdata();
         build_save_flush();
@@ -4153,6 +4153,7 @@ void do_hotreboot (CHAR_DATA *ch, char * argument)
         save_alliances();
         save_buildings();
         save_vehicles(0);
+        if(!nosave)
         save_building_table();
     }
     if (saving_area && !crash )
