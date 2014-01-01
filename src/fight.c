@@ -1795,13 +1795,14 @@ void do_blast( CHAR_DATA *ch, char *argument )
                 for ( xx = x - range; xx < x + range; xx++ )
                     for ( yy = x - range; yy < x + range; yy++ )
                     {
-                        real_coords(&xx, &yy);
-                        if ( ( bld2 = map_bld[xx][yy][ch->z] ) != NULL && bld2->active )
+                    	int tx = xx, ty = yy;
+                        real_coords(&tx, &ty);
+                        if ( ( bld2 = map_bld[tx][ty][ch->z] ) != NULL && bld2->active )
                         {
                             bld2->value[9] += bld->level * 100;
                             send_to_loc( "@@yThe building fills with nuclear fallout!!@@N\n\r", bld->x, bld->y, bld->z );
                         }
-                        for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
+                        for ( obj = map_obj[tx][ty]; obj; obj = obj->next_in_room )
                         {
                             if ( obj->z != ch->z )
                                 continue;
