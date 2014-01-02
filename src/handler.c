@@ -556,6 +556,7 @@ void obj_to_room( OBJ_DATA *obj, ROOM_INDEX_DATA *pRoomIndex )
  */
 void extract_obj( OBJ_DATA *obj )
 {
+	printf("Extracting %s at %d/%d\r\n", obj->description, obj->x, obj->y);
     struct obj_ref_type *ref;
     if ( obj == NULL || !obj )
         return;
@@ -583,10 +584,7 @@ void extract_obj( OBJ_DATA *obj )
         }
         if ( obj->item_type == ITEM_BOMB && obj->value[1] != 0 )
             obj->value[1] = 0;
-        obj->x = 0;
-        obj->y = 0;
-        obj->z = 4;		// Recursive call below.... yet it would constantly get caught in this? Stack Overflow - 12/20/2013 Demortes
-        extract_obj(obj);
+        move_obj(obj, 0, 0, 4);
         return;
     }
     for (ref=obj_ref_list; ref; ref=ref->next)

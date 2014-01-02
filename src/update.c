@@ -46,8 +46,8 @@
  */
 bool    fast_healing    args( (CHAR_DATA *ch) );
 int     hit_gain        args( ( CHAR_DATA *ch ) );
-void    weather_update  args( ( void ) );
-void    init_weather    args( ( void ) );
+//void    weather_update  args( ( void ) );
+//void    init_weather    args( ( void ) );
 void    char_update     args( ( void ) );
 void    gain_update     args( ( void ) );
 void    obj_update      args( ( void ) );
@@ -1682,7 +1682,7 @@ void quest_update( void )
     obj->z = z;
     x = -1;
     y = -1;
-    while ( x <= BORDER_SIZE || y <= BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE || bld != NULL )
+    while ( x <= BORDER_SIZE || y <= BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE || bld != NULL || map_table.type[x][y][obj->z] == SECT_OCEAN )
     {
         x = number_range(BORDER_SIZE+1,(MAX_MAPS-BORDER_SIZE)-1);
         y = number_range(BORDER_SIZE+1,(MAX_MAPS-BORDER_SIZE)-1);
@@ -1787,7 +1787,7 @@ void explode( OBJ_DATA *obj )
         {
             obj_next = obj2->next_in_room;
             if ( obj2->item_type == ITEM_BOMB && obj2->z == obj->z && obj2 != obj )
-                extract_obj(obj2);
+                move_obj(obj2, 0, 0 , 4);
         }
     }
     if ( IS_SET(ch->effect,EFFECT_BOMBER) )
