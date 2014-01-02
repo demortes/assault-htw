@@ -556,7 +556,6 @@ void obj_to_room( OBJ_DATA *obj, ROOM_INDEX_DATA *pRoomIndex )
  */
 void extract_obj( OBJ_DATA *obj )
 {
-	printf("Extracting %s at %d/%d\r\n", obj->description, obj->x, obj->y);
     struct obj_ref_type *ref;
     if ( obj == NULL || !obj )
         return;
