@@ -6271,7 +6271,7 @@ void save_map_png( )
          if( terr == -1 )
             terr = SECT_OCEAN;
 
-         gdImageLine( im, x, y, x, y, image[terr] );
+         gdImageLine( im, x, MAX_MAPS - y, x, MAX_MAPS - y, image[terr] );
       }
    }
 
