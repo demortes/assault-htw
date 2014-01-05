@@ -46,8 +46,8 @@
  */
 bool    fast_healing    args( (CHAR_DATA *ch) );
 int     hit_gain        args( ( CHAR_DATA *ch ) );
-void    weather_update  args( ( void ) );
-void    init_weather    args( ( void ) );
+//void    weather_update  args( ( void ) );
+//void    init_weather    args( ( void ) );
 void    char_update     args( ( void ) );
 void    gain_update     args( ( void ) );
 void    obj_update      args( ( void ) );
@@ -559,6 +559,13 @@ void char_update( void )
         else if ( ch->hit < -10 )
         {
             damage( ch, ch, number_range(5, 10), TYPE_UNDEFINED );
+        }
+
+        if(map_table.type[ch->x][ch->y][ch->z] == SECT_OCEAN && !has_boat(ch) && !IS_IMMORTAL(ch))
+        {
+        	act( "$n tries to stay above water... but fails.", ch, NULL, NULL, TO_ROOM );
+        	send_to_char( "You try to stay above water, but fail.", ch);
+        	damage(ch, ch, 30000, TYPE_UNDEFINED );
         }
 
     }
@@ -1675,7 +1682,7 @@ void quest_update( void )
     obj->z = z;
     x = -1;
     y = -1;
-    while ( x <= BORDER_SIZE || y <= BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE || bld != NULL )
+    while ( x <= BORDER_SIZE || y <= BORDER_SIZE || x >= MAX_MAPS - BORDER_SIZE || y >= MAX_MAPS - BORDER_SIZE || bld != NULL || map_table.type[x][y][obj->z] == SECT_OCEAN )
     {
         x = number_range(BORDER_SIZE+1,(MAX_MAPS-BORDER_SIZE)-1);
         y = number_range(BORDER_SIZE+1,(MAX_MAPS-BORDER_SIZE)-1);
@@ -1780,7 +1787,7 @@ void explode( OBJ_DATA *obj )
         {
             obj_next = obj2->next_in_room;
             if ( obj2->item_type == ITEM_BOMB && obj2->z == obj->z && obj2 != obj )
-                extract_obj(obj2);
+                move_obj(obj2, 0, 0 , 4);
         }
     }
     if ( IS_SET(ch->effect,EFFECT_BOMBER) )
@@ -2002,8 +2009,10 @@ void explode( OBJ_DATA *obj )
         }
         for ( x=obj->x-1; x<=obj->x+1; x++ )
             for ( y=obj->y-1; y<=obj->y+1; y++ )
-                if ( x >= BORDER_SIZE && y >= BORDER_SIZE && x <= MAX_MAPS-1 && y <= MAX_MAPS - 1 )
-                    for ( vch = map_ch[x][y][obj->z]; vch; vch = vch_next )
+            {
+            	int tx = x, ty = y;
+            	real_coords(&tx, &ty);
+            	for ( vch = map_ch[tx][ty][obj->z]; vch; vch = vch_next )
                         //		for ( vch = first_char;vch;vch = vch_next )
                     {
                         vch_next = vch->next_in_room;
@@ -2029,6 +2038,7 @@ void explode( OBJ_DATA *obj )
 
                         damage( ch, vch, dam,DAMAGE_BLAST );
                     }
+            }
         if ( obj->z != Z_SPACE )
         {
             for ( x=obj->x-1; x<=obj->x+1; x++ )

@@ -223,7 +223,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
                 while ( first_obj )
                     extract_obj(first_obj);
                 do_pipe(NULL,"cp -rf ../player ../player_fst");
-                do_hotreboot(NULL,"silent");
+                do_hotreboot(NULL,"The KILLING FEST has begun!");
             }
             else
             {
@@ -232,6 +232,7 @@ void do_sysdata( CHAR_DATA * ch, char * argument )
                 save_buildings();
                 save_objects(0);
                 save_vehicles(0);
+                do_pipe(NULL, "mv -f player player.afst");
                 do_pipe(NULL,"mv -f ../player_fst player");
                 do_hotreboot(NULL,"nosave");
             }
