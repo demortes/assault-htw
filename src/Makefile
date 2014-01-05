@@ -20,7 +20,7 @@ C_FLAGS = -O0 -g3 -Wall -DACK_43 $(PROF) $(NOCRYPT)
 #-DDEBUG_MEM -DDEBUG_MEM_CORRUPT
 # MCCP
 # L_FLAGS = -O -g $(PROF)
-L_FLAGS = -O0 -lz
+L_FLAGS = -O0 -lz -lgd
 # End MCCP
 #L_FLAGS = $(PROF)
 
@@ -40,7 +40,7 @@ O_FILES = act_comm.o act_info.o act_move.o act_obj.o act_wiz.o comm.o const.o \
 
 ack: $(O_FILES)
 	rm -f ack
-	$(CC) -o ack $(O_FILES) -lm -lcrypt -lz
+	$(CC) -o ack $(O_FILES) -lm -lcrypt -lz -lgd
 	rm -f /ack
 
 .c.o: ack.h

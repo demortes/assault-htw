@@ -41,6 +41,7 @@
 /* For forks etc. */
 #include <unistd.h>
 #include <fcntl.h>
+#include <gd.h>
 
 #include "ack.h"
 #include "tables.h"
@@ -4899,10 +4900,11 @@ void do_objclear( CHAR_DATA *ch, char *argument )
     send_to_char( "Old objects cleared.\n\r", ch );
     return;
 }
-
+void save_map_png();
 void do_savemap( CHAR_DATA *ch, char *argument )
 {
     save_map();
+    save_map_png();
     send_to_char( "Done\n\r", ch );
     return;
 }
@@ -6064,23 +6066,22 @@ void do_bomb(CHAR_DATA *ch,char *argument)
     if (range>50||range<=0)
         mreturn("Dumbass.\n\r",ch);
     x=ch->x,y=ch->y;
-    if (x+range>MAX_MAPS||y+range>MAX_MAPS)
-        mreturn("Woe baby! Don't go over me maxmaps, now.\n\r",ch);
     if (x-range<0||y-range<0)
         mreturn("I believe you have gone insane.\n\r",ch);
 //kill, kill, kill, kill, killkillkillwee
-    sprintf(buf,"%s is about to devistate their current coords at %d/%d! Look the fuck out!\n\r",ch->name,x,y);
+    sprintf(buf,"%s is about to devastate their current coords at %d/%d! Look the fuck out!\n\r",ch->name,x,y);
     info(buf,0);
     for (x=ch->x-range; x<ch->x+range; x++)
         for (y=ch->y-range; y<ch->y+range; y++)
         {
             xx=x;
             yy=y;
+            real_coords(&xx, &yy);
             for ( victim = map_ch[xx][yy][ch->z]; victim; victim = victim->next_in_room )
             {
                 if (victim==ch)
                     continue;
-                send_to_char("Your body is ripped to shreds by a devistating explosion!\n\r",victim);
+                send_to_char("Your body is ripped to shreds by a devastating explosion!\n\r",victim);
                 act("$n is torn to shreds!\n\r",victim,NULL,NULL,TO_ROOM);
                 damage(ch,victim,victim->max_hit+1,DAMAGE_PSYCHIC);
                 players++;
@@ -6200,4 +6201,100 @@ void do_rangen( CHAR_DATA *ch, char *argument )
     sprintf( buf2, "@@a%s@@g has generated a random number!", ch->name );
     info(buf2, 0);
     return;
+}
+
+typedef struct {
+	short int section;
+	short int r;
+	short int g;
+	short int b;
+} sect_color_type;
+
+sect_color_type sect_show[SECT_MAX] = {
+		{ SECT_NULL, 0, 0, 0},
+		{ SECT_ROCK, 211, 211, 211 },
+		{ SECT_SAND, 255, 246, 143 },
+		{ SECT_HILLS, 154, 205, 50 },
+		{ SECT_MOUNTAIN, 139, 69, 0},
+		{ SECT_WATER, 0, 255, 255 },
+		{ SECT_SNOW, 255, 255, 255 },
+		{ SECT_FIELD, 0, 255, 0 },
+		{ SECT_FOREST, 0, 139, 0 },
+		{ SECT_LAVA, 128, 0, 0 },
+		{ SECT_BURNED, 0, 0, 0 },
+		{ SECT_SNOW_BLIZZARD, 255, 255, 255 },
+		{ SECT_ASH, 139, 125, 107 },
+		{ SECT_AIR, 0, 0, 128},
+		{ SECT_UNDERGROUND, 0, 0, 128 },
+		{ SECT_ICE, 173, 234, 234 },
+		{ SECT_MAGMA, 128, 0, 0 },
+		{ SECT_OCEAN, 0, 0, 128 },
+};
+
+/*
+ * #define SECT_ROCK           1
+#define SECT_SAND           2
+#define SECT_HILLS          3
+#define SECT_MOUNTAIN           4
+#define SECT_WATER          5
+#define SECT_SNOW           6
+#define SECT_FIELD          7
+#define SECT_FOREST         8
+#define SECT_LAVA           9
+#define SECT_BURNED         10
+#define SECT_SNOW_BLIZZARD      11
+#define SECT_ASH            12
+#define SECT_AIR            13
+#define SECT_UNDERGROUND        14
+#define SECT_ICE            15
+#define SECT_MAGMA          16
+#define SECT_OCEAN			17
+ */
+void save_map_png( )
+{
+   gdImagePtr im;
+   FILE *PngOut;
+   char graphicname[256];
+   short x, y, terr;
+   int image[SECT_MAX];
+
+   im = gdImageCreate( MAX_MAPS, MAX_MAPS );
+
+   for( x = 0; x < SECT_MAX; ++x )
+      image[x] = 	gdImageColorAllocate( im, sect_show[x].r, sect_show[x].g, sect_show[x].b );
+
+   for( y = MAX_MAPS-1; y >= 0; --y )
+   {
+      for( x = 0; x < MAX_MAPS; ++x )
+      {
+         terr = map_table.type[x][y][Z_GROUND];
+         if( terr == -1 )
+            terr = SECT_OCEAN;
+
+         gdImageLine( im, x, y, x, y, image[terr] );
+      }
+   }
+
+   snprintf( graphicname, 256, "%s%s.png", "../data/", "map" );
+
+   if( ( PngOut = fopen( graphicname, "w" ) ) == NULL )
+   {
+      bug( "%s: fopen", __FUNCTION__ );
+      perror( graphicname );
+   }
+
+   /*
+    * Output the same image in JPEG format, using the default JPEG quality setting.
+    */
+   gdImagePng( im, PngOut );  //, -1 );
+
+   /*
+    * Close the files.
+    */
+   fclose( PngOut );
+
+   /*
+    * Destroy the image in memory.
+    */
+   gdImageDestroy( im );
 }
