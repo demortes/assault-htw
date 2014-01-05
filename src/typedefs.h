@@ -184,46 +184,47 @@ char *  crypt           args( ( const char *key, const char *salt ) );
 #define crypt(s1, s2)   (s1)
 #endif
 
-typedef struct  relevel_data            RELEVEL_DATA;
 typedef struct  area_data               AREA_DATA;
 typedef struct  ban_data                BAN_DATA;
-typedef struct  char_data               CHAR_DATA;
-typedef struct  changes_data            CHANGE_DATA;
-typedef struct  descriptor_data         DESCRIPTOR_DATA;
-typedef struct  extra_descr_data        EXTRA_DESCR_DATA;
-typedef struct  help_data               HELP_DATA;
-typedef struct  kill_data               KILL_DATA;
-typedef struct  log_data                LOG_DATA;
-typedef struct  obj_data                OBJ_DATA;
-typedef struct  obj_index_data          OBJ_INDEX_DATA;
-typedef struct  pc_data                 PC_DATA;
-typedef struct  room_index_data         ROOM_INDEX_DATA;
-typedef struct  time_info_data          TIME_INFO_DATA;
-typedef struct  weather_data            WEATHER_DATA;
-typedef struct  disabled_data           DISABLED_DATA;      /* Disabling of commands - Wyn */
+typedef struct  bomb_data    	       	BOMB_DATA;
+typedef struct  brand_data              BRAND_DATA;
+typedef struct  board_data              BOARD_DATA;
+typedef struct  buf_data_struct         BUF_DATA_STRUCT;
 typedef struct  build_data_list         BUILD_DATA_LIST;    /* Online Building */
 typedef struct  building_data           BUILDING_DATA;
+typedef struct  changes_data            CHANGE_DATA;
+typedef struct  char_data               CHAR_DATA;
+typedef struct  control_data            CONTROL_DATA;
+typedef struct  control_list            CONTROL_LIST;
+typedef struct  descriptor_data         DESCRIPTOR_DATA;
+typedef struct  disabled_data           DISABLED_DATA;      /* Disabling of commands - Wyn */
+typedef struct  dl_list                 DL_LIST;
+typedef struct  extra_descr_data        EXTRA_DESCR_DATA;
+typedef struct  hash_entry_tp           HASH_ENTRY;
+typedef struct  help_data               HELP_DATA;
+typedef struct  influence_data          INFLUENCE_DATA;
+typedef struct  influence_list          INFLUENCE_LIST;
+typedef struct  interact_data           INTERACT_DATA;
+typedef struct  kill_data               KILL_DATA;
+typedef struct  load_data   	    	LOAD_DATA;
+typedef struct  log_data                LOG_DATA;
+typedef struct  message_data            MESSAGE_DATA;
+typedef struct  mob_index_data          MOB_INDEX_DATA;
+typedef struct  npc_data                NPC_DATA;
+typedef struct  obj_data                OBJ_DATA;
+typedef struct  obj_index_data          OBJ_INDEX_DATA;
+typedef struct  pager_data              PAGER_DATA;
+typedef struct  pc_data                 PC_DATA;
+typedef struct  queue_data              QUEUE_DATA;
+typedef struct  queued_interact_list    QUEUED_INTERACT_LIST;
+typedef struct  relevel_data            RELEVEL_DATA;
+typedef struct  room_index_data         ROOM_INDEX_DATA;
+typedef struct  str_array               STR_ARRAY;
+typedef struct  sysdata_type            SYS_DATA_TYPE;
+typedef struct  time_info_data          TIME_INFO_DATA;
+typedef struct  trigger_data           	TRIGGER_DATA;
 typedef struct  vehicle_data            VEHICLE_DATA;
-typedef struct  trigger_data              TRIGGER_DATA;
-typedef struct  load_data       LOAD_DATA;
-
-typedef struct bomb_data               BOMB_DATA;
-typedef struct pager_data              PAGER_DATA;
-typedef struct queue_data              QUEUE_DATA;
-typedef struct message_data            MESSAGE_DATA;
-typedef struct board_data              BOARD_DATA;
-typedef struct  control_data              CONTROL_DATA;
-typedef struct  influence_data            INFLUENCE_DATA;
-typedef struct  interact_data             INTERACT_DATA;
-typedef struct  influence_list            INFLUENCE_LIST;
-typedef struct  control_list              CONTROL_LIST;
-typedef struct  queued_interact_list       QUEUED_INTERACT_LIST;
-typedef struct  dl_list                  DL_LIST;
-typedef struct  brand_data               BRAND_DATA;
-typedef struct str_array               STR_ARRAY;
-typedef struct sysdata_type           SYS_DATA_TYPE;
-typedef struct buf_data_struct BUF_DATA_STRUCT;
-typedef struct hash_entry_tp  HASH_ENTRY;
+typedef struct  weather_data            WEATHER_DATA;
 
 /*
  * Function types.

@@ -2369,6 +2369,8 @@ void nanny( DESCRIPTOR_DATA *d, char *argument )
                     continue;
                 if ( !str_cmp(wch->name,argument) )
                     continue;
+                if ( IS_NPC(wch) )
+                    continue;
                 if ( can_multiplay(wch) || wch->fake )
                     continue;
                 if ( !str_cmp(d->host,wch->pcdata->host) && ( wch->trust < 80))
@@ -3959,9 +3961,14 @@ void act( const char *format, CHAR_DATA *ch, const void *arg1,
         }
         buf[0]   = UPPER(buf[0]);
         *point = '\0';
+        
         if (to->desc && can_see_message )
             write_to_buffer( to->desc, buf, point - buf );
     }
+
+    if (type == TO_INFO)
+        info (buf, 0);
+    
     return;
 }
 

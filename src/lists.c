@@ -79,6 +79,7 @@ BAN_DATA *      ban_free = NULL;
 CHAR_DATA *     char_free = NULL;
 DESCRIPTOR_DATA *   desc_free = NULL;
 HELP_DATA *     help_free = NULL;
+MOB_INDEX_DATA *	mid_free = NULL;
 OBJ_DATA *      obj_free = NULL;
 OBJ_INDEX_DATA *    oid_free = NULL;
 ROOM_INDEX_DATA *   rid_free = NULL;

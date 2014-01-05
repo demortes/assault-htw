@@ -254,7 +254,7 @@ void gain_update( void )
         if ( ch->is_free != FALSE || ch == NULL || ch->in_room == NULL )
             continue;
 
-        if ( ch->pcdata->lastskill > 0 )
+        if ( !IS_NPC(ch) && ch->pcdata->lastskill > 0 )
             ch->pcdata->lastskill--;
         if ( ch->dead || ch->c_sn == gsn_dead || ch->position == POS_DEAD )
         {
@@ -443,7 +443,7 @@ void char_update( void )
     ch_save     = NULL;
     ch_quit     = NULL;
 
-    //CREF( ch_next, CHAR_NEXT );
+    // CREF( ch_next, CHAR_NEXT );
     for ( ch = first_char; ch != NULL; ch = ch_next )
     {
         ch_next = ch->next;
@@ -468,7 +468,7 @@ void char_update( void )
         if ( ch->medaltimer > 0 )
             ch->medaltimer--;
         p++;
-        if ( guess_game && ch->pcdata->guess > 0 )
+        if ( guess_game && !IS_NPC(ch) && ch->pcdata->guess > 0 )
         {
             guesses++;
             if ( !guess_ch )
@@ -484,7 +484,7 @@ void char_update( void )
                     ch->pcdata->guess = 0;
             }
         }
-        if ( str_cmp(ch->pcdata->load_msg,""))
+        if (!IS_NPC(ch) && str_cmp(ch->pcdata->load_msg,""))
         {
             send_to_char( "You have mail from an administrator: \n\r", ch );
             send_to_char( ch->pcdata->load_msg, ch);
@@ -562,7 +562,7 @@ void char_update( void )
         }
 
     }
-    if(ch_next != NULL)
+    if (ch != NULL && ch_next != NULL)
     	CUREF( ch_next );
 
     /*
@@ -1222,7 +1222,7 @@ void aggr_update( void )
             {
                 if( IS_SET(wch->config,CONFIG_SOUND) )
                     send_to_char( "\n\r!!MUSIC(Off)", wch );
-                if ( IS_SET(wch->pcdata->pflags,PLR_BASIC) )
+                if ( !IS_NPC(wch) && IS_SET(wch->pcdata->pflags,PLR_BASIC) )
                     respawn_buildings(wch);
             }
         }

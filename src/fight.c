@@ -148,8 +148,11 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
         info( buf, 0);
         if ( ch->victim == victim )
             ch->victim = ch;
-        ch->pcdata->pbhits++;
-        victim->pcdata->pbdeaths++;
+            
+        if (!IS_NPC(ch))
+            ch->pcdata->pbhits++;
+        if (!IS_NPC(victim))
+            victim->pcdata->pbdeaths++;
         save_char_obj(ch);
         save_char_obj(victim);
         move( victim,number_range(200,300),number_range(200,300),Z_PAINTBALL);
@@ -205,7 +208,7 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
     loc = number_range(0,MAX_WEAR);                         // Choose a location to hit the victim (For armor check)
     if ( number_percent() <= 20 || (loc == WEAR_HEAD && number_percent() < 20 ) )
         loc = WEAR_BODY;
-    if ( dt == DAMAGE_SOUND || ( number_percent() < ch->pcdata->skill[gsn_combat] * 5 ) )
+    if ( dt == DAMAGE_SOUND || (!IS_NPC(ch) && number_percent() < ch->pcdata->skill[gsn_combat] * 5 ) )
         loc = WEAR_HEAD;
     if ( ch->position == POS_SNEAKING && number_percent() < 33 )
         loc = WEAR_HEAD;
@@ -236,8 +239,9 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
 
                 if ( eq->value[armorval] < eq->level && wulfskin )
                     eq->value[armorval]++;
-
-                chance += (victim->pcdata->skill[gsn_combat] * 10) - (ch->pcdata->skill[gsn_combat]);
+                
+                if (!IS_NPC(ch))
+                    chance += (victim->pcdata->skill[gsn_combat] * 10) - (ch->pcdata->skill[gsn_combat]);
                 if ( number_percent() < chance )
                 {
                     char buf[MSL] = "\0";
@@ -368,7 +372,14 @@ void raw_kill( CHAR_DATA *victim, char *argument )
     bool suicide = FALSE;
     bool ml = FALSE;
     bool bone = FALSE;
-    int i,min,rank=get_rank(victim);
+    int i, min, rank;
+    
+    if (IS_NPC(victim)) {
+        extract_char( victim, TRUE );
+        return;
+    }
+    
+    rank=get_rank(victim);
 
     victim->is_free = FALSE;
 
@@ -592,6 +603,7 @@ void pdie(CHAR_DATA *ch)
     DESCRIPTOR_DATA *d;
     char buf[MSL] = "\0";
     CHAR_DATA *victim = ch;
+
     d = victim->desc;
     sprintf(buf,"%s",victim->name);
     victim->c_sn = -1;
@@ -599,11 +611,14 @@ void pdie(CHAR_DATA *ch)
     victim->is_free = FALSE;
     victim->is_quitting = TRUE;
     victim->dead = FALSE;
-    if ( !ch->fake )
-        victim->pcdata->dead = TRUE;
     victim->c_sn = -1;
     victim->position = POS_STANDING;
+
+    if ( !IS_NPC(ch) && !ch->fake ) 
+        victim->pcdata->dead = TRUE;
+    
     save_char_obj(ch);
+    
     extract_char( victim, TRUE );
     if ( d != NULL )
     {
@@ -645,6 +660,7 @@ void do_disarm( CHAR_DATA *ch, char *argument )
 {
     OBJ_DATA *bomb;
     extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
+    int skill = 0;
 
     if ( ( bomb = get_obj_room( ch, argument, map_obj[ch->x][ch->y] ) ) == NULL )
     {
@@ -661,7 +677,10 @@ void do_disarm( CHAR_DATA *ch, char *argument )
         send_to_char( "The bomb is not armed.\n\r", ch );
         return;
     }
-    if ( number_percent() < (bomb->value[2]/3) + ch->pcdata->skill[gsn_arm] )
+    
+    if (!IS_NPC(ch))
+        skill = ch->pcdata->skill[gsn_arm];
+    if ( number_percent() < (bomb->value[2]/3) + skill )
     {
         act( "You have successfully disarmed $p!", ch, bomb, NULL, TO_CHAR );
         act( "$n has successfully disarmed $p!", ch, bomb, NULL, TO_ROOM );
@@ -711,7 +730,7 @@ void do_slay( CHAR_DATA *ch, char *argument )
         return;
     }
 
-    if ( victim->level >= ch->level )
+    if ( !IS_NPC(victim) && victim->level >= ch->level )
     {
         send_to_char( "You failed.\n\r", ch );
         return;
@@ -1333,7 +1352,9 @@ void do_arm( CHAR_DATA *ch, char *argument )
     }
     act( "You begin arming $p.", ch, bomb, NULL, TO_CHAR );
     act( "$n begins arming $p.", ch, bomb, NULL, TO_ROOM );
-    ch->c_time = 20 - (ch->pcdata->skill[gsn_arm]/10);
+
+    if (!IS_NPC(ch))
+        ch->c_time = 20 - (ch->pcdata->skill[gsn_arm]/10);
     ch->c_sn = gsn_arm;
     ch->c_obj = bomb;
     return;
@@ -1489,7 +1510,7 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     ch->in_building = NULL;
                 return;
             }
-            if ( !neutral && ch != vch && IS_SET(vch->pcdata->pflags,PLR_BASIC) && build_table[bld->type].act != BUILDING_OFFENSE )
+            if ( !IS_NPC(ch) && !neutral && ch != vch && IS_SET(vch->pcdata->pflags,PLR_BASIC) && build_table[bld->type].act != BUILDING_OFFENSE )
             {
                 OBJ_DATA *obj;
                 extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
@@ -1510,14 +1531,14 @@ void damage_building( CHAR_DATA *ch, BUILDING_DATA *bld, int dam )
                     ch->in_building = NULL;
                 return;
             }
-            if ( !neutral && ch != vch && complete(bld) )
+            if ( !neutral && ch != vch && complete(bld) && !IS_NPC(ch) && !IS_NPC(vch) )
             {
                 int rank = get_rank(ch);
                 int i;
 
                 if ( bld->type != BUILDING_SPACE_CENTER && bld->type != BUILDING_ENGINEER_HOME )
                     create_blueprint(bld);
-                if ( vch && (ch->pcdata->alliance == -1 || ch->pcdata->alliance != vch->pcdata->alliance  ) )
+                if ( vch  && (ch->pcdata->alliance == -1 || ch->pcdata->alliance != vch->pcdata->alliance  ) )
                 {
                     if ( c_vic <= 5 )
                     {
@@ -2097,7 +2118,7 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
         }
         if ( medal(victim) )
             do_medal(victim,"");
-        if ( practicing(victim) || IS_SET(victim->pcdata->pflags,PFLAG_HELPING))
+        if ( !IS_NPC(victim) && (practicing(victim) || IS_SET(victim->pcdata->pflags,PFLAG_HELPING)))
         {
             victim->hit = victim->max_hit;
             victim->position = POS_STANDING;
@@ -2106,136 +2127,142 @@ bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
             do_home(victim,victim->name);
             return TRUE;
         }
-        if ( ch != victim )
-        {
-            char buf[MSL] = "\0";
-            int rank = get_rank(ch);
-            int msg = number_range(1,19);
-            bool alli = FALSE;
-            bool killer = FALSE;
-
-            if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == victim->pcdata->alliance )
-                alli = TRUE;
-            if ( ch->killtimer > 0 && !IN_PIT(victim) )
-                killer = TRUE;
-            if ( !killer )
-                ch->killtimer = 1440;
-            if ( !killer && !alli )
+         // Can't get QP or ranks from mobs... yet.
+         // -Grave
+         
+        if (!IS_NPC(ch) && !IS_NPC(victim)) {
+            if ( ch != victim )
             {
-                if ( !check_group(ch,victim) )
+                char buf[MSL] = "\0";
+                int rank = get_rank(ch);
+                int msg = number_range(1,19);
+                bool alli = FALSE;
+                bool killer = FALSE;
+
+                if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == victim->pcdata->alliance )
+                    alli = TRUE;
+                if ( ch->killtimer > 0 && !IN_PIT(victim) )
+                    killer = TRUE;
+                if ( !killer )
+                    ch->killtimer = 1440;
+                if ( !killer && !alli )
                 {
-                    int vrank = get_rank(victim);
-                    ch->pcdata->pkills++;
-                    ch->pcdata->tpkills++;
-                    if ( ch->pcdata->alliance > -1 && victim->pcdata->alliance > -1 )
-                        alliance_table[ch->pcdata->alliance].kills++;
-                    gain_exp(ch,vrank);
-                    if ( sysdata.killfest || sysdata.qpmode > 0 )
+                    if ( !check_group(ch,victim) )
                     {
-                        ch->quest_points += vrank * 10;
-                        sprintf( buf, "@@WYou have been awarded @@y%d@@W Quest Points!@@N\n\r", vrank * 10 );
-                        send_to_char(buf,ch);
-                        if ( ch->quest_points > 5000 )
-                            ch->quest_points = 5000;
+                        int vrank = get_rank(victim);
+                        ch->pcdata->pkills++;
+                        ch->pcdata->tpkills++;
+                        if ( ch->pcdata->alliance > -1 && victim->pcdata->alliance > -1 )
+                            alliance_table[ch->pcdata->alliance].kills++;
+                        gain_exp(ch,vrank);
+                        if ( sysdata.killfest || sysdata.qpmode > 0 )
+                        {
+                            ch->quest_points += vrank * 10;
+                            sprintf( buf, "@@WYou have been awarded @@y%d@@W Quest Points!@@N\n\r", vrank * 10 );
+                            send_to_char(buf,ch);
+                            if ( ch->quest_points > 5000 )
+                                ch->quest_points = 5000;
+                        }
                     }
+                }
+                else
+                {
+                    masskill = TRUE;
+                }
+                victim->suicide = FALSE;
+                victim->dead = TRUE;
+
+                if( msg == 1 )
+                    sprintf(buf, "@@a%s @@eexterminates @@a%s @@Wafter a fierce battle.@@N", ch->name, victim->name);
+                else if( msg == 2 )
+                    sprintf(buf, "@@a%s @@Wmade @@a%s @@yholy@@W. Full of bullet holes, that is.@@N", ch->name, victim->name);
+                else if( msg == 3 )
+                    sprintf(buf, "@@WIt's a bird! It's a plane! It's... @@a%s@@W's arm?? @@a%s@@W just sits there, grinning.@@N", victim->name, ch->name );
+                else if( msg == 4 )
+                    sprintf(buf, "@@WIf @@a%s@@W wins, @@a%s@@W dies. If @@a%s @@Wwins, @@a%s@@W lives. Guess who died?@@N", ch->name, victim->name, victim->name, ch->name );
+                else if( msg == 5 )
+                    sprintf(buf, "@@a%s @@Wkicked the bucket... then it hit @@a%s@@W and killed %s@@W!!@@N", ch->name, victim->name, victim->login_sex == SEX_MALE ? "him" : "her" );
+                else if( msg == 6 )
+                    sprintf(buf, "@@WAfter what @@a%s@@W just did to @@a%s@@W, %s ain't gonna be resting in any less than 10 \"peace\"s.@@N", ch->name, victim->name, victim->login_sex == SEX_MALE ? "he" : "she" );
+                else if( msg == 7 )
+                    sprintf(buf, "@@W\"I'll see you in hell @@a%s@@W!!\", @@a%s@@W says. \"You first.\"... BOOM!.@@N", ch->name,victim->name);
+                else if( msg == 8 )
+                    sprintf(buf, "@@a%s @@Whas met %s maker... And they blew @@a%s@@W up together!@@N", ch->name,ch->login_sex == SEX_MALE ? "his" : "her",victim->name);
+                else if( msg == 9 )
+                    sprintf(buf, "@@a%s @@Wforces @@a%s@@W to look at %s own reflection!!...Naturally, %s died.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "his" : "her",victim->login_sex ==SEX_MALE ? "he" : "she" );
+                else if( msg == 10 )
+                    sprintf(buf, "@@a%s@@W made sure that @@a%s @@Wgets %s picture in the dictionary... next to \"@@eOWNED@@W\"!@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "his" : "her" );
+                else if( msg == 11 )
+                    sprintf(buf, "@@a%s@@W replaced @@a%s@@W's car tires with @@eFirestone@@W brand. %s crashed minutes later.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "He" : "She" );
+                else if( msg == 12 )
+                    sprintf(buf, "@@a%s@@W convinced president Bush to invade @@a%s@@W. After a few months of war, %s was caught and killed.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "he" : "she" );
+                else if( msg == 13 )
+                    sprintf(buf, "@@WEmail us at: @@a%s@@W@KilledBy@@a%s@@W.com@@N", victim->name, ch->name );
+                else if ( msg == 14 )
+                    sprintf(buf, "@@a%s @@Wturned @@a%s@@W into a @@eVAMPIRE@@W!!... Then threw %s on a rocket to the sun!@@N", ch->name,victim->name,(victim->sex==SEX_MALE)?"him":"her" );
+                else if ( msg == 15 )
+                    sprintf(buf, "@@a%s @@Wsacrifices @@a%s@@W to Amnon's cat.@@N", ch->name,victim->name );
+                else if ( msg == 16 )
+                    sprintf(buf, "@@a%s @@Wbits the dust... then bites @@a%s@@W and kills %s!@@N", ch->name,victim->name, (victim->sex==SEX_MALE)?"him":"her" );
+                else if ( msg == 17 )
+                    sprintf(buf, "@@a%s @@Wturned @@a%s@@W's gut into a new scarf.@@N", ch->name,victim->name );
+                else if ( msg == 18 )
+                    sprintf(buf, "@@a%s @@Wbored @@a%s@@W to death. A kill nevertheless.@@N", ch->name,victim->name );
+                else
+                    sprintf(buf, "@@a%s @@Wlost an arm in battle!.. And a leg... And a head... Thank @@a%s@@W.@@N", victim->name,ch->name);
+                info(buf, 1);
+                if ( get_rank(ch) > rank )
+                {
+                    sprintf( buf, "@@W%s has risen in rank to %d!", (ch->sex==1)?"He":"She", get_rank(ch) );
+                    update_ranks(ch);
+                    info(buf,0);
+                }
+
+                sprintf( log_buf, "%s (%d%s%s) killed by %s at %d/%d/%d",
+                        victim->name,
+                        my_get_hours(victim,TRUE),
+                        masskill ? "-MASSKILL" : "",
+                        IS_NEWBIE(victim) ? "-NEWBIE" : "",
+                        ch->name,
+                        victim->x, victim->y, victim->z );
+                log_string( log_buf );
+                monitor_chan( victim, log_buf, MONITOR_COMBAT );
+                if ( IN_PIT(victim) && IN_PIT(ch) )
+                {
+                    free_string(web_data.last_killed_in_pit);
+                    web_data.last_killed_in_pit = str_dup(victim->name);
+                    update_web_data(WEB_DATA_KILLS_PIT,ch->name);
                 }
             }
             else
             {
-                masskill = TRUE;
-            }
-            victim->suicide = FALSE;
-            victim->dead = TRUE;
-
-            if( msg == 1 )
-                sprintf(buf, "@@a%s @@eexterminates @@a%s @@Wafter a fierce battle.@@N", ch->name, victim->name);
-            else if( msg == 2 )
-                sprintf(buf, "@@a%s @@Wmade @@a%s @@yholy@@W. Full of bullet holes, that is.@@N", ch->name, victim->name);
-            else if( msg == 3 )
-                sprintf(buf, "@@WIt's a bird! It's a plane! It's... @@a%s@@W's arm?? @@a%s@@W just sits there, grinning.@@N", victim->name, ch->name );
-            else if( msg == 4 )
-                sprintf(buf, "@@WIf @@a%s@@W wins, @@a%s@@W dies. If @@a%s @@Wwins, @@a%s@@W lives. Guess who died?@@N", ch->name, victim->name, victim->name, ch->name );
-            else if( msg == 5 )
-                sprintf(buf, "@@a%s @@Wkicked the bucket... then it hit @@a%s@@W and killed %s@@W!!@@N", ch->name, victim->name, victim->login_sex == SEX_MALE ? "him" : "her" );
-            else if( msg == 6 )
-                sprintf(buf, "@@WAfter what @@a%s@@W just did to @@a%s@@W, %s ain't gonna be resting in any less than 10 \"peace\"s.@@N", ch->name, victim->name, victim->login_sex == SEX_MALE ? "he" : "she" );
-            else if( msg == 7 )
-                sprintf(buf, "@@W\"I'll see you in hell @@a%s@@W!!\", @@a%s@@W says. \"You first.\"... BOOM!.@@N", ch->name,victim->name);
-            else if( msg == 8 )
-                sprintf(buf, "@@a%s @@Whas met %s maker... And they blew @@a%s@@W up together!@@N", ch->name,ch->login_sex == SEX_MALE ? "his" : "her",victim->name);
-            else if( msg == 9 )
-                sprintf(buf, "@@a%s @@Wforces @@a%s@@W to look at %s own reflection!!...Naturally, %s died.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "his" : "her",victim->login_sex ==SEX_MALE ? "he" : "she" );
-            else if( msg == 10 )
-                sprintf(buf, "@@a%s@@W made sure that @@a%s @@Wgets %s picture in the dictionary... next to \"@@eOWNED@@W\"!@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "his" : "her" );
-            else if( msg == 11 )
-                sprintf(buf, "@@a%s@@W replaced @@a%s@@W's car tires with @@eFirestone@@W brand. %s crashed minutes later.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "He" : "She" );
-            else if( msg == 12 )
-                sprintf(buf, "@@a%s@@W convinced president Bush to invade @@a%s@@W. After a few months of war, %s was caught and killed.@@N", ch->name,victim->name,victim->login_sex == SEX_MALE ? "he" : "she" );
-            else if( msg == 13 )
-                sprintf(buf, "@@WEmail us at: @@a%s@@W@KilledBy@@a%s@@W.com@@N", victim->name, ch->name );
-            else if ( msg == 14 )
-                sprintf(buf, "@@a%s @@Wturned @@a%s@@W into a @@eVAMPIRE@@W!!... Then threw %s on a rocket to the sun!@@N", ch->name,victim->name,(victim->sex==SEX_MALE)?"him":"her" );
-            else if ( msg == 15 )
-                sprintf(buf, "@@a%s @@Wsacrifices @@a%s@@W to Amnon's cat.@@N", ch->name,victim->name );
-            else if ( msg == 16 )
-                sprintf(buf, "@@a%s @@Wbits the dust... then bites @@a%s@@W and kills %s!@@N", ch->name,victim->name, (victim->sex==SEX_MALE)?"him":"her" );
-            else if ( msg == 17 )
-                sprintf(buf, "@@a%s @@Wturned @@a%s@@W's gut into a new scarf.@@N", ch->name,victim->name );
-            else if ( msg == 18 )
-                sprintf(buf, "@@a%s @@Wbored @@a%s@@W to death. A kill nevertheless.@@N", ch->name,victim->name );
-            else
-                sprintf(buf, "@@a%s @@Wlost an arm in battle!.. And a leg... And a head... Thank @@a%s@@W.@@N", victim->name,ch->name);
-            info(buf, 1);
-            if ( get_rank(ch) > rank )
-            {
-                sprintf( buf, "@@W%s has risen in rank to %d!", (ch->sex==1)?"He":"She", get_rank(ch) );
-                update_ranks(ch);
-                info(buf,0);
+                int msg = number_range(1,4);
+                char buf[MSL] = "\0";
+                if ( msg == 1 )
+                    sprintf( buf, "@@a%s@@W got %sself killed.@@N", ch->name, (ch->sex == 1) ? "him" : "her" );
+                else if ( msg == 2 )
+                    sprintf( buf, "@@a%s@@W pressed the little red button. NEVER press the little red button!.@@N", ch->name );
+                else if ( msg == 3 )
+                    sprintf( buf, "@@WMemo to @@a%s@@W: You do not take 7 turns in a row in Russian Roulette.@@N", ch->name );
+                else
+                    sprintf( buf, "@@a%s@@W stepped into one of them new shiny suicide booths!", ch->name );
+                info( buf, 0 );
+                ch->suicide = TRUE;
+                sprintf( log_buf, "%s suicided.", ch->name );
+                monitor_chan( victim, log_buf, MONITOR_COMBAT );
             }
 
-            sprintf( log_buf, "%s (%d%s%s) killed by %s at %d/%d/%d",
-                    victim->name,
-                    my_get_hours(victim,TRUE),
-                    masskill ? "-MASSKILL" : "",
-                    IS_NEWBIE(victim) ? "-NEWBIE" : "",
-                    ch->name,
-                    victim->x, victim->y, victim->z );
-            log_string( log_buf );
-            monitor_chan( victim, log_buf, MONITOR_COMBAT );
-            if ( IN_PIT(victim) && IN_PIT(ch) )
-            {
-                free_string(web_data.last_killed_in_pit);
-                web_data.last_killed_in_pit = str_dup(victim->name);
-                update_web_data(WEB_DATA_KILLS_PIT,ch->name);
-            }
-        }
-        else
-        {
-            int msg = number_range(1,4);
-            char buf[MSL] = "\0";
-            if ( msg == 1 )
-                sprintf( buf, "@@a%s@@W got %sself killed.@@N", ch->name, (ch->sex == 1) ? "him" : "her" );
-            else if ( msg == 2 )
-                sprintf( buf, "@@a%s@@W pressed the little red button. NEVER press the little red button!.@@N", ch->name );
-            else if ( msg == 3 )
-                sprintf( buf, "@@WMemo to @@a%s@@W: You do not take 7 turns in a row in Russian Roulette.@@N", ch->name );
-            else
-                sprintf( buf, "@@a%s@@W stepped into one of them new shiny suicide boothes!", ch->name );
-            info( buf, 0 );
-            ch->suicide = TRUE;
-            sprintf( log_buf, "%s suicided.", ch->name );
-            monitor_chan( victim, log_buf, MONITOR_COMBAT );
-        }
-
-        {
-            char name_buf[MAX_STRING_LENGTH];
             victim->is_free = FALSE;
-            sprintf( name_buf, "%s", ch->name );
-            raw_kill( victim, name_buf );
             if ( IN_PIT(victim) )
                 do_home(victim,victim->name);
-            return TRUE;
+        } else if (IS_NPC(ch) && !IS_NPC(victim)) {
+            char buf[MSL] = "\0";
+            
+            sprintf( buf, "@@a%s@@W was killed by @@a%s@@N.", victim->name, ch->name);
+            info( buf, 0 );
         }
+
+        raw_kill( victim, ch->name );
         return TRUE;
     }
     return FALSE;
@@ -2407,6 +2434,9 @@ bool same_planet(CHAR_DATA *ch, CHAR_DATA *vch )
 
 void gain_exp(CHAR_DATA *ch, int value)
 {
+    if (IS_NPC(ch))
+        return;
+
     int rank = get_rank(ch);
     char buf[MSL] = "\0";
 

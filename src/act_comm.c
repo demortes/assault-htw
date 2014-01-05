@@ -77,8 +77,7 @@ void talk_channel(CHAR_DATA *ch, char *argument, int channel, const char *verb) 
 		send_to_char(buf, ch);
 		return;
 	}
-	if ( IS_NEWBIE(
-			ch) && channel != CHANNEL_NEWBIE && channel != CHANNEL_ALLIANCE && !IS_IMMORTAL(ch)) {
+	if ( !IS_NPC(ch) && IS_NEWBIE(ch) && channel != CHANNEL_NEWBIE && channel != CHANNEL_ALLIANCE && !IS_IMMORTAL(ch)) {
 		do_newbie(ch, argument);
 		//	send_to_char( "Please use the Newbie channel for now.\n\r", ch );
 		return;
@@ -99,14 +98,13 @@ void talk_channel(CHAR_DATA *ch, char *argument, int channel, const char *verb) 
 		send_to_char(buf, ch);
 		return;
 	}
-	if (IS_SET(ch->pcdata->pflags, PFLAG_RAD_SIL)) {
+	if (!IS_NPC(ch) && IS_SET(ch->pcdata->pflags, PFLAG_RAD_SIL)) {
 		send_to_char("You are in radio silence!\n\r", ch);
 		return;
 	}
 
 	if (IS_SET(ch->deaf, channel)) {
-		send_to_char("Sorry, you must turn the channel on before using it.\n\r",
-				ch);
+		send_to_char("Sorry, you must turn the channel on before using it.\n\r", ch);
 		return;
 	}
 	REMOVE_BIT(ch->deaf, channel);
@@ -116,147 +114,148 @@ void talk_channel(CHAR_DATA *ch, char *argument, int channel, const char *verb) 
 				ch);
 
 	switch (channel) {
-	default:
-		if ((IS_SET(ch->config, CONFIG_ECHAN)) && !IS_SET(ch->act, PLR_WIZINVIS))
-			sprintf(title, "%s", ch->pcdata->title);
-		sprintf(buf, "%s %s%s%s%s $t@@N", verb, (fake) ? "Someone" : "$n",
-				(sysdata.pikamod) ? "Mon" : "", title, gemote ? "" : ":");
-		act(buf, ch, argument, NULL, TO_CHAR);
-		break;
+        default:
+            if ((IS_SET(ch->config, CONFIG_ECHAN)) && !IS_SET(ch->act, PLR_WIZINVIS))
+                sprintf(title, "%s", ch->pcdata->title);
+            sprintf(buf, "%s %s%s%s%s $t@@N", verb, (fake) ? "Someone" : "$n",
+                    (sysdata.pikamod) ? "Mon" : "", title, gemote ? "" : ":");
+            act(buf, ch, argument, NULL, TO_CHAR);
+            break;
 
-	case CHANNEL_CREATOR:
-		sprintf(buf, "@@R(@@e( @@mCREATOR: @@W%s @@g says @@W'@@g$t@@W'@@N",
-				ch->name);
-		act(buf, ch, argument, NULL, TO_CHAR);
-		break;
+        case CHANNEL_CREATOR:
+            sprintf(buf, "@@R(@@e( @@mCREATOR: @@W%s @@g says @@W'@@g$t@@W'@@N",
+                    ch->name);
+            act(buf, ch, argument, NULL, TO_CHAR);
+            break;
 
-	case CHANNEL_IMMTALK:
-		sprintf(buf, "@@R(@@e( @@W$n @@gsays @@W'@@g$t@@W'@@N");
-		act(buf, ch, argument, NULL, TO_CHAR);
-		break;
+        case CHANNEL_IMMTALK:
+            sprintf(buf, "@@R(@@e( @@W$n @@gsays @@W'@@g$t@@W'@@N");
+            act(buf, ch, argument, NULL, TO_CHAR);
+            break;
 
-	case CHANNEL_ALLIANCE:
-		if ((IS_SET(ch->config, CONFIG_ECHAN)) && !IS_SET(ch->act, PLR_WIZINVIS))
-			sprintf(title, "%s", ch->pcdata->title);
-		sprintf(buf, "%s $n%s%s $t@@N", verb, title, gemote ? "" : ":");
-		act(buf, ch, argument, NULL, TO_CHAR);
-		break;
+        case CHANNEL_ALLIANCE:
+            if ((IS_SET(ch->config, CONFIG_ECHAN)) && !IS_SET(ch->act, PLR_WIZINVIS))
+                sprintf(title, "%s", ch->pcdata->title);
+            sprintf(buf, "%s $n%s%s $t@@N", verb, title, gemote ? "" : ":");
+            act(buf, ch, argument, NULL, TO_CHAR);
+            break;
 
 	}
-	{
-		if (IS_SET(ch->pcdata->pflags, PLR_ASS)) {
-			act(ansi, ch, argument, ch, TO_VICT);
-			return;
-		}
 
-		for (d = first_desc; d != NULL; d = d->next) {
-			CHAR_DATA *och;
-			CHAR_DATA *vch;
+    if (!IS_NPC(ch) && IS_SET(ch->pcdata->pflags, PLR_ASS)) {
+        act(ansi, ch, argument, ch, TO_VICT);
+        return;
+    }
 
-			och = (d->original) ? (d->original) : (d->character);
-			vch = d->character;
-			och = vch;
+    for (d = first_desc; d != NULL; d = d->next) {
+        CHAR_DATA *och;
+        CHAR_DATA *vch;
 
-			if (d->connected == CON_PLAYING
-					&& vch != ch && !IS_SET(och->deaf, channel)
-					&& !IS_SET(och->deaf, CHANNEL_HERMIT)) {
+        och = (d->original) ? (d->original) : (d->character);
+        vch = d->character;
+        och = vch;
 
-				if (IS_SET(vch->pcdata->pflags, PLR_ASS))
-					continue;
-				if ((!str_cmp(och->pcdata->ignore_list[0], ch->name)
-						|| !str_cmp(och->pcdata->ignore_list[1], ch->name)
-						|| !str_cmp(och->pcdata->ignore_list[2], ch->name))) {
-					continue;
-				}
-				if (IS_SET(och->pcdata->pflags, PFLAG_RAD_SIL))
-					continue;
-				if (channel == CHANNEL_CREATOR && get_trust(och) < 90)
-					continue;
-				if (channel == CHANNEL_IMMTALK && !IS_IMMORTAL(och))
-					continue;
-				if (channel == CHANNEL_ALLIANCE
-						&& och->pcdata->alliance != ch->pcdata->alliance) {
-					if (get_trust(och)
-							< 84|| IS_SET(och->deaf, CHANNEL_ALLALLI))
-						continue;
-				}
+        if (d->connected == CON_PLAYING
+                && vch != ch && !IS_SET(och->deaf, channel)
+                && !IS_SET(och->deaf, CHANNEL_HERMIT)) {
 
-				{
-					switch (channel) {
-					default:
-						sprintf(ansi, "%s", buf);
-						break;
-					case CHANNEL_MUSIC:
-						sprintf(ansi, "%s%s%s", color_string(vch, "music"), buf,
-								color_string(vch, "normal"));
-						break;
-					case CHANNEL_FLAME:
-						sprintf(ansi, "%s%s%s", color_string(vch, "flame"), buf,
-								color_string(vch, "normal"));
-						break;
-					case CHANNEL_GOSSIP:
-						sprintf(ansi, "%s%s%s", color_string(vch, "gossip"),
-								buf, color_string(vch, "normal"));
-						break;
-					case CHANNEL_OOC:
-						sprintf(ansi, "%s%s%s", color_string(vch, "ooc"), buf,
-								color_string(vch, "normal"));
-						break;
+            if (IS_SET(vch->pcdata->pflags, PLR_ASS))
+                continue;
+            if ((!str_cmp(och->pcdata->ignore_list[0], ch->name)
+                    || !str_cmp(och->pcdata->ignore_list[1], ch->name)
+                    || !str_cmp(och->pcdata->ignore_list[2], ch->name))) {
+                continue;
+            }
+            if (IS_SET(och->pcdata->pflags, PFLAG_RAD_SIL))
+                continue;
+            if (channel == CHANNEL_CREATOR && get_trust(och) < 90)
+                continue;
+            if (channel == CHANNEL_IMMTALK && !IS_IMMORTAL(och))
+                continue;
+            if (channel == CHANNEL_ALLIANCE
+                    && och->pcdata->alliance != ch->pcdata->alliance) {
+                if (get_trust(och)
+                        < 84|| IS_SET(och->deaf, CHANNEL_ALLALLI))
+                    continue;
+            }
+            
+            switch (channel) {
+            default:
+                sprintf(ansi, "%s", buf);
+                break;
+            case CHANNEL_MUSIC:
+                sprintf(ansi, "%s%s%s", color_string(vch, "music"), buf,
+                        color_string(vch, "normal"));
+                break;
+            case CHANNEL_FLAME:
+                sprintf(ansi, "%s%s%s", color_string(vch, "flame"), buf,
+                        color_string(vch, "normal"));
+                break;
+            case CHANNEL_GOSSIP:
+                sprintf(ansi, "%s%s%s", color_string(vch, "gossip"),
+                        buf, color_string(vch, "normal"));
+                break;
+            case CHANNEL_OOC:
+                sprintf(ansi, "%s%s%s", color_string(vch, "ooc"), buf,
+                        color_string(vch, "normal"));
+                break;
 
-					}
-					if (fake && IS_IMMORTAL(vch)
-							&& get_trust(vch) >= get_trust(ch)) {
-						sprintf(buf2, " (%s)", ch->name);
-						safe_strcat(MSL, ansi, buf2);
-					}
-					act(ansi, ch, argument, vch, TO_VICT);
-				}
-			}
-		}
+            }
+            if (fake && IS_IMMORTAL(vch)
+                    && get_trust(vch) >= get_trust(ch)) {
+                sprintf(buf2, " (%s)", ch->name);
+                safe_strcat(MSL, ansi, buf2);
+            }
+            act(ansi, ch, argument, vch, TO_VICT);
+            
+        }
+    }
 
-		if (IS_SET(ch->pcdata->pflags, PLR_ASS))
-			return;
-		if (channel != CHANNEL_CREATOR && channel != CHANNEL_IMMTALK
-				&& channel != CHANNEL_ALLIANCE) {
-			bool invis = FALSE;
+    if (IS_NPC(ch))
+        return;
 
-			smash_system(argument);
-			if ((ch->in_building && ch->in_building->type == BUILDING_CLUB
-					&& complete(ch->in_building))
-					|| IS_SET(ch->act,
-							PLR_INCOG) || IS_SET(ch->act, PLR_WIZINVIS ))
-				invis = TRUE;
-			sprintf(buf, "%s %s: %s\n\r", verb,
-					(invis || fake) ? "Someone" : ch->name, argument);
+    if (IS_SET(ch->pcdata->pflags, PLR_ASS))
+        return;
+    if (channel != CHANNEL_CREATOR && channel != CHANNEL_IMMTALK
+            && channel != CHANNEL_ALLIANCE) {
+        bool invis = FALSE;
 
-			free_string(history10);
-			history10 = str_dup(history9);
-			free_string(history9);
-			history9 = str_dup(history8);
-			free_string(history8);
-			history8 = str_dup(history7);
-			free_string(history7);
-			history7 = str_dup(history6);
-			free_string(history6);
-			history6 = str_dup(history5);
-			free_string(history5);
-			history5 = str_dup(history4);
-			free_string(history4);
-			history4 = str_dup(history3);
-			free_string(history3);
-			history3 = str_dup(history2);
-			free_string(history2);
-			history2 = str_dup(history1);
-			free_string(history1);
-			history1 = str_dup(buf);
-		} else if (channel == CHANNEL_ALLIANCE) {
-			int alli = ch->pcdata->alliance;
-			sprintf(buf, "%s: %s\n\r", ch->name, argument);
-			free_string(alliance_table[alli].history);
-			alliance_table[alli].history = str_dup(buf);
-		}
-		return;
-	}
+        smash_system(argument);
+        if ((ch->in_building && ch->in_building->type == BUILDING_CLUB
+                && complete(ch->in_building))
+                || IS_SET(ch->act,
+                        PLR_INCOG) || IS_SET(ch->act, PLR_WIZINVIS ))
+            invis = TRUE;
+        sprintf(buf, "%s %s: %s\n\r", verb,
+                (invis || fake) ? "Someone" : ch->name, argument);
+
+        free_string(history10);
+        history10 = str_dup(history9);
+        free_string(history9);
+        history9 = str_dup(history8);
+        free_string(history8);
+        history8 = str_dup(history7);
+        free_string(history7);
+        history7 = str_dup(history6);
+        free_string(history6);
+        history6 = str_dup(history5);
+        free_string(history5);
+        history5 = str_dup(history4);
+        free_string(history4);
+        history4 = str_dup(history3);
+        free_string(history3);
+        history3 = str_dup(history2);
+        free_string(history2);
+        history2 = str_dup(history1);
+        free_string(history1);
+        history1 = str_dup(buf);
+    } else if (channel == CHANNEL_ALLIANCE) {
+        int alli = ch->pcdata->alliance;
+        sprintf(buf, "%s: %s\n\r", ch->name, argument);
+        free_string(alliance_table[alli].history);
+        alliance_table[alli].history = str_dup(buf);
+    }
+    return;
 }
 /**
  *

@@ -71,6 +71,7 @@ extern  AREA_DATA *     area_free;
 extern  BAN_DATA *      ban_free;
 extern  CHAR_DATA *     char_free;
 extern  DESCRIPTOR_DATA *   desc_free;
+extern	MOB_INDEX_DATA *	mid_free;
 extern  HELP_DATA *     help_free;
 extern  OBJ_DATA *      obj_free;
 extern  OBJ_INDEX_DATA *    oid_free;

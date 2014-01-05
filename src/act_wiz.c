@@ -1343,6 +1343,33 @@ void do_return( CHAR_DATA *ch, char *argument )
     return;
 }
 
+void do_mload( CHAR_DATA *ch, char *argument )
+{
+    char arg[MAX_INPUT_LENGTH];
+    CHAR_DATA *mob;
+    MOB_INDEX_DATA *pMobIndex;
+
+    one_argument( argument, arg );
+    
+    if ( arg[0] == '\0' || !is_number(arg) )
+    {
+        mreturn( "Syntax: mload <vnum>\n\r", ch );
+    }
+    
+    if ( ( pMobIndex = get_mob_index( atoi( arg ) ) ) == NULL )
+    {
+        mreturn( "No mob has that vnum.\n\r", ch );
+    }
+
+    mob = create_mobile(pMobIndex);
+    char_to_room( mob, ch->in_room );
+    move ( mob, ch->x, ch->y, ch->z );
+
+    //map_ch[ch->x][ch->y][ch->z] = mob;
+
+    mreturn("Should work, soon...\r\n", ch);    
+}
+
 void do_oload( CHAR_DATA *ch, char *argument )
 {
     char arg1[MAX_INPUT_LENGTH];
@@ -1354,7 +1381,7 @@ void do_oload( CHAR_DATA *ch, char *argument )
 
     if ( arg1[0] == '\0' )
     {
-        send_to_char( "Syntax: oload <vnum> <level>.\n\r", ch );
+        send_to_char( "Syntax: oload <vnum> <level>\n\r", ch );
         return;
     }
     if ( !is_number(arg1) )
