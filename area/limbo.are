@@ -3618,6 +3618,24 @@ S
 #3
 S
 #0
+#MOBILES
+#1
+Puff~
+Puff~
+Puff the Fractal Dragon is here, contemplating a higher reality.
+
+~
+~
+1 1 1 S
+#2
+Jawn~
+Jawn~
+Some jawn...
+
+~
+~
+1 1 1 S
+#0
 #OBJECTS
 #1012
 grenade explosive~
@@ -4178,7 +4196,7 @@ lasermachinegun.jpg~
 L
 20
 #1044
-Implant Robotic Chest~
+Implant Robotic Chest L1~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 12 0 8421376
@@ -4187,7 +4205,7 @@ Implant Robotic Chest~
 L
 10
 #1045
-Implant Robotic Chest~
+Implant Robotic Chest L2~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 12 0 8421376
@@ -4196,7 +4214,7 @@ Implant Robotic Chest~
 L
 30
 #1046
-Implant Robotic Chest~
+Implant Robotic Chest L3~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dC@@gh@@We@@gs@@dt I@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 12 0 8421376
@@ -4232,7 +4250,7 @@ A@@l Bla@@Bst@@ePro@@Rof@@r Ma@@Gsk@@N is laying here.~
 L
 70
 #1048
-Implant Robotic Arm~
+Implant Robotic Arm L1~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 12 0 8421376
@@ -4241,7 +4259,7 @@ Implant Robotic Arm~
 L
 10
 #1049
-Implant Robotic Arm~
+Implant Robotic Arm L2~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 12 0 8421376
@@ -4250,7 +4268,7 @@ Implant Robotic Arm~
 L
 30
 #1050
-Implant Robotic Arm~
+Implant Robotic Arm L3~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gr@@Wm @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 12 0 8421376
@@ -4259,7 +4277,7 @@ Implant Robotic Arm~
 L
 50
 #1051
-Implant Robotic Abs~
+Implant Robotic Abs L1~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt@@N~
 12 0 8421376
@@ -4268,7 +4286,7 @@ Implant Robotic Abs~
 L
 10
 #1052
-Implant Robotic Abs~
+Implant Robotic Abs L2~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a2@@N~
 12 0 8421376
@@ -4277,7 +4295,7 @@ Implant Robotic Abs~
 L
 30
 #1053
-Implant Robotic Abs~
+Implant Robotic Abs L3~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 @@dA @@gR@@Wo@@db@@Wo@@gt@@di@@Wc @@dA@@gb@@Ws @@dI@@Wm@@gp@@dl@@ga@@Wn@@dt @@cL@@a3@@N~
 12 0 8421376
