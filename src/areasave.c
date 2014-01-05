@@ -58,8 +58,9 @@
 #define BUILD_SEC_AREA     1
 #define BUILD_SEC_HELP     2
 #define BUILD_SEC_ROOMS    3
-#define BUILD_SEC_OBJECTS  4
-#define BUILD_SEC_END      5
+#define BUILD_SEC_MOBILES  4
+#define BUILD_SEC_OBJECTS  5
+#define BUILD_SEC_END      6
 #define AREA_VERSION  20
 
 struct save_queue_type
@@ -90,7 +91,6 @@ int             AreasModified=0;
 void build_save_area(void);
 void build_save_help(void);
 void build_save_mobs(void);
-void build_save_mobprogs(void);
 void build_save_objects(void);
 void build_save_rooms(void);
 void build_save_resets(void);
@@ -210,6 +210,9 @@ void build_save()
         case BUILD_SEC_ROOMS:
             build_save_rooms();
             break;
+        case BUILD_SEC_MOBILES:
+            build_save_mobs();
+            break;
         case BUILD_SEC_OBJECTS:
             build_save_objects();
             break;
@@ -277,6 +280,40 @@ void build_save_help()
     return;
 }
 
+void build_save_mobs()
+{
+    MOB_INDEX_DATA *pMobIndex;
+
+    if (Pointer==NULL)  /* Start */
+    {
+        if (CurSaveArea->first_area_mobile==NULL)
+        {
+            Section++;
+            return;
+        }
+        send_to_char("Saving mobs.\n",CurSaveChar);
+        fprintf(SaveFile,"#MOBILES\n");
+        Pointer=CurSaveArea->first_area_mobile;
+    }
+
+    pMobIndex=Pointer->data;
+    fprintf(SaveFile,"#%i\n",pMobIndex->vnum);
+    fprintf(SaveFile,"%s~\n",pMobIndex->player_name);
+    fprintf(SaveFile,"%s~\n",pMobIndex->short_descr);
+    fprintf(SaveFile,"%s~\n",pMobIndex->long_descr);
+    fprintf(SaveFile,"%s~\n",pMobIndex->description);
+    fprintf(SaveFile,"%i %i %i S\n",pMobIndex->act,
+         pMobIndex->level,pMobIndex->sex);
+
+    Pointer=Pointer->next;
+    if (Pointer==NULL) /* End */
+    {
+        fprintf(SaveFile,"#0\n");
+        Section++;
+    }
+
+    return;
+}
 void build_save_objects()
 {
     OBJ_INDEX_DATA *pObject;

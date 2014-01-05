@@ -1019,7 +1019,7 @@ void do_target( CHAR_DATA *ch, char *argument )
     }
     if ( ch->victim && ch->victim == victim )
     {
-        send_to_char( "They are already targetted.\n\r", ch );
+        send_to_char( "They are already targeted.\n\r", ch );
         return;
     }
     /*	if ( !NOT_IN_ROOM(ch,victim) )
@@ -1027,11 +1027,19 @@ void do_target( CHAR_DATA *ch, char *argument )
             send_to_char( "He's right here!\n\r", ch );
             return;
         }*/
+        
+    int ctime = 0, vtime = 0;
+    
+    if (!IS_NPC(ch))
+        ctime = (ch->pcdata->skill[gsn_target] / 20);
+        
+    if (!IS_NPC(victim))
+        vtime = (victim->pcdata->skill[gsn_target] / 20);
 
     if ( ch->in_vehicle || bld != NULL )
-        time =  (40 - ((ch->pcdata->skill[gsn_target] / 20) - (victim->pcdata->skill[gsn_target] / 20))) * 2;
+        time =  (40 - (ctime - vtime)) * 2;
     else
-        time =  (40 - ((ch->pcdata->skill[gsn_target] / 20) - (victim->pcdata->skill[gsn_target] / 20))) - weapon->value[6];
+        time =  (40 - (ctime - vtime)) - weapon->value[6];
 
     if ( time < 5 )
         time = 5;

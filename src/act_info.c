@@ -394,12 +394,14 @@ void show_char_to_char_0( CHAR_DATA *victim, CHAR_DATA *ch, bool truncate)
         safe_strcat(MSL, buf, buf2 );
     }
 
+    if ( !IS_NPC(victim) ) {
     /* strcat to buf *linkdead* if not connected? */
     if ( (victim->desc) == NULL && !victim->fake )
         safe_strcat( MAX_STRING_LENGTH, buf, "@@g(@@dL@@WINK@@dD@@WEAD@@g)@@N " );
 
     if ( IS_SET(victim->pcdata->pflags, PFLAG_AFK) )
         safe_strcat( MSL, buf, "@@p(@@mA@@pF@@mK@@p)@@N " );
+    }
 
     if ( sysdata.pikamod )
     {
@@ -1082,6 +1084,8 @@ void do_who( CHAR_DATA *ch, char *argument )
 
         for ( wch = first_char; wch; wch = wch->next )
         {
+            if (IS_NPC(wch))
+                continue;
             if ( (type == 1 && !IS_IMMORTAL(wch) )
                     || (type == 2 && IS_IMMORTAL(wch) ) )
                 continue;

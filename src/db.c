@@ -80,6 +80,7 @@ BIT_24, BIT_24, BIT_24, BIT_24, BIT_24, BIT_24, BIT_24 };
 /*
  * Locals.
  */
+MOB_INDEX_DATA * mob_index_hash[MAX_KEY_HASH];
 OBJ_INDEX_DATA * obj_index_hash[MAX_KEY_HASH];
 ROOM_INDEX_DATA * room_index_hash[MAX_KEY_HASH];
 char * string_hash[MAX_KEY_HASH];
@@ -103,6 +104,7 @@ extern bool Full;
 
 int top_ed;
 int top_help;
+int top_mob_index;
 int top_obj_index;
 int top_room;
 
@@ -153,6 +155,7 @@ void init_mm args( ( void ) );
 
 void load_area args( ( FILE *fp ) );
 void load_helps args( ( FILE *fp ) );
+void load_mobiles args( ( FILE *fp ) );
 void load_objects args( ( FILE *fp ) );
 void load_resets args( ( FILE *fp ) );
 void load_rooms args( ( FILE *fp ) );
@@ -288,6 +291,7 @@ void boot_db(bool fCopyOver) {
                 else if ( !str_cmp( word, "AREA"     ) ) load_area    (fpArea);
                 else if ( !str_cmp( word, "HELPS"    ) ) load_helps   (fpArea);
                 else if ( !str_cmp( word, "ROOMS"    ) ) load_rooms   (fpArea);
+                else if ( !str_cmp( word, "MOBILES"  ) ) load_mobiles (fpArea);
                 else if ( !str_cmp( word, "OBJECTS"  ) ) load_objects (fpArea);
                 else if ( !str_cmp( word, "SPECIALS" ) ) load_specials(fpArea);
                 else
@@ -707,6 +711,44 @@ void load_specials(FILE *fp) {
 #define INVAL_MOB   3
 #define INVAL_GEN   4
 
+
+/*
+ * Create an instance of a mobile.
+ */
+CHAR_DATA *create_mobile( MOB_INDEX_DATA * pMobIndex )
+{
+    CHAR_DATA *mob;
+   
+    if( pMobIndex == NULL )
+    {
+        bug( "Create_mobile: NULL pNpcIndex.", 0 );
+        pMobIndex = get_mob_index(1);
+    }
+    
+    GET_FREE(mob, char_free);
+    clear_char( mob );
+    mob->pIndexData = pMobIndex;
+
+    mob->name           = str_dup(pMobIndex->player_name);
+    mob->short_descr    = str_dup(pMobIndex->short_descr);
+    mob->long_descr     = str_dup(pMobIndex->long_descr);
+    mob->description    = str_dup(pMobIndex->description);
+
+    mob->act            = pMobIndex->act;
+    mob->level          = pMobIndex->level;
+    mob->sex            = pMobIndex->sex;
+    
+    mob->max_hit        = mob->level * 15 + number_range( mob->level * mob->level / 2, mob->level * mob->level );
+    mob->hit            = mob->max_hit;
+    
+    mob->next = NULL;
+    mob->prev = NULL;
+    LINK(mob, first_char, last_char, next, prev);
+    pMobIndex->count++;
+
+    return mob;
+}
+
 /*
  * Create an instance of an object.
  */
@@ -926,6 +968,31 @@ void free_char(CHAR_DATA *ch) {
 	PUT_FREE(ch, char_free);
 	return;
 }
+
+/*
+ * Translates mob virtual number to its mob index struct.
+ * Hash table lookup.
+ */
+MOB_INDEX_DATA *get_mob_index( int vnum )
+{
+    MOB_INDEX_DATA *pMobIndex;
+
+    for ( pMobIndex  = mob_index_hash[vnum % MAX_KEY_HASH]; pMobIndex != NULL;
+        pMobIndex  = pMobIndex->next )
+    {
+        if ( pMobIndex->vnum == vnum )
+            return pMobIndex;
+    }
+
+    if ( fBootDb )
+    {
+        bug( "Get_mob_index: bad vnum %d.", vnum );
+        hang("Get Mob Index in db.c");
+    }
+
+    return NULL;
+}
+
 
 /*
  * Translates mob virtual number to its obj index struct.
@@ -1364,23 +1431,25 @@ void do_memory(CHAR_DATA *ch, char *argument) {
 		}
 	}
 
-	sprintf(buf, "ExDes      %5d\n\r", top_ed);
-	send_to_char(buf, ch);
-	sprintf(buf, "Helps      %5d\n\r", top_help);
-	send_to_char(buf, ch);
-	sprintf(buf, "Objs       %5d\n\r", top_obj_index);
-	send_to_char(buf, ch);
-	sprintf(buf, "Objects:   %5d\n\r", obj_count);
-	send_to_char(buf, ch);
-	sprintf(buf, "Vehicles:  %5d\n\r", vehicle_count);
-	send_to_char(buf, ch);
-	sprintf(buf, "Buildings: %ld (%d active)\n\r", building_count,
-			active_building_count);
-	send_to_char(buf, ch);
-	sprintf(buf, "Rooms:     %5d\n\r", top_room);
-	send_to_char(buf, ch);
-	sprintf(buf, "CPU Time:  %5d\n\r", usage_now);
-	send_to_char(buf, ch);
+    sprintf(buf, "ExDes      %5d\n\r", top_ed);
+    send_to_char(buf, ch);
+    sprintf(buf, "Helps      %5d\n\r", top_help);
+    send_to_char(buf, ch);
+    sprintf(buf, "Mobs       %5d\n\r", top_mob_index);
+    send_to_char(buf, ch);
+    sprintf(buf, "Objs       %5d\n\r", top_obj_index);
+    send_to_char(buf, ch);
+    sprintf(buf, "Objects:   %5d\n\r", obj_count);
+    send_to_char(buf, ch);
+    sprintf(buf, "Vehicles:  %5d\n\r", vehicle_count);
+    send_to_char(buf, ch);
+    sprintf(buf, "Buildings: %ld (%d active)\n\r", building_count,
+            active_building_count);
+    send_to_char(buf, ch);
+    sprintf(buf, "Rooms:     %5d\n\r", top_room);
+    send_to_char(buf, ch);
+    sprintf(buf, "CPU Time:  %5d\n\r", usage_now);
+    send_to_char(buf, ch);
 
 #if 0
 	sprintf( buf, "Strings %5d strings of %7d bytes (max %d).\n\r",
@@ -2385,6 +2454,78 @@ VEHICLE_DATA *create_vehicle(int type) {
 
 	LINK(vhc, first_vehicle, last_vehicle, next, prev);
 	return vhc;
+}
+
+/*
+ * Snarf a mob section.
+ */
+void load_mobiles( FILE *fp )
+{
+    MOB_INDEX_DATA *pMobIndex;
+    BUILD_DATA_LIST *pList;
+
+    for ( ; ; )
+    {
+	sh_int vnum;
+	char letter;
+	int iHash;
+
+	letter                          = fread_letter( fp );
+	if ( letter != '#' )
+	{
+	    bug( "Load_mobiles: # not found.", 0 );
+	    exit( 1 );
+	}
+
+	vnum                            = fread_number( fp );
+	if ( vnum == 0 )
+	    break;
+
+	fBootDb = FALSE;
+	if ( get_mob_index( vnum ) != NULL )
+	{
+	    bug( "Load_mobiles: vnum %d duplicated.", vnum );
+	    exit( 1 );
+	}
+	fBootDb = TRUE;
+
+	GET_FREE(pMobIndex, mid_free);
+    pMobIndex->vnum                 = vnum;
+    pMobIndex->area                 = area_load;
+    pMobIndex->player_name          = fread_string( fp );
+    pMobIndex->short_descr          = fread_string( fp );
+    pMobIndex->long_descr           = fread_string( fp );
+    pMobIndex->description          = fread_string( fp );
+    
+    pMobIndex->long_descr[0]        = UPPER(pMobIndex->long_descr[0]);
+	pMobIndex->description[0]       = UPPER(pMobIndex->description[0]);
+
+    pMobIndex->act                  = fread_number( fp );;
+    pMobIndex->level                = fread_number( fp );;
+    pMobIndex->sex                  = fread_number( fp );;
+    
+    letter                          = fread_letter( fp );
+
+    // Should signal the end of the mob
+	if ( letter != 'S' )
+	{
+	    bug( "Load_mobiles: vnum %d non-S.", vnum );
+	    exit( 1 );
+	}
+	
+	iHash                   = vnum % MAX_KEY_HASH;
+	SING_TOPLINK(pMobIndex, mob_index_hash[iHash], next);
+/* MAG Mod */
+	GET_FREE(pList, build_free);
+	pList->data     = pMobIndex;
+	LINK(pList, area_load->first_area_mobile, area_load->last_area_mobile,
+	     next, prev);
+
+	top_mob_index++;
+	kill_table[URANGE(0, pMobIndex->level, MAX_LEVEL-1)].number++;
+    }
+
+    return;
 }
 
 void load_objects(FILE *fp) {

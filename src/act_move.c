@@ -192,7 +192,7 @@ void move_char( CHAR_DATA *ch, int door )
 
         return;
     }
-    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )							// If flagged asshole.
+    if ( !IS_NPC(ch) && IS_SET(ch->pcdata->pflags,PLR_ASS) )							// If flagged asshole.
     {
         move(ch,1,1,0);
         do_look(ch,"");
@@ -452,7 +452,7 @@ void move_char( CHAR_DATA *ch, int door )
                 bch = ch;
             }
         }
-        if (( bch != ch && (bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance ) && bch->security ) || evil )
+        if (( bch != ch && !IS_NPC(bch) && (bch->pcdata->alliance == -1 || bch->pcdata->alliance != ch->pcdata->alliance ) && bch->security ) || evil )
         {
             if ( bld->type == BUILDING_PORTAL )
             {
@@ -1504,7 +1504,7 @@ void do_land( CHAR_DATA *ch, char *argument )
                 send_to_char( "There is no airfield there.\n\rIf you must land now, you can try @@eEject@@Ning from the plane.", ch );
                 return;
             }
-            if ( !bld->owner || (bld->owner != ch && ( bld->owner->pcdata->alliance == -1 || bld->owner->pcdata->alliance != ch->pcdata->alliance ) ) )
+            if ( !IS_NPC(ch) && (!bld->owner || (bld->owner != ch && ( bld->owner->pcdata->alliance == -1 || bld->owner->pcdata->alliance != ch->pcdata->alliance ) )) )
             {
                 send_to_char( "You do not have permission to land there.\n\r", ch );
                 return;

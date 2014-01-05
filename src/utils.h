@@ -172,13 +172,13 @@ struct char_ref_type
  * Character macros.
  */
 
-#define IS_NPC(ch)              (FALSE)
-#define IS_GUIDE(ch)         (get_trust(ch) == LEVEL_GUIDE)
+#define IS_NPC(ch)              (IS_SET((ch)->act, ACT_IS_NPC))
+#define IS_GUIDE(ch)            (get_trust(ch) == LEVEL_GUIDE)
 #define IS_IMMORTAL(ch)         (get_trust(ch) >= LEVEL_IMMORTAL)
 #define IS_HERO(ch)             (get_trust(ch) >= LEVEL_HERO)
 #define NOT_IN_ROOM(ch, victim) ( ch->x != victim->x || ch->y != victim->y || ch->z != victim->z )
-#define IS_OUTSIDE(ch)      ( ( get_char_building(ch) ) ? TRUE : FALSE )
-#define IS_NEWBIE(ch)       ((my_get_hours(ch,TRUE) <= 4 ))
+#define IS_OUTSIDE(ch)          ( ( get_char_building(ch) ) ? TRUE : FALSE )
+#define IS_NEWBIE(ch)           ((my_get_hours(ch,TRUE) <= 4 ))
 #define IS_LINKDEAD(ch)     ((ch->desc) == NULL && !ch->fake )
 #define IN_PIT(ch)      (ch->x > PIT_BORDER_X && ch->y > PIT_BORDER_Y && ch->z == Z_PAINTBALL)
 #define IS_BUSY(ch)          ( ( ch->desc && ch->desc->connected == CON_PLAYING && ch->c_sn > -1 ) )
@@ -191,13 +191,13 @@ struct char_ref_type
 #define WAIT_STATE(ch, npulse)  ((ch)->wait = UMAX((ch)->wait, (npulse)))
 #define IS_IMPLANTED(ch,bit)    (IS_SET(ch->implants,bit))
 #define IS_BUGGED_AREA(x,y) ((x<0))
-#define practicing(ch)      (IS_SET(ch->pcdata->pflags,PFLAG_PRACTICE) && ch->c_sn != gsn_practice )
+#define practicing(ch)      (!IS_NPC(ch) && IS_SET(ch->pcdata->pflags,PFLAG_PRACTICE) && ch->c_sn != gsn_practice )
 #define paintball(ch)       ((ch->z == Z_PAINTBALL && ch->x >= 200 && ch->y >= 200 && ch->x <= 300 && ch->y <= 300))
 #define medal(ch)       ((ch->z == Z_PAINTBALL && ch->x >= 0 && ch->x <= 52 && ch->y >= 0 && ch->y <= 22))
 #define COMBAT_LAG(ch)      ((ch->fighttimer > 480))
 #define NUKEM(ch)       ((ch->z == Z_PAINTBALL && ch->x == 1 && ch->y == 0))
 #define blind_player(ch)    ((IS_SET(ch->config,CONFIG_BLIND)))
-#define allied(ch,vch)      ((ch->pcdata->alliance != -1 && ch->pcdata->alliance == vch->pcdata->alliance))
+#define allied(ch,vch)      (!IS_NPC(ch) && !IS_NPC(vch) && (ch->pcdata->alliance != -1 && ch->pcdata->alliance == vch->pcdata->alliance))
 /*
  * Object macros.
  */

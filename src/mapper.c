@@ -757,11 +757,13 @@ void ShowWMap(CHAR_DATA *ch, sh_int small, int size) {
 										&& in_range_of(bld->x, bld->y, ch->x,
 												ch->y, 1)) || bld->value[5] > 0))
 							sprintf(ocolor + strlen(ocolor), "@@x");
-						if (charr
-								&& (map_ch[x][y][z]->pcdata->alliance
-										!= ch->pcdata->alliance
-										|| map_ch[x][y][z]->pcdata->alliance
-												== -1))
+
+						// Mobs are always enemies... for now.
+                        // -Grave
+                        if (charr && IS_NPC(map_ch[x][y][z]))
+                            enemy = TRUE;
+                        else if (charr && (map_ch[x][y][z]->pcdata->alliance != ch->pcdata->alliance
+                            || map_ch[x][y][z]->pcdata->alliance == -1))
 							enemy = TRUE;
 					} else if (security == 2)
 						sprintf(ocolor, "%s",
@@ -836,11 +838,9 @@ void ShowWMap(CHAR_DATA *ch, sh_int small, int size) {
 						ppl++;
 						if (wch->in_vehicle)
 							vehicle = TRUE;
-						if (ch->pcdata->alliance != -1
-								&& ch->pcdata->alliance
-										== wch->pcdata->alliance)
+						if (allied(ch, wch))
 							allied = TRUE;
-						else if (IS_NEWBIE(wch))
+						else if (!IS_NPC(wch) && IS_NEWBIE(wch))
 							newbie = TRUE;
 						else if (IS_IMMORTAL(wch))
 							imm = TRUE;

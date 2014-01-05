@@ -666,7 +666,7 @@ void extract_char( CHAR_DATA *ch, bool fPull )
         do_practice(ch,"");
     if ( ch->bvictim && ch->bvictim->value[8] != 0 )
         ch->bvictim->value[8] = 0;
-
+    if (!IS_NPC(ch))
     {
         QUEUE_DATA * q;
         QUEUE_DATA * q_next;
@@ -1077,8 +1077,6 @@ bool can_see( CHAR_DATA *ch, CHAR_DATA *victim )
     if ( ch == victim )
         return TRUE;
 
-//    if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
-//        return FALSE;
     if ( IS_SET(victim->act, PLR_WIZINVIS)
             &&   get_trust( ch ) < victim->invis )
         return FALSE;
@@ -1091,7 +1089,7 @@ bool can_see( CHAR_DATA *ch, CHAR_DATA *victim )
     if ( IS_SET(ch->act, PLR_HOLYLIGHT) )
         return TRUE;
 
-    if ( IS_SET(victim->pcdata->pflags,PLR_ASS) )
+    if ( !IS_NPC(victim) && IS_SET(victim->pcdata->pflags, PLR_ASS) )
         return FALSE;
 
     if ( IS_SET(ch->effect,EFFECT_BLIND) )

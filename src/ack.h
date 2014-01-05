@@ -528,90 +528,97 @@ struct  kill_data
  */
 struct  char_data
 {
-    bool        is_free;                                    /* Ramias:for run-time checks of LINK/UNLINK */
-    bool        is_quitting;
-    CHAR_DATA *         next;
-    CHAR_DATA *     prev;
-    CHAR_DATA *     next_in_room;
-    CHAR_DATA *         leader;
-    CHAR_DATA *         reply;
-    BUILDING_DATA * first_building;
-    ROOM_INDEX_DATA *   in_room;
-    int         deaf;
-    int                 poly_level;
-    DESCRIPTOR_DATA *   desc;
-    OBJ_DATA *          first_carry;
-    OBJ_DATA *      last_carry;
-    PC_DATA *           pcdata;
-    char *              name;
-    char *              prompt;
-    char *              old_prompt;                         /* used to hold prompt when writing */
-    char *      last_tell;
-    sh_int              sex;
-    sh_int      login_sex;
-    sh_int              class;
-    int         position;
-    sh_int      level;
-    sh_int      invis;                                      /* For wizinvis imms - lvl invis to */
-    sh_int      incog;
-    sh_int              trust;
+    bool                dead;
+    bool                fake;
+    bool                is_free;                                // Ramias:for run-time checks of LINK/UNLINK */
+    bool                is_quitting;
+    bool                npc;
+    bool                suicide;
+    bool                security;
     bool                wizbit;
-    int                 played;
+    BRAND_DATA  *       current_brand;
+    BUILDING_DATA *     bvictim;
+    BUILDING_DATA *     first_building;
+    BUILDING_DATA *     in_building;
+    char *              alias_command[5];
+    char *              alias[5];
+    char *              name;
+    char *              old_prompt;                             // Used to hold prompt when writing
+    char *              prompt;
+    char *              last_tell;
+    CHAR_DATA *         leader;
+    CHAR_DATA *         next_in_room;
+    CHAR_DATA *         next;
+    CHAR_DATA *         prev;
+    CHAR_DATA *         reply;
+    CHAR_DATA *         victim;
+    DESCRIPTOR_DATA *   desc;
+    float               carry_weight;
+    float               heat;
+    int                 act_build;                              // For setting what ya editing
+    int                 act;
+    int                 build_vnum;                             // The current vnum for w-y-e
+    int                 c_level;
+    int                 config;
+    int                 deaf;
+    int                 disease;
+    int                 effect;
+    int                 game_points;                            // For games
+    int                 implants;
+    int                 medaltimer;
     int                 played_tot;
+    int                 played;
+    int                 poly_level;
+    int                 position;
+    int                 quest_points;                           // As special rewards
+    int                 refund[8];
+    int                 x;
+    int                 y;
+    int                 z;
+    MOB_INDEX_DATA *    pIndexData;
+    OBJ_DATA *          first_carry;
+    OBJ_DATA *          last_carry;
+    OBJ_DATA *          c_obj;
+    PC_DATA *           pcdata;
+    ROOM_INDEX_DATA *   in_room;
+    sh_int              c_count;
+    sh_int              c_sn;
+    sh_int              c_time;
+    sh_int              carry_number;
+    sh_int              class;
+    sh_int              fighttimer;
+    sh_int              hit;
+    sh_int              incog;
+    sh_int              invis;                          // For wizinvis imms - lvl invis to
+    sh_int              kill_group;
+    sh_int              killtimer;
+    sh_int              level;
+    sh_int              login_sex;
+    sh_int              map;
+    sh_int              max_hit;
+    sh_int              medals;
+    sh_int              questtimer;
+    sh_int              section;
+    sh_int              sex;
+    sh_int              spectimer;
+    sh_int              timer;
+    sh_int              trust;
+    sh_int              wait;
+    time_t              last_note;
     time_t              logon;
     time_t              save_time;
-    time_t              last_note;
-    sh_int              timer;
-    sh_int              wait;
-    sh_int              hit;
-    sh_int              max_hit;
-    int                 act;
-    int                 config;
-    int                 act_build;                          /* for setting what ya editing */
-    int                 build_vnum;                         /* the current vnum for w-y-e  */
-    float              carry_weight;
-    sh_int              carry_number;
-    int         quest_points;                               /*As special rewards	 */
-    BRAND_DATA  *   current_brand;
-    BUILDING_DATA   * bvictim;
-    sh_int       c_time;
-    sh_int       c_sn;
-    int          c_level;
-    OBJ_DATA *   c_obj;
-    CHAR_DATA *  victim;
-    int      x;
-    int      y;
-    int      z;
-    BUILDING_DATA * in_building;
-    VEHICLE_DATA * in_vehicle;
-    sh_int       fighttimer;
-    sh_int       questtimer;
-    sh_int       spectimer;
-    sh_int       killtimer;
-    int      medaltimer;
-    sh_int map;
-    bool security;
-    char    * alias[5];
-    char    * alias_command[5];
-    int   implants;
-    int   disease;
-    int   effect;
-    int   refund[8];
-    bool      suicide;
-    float     heat;
-    bool    dead;
-    sh_int  medals;
-    bool    fake;
-    sh_int  section;
-    sh_int  kill_group;
-    sh_int  c_count;
-    int     game_points;                                    //For mannaroth's games. (We mean cheesly's)
+    VEHICLE_DATA *      in_vehicle;
+    
+    // FIX THIS - UGLY! 
+    // -Grave
+    char *              short_descr;
+    char *              long_descr;
+    char *              description;
 };
 
 /*
  * Data which only PC's have.
  */
-
 struct  pc_data
 {
     bool        is_free;                                    /* Ramias:for run-time checks of LINK/UNLINK */
@@ -674,6 +681,36 @@ struct  pc_data
     PAGER_DATA  * pager;
 };
 
+/*
+ * Data which only NPC's have.
+ */
+struct 	npc_data
+{
+    MOB_INDEX_DATA *    pIndexData;
+    NPC_DATA *          next; // May be unused
+};
+
+/*
+ * Prototype for a mob.
+ * This is the in-memory version of #MOBILES.
+ */
+struct mob_index_data
+{
+    bool		        is_free; /* Ramias: for run-time checks of LINK/UNLINK */
+    AREA_DATA *         area;
+    MOB_INDEX_DATA *    next;
+    char *              player_name;
+    char *              short_descr;
+    char *              long_descr;
+    char *              description;
+    sh_int              count;
+    sh_int              vnum;
+    sh_int              killed;
+    sh_int              sex;
+    sh_int              level;
+    int                 act;
+};
+
 struct  obj_index_data
 {
     bool        is_free;                                    /* Ramias:for run-time checks of LINK/UNLINK */
@@ -688,10 +725,10 @@ struct  obj_index_data
     int                 extra_flags;
     int                 wear_flags;
     int                 weight;
-    int         building;
+    int                 building;
     int                 value   [MAX_OBJECT_VALUES];
-    sh_int      heat;
-    char *      image;
+    sh_int              heat;
+    char *              image;
 };
 
 /*
@@ -752,6 +789,8 @@ struct  area_data
     BUILD_DATA_LIST *   last_area_room;
     BUILD_DATA_LIST *   first_area_help_text;
     BUILD_DATA_LIST *   last_area_help_text;
+    BUILD_DATA_LIST *   first_area_mobile;
+    BUILD_DATA_LIST *	last_area_mobile;
     BUILD_DATA_LIST *   first_area_object;
     BUILD_DATA_LIST *   last_area_object;
     BUILD_DATA_LIST *   first_area_objfunc;
@@ -860,6 +899,7 @@ void    xbv_remove_bits args( ( XBV *dest, const XBV *src ) );
  */
 #define CD      CHAR_DATA
 #define OD      OBJ_DATA
+#define MID     MOB_INDEX_DATA
 #define OID     OBJ_INDEX_DATA
 #define RID     ROOM_INDEX_DATA
 #define SF      SPEC_FUN
@@ -929,10 +969,12 @@ void   perm_update args( ( void ) );
 void    boot_db         args( ( bool fCopyOver ) );
 void    area_update     args( ( void ) );
 OD *    create_object   args( ( OBJ_INDEX_DATA *pObjIndex, int level ) );
+CD *    create_mobile   args( ( MOB_INDEX_DATA *pMobIndex ) );
 BUILDING_DATA *    create_building   args( ( int type ) );
 VEHICLE_DATA *     create_vehicle   args( ( int type ) );
 void    clear_char      args( ( CHAR_DATA *ch ) );
 void    free_char       args( ( CHAR_DATA *ch ) );
+MID *   get_mob_index   args( ( int vnum ) );
 OID *   get_obj_index   args( ( int vnum ) );
 RID *   get_room_index  args( ( int vnum ) );
 char    fread_letter    args( ( FILE *fp ) );
@@ -1259,6 +1301,7 @@ void load_web_data  args( ( void ) );
 #undef  CD
 #undef  MID
 #undef  OD
+#undef  MID
 #undef  OID
 #undef  RID
 #undef  SF

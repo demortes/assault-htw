@@ -121,6 +121,7 @@ DECLARE_DO_FUN ( build_delobject    );
 DECLARE_DO_FUN ( build_delhelp      );
 DECLARE_DO_FUN ( build_addhelp      );
 DECLARE_DO_FUN ( build_addbuilding  );
+DECLARE_DO_FUN ( build_addmob		);
 
 /* Functions in buildare.c: */
 DECLARE_DO_FUN ( build_showarea     );
@@ -151,36 +152,37 @@ const   struct  cmd_type        build_cmd_table   [] =
     { "look",           do_look,        POS_STANDING,   0,  LOG_NORMAL },
     { "list",           build_list,     POS_STANDING,   0,  LOG_NORMAL },
     { "x",              build_list,     POS_STANDING,   0,  LOG_NORMAL },
-    { "commands",   build_commands, POS_STANDING,   0,  LOG_NORMAL },
+    { "commands",       build_commands, POS_STANDING,   0,  LOG_NORMAL },
     { "showarea",       build_showarea, POS_STANDING,   0,  LOG_NORMAL },
     { "showobject",     build_showobj,  POS_STANDING,   0,  LOG_NORMAL },
     { "findarea",       build_findarea, POS_STANDING,   0,  LOG_NORMAL },
     { "findobject",     build_findobject,POS_STANDING,  0,  LOG_NORMAL },
     { "help",           build_help,     POS_STANDING,   0,  LOG_NORMAL },
-    { "helpedit",   build_helpedit, POS_STANDING,   0,  LOG_NORMAL },
+    { "helpedit",       build_helpedit, POS_STANDING,   0,  LOG_NORMAL },
     { "set",            build_set,      POS_STANDING,   0,  LOG_NORMAL },
     { "setarea",        build_setarea,  POS_STANDING,MAX_LEVEL,LOG_NORMAL },
     { "stop",           build_stop,     POS_STANDING,   0,  LOG_ALWAYS },
+    { "addmob",         build_addmob,   POS_STANDING,   0,  LOG_NORMAL },
     { "addobject",      build_addobject,POS_STANDING,   0,  LOG_NORMAL },
     { "delobjec",       build_delwarn,  POS_STANDING,   0,  LOG_NORMAL },
     { "delobject",      build_delobject,POS_STANDING,   0,  LOG_NORMAL },
-    { "delhelp",    build_delhelp,  POS_STANDING,   84, LOG_ALWAYS },
-    { "findhelp",   build_findhelp, POS_STANDING,   0,  LOG_NORMAL },
-    { "addhelp",    build_addhelp,   POS_STANDING,  0,  LOG_NORMAL },
+    { "delhelp",        build_delhelp,  POS_STANDING,   84, LOG_ALWAYS },
+    { "findhelp",       build_findhelp, POS_STANDING,   0,  LOG_NORMAL },
+    { "addhelp",        build_addhelp,   POS_STANDING,  0,  LOG_NORMAL },
     { "oedit",          build_set_oedit, POS_STANDING,  0,  LOG_NORMAL },
     { "bedit",          build_set_bedit, POS_STANDING,  0,  LOG_NORMAL },
-    { "nedit",      build_set_nedit, POS_STANDING, 0, LOG_NORMAL },
+    { "nedit",          build_set_nedit, POS_STANDING, 0, LOG_NORMAL },
     { "setvnum",        build_setvnum,   POS_STANDING,  0,  LOG_NORMAL },
-    { "vset",       build_setvnum,   POS_STANDING,  0,  LOG_NORMAL },
-    { "uobjs",      build_uobjs,     POS_STANDING,  0,  LOG_NORMAL },
+    { "vset",           build_setvnum,   POS_STANDING,  0,  LOG_NORMAL },
+    { "uobjs",          build_uobjs,     POS_STANDING,  0,  LOG_NORMAL },
     { "values",         build_listvalues,POS_STANDING,  0,  LOG_NORMAL },
     { "buildings",      build_listbuildings,POS_STANDING, 0,  LOG_NORMAL },
     { "addbuilding",    build_addbuilding,   POS_STANDING,  0,  LOG_NORMAL },
     { "check_area",     do_check_area,   POS_STANDING,MAX_LEVEL+1,LOG_NORMAL},
     { "check_areas",    do_check_areas,  POS_STANDING,MAX_LEVEL+1,LOG_ALWAYS},
-    { "clone",      build_clone,    POS_STANDING,   0,  LOG_NORMAL },
-    { "say",        do_say,     POS_STANDING,   0,  LOG_NORMAL },
-    { "areasave",   do_areasave,    POS_STANDING,   0,  LOG_NORMAL },
+    { "clone",          build_clone,    POS_STANDING,   0,  LOG_NORMAL },
+    { "say",            do_say,     POS_STANDING,   0,  LOG_NORMAL },
+    { "areasave",       do_areasave,    POS_STANDING,   0,  LOG_NORMAL },
     /*
      * End of list.
      */
@@ -218,6 +220,7 @@ extern char                    str_empty       [1];
 extern int                     top_ed;
 extern int                     top_help;
 extern int                     top_obj_index;
+extern int                     top_mob_index;
 extern int                     top_room;
 
 extern HELP_DATA *      help_last;
@@ -864,6 +867,80 @@ void do_build( CHAR_DATA *ch, char *argument )
     ch->position=POS_BUILDING;
     do_help( ch, "build_bmotd" );                           /* motd for builders -S- */
     send_to_char("Building commands are now operative. Type stop to stop building.\n\r",ch);
+}
+
+void build_addmob( CHAR_DATA *ch, char *argument )
+{
+    char arg1 [MAX_INPUT_LENGTH];
+    char arg2 [MAX_INPUT_LENGTH];
+    char buffer[MAX_INPUT_LENGTH];
+    MOB_INDEX_DATA * pMobIndex;
+    AREA_DATA * pArea;
+    BUILD_DATA_LIST * pList;
+    int vnum;
+    int iHash;
+
+    smash_tilde( argument );
+    argument = one_argument( argument, arg1 );
+    strcpy( arg2, argument );
+
+    if ( arg1[0] == '\0' || arg2[0] == '\0')
+    {
+        send_to_char( "Syntax: addmob <vnum> <name>\n\r",     ch );
+        return;
+    }
+
+    vnum=is_number(arg1) ? atoi(arg1) : -1;
+
+    if (vnum<0 || vnum > 32767 )
+    {
+        send_to_char( "Vnum must be between 0 and 32767.\n\r",ch);
+        return;
+    }
+
+    if (get_mob_index(vnum) != NULL)
+    {
+        send_to_char( "There is already a mob with that vnum.\n\r",ch);
+        return;
+    }
+
+    pArea=ch->in_room->area;    /* bugger.  this might need fixing!! */
+    
+    if (!build_canwrite(pArea,ch,1))
+        return;
+     
+    if (vnum < pArea->min_vnum || vnum > pArea->max_vnum)
+    {
+       sprintf(buffer,"Vnum must be between %i and %i.\n\r",pArea->min_vnum, pArea->max_vnum);
+       send_to_char(buffer,ch);
+       return;
+    }  
+
+    ch->build_vnum = vnum;
+    ch->act_build = ACT_BUILD_OEDIT;
+    
+    GET_FREE(pMobIndex, mid_free);
+    pMobIndex->vnum                 = vnum;
+    pMobIndex->area                 = pArea;
+    pMobIndex->player_name          = str_dup(arg2);
+    pMobIndex->short_descr          = &str_empty[0];
+    pMobIndex->long_descr           = &str_empty[0];
+    pMobIndex->description          = &str_empty[0];
+
+    pMobIndex->act                  = 0;
+    pMobIndex->level                = 1;
+    pMobIndex->sex                  = 1;
+
+    iHash                   = vnum % MAX_KEY_HASH;
+    SING_TOPLINK(pMobIndex, mob_index_hash[iHash], next);
+    GET_FREE(pList, build_free);
+    pList->data     = pMobIndex;
+    LINK(pList, pArea->first_area_mobile, pArea->last_area_mobile,
+         next, prev);
+
+    top_mob_index++;
+    kill_table[URANGE(0, pMobIndex->level, MAX_LEVEL-1)].number++;
+    return;
 }
 
 void build_addobject( CHAR_DATA *ch, char *argument )

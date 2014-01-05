@@ -105,6 +105,9 @@ void save_char_obj( CHAR_DATA *ch )
     FILE *fp;
     char * nmptr,*bufptr;
 
+    if (IS_NPC(ch))
+        return;
+
     //    if ( sysdata.killfest || my_get_minutes(ch,TRUE) <= 0 )
     if ( my_get_minutes(ch,TRUE) <= 0 )
     {

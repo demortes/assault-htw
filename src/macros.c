@@ -923,10 +923,14 @@ bool open_scaffold(CHAR_DATA *ch, OBJ_DATA *obj)
 
 bool has_ability(CHAR_DATA *ch,int abil)
 {
+    if (IS_NPC(ch)) 
+        return FALSE;
+
     if ( ch->pcdata->skill[gsn_engineering] >= ability_table[abil].engineering )
         if ( ch->pcdata->skill[gsn_building] >= ability_table[abil].building )
             if ( ch->pcdata->skill[gsn_combat] >= ability_table[abil].combat )
                 return TRUE;
+
     return FALSE;
 }
 

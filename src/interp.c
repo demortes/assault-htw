@@ -1299,6 +1299,10 @@ const   struct  cmd_type        cmd_table       [] =
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
     {
+        "mload",          do_mload,       POS_DEAD,    83,  LOG_ALWAYS,
+        C_TYPE_IMM, C_SHOW_ALWAYS
+    },
+    {
         "oload",          do_oload,       POS_DEAD,    83,  LOG_ALWAYS,
         C_TYPE_IMM, C_SHOW_ALWAYS
     },
@@ -1532,13 +1536,13 @@ void interpret( CHAR_DATA *ch, char *argument )
         argument = one_argument( argument, command );
     }
 
-    {
+    if (!IS_NPC(ch)) {
         int i;
         char command2[MSL] = "\0";
         command2[0] = '\0';
         for ( i = 0; i<5; i++ )
         {
-            if ( ch->alias[i] == "" )
+            if ( strcmp(ch->alias[i], "") == 0 )
                 continue;
             if ( !str_cmp(ch->alias[i],command) )
             {
@@ -1554,10 +1558,10 @@ void interpret( CHAR_DATA *ch, char *argument )
                 return;
             }
         }
-    }
-    if ( IS_SET( ch->pcdata->pflags, PFLAG_ALIAS ) )
-        REMOVE_BIT(ch->pcdata->pflags,PFLAG_ALIAS);
 
+        if ( IS_SET( ch->pcdata->pflags, PFLAG_ALIAS ) )
+            REMOVE_BIT(ch->pcdata->pflags,PFLAG_ALIAS);
+    }
     /*
      * Look for command in command table.
      */
@@ -1712,7 +1716,7 @@ void interpret( CHAR_DATA *ch, char *argument )
     comlog(ch, cmd, argument);
     (*cmd_table[cmd].do_fun) ( ch, argument );
 
-    if ( IS_SET( ch->pcdata->pflags,PFLAG_AFK ) && str_cmp(cmd_table[cmd].name,"afk") && !IS_IMMORTAL(ch) )
+    if ( !IS_NPC(ch) && IS_SET( ch->pcdata->pflags,PFLAG_AFK ) && str_cmp(cmd_table[cmd].name,"afk") && !IS_IMMORTAL(ch) )
     {
         REMOVE_BIT( ch->pcdata->pflags,PFLAG_AFK );
         send_to_char( "AFK flag turned off.\n\r", ch );

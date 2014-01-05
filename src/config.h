@@ -540,6 +540,7 @@
 #define TO_NOTVICT          1
 #define TO_VICT             2
 #define TO_CHAR             3
+#define TO_INFO             4
 
 /*
  * Room flags.
@@ -768,6 +769,11 @@
 
 #define SEX_MALE                      1
 #define SEX_FEMALE                    2
+
+// Act bits for mobs
+// -Grave
+#define ACT_IS_NPC              BIT_1
+#define ACT_INTELLIGENT	        BIT_2
 
 /*
  * Item types.

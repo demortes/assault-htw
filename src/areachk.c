@@ -132,6 +132,7 @@ void do_check_areas(CHAR_DATA * ch, char * argument)
     BUILD_DATA_LIST * pList;
     ROOM_INDEX_DATA * pRoomIndex;
     OBJ_INDEX_DATA  * pObjIndex;
+    MOB_INDEX_DATA  * pMobIndex;
 
     /* Create hash tables for rooms, mobiles, objects */
 
@@ -206,6 +207,36 @@ void do_check_areas(CHAR_DATA * ch, char * argument)
                 }
             }
         }
+        
+        /* Go through mobs */
+        for (pList=CurArea->first_area_mobile; pList != NULL; pList=pList->next)
+        {
+            pMobIndex=pList->data;
+            if (pMobIndex->vnum < min_vnum || pMobIndex->vnum > max_vnum)
+            {
+                old_vnum=pMobIndex->vnum;
+                /* Find a free slot */
+                for (new_vnum=min_vnum; new_vnum <= max_vnum; new_vnum++)
+                    if (get_mob_index(new_vnum)==NULL)
+                        break;
+   
+                if (new_vnum > max_vnum)
+                {
+                    sprintf(buffer,"Not enough vnums in area %s\n\r",CurArea->name);
+                    send_to_char(buffer,ch);
+                }
+                else
+                {
+                    fprintf(out_file,"Mob: [%5i] -> [%5i] %s\n",old_vnum,new_vnum,pMobIndex->short_descr);    
+                    /* Delete from mob hashing table, and put new vnum in. */
+                    add_hash_entry(mob_hash,old_vnum,(void *) new_vnum);
+                    swap_global_hash('M',pMobIndex,old_vnum,new_vnum);
+                    pMobIndex->vnum=new_vnum;
+                    area_modified(CurArea);
+                }
+            }
+        }
+        
     }
 
     fclose(out_file);
