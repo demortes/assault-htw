@@ -891,6 +891,7 @@ void    crash       args( ( CHAR_DATA *ch, CHAR_DATA *attacker ) );
 void    move        args( ( CHAR_DATA *ch, int x, int y, int z ) );
 void    move_vehicle    args( ( VEHICLE_DATA *vhc, int x, int y, int z ) );
 void    move_obj    args( ( OBJ_DATA *obj, int x, int y, int z ) );
+bool has_boat(CHAR_DATA *ch);
 
 /* act_obj.c */
 void    get_obj     args( ( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container ) );
@@ -1122,6 +1123,7 @@ void create_obj_atch    args( ( CHAR_DATA *ch, int index ) );
 bool blind_spot     args( ( CHAR_DATA *ch, int x, int y ) );
 int get_armor_value args( ( int dt ) );
 void real_coords(int *x,int *y);
+void real_coords_space(int *x,int *y);
 bool in_range_of(int x1, int y1, int x2, int y2, int range);
 
 /*------*\ 

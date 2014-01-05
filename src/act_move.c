@@ -306,7 +306,10 @@ void move_char( CHAR_DATA *ch, int door )
                 z = Z_GROUND;
             x = ch->x;
             y = ch->y;
-            real_coords(&x, &y);
+            if(ch->z != Z_SPACE)
+            	real_coords(&x, &y);
+            else
+            	real_coords_space(&x, &y);
             move(ch,x,y,z);
             crash(ch,ch);
             return;
