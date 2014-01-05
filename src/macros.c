@@ -1020,6 +1020,23 @@ void real_coords(int *x,int *y)
                 *x = *x - MAX_MAPS;
         if ( *y >= MAX_MAPS )
                 *y = *y - MAX_MAPS;
+
+        if(*x > MAX_MAPS || *y > MAX_MAPS)
+        	real_coords(x, y);
+}
+void real_coords_space(int *x,int *y)
+{
+        if ( *x < 0 )
+                *x = SPACE_SIZE + *x;
+        if ( *y < 0 )
+                *y = SPACE_SIZE + *y;
+        if ( *x >= SPACE_SIZE )
+                *x = *x - SPACE_SIZE;
+        if ( *y >= SPACE_SIZE )
+                *y = *y - SPACE_SIZE;
+
+        if(*x > SPACE_SIZE || *y > SPACE_SIZE)
+        	real_coords_space(x, y);
 }
 
 /**

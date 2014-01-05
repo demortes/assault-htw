@@ -35,6 +35,8 @@
 #include <time.h>
 #include "mapper.h"
 
+#define INVALID_COORDS(x,y) (( x < BORDER_SIZE || x > MAX_MAPS-BORDER_SIZE || y < BORDER_SIZE || y > MAX_MAPS-BORDER_SIZE ))
+
 extern char * compass_name[];
 extern void do_space_look(CHAR_DATA *ch);
 extern int leads_to(int x, int y, int z, int dir);
@@ -50,7 +52,7 @@ int offsets[4][2] = { { -2, 0 }, { 0, 2 }, { 2, 0 }, { 0, -2 } };
 void do_mapper(CHAR_DATA *ch, char *argument) {
 	int size = 0;
 	if (ch->z == Z_SPACE) {
-		ShowSpace(ch);
+		ShowSMap( ch, IS_SET(ch->config,CONFIG_SMALLMAP) );
 		return;
 	}
 
@@ -248,19 +250,11 @@ void ShowBMap(CHAR_DATA *ch, bool quest) {
 		sprintf(b_buf + strlen(b_buf), "%d Total\n\r", total);
 
 	}
-	sprintf(e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
-			(b_north[0] != '\0') ?
-					b_north :
-					wildmap_table[leads_to(ch->x, ch->y, ch->z, DIR_NORTH)].name,
-			(b_east[0] != '\0') ?
-					b_east :
-					wildmap_table[leads_to(ch->x, ch->y, ch->z, DIR_EAST)].name,
-			(b_south[0] != '\0') ?
-					b_south :
-					wildmap_table[leads_to(ch->x, ch->y, ch->z, DIR_SOUTH)].name,
-			(b_west[0] != '\0') ?
-					b_west :
-					wildmap_table[leads_to(ch->x, ch->y, ch->z, DIR_WEST)].name);
+    sprintf( e_buf, "North: %s\n\rEast: %s\n\rSouth: %s\n\rWest: %s\n\r",
+             (b_north[0] != '\0') ? b_north : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y+1][ch->z]].name,
+             (b_east[0] != '\0')  ? b_east  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x+1][ch->y][ch->z]].name,
+             (b_south[0] != '\0') ? b_south : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x][ch->y-1][ch->z]].name,
+             (b_west[0] != '\0')  ? b_west  : ch->z==Z_SPACE?"Space":wildmap_table[map_table.type[ch->x-1][ch->y][ch->z]].name );
 
 	x = ch->x;
 	y = ch->y;
@@ -627,6 +621,7 @@ void ShowWMap(CHAR_DATA *ch, sh_int small, int size) {
 	outbuf[0] = '\0';
 	color[0] = '\0';
 	borderbuf[0] = '\0';
+
 
 	if (map_bld[ch->x][ch->y][ch->z] && warcannon == FALSE && size != 997
 			&& !base && size != 998) {
@@ -1246,4 +1241,227 @@ char *makesmall(char *arg, int size) {
 		small[1] = '\0';
 	}
 	return (small);
+}
+
+void ShowSMap( CHAR_DATA *ch, bool small )
+{
+    int x,y,looper, maxx,i=0,xx,yy,xmaxx,ymaxx;
+    char scan[MSL] = "\0";
+    char color[MSL] = "\0";
+    char outbuf[MSL] = "\0";
+    char catbuf[MSL] = "\0";
+    char borderbuf[MSL] = "\0";
+    OBJ_DATA *obj;
+    VEHICLE_DATA *vhc = ch->in_vehicle;
+    extern OBJ_DATA *map_obj[MAX_MAPS][MAX_MAPS];
+    int col;
+    outbuf[0] = '\0';
+    color[0] = '\0';
+    scan[0] = '\0';
+    borderbuf[0] = '\0';
+
+    if ( !vhc )
+        return;
+
+    maxx = get_ship_range(vhc);
+    ShowSpace(ch);
+    sprintf( outbuf, "\n\r" );
+    sprintf( borderbuf, "@@d+@@g-" );
+
+    if ( small )
+        sprintf( catbuf, "%s", "--" );
+    else
+        sprintf( catbuf, "%s", "----" );
+
+    for ( looper = 0; looper <= maxx*2; looper++ )
+        safe_strcat( MSL, borderbuf, catbuf );
+
+    safe_strcat( MSL, borderbuf, "-@@d+@@N" );
+    send_to_char( "\n\r", ch );
+    send_to_char( borderbuf, ch );
+
+    xmaxx = maxx;
+    ymaxx = maxx;
+
+    for (yy = ch->y + ymaxx; yy >= ch->y - ymaxx; --yy)
+        //  for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
+    {   /* every row */
+        if ( yy < 0 )
+            y = SPACE_SIZE + 1 + yy;
+        else if ( yy >= SPACE_SIZE )
+            y = yy - SPACE_SIZE;
+        else
+            y = yy;
+
+        safe_strcat( MSL, outbuf, "@@g| " );
+        sprintf( color, "@@g" );
+        for (xx = ch->x - xmaxx; xx <= ch->x + xmaxx; ++xx)
+            //    for (yy = ch->y - ymaxx; yy <= ch->y + ymaxx; ++yy)
+        {   /* every column */
+
+            if ( xx < 0 )
+                x = SPACE_SIZE + 1 + xx;
+            else if ( xx >= SPACE_SIZE )
+                x = xx - SPACE_SIZE;
+            else
+                x = xx;
+
+            if ( ( ( ( xx - (ch->x - xmaxx)) + (yy - (ch->y - ymaxx)) ) <= 3 )
+                    ||   ( ( ( (ch->x + xmaxx) - xx) + ((ch->y + ymaxx))-yy ) <= 3 )
+                    ||   ( ( ( (ch->x + xmaxx) - xx) + (yy - (ch->y - ymaxx)) ) <= 3 )
+                    ||   ( ( ( xx - (ch->x - xmaxx)) + ((ch->y + ymaxx))-yy ) <= 3 ) )
+            {
+                if ( small )
+                {
+                    safe_strcat( MSL, outbuf, "++" );
+                }
+                else
+                {
+                    safe_strcat( MSL, outbuf, "++++" );
+                }
+                continue;
+            }
+
+            if ( x == ch->x && y == ch->y )
+            {
+                safe_strcat( MSL, outbuf, "@@y**@@g" );
+                if ( x < BORDER_SIZE || y < BORDER_SIZE )
+                    strcat(outbuf,"@@d");
+                continue;
+            }
+
+            col = -1;
+            if ( number_percent() < 2 )
+                col = number_range(1,4);
+            if ( small )
+                sprintf( catbuf, "%s ", (col==1)?"@@y*@@g":(col==2)?"@@cx@@g":(col==3)?"@@a+@@g":" " );
+            else
+                sprintf( catbuf, " %s  ", (col==1)?"@@y*@@g":(col==2)?"@@cx@@g":(col==3)?"@@a+@@g":" " );
+
+            if ( map_obj[x][y] )
+            {
+                int ppl = 0;
+                int type = -1,ttype = -1;
+
+                for ( obj = map_obj[x][y]; obj; obj = obj->next_in_room )
+                {
+                    ppl++;
+                    type = obj->pIndexData->vnum-799;
+                    if ( ttype != type && ttype != 0 )
+                    {
+                        if ( ttype == -1 )
+                            ttype = type;
+                        else
+                            ttype = 0;
+                    }
+                }
+
+                if ( ppl > 0 )
+                {
+                    if ( IS_SET(vhc->flags,VEHICLE_OBJ_SENSORS) )
+                    {
+                        sprintf(catbuf,"@@%s",(ttype==1)?"d":(ttype==2)?"p":(ttype==0)?"W":"d");
+                    }
+                    else
+                    {
+                        sprintf(catbuf,"@@m");
+                    }
+                    if ( small )
+                        sprintf( catbuf+strlen(catbuf), "()@@g" );
+                    else
+                        sprintf( catbuf+strlen(catbuf), "(())@@g" );
+                    sprintf( color, "@@g" );
+                }
+            }
+            if ( ( map_vhc[x][y] || IS_SET(ch->effect,EFFECT_VISION) ) )
+            {
+                VEHICLE_DATA *whc;
+                CHAR_DATA *wch;
+                int ppl = 0;
+                bool allied = FALSE;
+                bool imm = FALSE;
+                bool range= FALSE;
+                char ppl_c[MSL] = "\0";
+
+                {
+                	int tx = x, ty = y;
+                	real_coords_space(&tx, &ty);
+                    for ( whc = map_vhc[tx][ty][Z_SPACE]; whc; whc = whc->next_in_room )
+                    {
+
+                        ppl++;
+                        if ( ( wch = whc->driving ) == NULL )
+                            continue;
+                        if ( in_range(ch,wch,get_ship_weapon_range(vhc)) )
+                            range = TRUE;
+                        sprintf( scan+strlen(scan), "Found: %s - %s.\n\r", wch->name,vhc->desc );
+                        if ( ch->pcdata->alliance != -1 && ch->pcdata->alliance == wch->pcdata->alliance )
+                            allied = TRUE;
+                        if ( IS_IMMORTAL(wch) )
+                            imm = TRUE;
+                        if ( ppl == 1 && wch->class == CLASS_PROJECTOR && !wch->next_in_room )
+                            ppl += 2;
+                    }
+                    if ( ppl > 9 )
+                        ppl = 9;
+
+                    if ( IS_SET(ch->effect,EFFECT_VISION) && ppl == 0 && number_percent() < 5 )
+                        ppl++;
+
+                    if ( INVALID_COORDS(x,y) )
+                        ppl = 0;
+
+                    sprintf( ppl_c, "%d", ppl );
+                    if ( ppl > 0 )
+                    {
+                        if ( small )
+                            sprintf( catbuf, "%s%s%s@@g",imm?"@@y":allied == TRUE?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
+                        else
+                            sprintf( catbuf, "%s<@@y%s%s@@e>@@g", imm?"@@y":allied?"@@r":"@@e", (range) ? "<" : "[", (ppl==1) ? "]" : ppl_c );
+                        sprintf( color, "@@g" );
+                    }
+                }
+            }
+            if ( IS_SET(ch->pcdata->pflags,PLR_ASS) )
+            {
+                if ( small )
+                    sprintf( catbuf, "  ");
+                else
+                    sprintf( catbuf, "    ");
+            }
+            safe_strcat( MSL, outbuf, catbuf  );
+        }
+        safe_strcat( MSL, outbuf, " @@g|\n\r" );
+        i++;
+        if ( i >= 5 )
+        {
+            i = 0;
+            send_to_char( outbuf, ch );
+            outbuf[0] = '\0';
+        }
+    }
+    send_to_char( outbuf, ch );
+    sprintf( borderbuf, "%s", "@@d+@@g-" );
+    if ( small )
+        sprintf( catbuf, "%s", "--" );
+    else
+        sprintf( catbuf, "%s", "----" );
+    for ( looper = 0; looper <= maxx*2; looper++ )
+        safe_strcat( MSL, borderbuf, catbuf );
+    safe_strcat( MSL, borderbuf, "-@@d+@@N" );
+    send_to_char( borderbuf, ch );
+    send_to_char( "\n\r", ch );
+    catbuf[0] = '\0';
+    xx = ch->x;
+    yy = ch->y;
+    if ( IS_SET(vhc->flags,VEHICLE_PSI_SCANNER) )
+        send_to_char(scan,ch);
+//    for ( obj = map_obj[xx][yy]; obj; obj = obj->next_in_room )
+//    {
+//        if ( obj->z != Z_SPACE )
+//            continue;
+//        sprintf(catbuf+strlen(catbuf),"  %s @@c \n\r",obj->short_descr );
+//    }
+    send_to_char(catbuf,ch);
+    return;
 }
