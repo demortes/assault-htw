@@ -1416,7 +1416,7 @@ void extract_vehicle( VEHICLE_DATA *vhc, bool msg )
     if ( vhc->vehicle_in )
         extract_vehicle(vhc->vehicle_in,FALSE);
 
-    if ( vhc->x > 0 && vhc->y > 0 )
+    if ( vhc->x != 0 || vhc->y != 0 || vhc->z != 4 )
     {
         if ( vhc->driving )
         {
@@ -1452,7 +1452,7 @@ void extract_vehicle( VEHICLE_DATA *vhc, bool msg )
                         vhc2->next_in_room = vhc->next_in_room;
             }
         }
-        move_vehicle(vhc,0,0,vhc->z);
+        move_vehicle(vhc,0,0,4);
     }
     else
     {
