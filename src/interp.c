@@ -390,7 +390,9 @@ const   struct  cmd_type        cmd_table       [] =
         "formulas",       do_formulas,    POS_DEAD,        0,  LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_ALWAYS
     },
-
+    {
+        "fuel",          do_fuel,       POS_DEAD,        0,  LOG_NORMAL,        C_TYPE_INFO, C_SHOW_ALWAYS
+    },
     {
         "get",            do_get,         POS_RESTING,     0,  LOG_NORMAL,
         C_TYPE_OBJECT, C_SHOW_ALWAYS
@@ -411,10 +413,15 @@ const   struct  cmd_type        cmd_table       [] =
         "gossip",     do_gossip,  POS_RESTING,     0,  LOG_NORMAL,
         C_TYPE_COMM, C_SHOW_ALWAYS
     },
-
     {
         "heal",           do_heal,         POS_RESTING,     0,  LOG_NORMAL,
         C_TYPE_ACTION, C_SHOW_ALWAYS
+    },
+    {
+        "health",          do_health,       POS_DEAD,        0,  LOG_NORMAL,        C_TYPE_INFO, C_SHOW_ALWAYS
+    },
+    {
+        "hp",          do_health,       POS_DEAD,        0,  LOG_NORMAL,        C_TYPE_INFO, C_SHOW_ALWAYS
     },
     {
         "helplist",       do_helplist,        POS_DEAD,        0,  LOG_NORMAL,
@@ -801,6 +808,9 @@ const   struct  cmd_type        cmd_table       [] =
     {
         "time",           do_time,        POS_DEAD,        0,  LOG_NORMAL,
         C_TYPE_INFO, C_SHOW_ALWAYS
+    },
+    {
+        "timer",          do_timer,       POS_DEAD,        0,  LOG_NORMAL,        C_TYPE_INFO, C_SHOW_ALWAYS
     },
     {
         "title",          do_title,       POS_DEAD,        0,  LOG_NORMAL,

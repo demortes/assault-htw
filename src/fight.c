@@ -2105,6 +2105,10 @@ void set_fighting( CHAR_DATA *ch, CHAR_DATA *victim )
     return;
 }
 
+char kill_message[] = {
+"yo",
+};
+
 bool check_dead( CHAR_DATA *ch, CHAR_DATA *victim )
 {
     bool masskill = FALSE;

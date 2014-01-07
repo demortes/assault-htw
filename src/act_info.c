@@ -1317,11 +1317,10 @@ void do_title( CHAR_DATA *ch, char *argument )
 
 void do_ranks( CHAR_DATA *ch, char *argument )
 {
-
-    send_to_char( "@@d|@@w===============================================@@N\r\n"
-                  "@@d|@@w @@eRanking Information@@N\r\n"
-                  "@@d|@@w===============================================@@N\r\n"
-                  "@@d|@@W Title           @@d|@@W       Rank@@N\r\n"
+    char buf[MSL] = "\0";
+    sprintf(buf, "You are currently ranked @@a%d@@N.\r\n\r\n", get_rank(ch));
+    send_to_char(buf, ch);
+    send_to_char( "@@d|@@W Title           @@d|@@W       Rank@@N\r\n"
                   "@@d|@@w-----------------+-----------------------------@@N\r\n"
                   "@@d|@@a Private         @@w|@@W      1  -  9@@N\r\n"
                   "@@d|@@a Specialist      @@w|@@W     10  -  19@@N\r\n"
@@ -1332,8 +1331,7 @@ void do_ranks( CHAR_DATA *ch, char *argument )
                   "@@d|@@a Captain         @@w|@@W    150  -  249@@N\r\n"
                   "@@d|@@a Major           @@w|@@W    250  -  499@@N\r\n"
                   "@@d|@@a Colonel         @@w|@@W    500  -  999@@N\r\n"
-                  "@@d|@@a General         @@w|@@W   1000  +@@N\r\n"
-                  "@@d|@@w===============================================@@N\r\n", ch);
+                  "@@d|@@a General         @@w|@@W   1000  +@@N\r\n", ch);
 }
 
 void do_password( CHAR_DATA *ch, char *argument )
@@ -3206,17 +3204,24 @@ void show_building_info(CHAR_DATA *ch, int i)
 void do_ammo( CHAR_DATA *ch, char *argument)
 {
     OBJ_DATA *weapon;
+    VEHICLE_DATA *vhc = ch->in_vehicle;
     char buf[MSL] = "\0";
 
     if (  ( weapon = get_eq_char( ch, WEAR_HOLD_HAND_L ) ) == NULL || weapon->item_type != ITEM_WEAPON )
     {
         if (  ( weapon = get_eq_char( ch, WEAR_HOLD_HAND_R ) ) == NULL || weapon->item_type != ITEM_WEAPON  )
         {
-            send_to_char( "You are not holding a weapon!\n\r", ch );
-            return;
+            if (!vhc) {
+                mreturn("You are not holding a weapon!\n\r", ch );
+            } else {
+                sprintf( buf, "Vehicle Ammo: %d/%d\n\r", vhc->ammo, vhc->max_ammo );
+                send_to_char(buf,ch);
+                return;
+            }
         }
     }
-    sprintf( buf, "You have %d ammo (out of %d).\n\r", weapon->value[0], weapon->value[1] );
+
+    sprintf( buf, "Ammo: %d/%d\n\r", weapon->value[0], weapon->value[1] );
     send_to_char(buf,ch);
     return;
 }
@@ -3338,5 +3343,45 @@ void do_rules (CHAR_DATA *ch, char *argument)
         do_pipe(ch,"tail -n 100 ../information/immortals");
     else
         mreturn("Syntax: rules; followed by either atmosphere, attacking, cheating, or immortals.\n\r",ch);
+    return;
+}
+
+void do_health (CHAR_DATA *ch, char *argument)
+{
+    char buf[MSL] = "\0";
+    VEHICLE_DATA *vhc = ch->in_vehicle;
+    
+    if (vhc) {
+        sprintf(buf, "Vehicle Health: %d/%d\n\r", vhc->hit, vhc->max_hit);
+        send_to_char(buf, ch);
+    } else {
+        sprintf(buf, "Health: %d/%d\n\r", ch->hit, ch->max_hit);
+        send_to_char(buf, ch);
+    }
+
+    return;
+}
+
+void do_timer (CHAR_DATA *ch, char *argument)
+{
+    char buf[MSL] = "\0";
+
+    sprintf(buf, "Fight Timer: %d seconds\n\r", ch->fighttimer / 8);
+    send_to_char(buf, ch);
+
+    return;
+}
+
+void do_fuel (CHAR_DATA *ch, char *argument)
+{
+    char buf[MSL] = "\0";
+    VEHICLE_DATA *vhc = ch->in_vehicle;
+
+    if (!vhc)
+        mreturn("You must be in a vehicle.\r\n", ch);
+
+    sprintf(buf, "Vehicle Fuel: %d/%d\r\n", vhc->fuel, vhc->max_fuel);
+    send_to_char(buf, ch);
+
     return;
 }

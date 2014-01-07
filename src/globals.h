@@ -513,3 +513,6 @@ DECLARE_DO_FUN( do_rules );
 DECLARE_DO_FUN( do_ranks );
 DECLARE_DO_FUN( do_rangen );
 DECLARE_DO_FUN( do_hurl );
+DECLARE_DO_FUN( do_health );
+DECLARE_DO_FUN( do_timer );
+DECLARE_DO_FUN( do_fuel );

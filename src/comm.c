@@ -3962,7 +3962,7 @@ void act( const char *format, CHAR_DATA *ch, const void *arg1,
         buf[0]   = UPPER(buf[0]);
         *point = '\0';
         
-        if (to->desc && can_see_message )
+        if (to->desc && can_see_message && type != TO_INFO)
             write_to_buffer( to->desc, buf, point - buf );
     }
 
