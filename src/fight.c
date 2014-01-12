@@ -38,6 +38,7 @@
 #include <string.h>
 #include <time.h>
 #include "ack.h"
+#include "act_mob.h"
 #include "tables.h"
 #include <math.h>
 
@@ -331,6 +332,9 @@ void damage( CHAR_DATA *ch, CHAR_DATA *victim, int dam, int dt )
         act( "$n stops what $e's doing.", victim, NULL, NULL, TO_ROOM );
         victim->c_sn = -1;
     }
+
+    if (IS_NPC(victim))
+        mob_attack(ch, victim);
 
     tail_chain( );
     return;

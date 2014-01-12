@@ -117,6 +117,7 @@ void (*dl_list_free_destructor )         ( DL_LIST * dldat ) = NULL;
 void (*board_free_destructor )           ( BOARD_DATA * bdat ) = NULL;
 void (*buf_free_destructor )             ( BUF_DATA_STRUCT * bdat ) = NULL;
 void (*hash_free_destructor )            ( HASH_ENTRY * hdat )= NULL;
+//void (*mid_free_destructor )             ( MOB_INDEX_DATA * mdat )= NULL;
 
 void pager_free_destructor ( PAGER_DATA * pdat )
 {
@@ -230,4 +231,12 @@ void vehicle_free_destructor( VEHICLE_DATA * vdat )
 
 void bomb_free_destructor( BOMB_DATA *bdat )
 {
+}
+
+void mid_free_destructor( MOB_INDEX_DATA *mdat )
+{
+    free_string( mdat->player_name  );
+    free_string( mdat->short_descr  );
+    free_string( mdat->long_descr   );
+    free_string( mdat->description  );
 }

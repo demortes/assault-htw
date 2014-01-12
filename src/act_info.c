@@ -583,6 +583,14 @@ void do_look( CHAR_DATA *ch, char *argument )
 
     }
 
+    if ( !str_prefix(arg1,"ground") && ch->z == Z_AIR )
+    {
+        move(ch,ch->x,ch->y,Z_GROUND);
+        do_mapper(ch,"");
+        move(ch,ch->x,ch->y,Z_AIR);
+        return;
+    }
+
     if ( !str_cmp( arg1, "board" ) || !str_cmp( arg2, "board" ) )
     {
         /*int bnum;*/

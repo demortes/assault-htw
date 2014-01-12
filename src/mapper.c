@@ -517,7 +517,7 @@ void do_buildings(CHAR_DATA *ch, char *argument) {
 				continue;
 
 			sprintf(buf + strlen(buf), "%s: ", bld->owned);
-			sprintf(buf + strlen(buf), "%s, at %d/%d (%s%s)\n\r",
+			sprintf(buf + strlen(buf), "%s, at %d/%d (%s%s)%s\n\r",
 					(bld->type == BUILDING_DUMMY && bld->value[0] > 0
 							&& bld->value[0] < MAX_BUILDING) ?
 							build_table[bld->value[0]].name : bld->name, bld->x,
@@ -525,7 +525,7 @@ void do_buildings(CHAR_DATA *ch, char *argument) {
 					(ch->y < bld->y) ? "North" :
 					(ch->y == bld->y) ? "" : "South",
 					(ch->x > bld->x) ? "West" :
-					(ch->x == bld->x) ? "" : "East");
+					(ch->x == bld->x) ? "" : "East", (bld->value[3] != 0) ? " (V)" : "");
 			if (++i > 100) {
 				sprintf(buf + strlen(buf),
 						"There are over 100 buildings here, can't display them all.\n\r");

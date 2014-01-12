@@ -1730,6 +1730,7 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
     /* If editing, show an 'info-prompt' -S- */
     if ( ch->position == POS_BUILDING )
     {
+        MOB_INDEX_DATA  *mob;
         OBJ_INDEX_DATA  *obj;
         char msg[MAX_STRING_LENGTH];                        /* Mode */
         char msg2[MAX_STRING_LENGTH];                       /* what */
@@ -1753,6 +1754,7 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
                     sprintf( msg2, "[%5d]: %s", ch->build_vnum, obj->short_descr );
             }
         }
+
         if ( ch->act_build == ACT_BUILD_BEDIT )
         {
             sprintf( msg, "Mode: Bedit" );
@@ -1761,6 +1763,19 @@ void bust_a_prompt( DESCRIPTOR_DATA *d )
             else
             {
                 sprintf( msg2, "[%3d]:%s %s", ch->build_vnum, (build_table[ch->build_vnum].disabled)?"@@e":"", build_table[ch->build_vnum].name );
+            }
+        }
+
+        if ( ch->act_build == ACT_BUILD_MEDIT )
+        {
+            sprintf( msg, "Mode: Medit" );
+            if ( ch->build_vnum == -1 )
+                sprintf( msg2, "No vnum set." );
+            else
+            {
+                mob = get_mob_index( ch->build_vnum );
+                if (mob != NULL)
+                    sprintf( msg2, "[%5d]: %s", ch->build_vnum, mob->short_descr );
             }
         }
 

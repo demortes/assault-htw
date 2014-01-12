@@ -52,14 +52,14 @@ extern      int         MAX_BUILDING;
 
 extern  bool            booting_up;
 extern  bool      area_resetting_global;
-extern char *  const   dir_name        [];
-extern char *  const   rev_name        [];
-extern int     const   order           [];
-extern char *  const   helper          [MAX_HELPER];
-extern int     const   prof_time       [];
-extern char *  const   vehicle_name    [MAX_VEHICLE];
-extern char *  const   vehicle_desc    [MAX_VEHICLE];
-
+extern char *  const   dir_name     [];
+extern char *  const   rev_name     [];
+extern int     const   order        [];
+extern char *  const   helper       [MAX_HELPER];
+extern int     const   prof_time    [];
+extern char *  const   vehicle_name [MAX_VEHICLE];
+extern char *  const   vehicle_desc [MAX_VEHICLE];
+extern char *  const   race_name    [MAX_RACE];
 /*
  * Global constants.
  */

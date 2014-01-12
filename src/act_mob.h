@@ -83,4 +83,8 @@ bool valid_target ( CHAR_DATA *ch, CHAR_DATA *victim, int l );
 void select_target ( CHAR_DATA *ch );
 void int_handler ( CHAR_DATA *ch );
 void int_combat_handler ( CHAR_DATA *ch, CHAR_DATA *victim );
-void  int_group_handler ( NPC_GROUP_DATA * ngroup );
+void int_group_handler ( NPC_GROUP_DATA * ngroup );
+
+// Mob AI
+// -Grave
+void mob_attack( CHAR_DATA *ch, CHAR_DATA *victim );

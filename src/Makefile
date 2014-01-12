@@ -24,15 +24,12 @@ L_FLAGS = -O0 -lz -lgd
 # End MCCP
 #L_FLAGS = $(PROF)
 
-O_FILES = act_comm.o act_info.o act_move.o act_obj.o act_wiz.o comm.o const.o \
-          db.o fight.o handler.o interp.o engineer.o \
-          save.o update.o board.o areasave.o buildings.o \
-          buildtab.o build.o write.o buildare.o hash.o areachk.o \
-          macros.o lists.o social-edit.o hack.o space.o \
-          logs.o pdelete.o wizutil.o brands.o terrain.o web.o \
-          ssm.o scheck.o sysdata.o strfuns.o mapper.o email.o \
-          act_misc.o mccp.o mxp.o games.o act_skills.o act_alliance.o
-
+O_FILES = act_alliance.o act_comm.o act_info.o act_misc.o act_mob.o act_move.o act_obj.o \
+          act_skills.o act_wiz.o comm.o areachk.o areasave.o board.o brands.o build.o \
+          buildare.o buildings.o buildtab.o const.o db.o email.o engineer.o fight.o games.o \
+          hack.o handler.o hash.o interp.o lists.o logs.o macros.o mapper.o mccp.o mxp.o \
+          pdelete.o save.o scheck.o social-edit.o space.o ssm.o strfuns.o sysdata.o \
+          terrain.o update.o web.o wizutil.o write.o
 
 #   C_FILES := imc.c md5.c $(C_FILES)
 #   O_FILES := imc.o md5.o $(O_FILES)

@@ -590,19 +590,28 @@ const struct lookup_type tab_item_types[] =
     { NULL, 0}
 };
 
+const struct lookup_type tab_mob_flags[] =
+{
+    { "nada",           0,  0     },
+    { "is_npc",         BIT_1,  0 },
+    { "intelligent",    BIT_2,  0 },
+    { "aggressive",     BIT_3,  0 },
+    { NULL, 0 }
+};
+
 const struct lookup_type tab_obj_flags[] =
 {
-    { "nada"   ,   0, 0 },
-    { "nuclear"    ,   1, 0 },
-    { "sticky" ,   2, 0 },
-    { "noqp"   ,   4, 0 },
-    { "nodrop"        ,         128, 20},
-    { "noremove"      ,        4096, 100},
-    { "inventory"     ,        8192, 0},
-    { "nosave"        ,       16384, 1000},
-    { "nosac"      ,    8388608, 100 },
-    { "unique"     ,   16777216, 100 },
-    { NULL,0}
+    { "nada",       0, 0 },
+    { "nuclear",    1, 0 },
+    { "sticky",     2, 0 },
+    { "noqp",       4, 0 },
+    { "nodrop",     128, 20},
+    { "noremove",   4096, 100},
+    { "inventory",  8192, 0},
+    { "nosave",     16384, 1000},
+    { "nosac",      8388608, 100 },
+    { "unique",     16777216, 100 },
+    { NULL, 0 }
 };
 
 const struct lookup_type tab_weapon_flags[] =

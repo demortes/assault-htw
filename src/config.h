@@ -59,28 +59,29 @@
  * Adjust the pulse numbers to suit yourself.
  */
 
-#define STARTING_HP         500
+#define STARTING_HP             500
 #define MAX_CHUNK_WEIGHT        50
 #define MAX_BUILDING_LEVEL      5
-#define MAX_color           10                              /* eg look, prompt, shout */
-#define MAX_ANSI            32                              /* eg red, black, etc */
-#define MAX_ALIASES          5
-#define MAX_ALLIANCE             15
-#define MAX_IGNORES          3
-#define MAX_CLASS            17
-#define MAX_OBJECT_VALUES        15
-#define MAX_BUILDON          6
-#define MAX_SKILL           15
-#define MAX_LEVEL            90
-#define LEVEL_HERO                 (80)
-#define LEVEL_GUIDE                  79
-#define LEVEL_IMMORTAL               80
-#define MAX_QUOTE       200
-#define MAX_MAPS        1500
-#define MIN_LOAD_OBJ        1000
-#define MAX_LOAD_OBJ        1164
-#define MAX_HELPER      13
-#define BORDER_SIZE     0
+#define MAX_color               10                              /* eg look, prompt, shout */
+#define MAX_ANSI                32                              /* eg red, black, etc */
+#define MAX_ALIASES             5
+#define MAX_ALLIANCE            15
+#define MAX_IGNORES             3
+#define MAX_CLASS               17
+#define MAX_OBJECT_VALUES       15
+#define MAX_BUILDON             6
+#define MAX_SKILL               15
+#define MAX_LEVEL               90
+#define MAX_RACE                4
+#define LEVEL_HERO              (80)
+#define LEVEL_GUIDE             79
+#define LEVEL_IMMORTAL          80
+#define MAX_QUOTE               200
+#define MAX_MAPS                1500
+#define MIN_LOAD_OBJ            1000
+#define MAX_LOAD_OBJ            1164
+#define MAX_HELPER              13
+#define BORDER_SIZE             0
 
 #define TERRAIN_NONE        0
 #define TERRAIN_BALANCED    1
@@ -94,38 +95,38 @@
 #define SPACE_SIZE  450
 
 #define Z_UNDERGROUND   0
-#define Z_GROUND    1
-#define Z_AIR       2
-#define Z_SPACE     3
-#define Z_PAINTBALL 4
-#define Z_MAX       5
-#define Z_NEWBIE    Z_MAX
+#define Z_GROUND        1
+#define Z_AIR           2
+#define Z_SPACE         3
+#define Z_PAINTBALL     4
+#define Z_MAX           5
+#define Z_NEWBIE        Z_MAX
 
-#define MAX_AMMO    42
+#define MAX_AMMO        42
 #define DAMAGE_ENVIRO   -3
 #define DAMAGE_GENERAL  -1
 #define DAMAGE_BULLETS  1
 #define DAMAGE_BLAST    2
-#define DAMAGE_ACID 3
+#define DAMAGE_ACID     3
 #define DAMAGE_FLAME    4
 #define DAMAGE_LASER    5
 #define DAMAGE_PAINT    6
 #define DAMAGE_SOUND    7
 #define DAMAGE_PSYCHIC  8
-#define DAMAGE_EMP  9
+#define DAMAGE_EMP      9
 
-#define ITEM_IRON   0
-#define ITEM_SKIN   1
-#define ITEM_COPPER 2
-#define ITEM_GOLD   3
-#define ITEM_SILVER 4
-#define ITEM_ROCK   5
-#define ITEM_STICK  6
-#define ITEM_LOG    7
+#define ITEM_IRON           0
+#define ITEM_SKIN           1
+#define ITEM_COPPER         2
+#define ITEM_GOLD           3
+#define ITEM_SILVER         4
+#define ITEM_ROCK           5
+#define ITEM_STICK          6
+#define ITEM_LOG            7
 
-#define STATE_SOLID     0
+#define STATE_SOLID         0
 #define STATE_LIQUID        1
-#define STATE_GAS       2
+#define STATE_GAS           2
 
 #define ELEMENT_CINNABAR_ORE    0
 #define ELEMENT_MERCURY     1
@@ -142,22 +143,22 @@
 #define VEHICLE_TRUCK           3
 #define VEHICLE_CHINOOK         4
 #define VEHICLE_BOMBER          5
-#define VEHICLE_BBQ         6
+#define VEHICLE_BBQ             6
 #define VEHICLE_LASER           7
 #define VEHICLE_MECH            8
 #define VEHICLE_SCOUT           9
 #define VEHICLE_FIGHTER         10
 #define VEHICLE_FRIGATE         11
-#define VEHICLE_BATTLECRUISER       12
+#define VEHICLE_BATTLECRUISER   12
 #define VEHICLE_DESTROYER       13
 #define VEHICLE_STARBASE        14
 #define VEHICLE_XRAY            15
 #define VEHICLE_ALIEN_SCOUT     16
 #define VEHICLE_BIO_FLOATER     17
 #define VEHICLE_CREEPER         18
-#define VEHICLE_BOAT			19
-#define VEHICLE_GUNSHIP			20
-#define MAX_VEHICLE         21
+#define VEHICLE_BOAT            19
+#define VEHICLE_GUNSHIP         20
+#define MAX_VEHICLE             21
 
 #define VEHICLE_FIRE_RESISTANT      BIT_1
 #define VEHICLE_EXPLOSIVE       BIT_2
@@ -280,12 +281,12 @@
 #define INST_ACID_DEFENSE       BIT_19
 #define INST_ALIEN_HIDES        BIT_20
 
-#define GUNNER_NUCLEAR          BIT_1                       //Adds nuclear fallout to EQ
-#define GUNNER_POISON           BIT_2                       //Adds poison effect
-#define GUNNER_ROCKETS          BIT_3                       //Stronger vs buildings
-#define GUNNER_PSYCHIC          BIT_4                       //Pushes around randomly
-#define GUNNER_CHAOS            BIT_5                       //Random effect
-#define GUNNER_TRACER           BIT_6                       //Trace effect - always shows up on "where"
+#define GUNNER_NUCLEAR          BIT_1                       // Adds nuclear fallout to EQ
+#define GUNNER_POISON           BIT_2                       // Adds poison effect
+#define GUNNER_ROCKETS          BIT_3                       // Stronger vs buildings
+#define GUNNER_PSYCHIC          BIT_4                       // Pushes around randomly
+#define GUNNER_CHAOS            BIT_5                       // Random effect
+#define GUNNER_TRACER           BIT_6                       // Trace effect - always shows up on "where"
 
 #define IMPLANT_METAL_CHEST_1       BIT_1
 #define IMPLANT_METAL_CHEST_2       BIT_2
@@ -700,121 +701,124 @@
 /*
  * Channel bits.
  */
-#define CHANNEL_ALLIANCE        BIT_1
-#define CHANNEL_GOSSIP          BIT_2
-#define CHANNEL_MUSIC           BIT_3
-#define CHANNEL_IMMTALK         BIT_4
-#define CHANNEL_NEWBIE          BIT_5
-#define CHANNEL_QUESTION        BIT_6
-#define CHANNEL_SHOUT           BIT_7
-#define CHANNEL_POLITICS        BIT_8
-#define CHANNEL_FLAME           BIT_9
-#define CHANNEL_ZZZ             BIT_10
-#define CHANNEL_RACE            BIT_11
-#define CHANNEL_CLAN            BIT_12
-#define CHANNEL_NOTIFY          BIT_13
-#define CHANNEL_INFO            BIT_14
-#define CHANNEL_LOG     BIT_15
-#define CHANNEL_CREATOR     BIT_16
-#define CHANNEL_ALLALLI     BIT_17
-#define CHANNEL_ALLRACE     BIT_18
-#define CHANNEL_HERMIT      BIT_19                          /* Turns off ALL channels */
-#define CHANNEL_BEEP        BIT_20
-#define CHANNEL_FAMILY      BIT_21
-#define CHANNEL_DIPLOMAT    BIT_22
-#define CHANNEL_CRUSADE     BIT_23
-#define CHANNEL_REMORTTALK  BIT_24
-#define CHANNEL_HOWL            BIT_25
-#define CHANNEL_ADEPT           BIT_26
-#define CHANNEL_OOC             BIT_27
-#define CHANNEL_QUEST           BIT_28
-#define CHANNEL_CODE        BIT_29
-#define CHANNEL_GAME        BIT_30
+#define CHANNEL_ALLIANCE            BIT_1
+#define CHANNEL_GOSSIP              BIT_2
+#define CHANNEL_MUSIC               BIT_3
+#define CHANNEL_IMMTALK             BIT_4
+#define CHANNEL_NEWBIE              BIT_5
+#define CHANNEL_QUESTION            BIT_6
+#define CHANNEL_SHOUT               BIT_7
+#define CHANNEL_POLITICS            BIT_8
+#define CHANNEL_FLAME               BIT_9
+#define CHANNEL_ZZZ                 BIT_10
+#define CHANNEL_RACE                BIT_11
+#define CHANNEL_CLAN                BIT_12
+#define CHANNEL_NOTIFY              BIT_13
+#define CHANNEL_INFO                BIT_14
+#define CHANNEL_LOG                 BIT_15
+#define CHANNEL_CREATOR             BIT_16
+#define CHANNEL_ALLALLI             BIT_17
+#define CHANNEL_ALLRACE             BIT_18
+#define CHANNEL_HERMIT              BIT_19          /* Turns off ALL channels */
+#define CHANNEL_BEEP                BIT_20
+#define CHANNEL_FAMILY              BIT_21
+#define CHANNEL_DIPLOMAT            BIT_22
+#define CHANNEL_CRUSADE             BIT_23
+#define CHANNEL_REMORTTALK          BIT_24
+#define CHANNEL_HOWL                BIT_25
+#define CHANNEL_ADEPT               BIT_26
+#define CHANNEL_OOC                 BIT_27
+#define CHANNEL_QUEST               BIT_28
+#define CHANNEL_CODE                BIT_29
+#define CHANNEL_GAME                BIT_30
 
-#define CHANNEL2_AFFIL      BIT_1
-#define CHANNEL2_ALLAFFIL   BIT_2
-#define CHANNEL2_PKOK       BIT_3
-#define CHANNEL2_GUIDE      BIT_4
-#define CHANNEL2_LANG       BIT_5
+#define CHANNEL2_AFFIL              BIT_1
+#define CHANNEL2_ALLAFFIL           BIT_2
+#define CHANNEL2_PKOK               BIT_3
+#define CHANNEL2_GUIDE              BIT_4
+#define CHANNEL2_LANG               BIT_5
 
 /* NOTE 32 is the last allowable channel ZEN */
 
 /* Monitor channels - for imms to select what mud-based info they receive */
-#define MONITOR_CONNECT     BIT_1
-#define MONITOR_AREA_UPDATE BIT_2
-#define MONITOR_AREA_BUGS   BIT_3
-#define MONITOR_AREA_SAVING BIT_4
-#define MONITOR_GEN_IMM     BIT_5
-#define MONITOR_GEN_MORT    BIT_6
-#define MONITOR_COMBAT      BIT_7
-#define MONITOR_BUILD       BIT_8
-#define MONITOR_OBJ     BIT_9
-#define MONITOR_ROOM        BIT_10
-#define MONITOR_BAD     BIT_11
-#define MONITOR_DEBUG       BIT_12
-#define MONITOR_SYSTEM      BIT_13
-#define MONITOR_LDEBUG      BIT_14
-#define MONITOR_FAKE        BIT_15
+#define MONITOR_CONNECT             BIT_1
+#define MONITOR_AREA_UPDATE         BIT_2
+#define MONITOR_AREA_BUGS           BIT_3
+#define MONITOR_AREA_SAVING         BIT_4
+#define MONITOR_GEN_IMM             BIT_5
+#define MONITOR_GEN_MORT            BIT_6
+#define MONITOR_COMBAT              BIT_7
+#define MONITOR_BUILD               BIT_8
+#define MONITOR_OBJ                 BIT_9
+#define MONITOR_ROOM                BIT_10
+#define MONITOR_BAD                 BIT_11
+#define MONITOR_DEBUG               BIT_12
+#define MONITOR_SYSTEM              BIT_13
+#define MONITOR_LDEBUG              BIT_14
+#define MONITOR_FAKE                BIT_15
 
 /* build bits for OLC -S- */
-#define ACT_BUILD_NOWT                0                     /* not doing anything   */
-#define ACT_BUILD_REDIT               1                     /* editing rooms        */
-#define ACT_BUILD_OEDIT               2                     /* editing objects      */
-#define ACT_BUILD_BEDIT               3                     /* editing buildings    */
-#define ACT_BUILD_MPEDIT          4                         /* editing mprogs	*/
-#define ACT_BUILD_CEDIT               5                     /* editing the clan table */
-#define NO_USE             -999                             /* this table entry can	*/
+#define ACT_BUILD_NOWT              0               /* not doing anything   */
+#define ACT_BUILD_REDIT             1               /* editing rooms        */
+#define ACT_BUILD_OEDIT             2               /* editing objects      */
+#define ACT_BUILD_BEDIT             3               /* editing buildings    */
+#define ACT_BUILD_MEDIT             4               /* editing mprogs	*/
+#define ACT_BUILD_CEDIT             5               /* editing the clan table */
+#define NO_USE                      -999            /* this table entry can	*/
 /* NOT be used, except  */
 /* by a Creator		*/
 
-#define SEX_MALE                      1
-#define SEX_FEMALE                    2
+#define SEX_NEUTRAL                 0
+#define SEX_MALE                    1
+#define SEX_FEMALE                  2
 
 // Act bits for mobs
 // -Grave
-#define ACT_IS_NPC              BIT_1
-#define ACT_INTELLIGENT	        BIT_2
+#define ACT_IS_NPC                  BIT_1           // Auto set
+#define ACT_INTELLIGENT	            BIT_2           // To be used later
+#define ACT_AGGRESSIVE              BIT_3           // Attacks PC's
+#define ACT_SENTINEL                BIT_4           // Stays in one room
 
 /*
  * Item types.
  * Used in #OBJECTS.
  */
-#define ITEM_LIGHT                    1
-#define ITEM_AMMO                     2
-#define ITEM_BOMB                     3
-#define ITEM_BLUEPRINT                4
-#define ITEM_WEAPON                   5
-#define ITEM_SUIT             6
-#define ITEM_MEDPACK              7
-#define ITEM_DRONE            8
-#define ITEM_ARMOR                    9
-#define ITEM_TELEPORTER          10
-#define ITEM_INSTALLATION            11
-#define ITEM_IMPLANT             12
-#define ITEM_FLAG            13
-#define ITEM_DART_BOARD          14
-#define ITEM_ELEMENT             15
-#define ITEM_CONTAINER           16
-#define ITEM_WEAPON_UP           17
-#define ITEM_PIECE           18
-#define ITEM_COMPUTER            19
-#define ITEM_LOCATOR             20
-#define ITEM_SKILL_UP            21
-#define ITEM_PART            22
-#define ITEM_DISK            23
-#define ITEM_TRASH           24
-#define ITEM_ASTEROID            25
-#define ITEM_BACKUP_DISK         26
-#define ITEM_BOARD           27
-#define ITEM_VEHICLE_UP          28
-#define ITEM_TOOLKIT             29
-#define ITEM_SCAFFOLD            30
-#define ITEM_ORE             31
-#define ITEM_BIOTUNNEL           32
-#define ITEM_BATTERY             33
-#define ITEM_RECREATIONAL	34
-#define ITEM_TOKEN           35
-#define ITEM_MATERIAL            40
+#define ITEM_LIGHT                  1
+#define ITEM_AMMO                   2
+#define ITEM_BOMB                   3
+#define ITEM_BLUEPRINT              4
+#define ITEM_WEAPON                 5
+#define ITEM_SUIT                   6
+#define ITEM_MEDPACK                7
+#define ITEM_DRONE                  8
+#define ITEM_ARMOR                  9
+#define ITEM_TELEPORTER             10
+#define ITEM_INSTALLATION           11
+#define ITEM_IMPLANT                12
+#define ITEM_FLAG                   13
+#define ITEM_DART_BOARD             14
+#define ITEM_ELEMENT                15
+#define ITEM_CONTAINER              16
+#define ITEM_WEAPON_UP              17
+#define ITEM_PIECE                  18
+#define ITEM_COMPUTER               19
+#define ITEM_LOCATOR                20
+#define ITEM_SKILL_UP               21
+#define ITEM_PART                   22
+#define ITEM_DISK                   23
+#define ITEM_TRASH                  24
+#define ITEM_ASTEROID               25
+#define ITEM_BACKUP_DISK            26
+#define ITEM_BOARD                  27
+#define ITEM_VEHICLE_UP             28
+#define ITEM_TOOLKIT                29
+#define ITEM_SCAFFOLD               30
+#define ITEM_ORE                    31
+#define ITEM_BIOTUNNEL              32
+#define ITEM_BATTERY                33
+#define ITEM_RECREATIONAL           34
+#define ITEM_TOKEN                  35
+#define ITEM_MATERIAL               40
 
 /*
  * Extra flags.
@@ -879,9 +883,9 @@
 #define ITEM_WEAR_FEET          BIT_22
 #define ITEM_WEAR_HOOVES        BIT_23
 #define ITEM_TAKE               BIT_24
-#define ITEM_WEAR_EYES      BIT_26
-#define ITEM_WEAR_CBADGE    BIT_27
-#define ITEM_WEAR_UTAIL     BIT_28
+#define ITEM_WEAR_EYES          BIT_26
+#define ITEM_WEAR_CBADGE        BIT_27
+#define ITEM_WEAR_UTAIL         BIT_28
 /*
  * Apply types (for affects).
  * Used in #OBJECTS.

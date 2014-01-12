@@ -93,6 +93,7 @@ bool    fClanModified = FALSE;                              // For save_clan_tab
  */
 extern bool                            fLogAll;
 
+DECLARE_DO_FUN( build_set_medit         );
 DECLARE_DO_FUN( build_set_bedit         );
 DECLARE_DO_FUN( build_set_oedit         );
 DECLARE_DO_FUN( build_set_nedit         );
@@ -102,10 +103,11 @@ DECLARE_DO_FUN( build_list              );
 DECLARE_DO_FUN( build_set               );
 DECLARE_DO_FUN( build_listvalues        );
 DECLARE_DO_FUN( build_listbuildings     );
-DECLARE_DO_FUN( build_uobjs     );
-DECLARE_DO_FUN( build_findhelp      );
-DECLARE_DO_FUN( build_commands      );
-DECLARE_DO_FUN( build_clone     );
+DECLARE_DO_FUN( build_uobjs             );
+DECLARE_DO_FUN( build_umobs             );
+DECLARE_DO_FUN( build_findhelp          );
+DECLARE_DO_FUN( build_commands          );
+DECLARE_DO_FUN( build_clone             );
 
 /* build_functions */
 DECLARE_DO_FUN ( build_showobj      );
@@ -121,7 +123,9 @@ DECLARE_DO_FUN ( build_delobject    );
 DECLARE_DO_FUN ( build_delhelp      );
 DECLARE_DO_FUN ( build_addhelp      );
 DECLARE_DO_FUN ( build_addbuilding  );
-DECLARE_DO_FUN ( build_addmob		);
+DECLARE_DO_FUN ( build_addmob       );
+DECLARE_DO_FUN ( build_delmobile    );
+DECLARE_DO_FUN ( build_showmob      );
 
 /* Functions in buildare.c: */
 DECLARE_DO_FUN ( build_showarea     );
@@ -149,40 +153,45 @@ const   struct  cmd_type        build_cmd_table   [] =
      * Building commands.
      */
 
-    { "look",           do_look,        POS_STANDING,   0,  LOG_NORMAL },
-    { "list",           build_list,     POS_STANDING,   0,  LOG_NORMAL },
-    { "x",              build_list,     POS_STANDING,   0,  LOG_NORMAL },
-    { "commands",       build_commands, POS_STANDING,   0,  LOG_NORMAL },
-    { "showarea",       build_showarea, POS_STANDING,   0,  LOG_NORMAL },
-    { "showobject",     build_showobj,  POS_STANDING,   0,  LOG_NORMAL },
-    { "findarea",       build_findarea, POS_STANDING,   0,  LOG_NORMAL },
-    { "findobject",     build_findobject,POS_STANDING,  0,  LOG_NORMAL },
-    { "help",           build_help,     POS_STANDING,   0,  LOG_NORMAL },
-    { "helpedit",       build_helpedit, POS_STANDING,   0,  LOG_NORMAL },
-    { "set",            build_set,      POS_STANDING,   0,  LOG_NORMAL },
-    { "setarea",        build_setarea,  POS_STANDING,MAX_LEVEL,LOG_NORMAL },
-    { "stop",           build_stop,     POS_STANDING,   0,  LOG_ALWAYS },
-    { "addmob",         build_addmob,   POS_STANDING,   0,  LOG_NORMAL },
-    { "addobject",      build_addobject,POS_STANDING,   0,  LOG_NORMAL },
-    { "delobjec",       build_delwarn,  POS_STANDING,   0,  LOG_NORMAL },
-    { "delobject",      build_delobject,POS_STANDING,   0,  LOG_NORMAL },
-    { "delhelp",        build_delhelp,  POS_STANDING,   84, LOG_ALWAYS },
-    { "findhelp",       build_findhelp, POS_STANDING,   0,  LOG_NORMAL },
-    { "addhelp",        build_addhelp,   POS_STANDING,  0,  LOG_NORMAL },
-    { "oedit",          build_set_oedit, POS_STANDING,  0,  LOG_NORMAL },
-    { "bedit",          build_set_bedit, POS_STANDING,  0,  LOG_NORMAL },
-    { "nedit",          build_set_nedit, POS_STANDING, 0, LOG_NORMAL },
-    { "setvnum",        build_setvnum,   POS_STANDING,  0,  LOG_NORMAL },
-    { "vset",           build_setvnum,   POS_STANDING,  0,  LOG_NORMAL },
-    { "uobjs",          build_uobjs,     POS_STANDING,  0,  LOG_NORMAL },
-    { "values",         build_listvalues,POS_STANDING,  0,  LOG_NORMAL },
+    { "look",           do_look,            POS_STANDING,   0,  LOG_NORMAL },
+    { "list",           build_list,         POS_STANDING,   0,  LOG_NORMAL },
+    { "x",              build_list,         POS_STANDING,   0,  LOG_NORMAL },
+    { "commands",       build_commands,     POS_STANDING,   0,  LOG_NORMAL },
+    { "showarea",       build_showarea,     POS_STANDING,   0,  LOG_NORMAL },
+    { "showobject",     build_showobj,      POS_STANDING,   0,  LOG_NORMAL },
+    { "showmob",        build_showmob,      POS_STANDING,   0,  LOG_NORMAL },
+    { "findarea",       build_findarea,     POS_STANDING,   0,  LOG_NORMAL },
+    { "findobject",     build_findobject,   POS_STANDING,  0,  LOG_NORMAL },
+    { "help",           build_help,         POS_STANDING,   0,  LOG_NORMAL },
+    { "helpedit",       build_helpedit,     POS_STANDING,   0,  LOG_NORMAL },
+    { "set",            build_set,          POS_STANDING,   0,  LOG_NORMAL },
+    { "setarea",        build_setarea,      POS_STANDING,MAX_LEVEL,LOG_NORMAL },
+    { "stop",           build_stop,         POS_STANDING,   0,  LOG_ALWAYS },
+    { "addmob",         build_addmob,       POS_STANDING,   0,  LOG_NORMAL },
+    { "delmobil",       build_delwarn,      POS_STANDING,   0,  LOG_NORMAL },
+    { "delmobile",      build_delmobile,    POS_STANDING,   0,  LOG_NORMAL },
+    { "addobject",      build_addobject,    POS_STANDING,   0,  LOG_NORMAL },
+    { "delobjec",       build_delwarn,      POS_STANDING,   0,  LOG_NORMAL },
+    { "delobject",      build_delobject,    POS_STANDING,   0,  LOG_NORMAL },
+    { "delhelp",        build_delhelp,      POS_STANDING,   84, LOG_ALWAYS },
+    { "findhelp",       build_findhelp,     POS_STANDING,   0,  LOG_NORMAL },
+    { "addhelp",        build_addhelp,      POS_STANDING,  0,  LOG_NORMAL },
+    { "medit",          build_set_medit,    POS_STANDING,  0,  LOG_NORMAL },
+    { "oedit",          build_set_oedit,    POS_STANDING,  0,  LOG_NORMAL },
+    { "bedit",          build_set_bedit,    POS_STANDING,  0,  LOG_NORMAL },
+    { "nedit",          build_set_nedit,    POS_STANDING, 0, LOG_NORMAL },
+    { "setvnum",        build_setvnum,      POS_STANDING,  0,  LOG_NORMAL },
+    { "vset",           build_setvnum,      POS_STANDING,  0,  LOG_NORMAL },
+    { "uobjs",          build_uobjs,        POS_STANDING,  0,  LOG_NORMAL },
+    { "umobs",          build_umobs,        POS_STANDING,  0,  LOG_NORMAL },
+    { "values",         build_listvalues,   POS_STANDING,  0,  LOG_NORMAL },
     { "buildings",      build_listbuildings,POS_STANDING, 0,  LOG_NORMAL },
-    { "addbuilding",    build_addbuilding,   POS_STANDING,  0,  LOG_NORMAL },
-    { "check_area",     do_check_area,   POS_STANDING,MAX_LEVEL+1,LOG_NORMAL},
-    { "check_areas",    do_check_areas,  POS_STANDING,MAX_LEVEL+1,LOG_ALWAYS},
-    { "clone",          build_clone,    POS_STANDING,   0,  LOG_NORMAL },
-    { "say",            do_say,     POS_STANDING,   0,  LOG_NORMAL },
-    { "areasave",       do_areasave,    POS_STANDING,   0,  LOG_NORMAL },
+    { "addbuilding",    build_addbuilding,  POS_STANDING,  0,  LOG_NORMAL },
+    { "check_area",     do_check_area,      POS_STANDING,MAX_LEVEL+1,LOG_NORMAL},
+    { "check_areas",    do_check_areas,     POS_STANDING,MAX_LEVEL+1,LOG_ALWAYS},
+    { "clone",          build_clone,        POS_STANDING,   0,  LOG_NORMAL },
+    { "say",            do_say,             POS_STANDING,   0,  LOG_NORMAL },
+    { "areasave",       do_areasave,        POS_STANDING,   0,  LOG_NORMAL },
     /*
      * End of list.
      */
@@ -363,6 +372,63 @@ void build_commands( CHAR_DATA *ch, char *argument )
     }
     safe_strcat( MSL, out, "\n\r" );
     send_to_char( out, ch );
+    return;
+}
+
+void build_showmob( CHAR_DATA *ch, char *argument )
+{
+    char buf[MAX_STRING_LENGTH];
+    char buf1[MAX_STRING_LENGTH];
+    char arg[MAX_INPUT_LENGTH];
+    MOB_INDEX_DATA *pMob;
+
+    argument = one_argument( argument, arg );
+
+    if ( arg[0] == '\0' )
+    {
+    send_to_char( "showmob <vnum>\n\r", ch );
+    return;
+    }
+
+    if ( !is_number(arg) )
+    {
+    send_to_char( "Must be a vnum.\n\r", ch );
+    return;
+    }
+
+    if ( ( pMob = get_mob_index(atoi(arg)) ) == NULL )
+    {
+    send_to_char( "Cannot find a mob with that vnum.\n\r", ch );
+    return;
+    }
+
+    buf1[0] = '\0';
+
+    sprintf( buf, "@@WName: @@y%s   @@WLevel: @@y%d.\n\r", pMob->player_name, pMob->level );
+    strcat( buf1, buf );
+
+    sprintf( buf, "@@WVnum: @@y%d   @@WSex: @@y%s.\r\n",
+    pMob->vnum,
+    pMob->sex == SEX_MALE    ? "male"   :
+    pMob->sex == SEX_FEMALE  ? "female" : "neutral"
+    );
+    strcat( buf1, buf );
+
+    sprintf( buf,
+    "@@WRace: @@y%s.\n\r", race_name[pMob->race] );
+    strcat( buf1, buf );
+
+    sprintf( buf, "@@WMob Flags:@@y\n\r%s",
+       show_values( tab_mob_flags, pMob->act, TRUE ) );
+    strcat( buf1, buf );
+
+    sprintf( buf, "@@WShort description: @@y%s.\n\r@@WLong  description: @@y%s\r\n@@WDescription: @@y%s\r\n",
+    pMob->short_descr,
+    pMob->long_descr,
+    pMob->description[0] != '\0' ? pMob->description : "(none).\n\r" );
+    strcat( buf1, buf );
+    strcat( buf1, "@@g" );
+    send_to_char( buf1, ch );
     return;
 }
 
@@ -594,6 +660,182 @@ void build_findobject( CHAR_DATA *ch, char * argument)
     }
 
     send_to_char( buf1, ch );
+    return;
+}
+
+void build_setmob( CHAR_DATA *ch, char * argument)
+{
+    char arg1 [MAX_INPUT_LENGTH];
+    char arg2 [MAX_INPUT_LENGTH];
+    char arg3 [MAX_INPUT_LENGTH];
+    char buf  [MAX_STRING_LENGTH];
+
+    MOB_INDEX_DATA *pMob;
+
+    int value;
+    int lvalue; /* lookup value */
+    AREA_DATA * pArea;
+    
+    smash_tilde( argument );
+    argument = one_argument( argument, arg1 );  /* vnum */
+    argument = one_argument( argument, arg2 );  
+    strcpy( arg3, argument );
+
+    /** Changes to old setmob: *********************************
+    Check through the tables, to see if the
+    builder has entered the name of an entry.  If so, toggle
+    entry( new way of showing bits set is now used )
+    Otherwise, check for other values being set, or huh?  :P
+    ************************************************************/
+   
+    if ( arg1[0] == '\0' || arg2[0] == '\0' )
+    {
+        send_to_char( "Syntax: [set] <field>  <value>\n\r",         ch );
+        send_to_char( "or:     [set] <string> <value>\n\r",         ch );
+        send_to_char( "or:     [set] edit <string>\n\r",        ch );
+        send_to_char( "\n\r",                                           ch );
+        send_to_char( "Field being one of:\n\r",                        ch );
+        send_to_char( "  sex level race flags\n\r",                 ch );
+        send_to_char( "String being one of:\n\r",                       ch );
+        send_to_char( "  name short long description\n\r",            ch );
+        return;
+    }
+
+    if (!is_number(arg1))
+    {
+        send_to_char("Must be a vnum for first arg.\n\r",ch);
+        return;
+    }
+
+    if ( ( pMob = get_mob_index( atoi(arg1) ) ) == NULL )
+    {
+        send_to_char( "Cannot find mob with that vnum.\n\r", ch );
+        return;
+    }
+
+    pArea=pMob->area;
+    
+    /*
+     * Snarf the value (which need not be numeric).
+     */
+    value = is_number( arg3 ) ? atoi( arg3 ) : -1;
+    
+    if( !str_cmp( arg2, "flags" ) )
+    {
+        /* Check for act flags */
+        lvalue = table_lookup(tab_mob_flags, arg3);
+        if ( lvalue != 0 )
+        {
+            /* Then we've found a value */
+            if ( IS_SET( pMob->act, lvalue ) )
+                REMOVE_BIT( pMob->act, lvalue );
+            else
+                SET_BIT( pMob->act, lvalue );
+            send_to_char( "OK.  Act Flag toggled.\n\r", ch );
+            area_modified( pArea );
+            return;
+        } else {
+            send_to_char("Invalid mob flag.\r\n", ch);
+            return;
+        }
+    }
+
+    if ( !str_cmp( arg2, "sex" ) )
+    {
+        value = -1;
+        if ( arg3[0] == 'm' && !str_prefix( arg3, "male" ) )
+            value = SEX_MALE;
+        else if ( arg3[0] == 'f' && !str_prefix( arg3, "female" ) )
+            value = SEX_FEMALE;
+        else if ( arg3[0] == 'n' && !str_prefix( arg3, "neutral" ) )
+            value = SEX_NEUTRAL;
+
+        if ( value == -1 )
+        {
+            send_to_char( "Must be male, female or neutral.\n\r", ch );
+            return;
+        }
+
+        pMob->sex = value;
+        area_modified( pArea );
+        return;   
+    }
+
+    if ( !str_cmp( arg2, "level" ) )
+    {
+        if ( value < 1 || value > 50 )
+        {
+            send_to_char( "Level range is 1 to 50.\n\r", ch );
+            return;
+        }
+
+        pMob->level = value;
+        area_modified(pArea);
+        return;
+    }
+
+    if ( !str_cmp( arg2, "race" ) )
+    {
+        if (value < 0 || value > MAX_RACE) {
+            send_to_char("Invalid race. Valid races:\r\n", ch);
+
+            int i;
+            for (i = 0; i < MAX_RACE; i++) {
+                sprintf(buf, "[%d] %s\r\n", i, race_name[i]);
+                send_to_char(buf, ch);
+            }
+
+            return;
+        }   
+
+        pMob->race = value;
+        area_modified(pArea);
+        return;
+    }
+
+    if ( !str_cmp( arg2, "edit" ) )
+    {
+       if ( is_name( arg3, "description name short long" ) )
+          sprintf( buf, "%s %s $edit", arg1, arg3 );
+       else
+          sprintf( buf, " " );   
+       build_setmob( ch, buf );
+       return;
+    }
+    
+    
+    if ( !str_cmp( arg2, "name" ) )
+    {
+        build_strdup(&pMob->player_name, arg3, TRUE, ch );
+        area_modified(pArea);
+        return;
+    }
+
+    if ( !str_cmp( arg2, "short" ) )
+    {
+        build_strdup(&pMob->short_descr, arg3, TRUE, ch );
+        area_modified(pArea);
+        return;
+    }
+
+    if ( !str_cmp( arg2, "long" ) )
+    {
+        build_strdup(&pMob->long_descr, arg3, TRUE, ch );
+        area_modified(pArea);
+        return;
+    }
+    
+    if ( !str_cmp( arg2, "description" ) )
+    {
+        build_strdup(&pMob->description, arg3, TRUE, ch);
+        area_modified(pArea);
+        return;
+    }
+
+    /*
+     * Generate usage message.
+     */
+    build_setmob( ch, "" );
     return;
 }
 
@@ -917,7 +1159,7 @@ void build_addmob( CHAR_DATA *ch, char *argument )
     }  
 
     ch->build_vnum = vnum;
-    ch->act_build = ACT_BUILD_OEDIT;
+    ch->act_build = ACT_BUILD_MEDIT;
     
     GET_FREE(pMobIndex, mid_free);
     pMobIndex->vnum                 = vnum;
@@ -929,7 +1171,7 @@ void build_addmob( CHAR_DATA *ch, char *argument )
 
     pMobIndex->act                  = 0;
     pMobIndex->level                = 1;
-    pMobIndex->sex                  = 1;
+    pMobIndex->sex                  = 0;
 
     iHash                   = vnum % MAX_KEY_HASH;
     SING_TOPLINK(pMobIndex, mob_index_hash[iHash], next);
@@ -1030,10 +1272,119 @@ void build_addobject( CHAR_DATA *ch, char *argument )
 }
 
 int old_ovnum=0;
+int old_mob_vnum=0;
 
 void build_delwarn( CHAR_DATA *ch, char *argument )
 {
     send_to_char( "You must spell it out completely.\n\r", ch);
+    return;
+}
+
+void build_delmobile( CHAR_DATA *ch, char *argument )
+{
+    char arg1 [MAX_INPUT_LENGTH];
+    char arg2 [MAX_INPUT_LENGTH];
+    char buf[MAX_INPUT_LENGTH];
+    CHAR_DATA *vch;
+    MOB_INDEX_DATA * pMobIndex;
+    AREA_DATA * pArea;
+    BUILD_DATA_LIST * pList;
+    int vnum;
+
+    smash_tilde( argument );
+    argument = one_argument( argument, arg1 );
+    strcpy( arg2, argument );
+
+    if ( arg1[0] == '\0')
+    {
+    send_to_char( "Syntax: delmobile <vnum>\n\r",     ch );
+    return;
+    }
+
+    if (is_number(arg1))
+    {
+        vnum = atoi(arg1);
+        if (!(pMobIndex = get_mob_index(vnum)))
+        {
+            send_to_char( "Vnum not found.\n\r", ch);
+            return;
+        }
+    
+        old_mob_vnum = vnum;
+
+        sprintf(buf, "Are you sure you want to delete mobile: [%d] %s?\n\r",vnum,pMobIndex->player_name);
+        strcat(buf,"Type delmobile ok if you are sure.\n\r");
+        send_to_char(buf,ch);
+        return;
+    }
+
+    if ( str_cmp(arg1,"ok")) /* arg1 is NOT ok. */
+    {
+        /* Usage message */
+        build_delmobile( ch, "");
+        return;
+    }
+
+    if ( old_mob_vnum == 0)
+    {
+     send_to_char( "First specify a mobile number.\n\r",ch);
+     return;
+    }
+
+    /* make sure that NO one else has build_vnum set to this mob!! */
+    for ( vch = first_char; vch != NULL; vch = vch->next )
+        if ( vch->build_vnum == old_ovnum )
+            vch->build_vnum = -1;
+
+
+    /* Now do deletion *gulp* */
+    vnum=old_mob_vnum;
+    old_mob_vnum=0;
+    pMobIndex = get_mob_index(vnum);
+    pArea=pMobIndex->area;
+
+    /* Things to get rid of: Resets, Affect, Extra descs, struct */
+    /* Take mobile out of area list */
+    for ( pList = pArea->first_area_mobile; pList; pList = pList->next )
+        if ( pList->data == pMobIndex )
+            break;
+    if ( pList )
+    {
+        UNLINK(pList, pArea->first_area_mobile, pArea->last_area_mobile, next, prev);
+        PUT_FREE(pList, build_free);
+    }
+    
+    /* Get rid of mobile from world */
+    {
+        CHAR_DATA * wch;
+        CHAR_DATA * wchnext;
+        for ( wch = first_char; wch != NULL ; wch = wchnext )
+        {
+            wchnext=wch->next;      
+            if (wch->pIndexData==pMobIndex)
+                extract_char(wch,TRUE);
+        }
+    }
+
+    /* Remove mobile from vnum hash table */
+    {
+        int iHash;
+
+        iHash                   = vnum % MAX_KEY_HASH;
+        SING_UNLINK(pMobIndex, mob_index_hash[iHash], next, MOB_INDEX_DATA);
+    }
+
+    /* Free strings */
+    free_string(pMobIndex->player_name);
+    free_string(pMobIndex->short_descr);
+    free_string(pMobIndex->description);
+
+    /* Now delete structure */
+    PUT_FREE(pMobIndex, mid_free);
+    
+    top_mob_index--;
+
+    send_to_char("Done.\n\r",ch);
     return;
 }
 
@@ -1321,6 +1672,49 @@ void build_finishedstr( char * orig, char ** dest, CHAR_DATA * ch, bool saved)
     return;
 }
 
+void build_set_medit( CHAR_DATA *ch, char *argument )
+{
+    MOB_INDEX_DATA *mob;
+   
+    ch->act_build = ACT_BUILD_MEDIT;
+    if ( is_number( argument ) )
+    {   
+        ch->build_vnum = atoi( argument );
+        if ( ( mob = get_mob_index( ch->build_vnum ) ) == NULL )
+        ch->build_vnum = -1;
+    } else {
+    /*
+        int i;
+        char arg[MSL] = "\0";
+        bool fAll = FALSE;
+        MOB_INDEX_DATA *pMobIndex;
+        argument = one_argument(argument,arg);
+
+        if ( argument[0] == '\0' )
+            fAll = TRUE;
+
+        if ( !str_cmp(arg,"next") )
+        {
+            for (i=ch->build_vnum+1; i<32766; i++ )
+            {
+                if ( (pMobIndex = get_mob_index(i)) == NULL )
+                    continue;
+                if ( fAll || is_name( argument, tab_item_types[(pObjIndex->item_type)-1 ].text ) )
+                {
+                    ch->build_vnum = i;
+                    break;
+                }
+            }
+        }
+        else */
+        ch->build_vnum = -1;
+    }
+  
+    send_to_char( ch->build_vnum == -1 ? "No vnum set.  Use setvnum.\n\r" 
+         : "Mobile vnum now set. " , ch );
+    return;
+}
+
 void build_set_oedit( CHAR_DATA *ch, char *argument )
 {
     OBJ_INDEX_DATA *obj;
@@ -1361,7 +1755,7 @@ void build_set_oedit( CHAR_DATA *ch, char *argument )
     }
 
     send_to_char( ch->build_vnum == -1 ? "No vnum set.  Use setvnum.\n\r"
-                  : "Vnum now set. " , ch );
+                  : "Object vnum now set. " , ch );
     return;
 }
 
@@ -1403,7 +1797,7 @@ void build_set_bedit( CHAR_DATA *ch, char *argument )
     }
 
     send_to_char( ch->build_vnum == -1 ? "No vnum set.  Use setvnum.\n\r"
-                  : "Vnum now set. " , ch );
+                  : "Building vnum now set. " , ch );
     return;
 }
 
@@ -1422,6 +1816,7 @@ void build_setvnum( CHAR_DATA *ch, char *argument )
     char             buf2[MAX_STRING_LENGTH];
     int              vnum;
     OBJ_INDEX_DATA  *obj;
+    MOB_INDEX_DATA  *mob;
     /*   ROOM_INDEX_DATA *room; unused */
     bool             found;
     sh_int       inc= 0;
@@ -1457,6 +1852,16 @@ void build_setvnum( CHAR_DATA *ch, char *argument )
 
     switch ( ch->act_build )
     {
+    case ACT_BUILD_MEDIT:
+        if ( ( mob = get_mob_index( vnum ) ) == NULL )
+        {
+            sprintf( buf2, "No mob with that vnum exists.  Use addmob first.\n\r" );
+            found = FALSE;
+        }
+        else
+            sprintf( buf2, "Mob exists: %s\n\r", mob->short_descr );
+        break;
+
     case ACT_BUILD_OEDIT:
         if ( ( obj = get_obj_index( vnum ) ) == NULL )
         {
@@ -1516,6 +1921,15 @@ void build_list( CHAR_DATA *ch, char *argument )
         {
         case ACT_BUILD_NOWT:
             send_to_char( "Not in any editing mode.  Nothing to show!\n\r", ch );
+            break;
+        case ACT_BUILD_MEDIT:
+            if ( ch->build_vnum == -1 )
+                send_to_char( "No vnum has been selected!\n\r", ch );
+            else
+            {
+                sprintf( buf, "%d", ch->build_vnum );
+                build_showmob( ch, buf );
+            }
             break;
         case ACT_BUILD_OEDIT:
             if ( ch->build_vnum == -1 )
@@ -1625,6 +2039,10 @@ void build_set( CHAR_DATA *ch, char *argument )
     }
     switch( ch->act_build )
     {
+    case ACT_BUILD_MEDIT:
+        sprintf( buf, "%d %s", ch->build_vnum, argument );
+        build_setmob( ch, buf );
+        break;
     case ACT_BUILD_OEDIT:
         sprintf( buf, "%d %s", ch->build_vnum, argument );
         build_setobject( ch, buf );
@@ -1696,7 +2114,125 @@ int get_dir(char dir)
     return temp-cDirs;
 }
 
-void    build_uobjs( CHAR_DATA *ch, char *argument )
+void    build_umobs( CHAR_DATA *ch, char *argument )
+{
+   /* List vnum usage for area... */
+   int curvnum;
+   char buf[MAX_STRING_LENGTH];
+   char free[MAX_STRING_LENGTH];
+   char used[MAX_STRING_LENGTH];
+   AREA_DATA *area;
+   int last = 0;    /* 0 = start, 1 = used, 2 = free */ 
+   int foo = 0;     /* holds start of free/used vnums, so no 3001-3001 */
+   
+   area=ch->in_room->area;
+   sprintf( free, "(Free) " );
+   sprintf( used, "(Used) " ); 
+   for ( curvnum = area->min_vnum; curvnum < area->max_vnum; curvnum ++ )
+   {
+      if ( get_mob_index( curvnum ) != NULL )
+      {
+         switch( last )
+         {
+         case 0:
+            sprintf( buf, "%d", curvnum );
+            strcat( used, buf );
+            foo = curvnum;
+            last = 1;
+            break;
+          case 1:
+            break;
+          case 2:
+            if ( foo != curvnum-1 )
+            {
+                sprintf( buf, "-%d", curvnum-1 );
+                strcat( free, buf );
+            }
+            sprintf( buf, " %d", curvnum );
+            strcat( used, buf );
+            foo = curvnum;
+            last = 1;
+         }
+      }
+      else
+      {
+         switch( last )
+         {
+         case 0:
+            sprintf( buf, "%d", curvnum );
+            strcat( free, buf );
+            foo = curvnum;
+            last = 2;
+            break;
+         case 1:
+            if ( foo != curvnum -1 )
+            {
+               sprintf( buf, "-%d", curvnum-1 );
+               strcat( used, buf );
+            }
+            sprintf( buf, " %d", curvnum );
+            strcat( free, buf );
+            last =2;
+            foo = curvnum;
+            break;
+         case 2:
+            break;
+         }
+      }
+   }
+   
+   curvnum = area->max_vnum;
+   if ( get_mob_index( curvnum ) != NULL )
+   {
+      switch( last )
+      {
+      case 1:
+         if ( foo != ( curvnum-1 ) )
+            sprintf( buf, "-%d.", curvnum );
+         else
+            sprintf( buf, " %d.", curvnum );
+         strcat( used, buf );
+         break;
+      case 2:
+         if ( foo != curvnum -1 )
+         {
+            sprintf( buf, "-%d.", curvnum-1 );
+            strcat( used, buf );
+         }
+            sprintf( buf, " %d.", curvnum );
+            strcat( free, buf );
+            break;
+      }
+   }
+   else
+   {
+      switch( last )
+      {
+      case 1:
+         if ( foo != curvnum -1 )
+         {
+            sprintf( buf, "-%d.", curvnum-1 );
+            strcat( used, buf );
+         }
+         sprintf( buf, " %d.", curvnum );
+         strcat( free, buf );
+         break;
+      case 2:
+         if ( foo != curvnum -1 )
+            sprintf( buf, "-%d.", curvnum );
+         else
+            sprintf( buf, " %d.", curvnum );
+         strcat( free, buf );
+         break;
+      }
+   } 
+         
+   sprintf( buf, "Mobile vnum usage summary:\n\r\n\r%s\n\r\n\r%s\n\r", used, free );
+   send_to_char( buf, ch );
+   return;
+}
+
+void build_uobjs( CHAR_DATA *ch, char *argument )
 {
     /* List vnum usage for area... */
     int curvnum;

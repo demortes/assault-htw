@@ -41,3 +41,4 @@ extern const struct lookup_type tab_weapon_flags[];
 extern const struct lookup_type tab_wear_flags[];
 extern const struct lookup_type tab_wear_loc[];
 extern const struct lookup_type tab_player_flags[];
+extern const struct lookup_type tab_mob_flags[];

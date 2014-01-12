@@ -200,7 +200,7 @@ struct vehicle_data
 struct skill_type
 {
     char    * name;
-    int gsn;
+    int     gsn;
     bool    prof;
     char    * desc;
 };
@@ -614,6 +614,7 @@ struct  char_data
     char *              short_descr;
     char *              long_descr;
     char *              description;
+    sh_int              race;
 };
 
 /*
@@ -690,13 +691,20 @@ struct 	npc_data
     NPC_DATA *          next; // May be unused
 };
 
+struct race_data
+{
+    char *              name;                               // The name of the race
+    int                 flags;                              // Flags for the race
+    int                 class;                              // Will be used later
+};
+
 /*
  * Prototype for a mob.
  * This is the in-memory version of #MOBILES.
  */
 struct mob_index_data
 {
-    bool		        is_free; /* Ramias: for run-time checks of LINK/UNLINK */
+    bool                is_free; /* Ramias: for run-time checks of LINK/UNLINK */
     AREA_DATA *         area;
     MOB_INDEX_DATA *    next;
     char *              player_name;
@@ -708,6 +716,7 @@ struct mob_index_data
     sh_int              killed;
     sh_int              sex;
     sh_int              level;
+    sh_int              race;
     int                 act;
 };
 
@@ -1062,7 +1071,7 @@ void    extract_building args( ( BUILDING_DATA *bld, bool msg ) );
 void    extract_vehicle args( ( VEHICLE_DATA *vhc, bool msg ) );
 void    extract_char    args( ( CHAR_DATA *ch, bool fPull ) );
 void    extract_queue   args( ( QUEUE_DATA *q ) );
-void	empty_queue	args( (CHAR_DATA *ch) );
+void    empty_queue	args( (CHAR_DATA *ch) );
 void    extract_pager   args( ( PAGER_DATA *p ) );
 BUILDING_DATA *    get_char_building   args( ( CHAR_DATA *ch ) );
 BUILDING_DATA *    get_obj_building    args( ( OBJ_DATA *obj ) );
