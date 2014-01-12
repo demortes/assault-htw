@@ -416,6 +416,45 @@ void create_full_map(CHAR_DATA *ch) {
 	return;
 }
 
+void make_lava_river(int x, int y, int z)
+{
+    int k,type;
+
+    type = number_range(0,3);
+    k = number_range(1,10);
+    while ( k > 0 )
+    {
+        if ( !(map_ch[x][y][z] || map_bld[x][y][z]) )
+            map_table.type[x][y][z] = SECT_MAGMA;
+        //		if ( map_bld[x][y][z] )
+        //			extract_building(map_bld[x][y][z],TRUE);
+        if ( type == DIR_NORTH )
+        {
+            y++;
+            x = number_range(x-1,x+1);
+        }
+        else if ( type == DIR_SOUTH )
+        {
+            y--;
+            x = number_range(x-1,x+1);
+        }
+        else if ( type == DIR_EAST )
+        {
+            x++;
+            y = number_range(y-1,y+1);
+        }
+        else if ( type == DIR_WEST )
+        {
+            x--;
+            y = number_range(y-1,y+1);
+        }
+        k--;
+        
+        real_coords(&x, &y);
+    }
+    return;
+}
+
 void init_fields() {
 	int fuzz = 3, z = Z_PAINTBALL;
 	int i, j, m, n, k, x, y, sdefault = SECT_FOREST;
@@ -430,6 +469,8 @@ void init_fields() {
 			else
 				map_table.type[x][y][z] = sdefault;	//Otherwise, make it a forest
 
+            if ( map_table.type[x][y][Z_GROUND] == SECT_LAVA )
+                make_lava_river(x,y,Z_UNDERGROUND);
 		}
 	}
 	j = number_range(MAX_MAPS / 40, MAX_MAPS / 20); /* Generate Fields */
