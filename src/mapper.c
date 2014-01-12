@@ -343,7 +343,7 @@ void show_building(CHAR_DATA *ch, sh_int small, int size) {
 		if (IS_SET(ch->pcdata->pflags, PFLAG_HELPING))
 			sprintf(borderbuf, "\n\rUnknown, %s", planet_table[ch->z].name);
 		else
-			sprintf(borderbuf, "\n\r%d,%d, %s", ch->x, ch->y,
+			sprintf(borderbuf, "\n\r%d/%d, %s", ch->x, ch->y,
 					planet_table[ch->z].name);
 		sprintf(borderbuf + strlen(borderbuf),
 				"\n\r%s%s          Level %d\n\r\n\r",
