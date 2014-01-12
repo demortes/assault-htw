@@ -352,11 +352,11 @@ void show_building(CHAR_DATA *ch, sh_int small, int size) {
 	} else {
 		if (IS_SET(ch->pcdata->pflags, PFLAG_HELPING))
 			sprintf(borderbuf,
-					"\n\r        @@l(@@W??@@g,@@W??@@l) @@R[@@e%s@@R]@@N",
+					"\n\r        @@l(@@W??@@g/@@W??@@l) @@R[@@e%s@@R]@@N",
 					planet_table[ch->z].name);
 		else
 			sprintf(borderbuf,
-					"\n\r        @@l(@@W%d@@g,@@W%d@@l) @@R[@@e%s@@R]@@N",
+					"\n\r        @@l(@@W%d@@g/@@W%d@@l) @@R[@@e%s@@R]@@N",
 					ch->x, ch->y, planet_table[ch->z].name);
 		sprintf(borderbuf + strlen(borderbuf),
 				"\n\r%s%s          Level %d\n\r\n\r",

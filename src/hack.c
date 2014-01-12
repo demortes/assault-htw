@@ -664,47 +664,28 @@ void do_hack( CHAR_DATA *ch, char *argument )
     if ( ch->bvictim->type == BUILDING_GOVERNMENT_HALL )
     {
         if ( vch->pcdata->alliance == -1 )
-        {
-            send_to_char( "That player is not a member of an alliance.", ch );
-            return;
-        }
+            mreturn( "That player is not a member of an alliance.", ch );
         sprintf( buf,"You begin inserting your data into the %s database!\n\r", alliance_table[vch->pcdata->alliance].name );
-        send_to_char(buf,ch);
-        ch->c_sn = gsn_hack;
-        ch->c_time = 40 - ch->bvictim->value[8];
-        ch->c_level = 1;
-        send_to_char( "1%\n\r", ch );
-        return;
+        send_to_char(buf, ch);
     }
-    if ( ch->bvictim->type == BUILDING_MINE || ch->bvictim->type == BUILDING_IMPROVED_MINE )
-    {
+    else if ( ch->bvictim->type == BUILDING_MINE || ch->bvictim->type == BUILDING_IMPROVED_MINE )
         send_to_char( "You begin messing with the mine's definitions.\n\r", ch );
-        ch->c_sn = gsn_hack;
-        ch->c_time = 40 - ch->bvictim->value[8];
-        ch->c_level = 1;
-        send_to_char( "1%\n\r", ch );
-        return;
-    }
-    if ( ch->bvictim->type == BUILDING_ARMORY )
-    {
+    else if ( ch->bvictim->type == BUILDING_ARMORY )
         send_to_char( "You begin messing with the armory's definitions.\n\r", ch );
-        ch->c_sn = gsn_hack;
-        ch->c_time = 40 - ch->bvictim->value[8];
-        ch->c_level = 1;
-        send_to_char( "1%\n\r", ch );
-        return;
-    }
-    if ( ch->bvictim->type == BUILDING_DUMMY )
-    {
+    else if ( ch->bvictim->type == BUILDING_DUMMY )
         send_to_char( "You begin disabling the dummy.\n\r", ch );
-        ch->c_sn = gsn_hack;
-        ch->c_time = 40 - ch->bvictim->value[8];
-        ch->c_level = 1;
-        send_to_char( "1%\n\r", ch );
-        return;
-    }
+    else if ( ch->bvictim->type == BUILDING_HQ )
+		send_to_char( "You begin hacking the main security system.\n\r", ch );
+    else if ( ch->bvictim->type == BUILDING_HQ )
+		send_to_char( "You begin hacking the marketplace.\n\r", ch );
     else
-        send_to_char( "There is nothing worthwhile to hack into here.\n\r", ch );
+        mreturn( "There is nothing worthwhile to hack into here.\n\r", ch );
+
+    ch->c_sn = gsn_hack;
+    ch->c_time = 40 - ch->bvictim->value[8];
+    ch->c_level = 1;
+    send_to_char( "1%\n\r", ch );
+    
     return;
 }
 
