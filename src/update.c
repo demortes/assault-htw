@@ -1346,6 +1346,8 @@ void maze_update( void )
         {
             if ( map_table.type[x][y][Z_UNDERGROUND] != SECT_MAGMA || under )
                 map_table.type[x][y][Z_UNDERGROUND] = SECT_UNDERGROUND;
+            if ( map_table.type[x][y][Z_GROUND] == SECT_OCEAN)
+                map_table.type[x][y][Z_UNDERGROUND] = SECT_OCEAN;
         }
     if ( under )
         init_fields();
