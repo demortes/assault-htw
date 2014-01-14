@@ -575,8 +575,6 @@ void raw_kill( CHAR_DATA *victim, char *argument )
         if ( victim->quest_points < 0 )
             victim->quest_points = 0;
     }
-    if ( cloned )
-        move ( victim, clone->x, clone->y, clone->z );
     if ( victim->fighttimer > 480 )
         victim->fighttimer = 480;
     save_char_obj(victim);
@@ -655,9 +653,18 @@ void pdie(CHAR_DATA *ch)
             sprintf( bbuf, "3. Start at your base - (%d/%d, %s), all buildings lose a level and HPs.\n\r", bld->x, bld->y,bld->name);
             write_to_buffer(d,bbuf,0);
         }
-        return;
-    }
-    return;
+		for (bld = first_building; bld; bld = bld->next) {
+			if (!strcmp(bld->owned, ch->name))
+				if(complete(bld))
+					if(bld->type == BUILDING_CLONING_FACILITY)
+					{
+						sprintf( bbuf, "4. Start at your %s (%d/%d) - No penalty\n\r", bld->name, bld->x, bld->y);
+						write_to_buffer(d,bbuf,0);
+						break;
+					}
+		}
+	}
+   return;
 }
 
 void do_disarm( CHAR_DATA *ch, char *argument )
