@@ -4402,7 +4402,7 @@ void do_paradrop( CHAR_DATA *ch, char *argument )
     y = atoi(argument);
     z = ch->z;
     real_coords(&x, &y);
-    if ( map_bld[x][y][ch->z] != NULL || map_table.type[x][y][ch->z] == SECT_NULL || map_table.type[x][y][ch->z] == SECT_WATER || map_table.type[x][y][ch->z] == SECT_NULL )
+    if ( map_bld[x][y][ch->z] != NULL || map_table.type[x][y][ch->z] == SECT_NULL || map_table.type[x][y][ch->z] == SECT_WATER || map_table.type[x][y][ch->z] == SECT_OCEAN )
     {
         send_to_char( "You can't go to that location.\n\r", ch );
         return;
