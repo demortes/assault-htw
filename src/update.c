@@ -1519,7 +1519,7 @@ void update_handler( void )
             save_objects(3);
             save_vehicles(0);
         }
-        else if ( building_count < 1000 && !sysdata.killfest )
+        else if ( building_count < 100 && !sysdata.killfest )
         {
             do_backup(NULL,"load");
             load_sobjects(3);

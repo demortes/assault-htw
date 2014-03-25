@@ -175,7 +175,7 @@ void safe_strcat(int max_len,char * dest,char * source)
 
     if ( a == max_len )
     {
-        fprintf(stderr,"safe_strcat: string too long, source is : %s\n",orig_source);
+//        fprintf(stderr,"safe_strcat: string too long, source is : %s\n",orig_source);
         return;
     }
 
@@ -186,7 +186,7 @@ void safe_strcat(int max_len,char * dest,char * source)
         if ( a == max_len )
         {
             *(--dest)='\0';
-            fprintf(stderr,"safe_strcat: string too long, source is : %s\n",orig_source);
+//            fprintf(stderr,"safe_strcat: string too long, source is : %s\n",orig_source);
             return;
         }
     }
