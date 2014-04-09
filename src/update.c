@@ -2028,11 +2028,9 @@ void explode( OBJ_DATA *obj )
 
                         dam = dice(obj->weight,obj->value[2]);
 
-                        if ( vch->x != obj->x )
+                        if ( vch->x != obj->x || vhc->y != obj->y)
                             dam /= 2;
-                        if ( vch->y != obj->y )
-                            dam /= 2;
-
+							
                         if ( obj->carried_by != NULL && vch == obj->carried_by )
                             dam = obj->carried_by->hit * 3;
                         if ( obj->carried_by != NULL )
@@ -2057,11 +2055,9 @@ void explode( OBJ_DATA *obj )
                         if ( obj->pIndexData->vnum == 1029 )//deadman
                             //					dam /= 10;
                             continue;
-                        if ( x != obj->x )
+                        if ( x != obj->x || y != obj->y)
                             dam /= 2;
-                        if ( y != obj->y )
-                            dam /= 2;
-
+ 
                         if ( obj->value[3] == 1 )
                         {
                             bld->value[9] = number_range(obj->level/3*2,obj->level);
