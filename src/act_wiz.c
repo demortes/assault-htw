@@ -5732,7 +5732,12 @@ void do_prize( CHAR_DATA *ch, char *argument)
     int level;
     OBJ_DATA *obj;
 
-    argument = one_argument(argument,arg);
+    if(argument[0] == '\0')
+    {
+	send_to_char("Choose scope or scaffold.\r\n", ch);
+	return;
+    }
+    one_argument(argument, arg);
     if ( !str_prefix(arg,"scope"))
     {
         if ( !is_number(argument) )
@@ -5769,7 +5774,8 @@ void do_prize( CHAR_DATA *ch, char *argument)
         obj->name = str_dup(buf);
     }
     else
-    {	send_to_char("Either use \"prize scope #\" or \"prize scaffold\".", ch);
+    {	
+	send_to_char("Either use \"prize scope #\" or \"prize scaffold\".\r\n", ch);
         return;
     }
     obj_to_char(obj,ch);
