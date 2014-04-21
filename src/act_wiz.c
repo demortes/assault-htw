@@ -5769,7 +5769,9 @@ void do_prize( CHAR_DATA *ch, char *argument)
         obj->name = str_dup(buf);
     }
     else
+    {	send_to_char("Either use \"prize scope #\" or \"prize scaffold\".", ch);
         return;
+    }
     obj_to_char(obj,ch);
     act( "You create $p!", ch, obj, NULL, TO_CHAR );
 }
