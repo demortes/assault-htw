@@ -48,7 +48,7 @@ S Wulfston~ Wulfston~ 0 0 5
 S Apollyon~ Danny~ 2 3 1
 S Ryac~ Ryac~ 0 0 4
 S Ryac~ Shade~ 2 3 0
-S Stewie~ Aaronr~ 0 0 3
+S Bob~ Bob~ 0 0 31
 S Steven~ Ryac~ 2 0 10
 S Bradp~ Aaronr~ 0 0 6
 S Ryac~ Ryac~ 3 82 2
@@ -60,7 +60,7 @@ S Aaronr~ Crosshair~ 3 1 4
 S Ryac~ Bob~ 2 4 3
 S Sarge~ Ragnar~ 0 0 5
 S Shade~ Ryac~ 1 1 0
-S Diggle~ Ragnar~ 0 0 3
+S Ryac~ Ryac~ 0 0 16
 S Ryac~ Ryac~ 0 0 5
 S Terra~ Terra~ 0 0 7
 S Bradp~ Sethhurst~ 2 1 3
@@ -74,7 +74,7 @@ S Shade~ Ryac~ 1 3 1
 S Shade~ Bob~ 1 10 14
 S Shade~ Kazuki~ 1 0 4
 S Ryac~ Grave~ 1 11 5
-S Ragnar~ Ragnar~ 0 0 3
+S Bob~ Bob~ 0 0 21
 S Bob~ Ryac~ 1 2 0
 S Bob~ Shade~ 2 9 4
 S Jonas~ Deleted~ 0 0 4
