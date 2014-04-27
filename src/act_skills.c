@@ -365,6 +365,10 @@ void do_sneak( CHAR_DATA *ch, char *argument )
     if ( number_percent() > ch->pcdata->skill[gsn_sneak] )
         act( "$n starts sneaking.", ch, NULL, NULL, TO_ROOM );
     ch->c_time = 20-(ch->pcdata->skill[gsn_sneak]/6.6);
+    if(ch->c_time < 0)
+    	ch->c_time = 0;
+    if(COMBAT_LAG(ch))
+    	ch->c_time += 8;			// If in combat lag, give minimum 8 lag, like normal combat lag.
     ch->c_sn = gsn_sneak;
     ch->c_level = dir;
     return;
