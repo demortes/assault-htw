@@ -66,6 +66,22 @@ void get_obj( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container )
         return;
     }
 
+    if (medal(obj) && obj->item_type == ITEM_TOKEN)
+    {
+    	int i,j = 0;
+    	for(i = obj->x - 5;i <= obj->x + 5;i++)
+    		for(j = obj->y - 5;j <= obj->y + 5;j++)
+    		{
+    			if(!(i >= 0 && i <= 52 && j >= 0 && j <= 22))
+    				continue;
+    			if(map_bld[i][j][obj->z] != NULL)
+    			{
+    				send_to_char( "You have to destroy all buildings within a 7 room radius!", ch);
+    				return;
+    			}
+    		}
+    }
+
     {
         BUILDING_DATA *bld;
         CHAR_DATA *vch;

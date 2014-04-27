@@ -1,4 +1,4 @@
-/***************************************************************************
+  /***************************************************************************
  *  Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,        *
  *  Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.   *
  *                                                                         *
@@ -416,8 +416,8 @@
 #define helper5 "You'll get these helper messages for the first hour of play time. Don't ignore them. The reason you can't turn them off is because 99% of the questions people ask are explained in the help files."
 #define helper6 "You will be attacked, and you will lose your base. If that happens, don't give up, start over, and build better defenses."
 #define helper7 "Remember, this is a PK MUD, so no whining about someone killing you. Just like other people can kill you, you can kill others."
-#define helper8 "Don't forget to visit the website (And vote :P ) - fredrik.homelinux.org/Amnon (With the capital A)"
-#define helper9 "Want custom text in your Flag on the who list? Just ask Amnon for it!"
+#define helper8 "Don't forget to visit the website (And vote :P ) - assault.demortes.com"
+#define helper9 "Want custom text in your Flag on the who list? Just ask Demortes for it!"
 #define helper10 "Getting spammed out (Disconnected)? You don't have to! Check out 'help spammed out' to find out about a program that can help you."
 #define helper11 "Tired of your char? Want to recreate? Want to leave the game and never come back :( ? Use the pdelete command to delete your char."
 #define helper12 "Players can create their OWN custom attacks! See 'help special' for info!"
