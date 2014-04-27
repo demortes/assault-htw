@@ -76,7 +76,7 @@ void get_obj( CHAR_DATA *ch, OBJ_DATA *obj, OBJ_DATA *container )
     				continue;
     			if(map_bld[i][j][obj->z] != NULL)
     			{
-    				send_to_char( "You have to destroy all buildings within a 7 room radius!", ch);
+    				send_to_char( "You have to destroy all buildings within a 5 room radius!\r\n", ch);
     				return;
     			}
     		}
