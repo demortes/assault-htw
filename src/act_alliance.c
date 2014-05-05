@@ -80,7 +80,7 @@ void do_alliances( CHAR_DATA *ch, char *argument )
         buf[0] = '\0';
         if ( IS_IMMORTAL(ch) )
             sprintf(buf+strlen(buf),"%2d. ", i );
-        sprintf( buf+strlen(buf), "@@g[@@W%-10s@@g] @@W|@@N   [@@W%3d@@g]   @@W|@@N  [@@W%3d@@g]  @@W|@@N  %s@@g\n\r",
+        sprintf( buf+strlen(buf), "@@g[@@W%-10.10s@@g] @@W|@@N   [@@W%3d@@g]   @@W|@@N  [@@W%3d@@g]  @@W|@@N  %s@@g\n\r",
                  alliance_table[i].leader,
                  alliance_table[i].members,
                  alliance_table[i].kills,
