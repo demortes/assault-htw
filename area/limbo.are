@@ -3320,41 +3320,40 @@ Bio Tunnels
 
 ~
 0 Hacking Spoof Cracker Format Upload~
-Hacking                                 
-@@g                                                                          
-@@g Hacking Commands:                                                        
-@@g                                                                          
-@@g @@aBye @@g - Disconnect from the target mainframe                              
-@@g @@aCD @@g- Checks one directory to see whether it is a fake                    
-@@g @@aCrack@@g - Uses a @@yCRACK DISK@@g to crack the password                          
-@@g @@adir@@g - Displays all directories in the mainframe (Most are fake, 1 is     
-@@g  real)                                                                   
-@@g @@aDownload@@g - Effect based on the building:                                 
-@@g   @@cHQ: Target's entire building list                                      
-@@g   @@cGov. Building: Alliance member list                                    
-@@g   @@cMine/Armory: Shows the item in the generate list                       
-
-@@g @@aFormat@@g - Uses a @@yFORMAT DISK@@g to reduce building to L1                     
-@@g @@aHack@@g - Effect based on the building:                                     
-@@g   @@cHQ: Turns Security Off                                                 
-@@g   @@cGov. Building: Enter the enemy alliance                                
-@@g   @@cMarketplace: Take away 1000 QPs                                        
-@@g   @@cArmory: Sets to produce 50% pistols                                    
-@@g   @@cMines: Set to produce 50% Iron                                         
-@@g   @@cDummy: Disables the dummy effect                                       
-@@g @@aHelp@@g - Lists all commands                                                
-@@g @@aLogon@@g - Logs on to the mainframe. Must provide a password.               
-@@g @@aMark@@g - Calls in an @@yAirstrike@@g on the building                             
-@@g @@aScan@@g - Uses a @@ySCAN DISK@@g to find the 1 real directory                     
-@@g @@aSpoof@@g - Uses a @@ySPOOF DISK@@g to hide the building from "build report"       
-@@g @@aUpload@@g - Followed by a virus disk version and directory. Uploads the     
-@@g  virus.                                                                  
-@@g                                                                          
-@@g A more detailed hacking guide can be found on the website at             
-@@g  http://assault.demortes.com                                                    
-                                                                          
-@@aSee Also:@@y Computer                                                        
-@@N
+Hacking Commands:                                                        
+Once you have a connection to a building, using @@ycomputer connect x y@@n
+you will enter into the hacking interpreter. Type the following commands
+to hack your way to victory.
+@@n
+@@aBye@@n  - Disconnect from the target mainframe                               
+@@aCD@@n - Checks one directory to see whether it is a fake                    
+@@aCrack@@n - Uses a CRACK DISK to crack the password                          
+@@adir@@n - Displays all directories in the mainframe (Most are fake, 1 is     
+@@n real)                                                                   
+@@aDownload@@n - Effect based on the building:                                 
+@@c  HQ: Target's entire building list                                      
+@@c  Gov. Building: Alliance member list                                    
+@@c  Mine/Armory: Shows the item in the generate list                       @@n
+@@aFormat - Uses a FORMAT DISK to reduce building to L1                     
+@@aHack - Effect based on the building:                                     
+@@c  HQ: Turns Security Off                                                 
+@@c  Gov. Building: Enter the enemy alliance                                
+@@c  Marketplace: Take away 1000 QPs                                        
+@@c  Armory: Sets to produce 50% pistols                                    
+@@c  Mines: Set to produce 50% Iron                                         
+@@c  Dummy: Disables the dummy effect                                       
+@@aHelp@@n - Lists all commands                                                
+@@aLogon@@n - Logs on to the mainframe. Must provide a password.               
+@@aMark@@n - Calls in an Airstrike on the building                             
+@@aScan@@n - Uses a SCAN DISK to find the 1 real directory                     
+@@aSpoof@@n - Uses a SPOOF DISK to hide the building from "build report"       
+@@aUpload@@n - Followed by a virus disk version and directory. Uploads the     
+@@n virus.                                                                  
+@@n
+@@nA more detailed hacking guide can be found on the website at             
+@@n http://assault.demortes.com                                                    
+@@n
+@@aSee Also: @@yComputer@@n  
 ~
 0 Skills~
 Skills                                  
