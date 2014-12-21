@@ -43,7 +43,7 @@
 
 struct obj_ref_type *obj_ref_list;
 int const  prof_times [] =
-{ 0,2,10,50,100,150,200,250,300,400,-1 };
+{ 0,2,10,50,100,150,200,250,300,400,1000,2500,5000,10000,-1 };
 
 void obj_reference(struct obj_ref_type *ref)
 {
