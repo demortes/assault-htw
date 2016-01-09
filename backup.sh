@@ -7,9 +7,9 @@
 TIME=`date +%b-%d-%y`            # This Command will add date in Backup File Name.
 FILENAME=assaultbackup-$TIME.tar.gz    # Here i define Backup file name format.
 SRCDIR=/home/demortes/assault-htw  # Location of Important Data Directory (Source of backup).
-DESDIR=/home/demortes/OneDrive/Backups/ # Destination of backup file.
+DESDIR=/home/demortes/Backups # Destination of backup file.
 cd $SRCDIR/src;make clean
 tar -cpzf $DESDIR/$FILENAME $SRCDIR
-cd $SRCDIR/src;make
+cd $SRCDIR/src;make -j10
 
 #END
