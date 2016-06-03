@@ -1,29 +1,11 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+This is the MUD Assault: High Tech War as run by Demortes. This is the latest version as run at assault.demortes.com port 6660. Not actively maintained, kept up here for nostalgia reasons and tinkering.
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+* git clone it and run "make" from the src directory.
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Email kdethlefs@assaultgamestudios.com if you like.
