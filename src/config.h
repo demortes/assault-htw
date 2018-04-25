@@ -35,8 +35,8 @@
 #define mudnamecolor                "@@aAssault: High Tech War@@N"
 #define mudnamenocolor              "Assault: High Tech War"
 #define UPGRADE_REVISION            16
-#define WEBSITE                     "http://assault.demortes.com"
-#define WEBSITESOUND		    "http://assault.demortes.com/wp-content/uploads/2013/12"
+#define WEBSITE                     "http://www.assaultgamestudios.com"
+#define WEBSITESOUND		    "https://www.assaultgamestudios.com/mudsounds/"
 #define admin                       "Demortes"
 #define admin_email                 "assault@demortes.com"
 /*

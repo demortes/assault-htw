@@ -219,7 +219,7 @@ B Mothership Research~ 400 100 2000 2500 500 500 100 0 0 0 124 1 ~ MR~ 1 6 2 7 8
 B Infrared Tower~ 20 50 100 100 100 100 100 0 0 0 82 1 ~ IT~ 1 6 2 7 8 1 1 0 3 5 0 Finds and damages invisible (Jammer invis) buildings. The buildings lose their invisibility and take damage based on the building's level. The range of the infrared tower is the same as the jammer, 2 x Level.~
 B Species Research~ 100 300 3000 6000 100 500 0 0 0 0 82 1 ~ SR~ 1 6 2 7 8 1 1 0 0 100 0 Creates special-effects weapons.~
 B Organic Chamber~ 50 50 100 1000 0 0 0 0 0 0 82 1 ~ OC~ 1 6 2 7 8 1 1 0 0 1 0 Quickly heals your HP.~
-B Alien Probe~ 1000 800 5000 2576 0 5000 1000 0 0 0 82 3 ~ AP~ -1 4 -1 -1 -1 -1 1 0 1 1 0 @@yAlien Lab Superweapon -@@g See the location where a chosen enemy is. Usable every hour using the @@eSpy@@N command.~
+B Alien Probe~ 1000 800 5000 2576 0 5000 1000 0 0 655360 82 3 ~ AP~ -1 4 -1 -1 -1 -1 1 0 1 1 0 @@yAlien Lab Superweapon -@@g See the location where a chosen enemy is. Usable every hour using the @@eSpy@@N command.~
 B Intergalactic Pub~ 1000 50 5000 8000 1000 5000 5000 0 0 0 124 2 ~ IP~ 1 2 7 6 8 1 1 0 1 1 0 @@yAlien Lab Superweapon - @@gA gathering place for assassins from all over the galaxy, just waiting to hunt out every player hiding in their club and place a bomb there. The quality of the bomb rises with the building level.~
 B Statue of Wulfston~ 1000 0 10000 0 0 10000 10000 0 0 0 1 5 @@N~ ##~ 1 2 4 6 7 14 1 2 6 1 0 Adds the Wulfskin effect to any friendly players nearby, causing their armor to take half damage and gain permanent resistance to a certain damage type whenever it is hit by it.
 
