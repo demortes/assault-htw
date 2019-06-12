@@ -8,4 +8,4 @@ This is the MUD Assault: High Tech War as run by Demortes. This is the latest ve
 
 ### Who do I talk to? ###
 
-* Email kdethlefs@assaultgamestudios.com if you like.
+* Email assault@demortes.com if you like.
