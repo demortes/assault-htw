@@ -9,3 +9,5 @@ This is the MUD Assault: High Tech War as run by Demortes. This is the latest ve
 ### Who do I talk to? ###
 
 * Email assault@demortes.com if you like.
+
+Archived as of December 2021, no more code is being contributed.
